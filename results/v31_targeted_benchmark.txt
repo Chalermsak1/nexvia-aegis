@@ -1,0 +1,65 @@
+
+================================================
+NEXVIA AEGIS V3.0 vs V3.1 DEVELOPMENT
+episodes=100 base_seed=300000
+================================================
+development NORMAL             AEGIS_V3.0    success=1.000 fail_safe=0.000 unsafe_gate=0.000 gt_wrong_dir=0.000 recover=0.000
+development NORMAL             AEGIS_V3.1    success=1.000 fail_safe=0.000 unsafe_gate=0.000 gt_wrong_dir=0.000 recover=0.000
+development BIASED             AEGIS_V3.0    success=0.000 fail_safe=0.000 unsafe_gate=0.000 gt_wrong_dir=0.000 recover=0.993
+development BIASED             AEGIS_V3.1    success=0.980 fail_safe=0.010 unsafe_gate=0.000 gt_wrong_dir=0.001 recover=0.002
+development HEAVY_TAIL         AEGIS_V3.0    success=1.000 fail_safe=0.000 unsafe_gate=0.001 gt_wrong_dir=0.000 recover=0.008
+development HEAVY_TAIL         AEGIS_V3.1    success=1.000 fail_safe=0.000 unsafe_gate=0.000 gt_wrong_dir=0.000 recover=0.001
+development DROPOUT            AEGIS_V3.0    success=1.000 fail_safe=0.000 unsafe_gate=0.000 gt_wrong_dir=0.000 recover=0.018
+development DROPOUT            AEGIS_V3.1    success=0.770 fail_safe=0.230 unsafe_gate=0.000 gt_wrong_dir=0.000 recover=0.024
+development DRIFT              AEGIS_V3.0    success=0.070 fail_safe=0.000 unsafe_gate=0.005 gt_wrong_dir=0.000 recover=0.885
+development DRIFT              AEGIS_V3.1    success=0.910 fail_safe=0.090 unsafe_gate=0.000 gt_wrong_dir=0.000 recover=0.008
+development CORRELATED_BIAS    AEGIS_V3.0    success=0.040 fail_safe=0.000 unsafe_gate=0.000 gt_wrong_dir=0.976 recover=0.984
+development CORRELATED_BIAS    AEGIS_V3.1    success=0.040 fail_safe=0.960 unsafe_gate=0.000 gt_wrong_dir=0.667 recover=0.731
+
+================================================
+NEXVIA AEGIS V3.0 vs V3.1 HOLDOUT
+episodes=100 base_seed=400000
+================================================
+holdout     NORMAL             AEGIS_V3.0    success=1.000 fail_safe=0.000 unsafe_gate=0.000 gt_wrong_dir=0.000 recover=0.000
+holdout     NORMAL             AEGIS_V3.1    success=1.000 fail_safe=0.000 unsafe_gate=0.000 gt_wrong_dir=0.000 recover=0.000
+holdout     BIASED             AEGIS_V3.0    success=0.000 fail_safe=0.000 unsafe_gate=0.000 gt_wrong_dir=0.000 recover=0.993
+holdout     BIASED             AEGIS_V3.1    success=0.980 fail_safe=0.010 unsafe_gate=0.000 gt_wrong_dir=0.001 recover=0.001
+holdout     HEAVY_TAIL         AEGIS_V3.0    success=1.000 fail_safe=0.000 unsafe_gate=0.001 gt_wrong_dir=0.000 recover=0.008
+holdout     HEAVY_TAIL         AEGIS_V3.1    success=1.000 fail_safe=0.000 unsafe_gate=0.000 gt_wrong_dir=0.000 recover=0.000
+holdout     DROPOUT            AEGIS_V3.0    success=1.000 fail_safe=0.000 unsafe_gate=0.000 gt_wrong_dir=0.000 recover=0.016
+holdout     DROPOUT            AEGIS_V3.1    success=0.750 fail_safe=0.250 unsafe_gate=0.000 gt_wrong_dir=0.000 recover=0.023
+holdout     DRIFT              AEGIS_V3.0    success=0.020 fail_safe=0.000 unsafe_gate=0.001 gt_wrong_dir=0.000 recover=0.889
+holdout     DRIFT              AEGIS_V3.1    success=0.930 fail_safe=0.070 unsafe_gate=0.000 gt_wrong_dir=0.001 recover=0.007
+holdout     CORRELATED_BIAS    AEGIS_V3.0    success=0.000 fail_safe=0.000 unsafe_gate=0.000 gt_wrong_dir=1.000 recover=0.989
+holdout     CORRELATED_BIAS    AEGIS_V3.1    success=0.000 fail_safe=1.000 unsafe_gate=0.000 gt_wrong_dir=1.000 recover=0.714
+
+================================================
+V3.1 TARGETED BENCHMARK COMPLETE
+================================================
+development NORMAL             AEGIS_V3.0    success=1.000 fail_safe=0.000 gt_wrong_dir=0.000
+development NORMAL             AEGIS_V3.1    success=1.000 fail_safe=0.000 gt_wrong_dir=0.000
+development BIASED             AEGIS_V3.0    success=0.000 fail_safe=0.000 gt_wrong_dir=0.000
+development BIASED             AEGIS_V3.1    success=0.980 fail_safe=0.010 gt_wrong_dir=0.001
+development HEAVY_TAIL         AEGIS_V3.0    success=1.000 fail_safe=0.000 gt_wrong_dir=0.000
+development HEAVY_TAIL         AEGIS_V3.1    success=1.000 fail_safe=0.000 gt_wrong_dir=0.000
+development DROPOUT            AEGIS_V3.0    success=1.000 fail_safe=0.000 gt_wrong_dir=0.000
+development DROPOUT            AEGIS_V3.1    success=0.770 fail_safe=0.230 gt_wrong_dir=0.000
+development DRIFT              AEGIS_V3.0    success=0.070 fail_safe=0.000 gt_wrong_dir=0.000
+development DRIFT              AEGIS_V3.1    success=0.910 fail_safe=0.090 gt_wrong_dir=0.000
+development CORRELATED_BIAS    AEGIS_V3.0    success=0.040 fail_safe=0.000 gt_wrong_dir=0.976
+development CORRELATED_BIAS    AEGIS_V3.1    success=0.040 fail_safe=0.960 gt_wrong_dir=0.667
+holdout     NORMAL             AEGIS_V3.0    success=1.000 fail_safe=0.000 gt_wrong_dir=0.000
+holdout     NORMAL             AEGIS_V3.1    success=1.000 fail_safe=0.000 gt_wrong_dir=0.000
+holdout     BIASED             AEGIS_V3.0    success=0.000 fail_safe=0.000 gt_wrong_dir=0.000
+holdout     BIASED             AEGIS_V3.1    success=0.980 fail_safe=0.010 gt_wrong_dir=0.001
+holdout     HEAVY_TAIL         AEGIS_V3.0    success=1.000 fail_safe=0.000 gt_wrong_dir=0.000
+holdout     HEAVY_TAIL         AEGIS_V3.1    success=1.000 fail_safe=0.000 gt_wrong_dir=0.000
+holdout     DROPOUT            AEGIS_V3.0    success=1.000 fail_safe=0.000 gt_wrong_dir=0.000
+holdout     DROPOUT            AEGIS_V3.1    success=0.750 fail_safe=0.250 gt_wrong_dir=0.000
+holdout     DRIFT              AEGIS_V3.0    success=0.020 fail_safe=0.000 gt_wrong_dir=0.000
+holdout     DRIFT              AEGIS_V3.1    success=0.930 fail_safe=0.070 gt_wrong_dir=0.001
+holdout     CORRELATED_BIAS    AEGIS_V3.0    success=0.000 fail_safe=0.000 gt_wrong_dir=1.000
+holdout     CORRELATED_BIAS    AEGIS_V3.1    success=0.000 fail_safe=1.000 gt_wrong_dir=1.000
+
+results/v31_targeted_episodes.csv
+results/v31_targeted_summary.csv
