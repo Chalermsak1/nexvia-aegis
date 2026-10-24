@@ -1,0 +1,344 @@
+=== NEXVIA AEGIS v1.0 HOLDOUT BENCHMARK ===
+Uncertainty + Active Sensing + Cross-Sensor Arbitration + Abstention
+
+==================================================================================
+SCENARIO: NORMAL | EPISODES: 1000
+==================================================================================
+
+Always Act
+------------------------------------------------------------------------
+Success Rate          :   77.50%
+False Stop Rate       :   22.50%
+Abstain Rate          :    0.00%
+Anomaly Rate          :   13.40%
+Recovery Rate         :   85.07%
+Cross-Mismatch Rate   :    0.00%
+Average Steps         :   13.57
+Average Inspections   :    0.00
+Average Verifications :    0.00
+Average Reward        :  0.4243
+Stop Decisions        : 1000
+False Stops           : 225
+
+Inspect Once
+------------------------------------------------------------------------
+Success Rate          :   85.80%
+False Stop Rate       :   14.20%
+Abstain Rate          :    0.00%
+Anomaly Rate          :   14.60%
+Recovery Rate         :   89.73%
+Cross-Mismatch Rate   :    0.00%
+Average Steps         :   14.52
+Average Inspections   :    1.00
+Average Verifications :    0.00
+Average Reward        :  0.5608
+Stop Decisions        : 1000
+False Stops           : 142
+
+Nexvia Aegis v1.0
+------------------------------------------------------------------------
+Success Rate          :   74.80%
+False Stop Rate       :    1.71%
+Abstain Rate          :   23.90%
+Anomaly Rate          :   13.10%
+Recovery Rate         :    0.00%
+Cross-Mismatch Rate   :   15.90%
+Average Steps         :   14.29
+Average Inspections   :    0.01
+Average Verifications :    1.41
+Average Reward        :  0.5117
+Stop Decisions        : 761
+False Stops           : 13
+Brier Score           :  0.0166
+ECE                   :  0.0083
+
+Aegis vs Always Act
+------------------------------------------------------------------------
+Success Δ     : -2.70 pp
+False Stop Δ  : -20.79 pp
+Reward Δ      : +0.0874
+
+==================================================================================
+SCENARIO: BIASED | EPISODES: 1000
+==================================================================================
+
+Always Act
+------------------------------------------------------------------------
+Success Rate          :    0.60%
+False Stop Rate       :   99.40%
+Abstain Rate          :    0.00%
+Anomaly Rate          :   12.70%
+Recovery Rate         :    0.00%
+Cross-Mismatch Rate   :    0.00%
+Average Steps         :   14.22
+Average Inspections   :    0.00
+Average Verifications :    0.00
+Average Reward        : -1.1202
+Stop Decisions        : 1000
+False Stops           : 994
+
+Inspect Once
+------------------------------------------------------------------------
+Success Rate          :    0.00%
+False Stop Rate       :  100.00%
+Abstain Rate          :    0.00%
+Anomaly Rate          :   13.40%
+Recovery Rate         :    0.00%
+Cross-Mismatch Rate   :    0.00%
+Average Steps         :   15.19
+Average Inspections   :    1.00
+Average Verifications :    0.00
+Average Reward        : -1.1619
+Stop Decisions        : 1000
+False Stops           : 1000
+
+Nexvia Aegis v1.0
+------------------------------------------------------------------------
+Success Rate          :    0.80%
+False Stop Rate       :   84.91%
+Abstain Rate          :   94.70%
+Anomaly Rate          :   10.00%
+Recovery Rate         :    0.00%
+Cross-Mismatch Rate   :   91.80%
+Average Steps         :   12.80
+Average Inspections   :    0.00
+Average Verifications :    1.96
+Average Reward        : -0.4031
+Stop Decisions        : 53
+False Stops           : 45
+Brier Score           :  0.8116
+ECE                   :  0.8246
+
+Aegis vs Always Act
+------------------------------------------------------------------------
+Success Δ     : +0.20 pp
+False Stop Δ  : -14.49 pp
+Reward Δ      : +0.7171
+
+==================================================================================
+SCENARIO: HEAVY_TAIL | EPISODES: 1000
+==================================================================================
+
+Always Act
+------------------------------------------------------------------------
+Success Rate          :   78.40%
+False Stop Rate       :   21.60%
+Abstain Rate          :    0.00%
+Anomaly Rate          :   25.70%
+Recovery Rate         :   73.93%
+Cross-Mismatch Rate   :    0.00%
+Average Steps         :   13.33
+Average Inspections   :    0.00
+Average Verifications :    0.00
+Average Reward        :  0.4447
+Stop Decisions        : 1000
+False Stops           : 216
+
+Inspect Once
+------------------------------------------------------------------------
+Success Rate          :   87.10%
+False Stop Rate       :   12.90%
+Abstain Rate          :    0.00%
+Anomaly Rate          :   30.40%
+Recovery Rate         :   84.21%
+Cross-Mismatch Rate   :    0.00%
+Average Steps         :   14.31
+Average Inspections   :    1.00
+Average Verifications :    0.00
+Average Reward        :  0.5889
+Stop Decisions        : 1000
+False Stops           : 129
+
+Nexvia Aegis v1.0
+------------------------------------------------------------------------
+Success Rate          :   65.40%
+False Stop Rate       :    0.91%
+Abstain Rate          :   34.00%
+Anomaly Rate          :   26.80%
+Recovery Rate         :    0.00%
+Cross-Mismatch Rate   :   13.30%
+Average Steps         :   13.34
+Average Inspections   :    0.01
+Average Verifications :    1.43
+Average Reward        :  0.4133
+Stop Decisions        : 660
+False Stops           : 6
+Brier Score           :  0.0096
+ECE                   :  0.0148
+
+Aegis vs Always Act
+------------------------------------------------------------------------
+Success Δ     : -13.00 pp
+False Stop Δ  : -20.69 pp
+Reward Δ      : -0.0314
+
+==================================================================================
+SCENARIO: OUTLIER | EPISODES: 1000
+==================================================================================
+
+Always Act
+------------------------------------------------------------------------
+Success Rate          :   59.90%
+False Stop Rate       :   40.10%
+Abstain Rate          :    0.00%
+Anomaly Rate          :   72.40%
+Recovery Rate         :   55.52%
+Cross-Mismatch Rate   :    0.00%
+Average Steps         :   13.50
+Average Inspections   :    0.00
+Average Verifications :    0.00
+Average Reward        :  0.0730
+Stop Decisions        : 1000
+False Stops           : 401
+
+Inspect Once
+------------------------------------------------------------------------
+Success Rate          :   73.40%
+False Stop Rate       :   26.60%
+Abstain Rate          :    0.00%
+Anomaly Rate          :   77.40%
+Recovery Rate         :   70.93%
+Cross-Mismatch Rate   :    0.00%
+Average Steps         :   14.47
+Average Inspections   :    1.00
+Average Verifications :    0.00
+Average Reward        :  0.3133
+Stop Decisions        : 1000
+False Stops           : 266
+
+Nexvia Aegis v1.0
+------------------------------------------------------------------------
+Success Rate          :   22.70%
+False Stop Rate       :    2.58%
+Abstain Rate          :   76.70%
+Anomaly Rate          :   70.00%
+Recovery Rate         :    0.00%
+Cross-Mismatch Rate   :   42.50%
+Average Steps         :    9.85
+Average Inspections   :    0.01
+Average Verifications :    1.82
+Average Reward        : -0.0756
+Stop Decisions        : 233
+False Stops           : 6
+Brier Score           :  0.0245
+ECE                   :  0.0015
+
+Aegis vs Always Act
+------------------------------------------------------------------------
+Success Δ     : -37.20 pp
+False Stop Δ  : -37.52 pp
+Reward Δ      : -0.1487
+
+==================================================================================
+SCENARIO: DRIFT | EPISODES: 1000
+==================================================================================
+
+Always Act
+------------------------------------------------------------------------
+Success Rate          :   23.40%
+False Stop Rate       :   76.60%
+Abstain Rate          :    0.00%
+Anomaly Rate          :   17.70%
+Recovery Rate         :   20.34%
+Cross-Mismatch Rate   :    0.00%
+Average Steps         :   13.99
+Average Inspections   :    0.00
+Average Verifications :    0.00
+Average Reward        : -0.6619
+Stop Decisions        : 1000
+False Stops           : 766
+
+Inspect Once
+------------------------------------------------------------------------
+Success Rate          :   42.70%
+False Stop Rate       :   57.30%
+Abstain Rate          :    0.00%
+Anomaly Rate          :   25.00%
+Recovery Rate         :   34.40%
+Cross-Mismatch Rate   :    0.00%
+Average Steps         :   14.82
+Average Inspections   :    1.00
+Average Verifications :    0.00
+Average Reward        : -0.3042
+Stop Decisions        : 1000
+False Stops           : 573
+
+Nexvia Aegis v1.0
+------------------------------------------------------------------------
+Success Rate          :   14.10%
+False Stop Rate       :   46.39%
+Abstain Rate          :   73.70%
+Anomaly Rate          :   15.60%
+Recovery Rate         :    0.00%
+Cross-Mismatch Rate   :   58.00%
+Average Steps         :   13.20
+Average Inspections   :    0.01
+Average Verifications :    1.77
+Average Reward        : -0.3037
+Stop Decisions        : 263
+False Stops           : 122
+Brier Score           :  0.4392
+ECE                   :  0.4333
+
+Aegis vs Always Act
+------------------------------------------------------------------------
+Success Δ     : -9.30 pp
+False Stop Δ  : -30.21 pp
+Reward Δ      : +0.3582
+
+==================================================================================
+SCENARIO: CORRELATED_BIAS | EPISODES: 1000
+==================================================================================
+
+Always Act
+------------------------------------------------------------------------
+Success Rate          :    0.40%
+False Stop Rate       :   99.60%
+Abstain Rate          :    0.00%
+Anomaly Rate          :   12.90%
+Recovery Rate         :    0.78%
+Cross-Mismatch Rate   :    0.00%
+Average Steps         :   13.89
+Average Inspections   :    0.00
+Average Verifications :    0.00
+Average Reward        : -1.1209
+Stop Decisions        : 1000
+False Stops           : 996
+
+Inspect Once
+------------------------------------------------------------------------
+Success Rate          :    0.00%
+False Stop Rate       :  100.00%
+Abstain Rate          :    0.00%
+Anomaly Rate          :   14.80%
+Recovery Rate         :    0.00%
+Cross-Mismatch Rate   :    0.00%
+Average Steps         :   14.85
+Average Inspections   :    1.00
+Average Verifications :    0.00
+Average Reward        : -1.1585
+Stop Decisions        : 1000
+False Stops           : 1000
+
+Nexvia Aegis v1.0
+------------------------------------------------------------------------
+Success Rate          :    0.00%
+False Stop Rate       :  100.00%
+Abstain Rate          :   25.30%
+Anomaly Rate          :   13.00%
+Recovery Rate         :    0.00%
+Cross-Mismatch Rate   :   16.50%
+Average Steps         :   14.66
+Average Inspections   :    0.01
+Average Verifications :    1.42
+Average Reward        : -0.9769
+Stop Decisions        : 747
+False Stops           : 747
+Brier Score           :  0.9550
+ECE                   :  0.9769
+
+Aegis vs Always Act
+------------------------------------------------------------------------
+Success Δ     : -0.40 pp
+False Stop Δ  : +0.40 pp
+Reward Δ      : +0.1440

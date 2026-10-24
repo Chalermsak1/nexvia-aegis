@@ -1,0 +1,31 @@
+[project]
+name = "nexvia-aegis"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Chalermsak Sinsrok", email = "clalermsakssmik@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "gymnasium[mujoco]>=1.4.0",
+    "matplotlib>=3.11.2",
+    "numpy>=2.5.3",
+    "scipy>=1.18.1",
+]
+
+[project.scripts]
+nexvia-aegis = "nexvia_aegis:main"
+
+[build-system]
+requires = ["uv_build>=0.12.19,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]
+
+[tool.pytest.ini_options]
+pythonpath = [".", "src"]
+testpaths = ["tests"]
