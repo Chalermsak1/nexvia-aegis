@@ -123,6 +123,7 @@ class AegisV9Controller:
         self._consecutive_blind_steps: int = 0
         self._consecutive_invalid_range_at_arrival: int = 0
         self._consecutive_arrival_mismatch: int = 0
+        self._nominal_approach_steps: int = 0
 
         self._prev_a_vec: np.ndarray | None = None
         self._prev_a_step: int = -10
@@ -158,6 +159,7 @@ class AegisV9Controller:
         self._consecutive_blind_steps = 0
         self._consecutive_invalid_range_at_arrival = 0
         self._consecutive_arrival_mismatch = 0
+        self._nominal_approach_steps = 0
 
         self._prev_a_vec = None
         self._prev_a_step = -10
@@ -705,12 +707,102 @@ class AegisV9Controller:
                     cusum_res.max_cusum >= 0.40 * self.params.h_cusum
                     or ville_res.wealth >= min(6.0, 0.25 / self.params.alpha_mon)
                 )
-                if r_dist > self.params.tau_stop or elevated_pre_arrival_suspicion:
+                range_disagreement = abs(nav_dist - r_dist) > self.params.tau_diff
+                if r_dist > self.params.tau_stop or elevated_pre_arrival_suspicion or range_disagreement:
                     # Uncalibrated range discrepancy or accumulated sequential suspicion at
                     # supposed arrival -> enter ACTIVE_PROBING before committing STOP!
                     self.mode = "ACTIVE_PROBING"
                     self.probing_step_count = 0
                     self.calibrator.reset()
+                    zero_act = np.zeros(2, dtype=np.float64)
+                    self._prev_action = zero_act
+                    self._record_telemetry(
+                        step=step,
+                        decision="PROBE",
+                        active_sensors=active_names,
+                        raw_dis=e_ab if v_ab else None,
+                        cal_dis=None,
+                        residuals=residuals_dict,
+                        ville_res=ville_res,
+                        cusum_res=cusum_res,
+                    )
+                    return zero_act, "PROBE", nav_vec, False
+
+                # V9-M2R1: Temporal approach verification vs. Independent initial corroboration
+                has_temporal_approach = (self._nominal_approach_steps >= 3)
+                if not has_temporal_approach:
+                    # Temporal evidence is unavailable or insufficient (e.g. step == 0).
+                    # A single spatial snapshot cannot distinguish common-mode vector bias
+                    # coupled with range bias from true goal arrival.
+                    # Independent corroboration via anchor is required.
+                    corroborated_initial_goal = False
+                    if anc_valid and anchor_reading is not None:
+                        arr_anc = np.asarray(anchor_reading.estimate, dtype=np.float64)
+                        anc_dist = float(np.linalg.norm(arr_anc))
+                        gate_st = (
+                            self._last_gate_result.status
+                            if self._last_gate_result is not None
+                            else None
+                        )
+                        gate_valid = gate_st in (
+                            AnchorRangeStatus.CONSISTENT,
+                            AnchorRangeStatus.CORROBORATED_ANCHOR_RANGE_BIASED,
+                        )
+                        anc_arr_ok = (anc_dist <= self.params.arrival_tolerance_m)
+                        anc_nav_agree = (
+                            float(np.linalg.norm(arr_anc - nav_vec))
+                            <= self.params.tau_diff * sig_diff
+                        )
+                        anc_range_agree = (
+                            abs(anc_dist - r_dist)
+                            <= self.params.tau_ar * math.sqrt(sig_anc**2 + sig_r**2)
+                        )
+                        if gate_valid and anc_arr_ok and anc_nav_agree and anc_range_agree:
+                            corroborated_initial_goal = True
+
+                    if corroborated_initial_goal:
+                        self.terminal_reason = "CORROBORATED_INITIAL_GOAL_ARRIVAL"
+                        zero_act = np.zeros(2, dtype=np.float64)
+                        self._prev_action = zero_act
+                        self._record_telemetry(
+                            step=step,
+                            decision="STOP",
+                            active_sensors=active_names,
+                            raw_dis=e_ab if v_ab else None,
+                            cal_dis=None,
+                            residuals=residuals_dict,
+                            ville_res=ville_res,
+                            cusum_res=cusum_res,
+                        )
+                        return zero_act, "STOP", nav_vec, False
+
+                    # If anchor has not yet been queried and queries are within budget, request anchor
+                    can_query_anchor = (
+                        self.use_anchor
+                        and self.total_anchor_queries < self.params.max_anchor_queries
+                        and not anc_valid
+                    )
+                    if can_query_anchor:
+                        self.total_anchor_queries += 1
+                        zero_act = np.zeros(2, dtype=np.float64)
+                        self._prev_action = zero_act
+                        self._record_telemetry(
+                            step=step,
+                            decision="VERIFY",
+                            active_sensors=active_names,
+                            raw_dis=e_ab if v_ab else None,
+                            cal_dis=None,
+                            residuals=residuals_dict,
+                            ville_res=ville_res,
+                            cusum_res=cusum_res,
+                        )
+                        return zero_act, "VERIFY", nav_vec, True
+
+                    # Uncorroborated initial arrival cannot be verified: FAIL CLOSED to ACTIVE_PROBING
+                    self.mode = "ACTIVE_PROBING"
+                    self.probing_step_count = 0
+                    self.calibrator.reset()
+                    self.terminal_reason = "UNCORROBORATED_INITIAL_ARRIVAL_PROBE"
                     zero_act = np.zeros(2, dtype=np.float64)
                     self._prev_action = zero_act
                     self._record_telemetry(
@@ -742,6 +834,7 @@ class AegisV9Controller:
                 return zero_act, "STOP", nav_vec, False
 
             # Smooth pursuit control
+            self._nominal_approach_steps += 1
             action, _ = self.velocity_controller.plan_approach_action(nav_vec, self._est_velocity)
             self._prev_action = action
             self._record_telemetry(

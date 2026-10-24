@@ -1,0 +1,192 @@
+"""
+NEXVIA AEGIS V9-M2R1 — Randomization Architecture & Decoupled Seed Sequences.
+
+Eliminates the cross-stream RNG coupling identified in V9-M2:
+1. Replaces identical `rng_env` / `rng_ep` initializations with independent child streams
+   spawned via `numpy.random.SeedSequence`.
+2. Decouples physical environment / target generation (`rng_env`) from measurement
+   noise / dropout / outlier processes (`rng_sensors`).
+3. Provides reproducible, hierarchical manifest generation with explicit entropy
+   and spawn keys for complete cryptographic provenance.
+4. Formulates the simulation probability law P_12 explicitly:
+   - Scenario S_k ~ Uniform({1..12})
+   - Initial target p_target ~ Uniform([-3, 3]^2) via rng_env
+   - Robot start p_0 = (-2, -2, 0.25), v_0 = (0, 0)
+   - Sensor noise eps ~ N(0, sigma^2) via rng_sensors
+   - Dropout / outlier indicators ~ Bernoulli via rng_sensors
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+import hashlib
+import json
+from typing import Any
+import numpy as np
+
+from aegis.v9.scenarios import build_v9_s12_scenarios
+
+
+@dataclass(frozen=True)
+class DecoupledEpisodeRNG:
+    """Holds decoupled, mathematically independent random generators for one episode."""
+    manifest_id: int
+    scenario_index: int
+    scenario_name: str
+    rng_env: np.random.Generator
+    rng_sensors: np.random.Generator
+    spawn_key: tuple[int, ...]
+    env_spawn_key: tuple[int, ...]
+    sensor_spawn_key: tuple[int, ...]
+
+
+def create_decoupled_rng_pair(
+    seed_or_ss: int | np.random.SeedSequence,
+) -> tuple[np.random.Generator, np.random.Generator]:
+    """
+    Creates two strictly independent NumPy PCG64 generators from a seed or SeedSequence.
+    Guarantees that rng_env and rng_sensors are initialized with different internal keys.
+    """
+    if isinstance(seed_or_ss, int):
+        ss = np.random.SeedSequence(seed_or_ss)
+    else:
+        ss = seed_or_ss
+    env_ss, sens_ss = ss.spawn(2)
+    rng_env = np.random.default_rng(env_ss)
+    rng_sensors = np.random.default_rng(sens_ss)
+    return rng_env, rng_sensors
+
+
+class V9HierarchicalManifestGenerator:
+    """
+    Hierarchical SeedSequence manifest generator for NEXVIA AEGIS V9-M2R1.
+    """
+
+    def __init__(self, master_entropy: int = 20261025):
+        self.master_entropy = master_entropy
+        self.master_ss = np.random.SeedSequence(master_entropy)
+
+    def generate_manifest(
+        self,
+        *,
+        partition_name: str,
+        manifest_id_start: int,
+        count: int,
+    ) -> dict[str, Any]:
+        """
+        Generates an auditable manifest payload pairing manifest IDs with uniform scenario draws
+        and decoupled SeedSequence child streams.
+        """
+        scenarios = build_v9_s12_scenarios()
+        n_scen = len(scenarios)
+        if n_scen != 12:
+            raise RuntimeError(f"Expected 12 scenarios, found {n_scen}")
+
+        # Spawn master branches: branch 0 for scenario selection, branch 1 for episode streams
+        branch_scen_ss, branch_eps_ss = self.master_ss.spawn(2)
+
+        scen_rng = np.random.default_rng(branch_scen_ss)
+        scen_indices = scen_rng.integers(0, n_scen, size=count)
+
+        ep_sequences = branch_eps_ss.spawn(count)
+
+        episodes: list[dict[str, Any]] = []
+        counts: dict[str, int] = {s.name: 0 for s in scenarios}
+        pairs_for_hash: list[tuple[str, int, int]] = []
+
+        for idx in range(count):
+            m_id = manifest_id_start + idx
+            sc_idx = int(scen_indices[idx])
+            scen_name = scenarios[sc_idx].name
+            counts[scen_name] += 1
+
+            ep_ss = ep_sequences[idx]
+            env_ss, sens_ss = ep_ss.spawn(2)
+
+            ep_item = {
+                "episode_index": idx,
+                "manifest_id": m_id,
+                "scenario_index": sc_idx,
+                "scenario": scen_name,
+                "suite": "S_12",
+                "entropy": int(self.master_entropy),
+                "spawn_key": list(ep_ss.spawn_key),
+                "env_spawn_key": list(env_ss.spawn_key),
+                "sensor_spawn_key": list(sens_ss.spawn_key),
+            }
+            episodes.append(ep_item)
+            pairs_for_hash.append((scen_name, m_id, sc_idx))
+
+        raw_ep_bytes = json.dumps(pairs_for_hash, sort_keys=True).encode("utf-8")
+        episodes_sha256 = hashlib.sha256(raw_ep_bytes).hexdigest()
+
+        payload: dict[str, Any] = {
+            "schema_version": "nexvia-aegis-v9-manifest/2.0-decoupled-rng",
+            "protocol_version": "v9.0-preregistered-2026-10-amendment-r1",
+            "partition": partition_name,
+            "master_entropy": int(self.master_entropy),
+            "manifest_id_start": manifest_id_start,
+            "manifest_id_stop_exclusive": manifest_id_start + count,
+            "planned_episodes": count,
+            "num_scenarios": n_scen,
+            "target_mixture_weights_rational": {s.name: "1/12" for s in scenarios},
+            "realized_scenario_counts": counts,
+            "episodes_sha256": episodes_sha256,
+            "episodes": episodes,
+        }
+
+        canon_bytes = json.dumps(
+            {k: v for k, v in payload.items() if k != "integrity_sha256"},
+            sort_keys=True,
+            indent=2,
+        ).encode("utf-8")
+        payload["integrity_sha256"] = hashlib.sha256(canon_bytes).hexdigest()
+        return payload
+
+    def instantiate_episode_rngs(
+        self,
+        ep_index: int,
+        count: int,
+        manifest_id_start: int,
+        scen_index: int,
+        scen_name: str,
+    ) -> DecoupledEpisodeRNG:
+        """Instantiates the exact decoupled generators for episode ep_index."""
+        master = np.random.SeedSequence(self.master_entropy)
+        _branch_scen_ss, branch_eps_ss = master.spawn(2)
+        ep_sequences = branch_eps_ss.spawn(count)
+        ep_ss = ep_sequences[ep_index]
+        env_ss, sens_ss = ep_ss.spawn(2)
+        return DecoupledEpisodeRNG(
+            manifest_id=manifest_id_start + ep_index,
+            scenario_index=scen_index,
+            scenario_name=scen_name,
+            rng_env=np.random.default_rng(env_ss),
+            rng_sensors=np.random.default_rng(sens_ss),
+            spawn_key=ep_ss.spawn_key,
+            env_spawn_key=env_ss.spawn_key,
+            sensor_spawn_key=sens_ss.spawn_key,
+        )
+
+
+def instantiate_episode_rngs_from_manifest_item(item: dict[str, Any]) -> DecoupledEpisodeRNG:
+    """
+    Direct O(1) instantiation of DecoupledEpisodeRNG from an auditable manifest item dict.
+    Uses master entropy and child spawn_keys recorded in the manifest.
+    """
+    entropy = int(item["entropy"])
+    env_key = tuple(item["env_spawn_key"])
+    sens_key = tuple(item["sensor_spawn_key"])
+    ep_key = tuple(item.get("spawn_key", ()))
+    env_ss = np.random.SeedSequence(entropy, spawn_key=env_key)
+    sens_ss = np.random.SeedSequence(entropy, spawn_key=sens_key)
+    return DecoupledEpisodeRNG(
+        manifest_id=int(item["manifest_id"]),
+        scenario_index=int(item["scenario_index"]),
+        scenario_name=str(item["scenario"]),
+        rng_env=np.random.default_rng(env_ss),
+        rng_sensors=np.random.default_rng(sens_ss),
+        spawn_key=ep_key,
+        env_spawn_key=env_key,
+        sensor_spawn_key=sens_key,
+    )

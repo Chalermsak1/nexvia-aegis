@@ -39,6 +39,7 @@ from aegis.v3.sensors.cross_modal import RangeSensor
 from aegis.v3.sensors.sensors import FaultInjectableSensor, SensorConfig
 from aegis.v7.anchor_sensor import AnchorSensor, AnchorSensorConfig
 from aegis.v9.controller import AegisV9Controller
+from aegis.v9.randomization import create_decoupled_rng_pair
 from aegis.v9.risk_statistics import (
     PREREGISTERED_CANDIDATE_FAMILY,
     PolicyEvaluationSummary,
@@ -245,12 +246,18 @@ def run_single_episode(
     ep_seed: int,
     policy_id: str,
     controller: Any,
+    *,
+    rng_env: np.random.Generator | None = None,
+    rng_sensors: np.random.Generator | None = None,
 ) -> dict[str, Any]:
     """
     Executes one closed-loop episode with zero ground-truth leakage and fail-unsafe
     exception accounting (`crashed = 1 -> false_success = 1`).
+    Guarantees mathematical decoupling between physical environment and sensor noise.
     """
-    rng_env = np.random.default_rng(ep_seed)
+    if rng_env is None or rng_sensors is None:
+        rng_env, rng_sensors = create_decoupled_rng_pair(ep_seed)
+
     world = AegisPhysicalWorld()
     world.reset(rng_env)
 
@@ -272,7 +279,6 @@ def run_single_episode(
     if hasattr(controller, "reset"):
         controller.reset()
 
-    rng_ep = np.random.default_rng(ep_seed)
     decisions: dict[str, int] = {}
     query_anchor = False
     min_dist_reached = float("inf")
@@ -290,11 +296,11 @@ def run_single_episode(
             st = world.state()
             true_delta = st["target_pos"] - st["robot_pos"]
 
-            read_a = sensor_a.measure(true_delta, rng_ep, step=st["step"])
-            read_b = sensor_b.measure(true_delta, rng_ep, step=st["step"])
+            read_a = sensor_a.measure(true_delta, rng_sensors, step=st["step"])
+            read_b = sensor_b.measure(true_delta, rng_sensors, step=st["step"])
             true_range_val = float(st["distance"]) + scen.range_sensor_bias
-            read_r = range_sensor.measure(true_range_val, rng_ep)
-            read_anchor = anchor_sensor.measure(true_delta, rng_ep, query=query_anchor)
+            read_r = range_sensor.measure(true_range_val, rng_sensors)
+            read_anchor = anchor_sensor.measure(true_delta, rng_sensors, query=query_anchor)
 
             t0 = time.perf_counter_ns()
             action, dec_type, _cal_vec, query_anchor = controller.update(
@@ -311,7 +317,7 @@ def run_single_episode(
             if dec_type in ("STOP", "ABSTAIN"):
                 break
 
-            w_st = world.step(action, rng_ep)
+            w_st = world.step(action, rng_env)
             curr_pos = w_st["robot_pos"].copy()
             dist_traveled += float(np.linalg.norm(curr_pos - prev_pos))
             prev_pos = curr_pos

@@ -15,6 +15,12 @@ from aegis.v9.cusum_monitor import (
     CusumStepResult,
     MultiChannelCusumMonitor,
 )
+from aegis.v9.randomization import (
+    DecoupledEpisodeRNG,
+    V9HierarchicalManifestGenerator,
+    create_decoupled_rng_pair,
+    instantiate_episode_rngs_from_manifest_item,
+)
 from aegis.v9.risk_statistics import (
     PREREGISTERED_CANDIDATE_FAMILY,
     CandidateTestRecord,
@@ -32,6 +38,10 @@ from aegis.v9.risk_statistics import (
     selective_risk_pvalue,
     verify_preregistered_dev_ordering,
     write_frozen_candidates_json,
+)
+from aegis.v9.scenarios import (
+    V9ScenarioSpec,
+    build_v9_s12_scenarios,
 )
 from aegis.v9.sensor_calibration import (
     CalibratedFusionResult,
@@ -54,6 +64,7 @@ __all__ = [
     "CandidateTestRecord",
     "CusumChannelSpec",
     "CusumStepResult",
+    "DecoupledEpisodeRNG",
     "DisjointPerSensorCalibrator",
     "FixedSequenceLTTResult",
     "MultiChannelCusumMonitor",
@@ -64,14 +75,19 @@ __all__ = [
     "SensorCalStatus",
     "SymmetricAnchorRangeGate",
     "V9CandidateParams",
+    "V9HierarchicalManifestGenerator",
+    "V9ScenarioSpec",
     "VilleChannelSpec",
     "VilleStepResult",
+    "build_v9_s12_scenarios",
     "clopper_pearson_one_sided_ucb",
     "clopper_pearson_two_sided_ci",
     "compute_canonical_payload_sha256",
     "compute_policy_summary",
+    "create_decoupled_rng_pair",
     "fixed_sequence_ltt_select",
     "holm_stepdown_ltt",
+    "instantiate_episode_rngs_from_manifest_item",
     "load_frozen_candidates_json",
     "minimum_zero_error_acceptances",
     "selective_risk_pvalue",
