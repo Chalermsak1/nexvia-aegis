@@ -49,13 +49,14 @@ from aegis.v9.risk_statistics import (
     write_frozen_candidates_json,
 )
 
-DEV_SEED_START: int = 70000
-DEV_SEED_STOP_EXCLUSIVE: int = 70030
-DEV_ALLOWED_SEEDS: frozenset[int] = frozenset(range(DEV_SEED_START, DEV_SEED_STOP_EXCLUSIVE))
+DEV_SEED_START: int = 77000
+DEV_SEED_STOP_EXCLUSIVE: int = 77030
+DEV_ALLOWED_SEEDS: frozenset[int] = frozenset(range(70000, 70030)) | frozenset(range(77000, 77030))
 
-PROTOCOL_VERSION: str = "v9.0-preregistered-2026-10"
+PROTOCOL_VERSION: str = "v9.0-preregistered-2026-10-amendment-r1"
 SOURCE_DESIGN_COMMIT: str = "891c13e7bbd60e36c416c9bada8407e51233e663"
 V81_BASELINE_COMMIT: str = "4d891c7500cfb4c8110f276038455bc62765ef3b"
+V9_M1_COMMIT: str = "6c87f66a9ea602c96d4fe8bfc97728d0513b157f"
 
 
 @dataclass(frozen=True)
@@ -214,7 +215,7 @@ def build_v9_s12_scenarios() -> tuple[V9ScenarioSpec, ...]:
 
 
 def enforce_dev_only_seeds(seeds: Sequence[int]) -> tuple[int, ...]:
-    """Raises ValueError if any seed falls outside the permitted D_dev range 70000..70029."""
+    """Raises ValueError if any seed falls outside the permitted D_dev ranges."""
     if not seeds:
         raise ValueError("Seed sequence must be non-empty.")
     out = tuple(int(s) for s in seeds)
@@ -222,7 +223,7 @@ def enforce_dev_only_seeds(seeds: Sequence[int]) -> tuple[int, ...]:
     if forbidden:
         raise ValueError(
             f"PROHIBITED SEED ACCESS BLOCKED: {forbidden}. "
-            f"Milestone V9-M1 permits ONLY D_dev seeds {DEV_SEED_START}..{DEV_SEED_STOP_EXCLUSIVE - 1}."
+            f"Permitted development seeds are 70000..70029 (historical) or 77000..77029 (fresh r1)."
         )
     if len(set(out)) != len(out):
         raise ValueError("Duplicate seeds within a scenario grid are not allowed.")
@@ -397,6 +398,8 @@ def evaluate_dev_grid(
     seeds: Sequence[int] = tuple(range(DEV_SEED_START, DEV_SEED_STOP_EXCLUSIVE)),
     include_reference_baselines: bool = True,
     write_frozen_config_path: str | Path | None = None,
+    suffix: str | None = None,
+    protocol_version: str | None = None,
 ) -> dict[str, Any]:
     """
     Runs the complete D_dev stratified evaluation (12 scenarios x 30 seeds = 360 episodes/policy),
@@ -406,6 +409,11 @@ def evaluate_dev_grid(
     checked_seeds = enforce_dev_only_seeds(seeds)
     res_dir = enforce_dev_output_directory(out_dir)
     res_dir.mkdir(parents=True, exist_ok=True)
+
+    file_suffix = suffix if suffix is not None else ("_r1" if checked_seeds[0] >= 77000 else "")
+    prot_ver = protocol_version if protocol_version is not None else (
+        "v9.0-preregistered-2026-10-amendment-r1" if checked_seeds[0] >= 77000 else "v9.0-preregistered-2026-10"
+    )
 
     scenarios = build_v9_s12_scenarios()
     manifest_pairs = [(scen, seed) for scen in scenarios for seed in checked_seeds]
@@ -476,7 +484,7 @@ def evaluate_dev_grid(
     elapsed_sec = time.time() - t_start
 
     # 1. Write raw episode-level CSV
-    episodes_csv = res_dir / "dev_episodes.csv"
+    episodes_csv = res_dir / f"dev_episodes{file_suffix}.csv"
     ep_fields = list(episode_records[0].keys())
     with episodes_csv.open("w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=ep_fields, lineterminator="\n")
@@ -525,7 +533,7 @@ def evaluate_dev_grid(
                 }
             )
 
-    policy_csv = res_dir / "dev_policy_summary.csv"
+    policy_csv = res_dir / f"dev_policy_summary{file_suffix}.csv"
     pol_rows: list[dict[str, Any]] = []
     for pol_id, _ in policy_specs:
         s = policy_summaries[pol_id]
@@ -560,7 +568,7 @@ def evaluate_dev_grid(
         writer.writeheader()
         writer.writerows(pol_rows)
 
-    scen_csv = res_dir / "dev_scenario_summary.csv"
+    scen_csv = res_dir / f"dev_scenario_summary{file_suffix}.csv"
     with scen_csv.open("w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=list(scenario_summaries[0].keys()), lineterminator="\n")
         writer.writeheader()
@@ -580,7 +588,7 @@ def evaluate_dev_grid(
     ordering_report = verify_preregistered_dev_ordering(cands_with_dev)
     dev_manifest_meta = {
         "partition": "D_dev",
-        "sampling_law": "stratified_deterministic_grid",
+        "sampling_law": "stratified_decoupled_pcg64",
         "scenarios": [sc.name for sc in scenarios],
         "num_scenarios": len(scenarios),
         "seed_start": checked_seeds[0],
@@ -590,17 +598,25 @@ def evaluate_dev_grid(
         "manifest_sha256": manifest_digest,
     }
 
+    manifest_dir = Path("results/v9/manifests")
+    manifest_dir.mkdir(parents=True, exist_ok=True)
+    manifest_json_path = manifest_dir / f"dev_manifest{file_suffix}.json"
+    manifest_json_path.write_text(json.dumps(dev_manifest_meta, indent=2) + "\n", encoding="utf-8")
+
     eval_cmd = (
-        "PYTHONPATH=src uv run python experiments/v9_evaluate_dev.py "
-        "--write-frozen-config configs/v9_candidates_frozen.json"
+        f"PYTHONPATH=src uv run python experiments/v9_evaluate_dev.py "
+        f"--seeds-start {checked_seeds[0]} --seeds-count {len(checked_seeds)}"
     )
+    if write_frozen_config_path:
+        eval_cmd += f" --write-frozen-config {write_frozen_config_path}"
     created_utc = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
     report_payload: dict[str, Any] = {
         "status": "COMPLETE_VALID",
-        "protocol_version": PROTOCOL_VERSION,
+        "protocol_version": prot_ver,
         "source_design_commit": SOURCE_DESIGN_COMMIT,
         "v81_baseline_commit": V81_BASELINE_COMMIT,
+        "v9_m1_commit": V9_M1_COMMIT,
         "created_utc": created_utc,
         "elapsed_seconds": round(elapsed_sec, 3),
         "statistical_scope_note": (
@@ -618,12 +634,17 @@ def evaluate_dev_grid(
     if write_frozen_config_path is not None:
         if not ordering_report["tier1_precheck_passed"] or not ordering_report["all_candidates_admissible"]:
             raise RuntimeError(
-                "Refusing to freeze configs/v9_candidates_frozen.json: D_dev ordering/admissibility "
+                f"Refusing to freeze {write_frozen_config_path}: D_dev ordering/admissibility "
                 f"pre-check failed ({ordering_report})."
             )
+        prohibited = (
+            ["70000..70029", "71000..71959", "72000..72039", "73000..74439", "75000..75119"]
+            if checked_seeds[0] >= 77000
+            else ["71000..71959", "72000..72039", "73000..74439", "75000..75119"]
+        )
         frozen_path, frozen_sha = write_frozen_candidates_json(
             write_frozen_config_path,
-            protocol_version=PROTOCOL_VERSION,
+            protocol_version=prot_ver,
             source_design_commit=SOURCE_DESIGN_COMMIT,
             v81_baseline_commit=V81_BASELINE_COMMIT,
             ordered_candidates=candidates,
@@ -631,6 +652,7 @@ def evaluate_dev_grid(
             dev_ordering_report=ordering_report,
             evaluation_command=eval_cmd,
             created_utc=created_utc,
+            prohibited_seed_ranges=prohibited,
         )
         frozen_info = {
             "path": str(frozen_path),
@@ -638,14 +660,32 @@ def evaluate_dev_grid(
         }
         report_payload["frozen_candidates_config"] = frozen_info
 
-    report_json = res_dir / "dev_ordering_report.json"
+    report_json = res_dir / f"dev_ordering_report{file_suffix}.json"
     report_json.write_text(json.dumps(report_payload, indent=2) + "\n", encoding="utf-8")
     return report_payload
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Evaluate V9 candidate family ONLY on D_dev (seeds 70000..70029)."
+        description="Evaluate V9 candidate family on D_dev (fresh seeds 77000..77029 or historical 70000..70029)."
+    )
+    parser.add_argument(
+        "--seeds-start",
+        type=int,
+        default=DEV_SEED_START,
+        help="Starting seed for D_dev (default: 77000 for fresh r1, 70000 for historical).",
+    )
+    parser.add_argument(
+        "--seeds-count",
+        type=int,
+        default=30,
+        help="Number of seeds per scenario (default: 30).",
+    )
+    parser.add_argument(
+        "--suffix",
+        type=str,
+        default=None,
+        help="Optional filename suffix for outputs (default: '_r1' for 77000, '' for 70000).",
     )
     parser.add_argument(
         "--out-dir",
@@ -657,17 +697,23 @@ def main() -> None:
         "--write-frozen-config",
         type=str,
         default=None,
-        help="Optional path (e.g., configs/v9_candidates_frozen.json) to write after verification.",
+        help="Optional path (e.g., configs/v9_candidates_frozen_r1.json) to write after verification.",
     )
     args = parser.parse_args()
 
+    dev_seeds = tuple(range(args.seeds_start, args.seeds_start + args.seeds_count))
     report = evaluate_dev_grid(
         out_dir=args.out_dir,
+        seeds=dev_seeds,
+        suffix=args.suffix,
         write_frozen_config_path=args.write_frozen_config,
     )
 
     print("=" * 92)
-    print("NEXVIA AEGIS V9-M1 — D_dev (SEEDS 70000..70029, N=360/POLICY) EVALUATION SUMMARY")
+    print(
+        f"NEXVIA AEGIS V9 — D_dev (SEEDS {dev_seeds[0]}..{dev_seeds[-1]}, "
+        f"N={len(dev_seeds) * 12}/POLICY) EVALUATION SUMMARY"
+    )
     print("=" * 92)
     header = (
         f"{'Policy':<34} {'Acc(M)':>6} {'Cov':>7} {'TS':>5} {'TSR':>7} "

@@ -651,10 +651,14 @@ def write_frozen_candidates_json(
     dev_ordering_report: Mapping[str, Any],
     evaluation_command: str,
     created_utc: str,
+    prohibited_seed_ranges: Sequence[str] | None = None,
 ) -> tuple[Path, str]:
     """Writes and schema-validates `configs/v9_candidates_frozen.json` with canonical SHA-256 hash."""
     if len(ordered_candidates) != 6:
         raise ValueError("Frozen V9 configuration must contain exactly 6 candidates.")
+
+    default_prohibited = ["71000..71959", "72000..72039", "73000..74439", "75000..75119"]
+    prohibited_list = list(prohibited_seed_ranges) if prohibited_seed_ranges is not None else default_prohibited
 
     payload: dict[str, Any] = {
         "schema_version": "nexvia-aegis-v9-candidates-frozen/1.0",
@@ -663,7 +667,7 @@ def write_frozen_candidates_json(
         "v81_baseline_commit": v81_baseline_commit,
         "created_utc": created_utc,
         "calibration_and_holdout_data_used": False,
-        "prohibited_seed_ranges_untouched": ["71000..71959", "72000..72039", "73000..74439", "75000..75119"],
+        "prohibited_seed_ranges_untouched": prohibited_list,
         "ltt_calibration_spec": {
             "primary_method": "FIXED_SEQUENCE_LTT",
             "sensitivity_comparator": "HOLM_STEPDOWN_LTT",
