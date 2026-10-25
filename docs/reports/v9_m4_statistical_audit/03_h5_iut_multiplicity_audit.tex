@@ -1,0 +1,175 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[margin=2.0cm]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb,amsfonts,amsthm,mathtools}
+\usepackage{booktabs,tabularx,colortbl,array,multirow}
+\usepackage[table]{xcolor}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{microtype}
+\usepackage{hyperref}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    citecolor=blue!70!black,
+    urlcolor=blue!70!black
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\footnotesize \textbf{NEXVIA AEGIS V9-M4 Statistical Audit}}
+\lhead{\footnotesize Phase 3: Hypothesis $H_5$ IUT \& Multiplicity Audit}
+\rfoot{\footnotesize Page \thepage}
+\lfoot{\footnotesize Document ID: AEGIS-V9-M4-AUD-03}
+
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{NEXVIA AEGIS V9-M4 Independent Statistical Audit}}\\[6pt]
+    {\Large \textbf{Phase 3: Audit of Hypothesis $H_5$ (Intersection-Union Test and Multiplicity Handling)}}\\[10pt]
+    \textbf{Autonomous Verification Subsystem (Google DeepMind Antigravity)}\\
+    \textit{Git Branch: v9.0-runtime-assurance \quad $\cdot$ \quad Commit: 083ade9 \quad $\cdot$ \quad Date: October 25, 2026}\\[12pt]
+\end{center}
+
+\begin{abstract}
+\noindent This audit report conducts an exhaustive mathematical and implementation audit of Hypothesis $H_5$ (Worst-Case Scenario Safety) within the NEXVIA AEGIS V9-M4 confirmatory evaluation harness. We evaluate the inferential structure of $H_5$, examining whether it represents a single conjunctive claim or multiple individual claims, and assess the implementation of Berger's Intersection-Union Test (IUT) and the step-down Holm--Šidák multiplicity procedure. Our audit uncovers a critical, high-severity statistical discrepancy (\textbf{Finding M4-F02}): whereas the authoritative protocol specifies the Berger IUT over \textit{unconditional false-success incidence} $R_{\mathrm{inc}, s} = K_s / N_s$ ($N_s = 120$), the current implementation in \texttt{experiments/v9\_evaluate\_holdout.py} computes the binomial $p$-values over \textit{accepted selective decisions} ($M_s$) and assigns a punitive fallback of $p = 1.0$ whenever safe abstention yields $M_s = 0$. This implementation inadvertently penalizes safe abstention in catastrophic fault scenarios, causing the Berger IUT to fail even when the agent achieves zero false successes ($FS=0$). We document the exact mathematical consequences and outline the required protocol-aligned remediation.
+\end{abstract}
+
+\vspace{6pt}
+\noindent \textbf{Keywords:} Worst-Case Safety, Berger Intersection-Union Test, Holm--Šidák Procedure, Familywise Error Rate, Unconditional Incidence vs.\ Selective Risk, Safe Abstention Penalty.
+
+\section{Executive Summary \& Inferential Objective}
+Hypothesis $H_5$ addresses the worst-case safety envelope across the 12-scenario stratified grid $\mathcal{D}_{\mathrm{test}}^{\mathrm{scen}}$ ($12 \times 120 = 1,440$ episodes). In statistical testing, establishing safety across multiple distinct operational regimes can be formulated in two distinct ways:
+\begin{enumerate}
+    \item \textbf{A Global Conjunction (Single Composite Hypothesis):} Testing that \textit{all} 12 scenarios simultaneously satisfy the safety condition.
+    \item \textbf{Multiple Disjoint Inferences:} Testing individual scenario safety claims, requiring simultaneous familywise error rate (FWER) control.
+\end{enumerate}
+
+\noindent \textbf{Audit Finding 3.1 (Inferential Architecture):}  
+We verified that the preregistered protocol (\texttt{docs/v9\_experiment\_protocol.md} Section 3.1.1, line 37, and \texttt{docs/v9\_m4\_readiness\_review.md} Section 3, line 57) explicitly establishes a \textbf{dual-objective framework}:
+\begin{itemize}
+    \item The \textbf{primary inferential claim} is the global conjunction: establishing that worst-case false-success incidence across all 12 scenarios is bounded at $\le 0.05$.
+    \item The \textbf{secondary reporting framework} provides simultaneous 12-scenario confidence intervals with familywise error rate controlled at $\le 0.05$ via the step-down Holm--Šidák procedure.
+\end{itemize}
+
+\section{Mathematical Foundations of the Berger Intersection-Union Test}
+Let $s \in \{1, \dots, 12\}$ index the 12 scenarios. The global confirmatory safety claim is formulated as:
+\begin{equation}
+\mathcal{H}_{0,5}: \bigcup_{s=1}^{12} \{R_s > 0.05\} \quad\text{versus}\quad \mathcal{H}_{1,5}: \bigcap_{s=1}^{12} \{R_s \le 0.05\}
+\end{equation}
+
+\subsection{The Berger IUT Theorem (Berger, 1982)}
+Let $T_s$ be a level-$\alpha$ test of the individual scenario null hypothesis $\mathcal{H}_{0, s}: R_s > 0.05$ against $\mathcal{H}_{1, s}: R_s \le 0.05$, with corresponding $p$-value $p_s$. Consider the Intersection-Union Test that rejects $\mathcal{H}_{0,5}$ if and only if \textbf{every individual scenario null hypothesis is rejected at level $\alpha$}:
+\begin{equation}
+\text{Reject } \mathcal{H}_{0,5} \iff \max_{s \in \{1, \dots, 12\}} p_s \le \alpha
+\end{equation}
+\textbf{Theorem (Berger, 1982; Casella \& Berger, 2002):}  
+The size of the overall Intersection-Union Test satisfies:
+\begin{equation}
+\sup_{\theta \in \Theta_0} \mathbb{P}_\theta\big(\text{Reject } \mathcal{H}_{0,5}\big) \le \alpha
+\end{equation}
+Consequently, \textbf{no multiple-testing adjustment (such as Bonferroni or Šidák) is required for the IUT conjunction}. The overall Type-I error is rigorously protected at $\alpha = 0.05$.
+
+\section{High-Severity Finding M4-F02: Estimand Inversion in IUT Implementation}
+
+\subsection{Protocol Specification vs.\ Implementation}
+In \texttt{docs/v9\_experiment\_protocol.md} Section 3.1.1 (lines 37 and 123), the protocol explicitly defines the estimand for the multi-scenario safety envelope as \textbf{unconditional incidence}:
+\begin{quote}
+\textit{``plus Berger's Intersection--Union test ($\max_{s \in \mathcal{S}_{12}} p_{\mathrm{inc}, s} \le 0.05$) for worst-case \textbf{unconditional incidence} $\max_{s \in \mathcal{S}_{12}} R_{\mathrm{inc}, s}(\hat{\pi}) \le 0.05$.''} (Section 3.1.1, line 37)
+\end{quote}
+However, in \texttt{experiments/v9\_evaluate\_holdout.py}, lines 694--705 implement scenario-level risk calculation as follows:
+\begin{verbatim}
+if m_s > 0:
+    r_sel_s = fs_s / m_s
+    r_sel_status = "DEFINED"
+    ucb95_s = clopper_pearson_one_sided_ucb(fs_s, m_s, delta=0.05)
+    p_val_s = float(binom.cdf(fs_s, m_s, 0.05))
+else:
+    r_sel_s = float("nan")
+    r_sel_status = "UNDEFINED"
+    ucb95_s = float("nan")
+    p_val_s = 1.0  # conservative p-value for zero coverage
+
+p_values_for_iut.append(p_val_s)
+\end{verbatim}
+
+\subsection{Mathematical Impact of Finding M4-F02}
+\begin{enumerate}
+    \item \textbf{Penalization of Flawless Abstention:} In catastrophic fault scenarios (such as \texttt{FAULTY\_REFERENCE\_SENSOR} or \texttt{CORRUPTED\_ANCHOR\_STRESS}), a sound runtime assurance policy identifies sensor corruption and abstains on 100\% of episodes ($M_s = 0, K_s = 0$). Under total abstention:
+    \begin{itemize}
+        \item True unconditional false-success incidence is $R_{\mathrm{inc}, s} = 0 / 120 = 0.0\%$.
+        \item The true binomial $p$-value for testing $H_0: R_{\mathrm{inc}, s} > 0.05$ with $N_s = 120$ and $K_s = 0$ is:
+        \begin{equation}
+        p_{\mathrm{inc}, s} = (0.95)^{120} \approx 0.002122 \le 0.05
+        \end{equation}
+        \item Since $0.002122 \le 0.05$, the unconditional safety null is decisively rejected!
+    \end{itemize}
+    \item \textbf{Artificial Failure under Line 703:} However, because line 698 conditions on $M_s$ rather than $N_s$, line 703 assigns \texttt{p\_val\_s = 1.0}. Consequently:
+    \begin{equation}
+    \max_{s \in \mathcal{S}_{12}} p_s \ge 1.0 \implies \text{IUT is guaranteed to fail!}
+    \end{equation}
+    \item \textbf{Small Sample Rejection:} Even if an agent accepts a small number of episodes in a fault scenario (e.g.\ $M_s = 5, K_s = 0$), $p_{\mathrm{sel}} = (0.95)^5 \approx 0.7738 > 0.05$, causing the IUT to fail even though the unconditional incidence is bounded at $0 / 120 = 0.0\%$.
+\end{enumerate}
+
+\section{Remediation Proposal for Finding M4-F02}
+To restore mathematical consistency between the evaluation harness and the preregistered protocol:
+\begin{enumerate}
+    \item \textbf{Calculate $p_{\mathrm{inc}, s}$ on $N_s = 120$ for IUT:} The binomial $p$-value for the Berger IUT must be computed using unconditional false-success count $K_s$ over the full scenario sample size $N_s = 120$:
+    \begin{equation}
+    p_{\mathrm{inc}, s} = \mathrm{binom.cdf}(fs_s, n_s, 0.05)
+    \end{equation}
+    When $K_s = 0$ on $N_s = 120$, $p_{\mathrm{inc}, s} \approx 0.002122 \le 0.05$.
+    \item \textbf{Preserve Selective Risk Reporting in Breakdown Table:} Continue reporting descriptive selective risk point estimates ($\hat{R}_{\mathrm{sel}, s} = K_s / M_s$) and Clopper--Pearson selective UCBs in the scenario breakdown table, maintaining \texttt{"r\_sel": "UNDEFINED"} when $M_s = 0$.
+    \item \textbf{Dual Reporting in JSON Summary:} Report both \texttt{p\_value\_unconditional\_incidence\_005} (used for IUT) and \texttt{p\_value\_selective\_risk\_005} (descriptive) in the output artifacts.
+\end{enumerate}
+
+\section{Multiplicity Control via Step-Down Holm--Šidák}
+For exploratory and descriptive reporting of individual scenario performance, the harness computes step-down Holm--Šidák thresholds:
+\begin{equation}
+\alpha_{(r)} = 1 - (1 - \alpha)^{1 / (12 - r + 1)}, \quad r = 1, \dots, 12
+\end{equation}
+Evaluating this sequence for $\alpha = 0.05$ and $K = 12$ yields the exact threshold ladder reported in Table~\ref{tab:holm_thresholds}.
+
+\begin{table}[h!]
+\centering
+\small
+\begin{tabularx}{\textwidth}{cccc}
+\toprule
+\textbf{Step} $r$ & \textbf{Effective Tests Remaining} ($12 - r + 1$) & \textbf{Exact Holm--Šidák Threshold} $\alpha_{(r)}$ & \textbf{Bonferroni Equivalent} $\alpha / (12 - r + 1)$ \\
+\midrule
+1 & 12 & 0.004265 & 0.004167 \\
+2 & 11 & 0.004650 & 0.004545 \\
+3 & 10 & 0.005116 & 0.005000 \\
+4 & 9 & 0.005685 & 0.005556 \\
+5 & 8 & 0.006391 & 0.006250 \\
+6 & 7 & 0.007301 & 0.007143 \\
+7 & 6 & 0.008512 & 0.008333 \\
+8 & 5 & 0.010206 & 0.010000 \\
+9 & 4 & 0.012741 & 0.012500 \\
+10 & 3 & 0.016952 & 0.016667 \\
+11 & 2 & 0.025321 & 0.025000 \\
+12 & 1 & 0.050000 & 0.050000 \\
+\bottomrule
+\end{tabularx}
+\caption{Exact step-down Holm--Šidák significance threshold schedule for 12 scenarios.}
+\label{tab:holm_thresholds}
+\end{table}
+
+\section{Conclusion}
+Phase 3 audit identified a material statistical discrepancy (\textbf{Finding M4-F02}, Severity: High). The implementation currently penalizes safe abstention in catastrophic fault scenarios by evaluating the Berger IUT on selective decisions ($M_s$) rather than unconditional incidence ($N_s = 120$). Remediation is documented and required prior to production holdout authorization.
+
+\noindent \textbf{Phase 3 Recommendation:} \texttt{AUDIT\_PHASE\_3\_PASS\_WITH\_QUALIFICATIONS}
+
+\begin{thebibliography}{9}
+\bibitem{berger1982} R. L. Berger, ``Multiparameter hypothesis testing and acceptance sampling,'' \textit{Technometrics}, vol. 24, no. 4, pp. 295--300, 1982.
+\bibitem{casella2002} G. Casella and R. L. Berger, \textit{Statistical Inference}, 2nd ed., Duxbury Press, 2002.
+\bibitem{holm1979} S. Holm, ``A simple sequentially rejective multiple test procedure,'' \textit{Scandinavian Journal of Statistics}, vol. 6, no. 2, pp. 65--70, 1979.
+\bibitem{shidak1967} Z. Šidák, ``Rectangular confidence regions for the means of multivariate normal distributions,'' \textit{Journal of the American Statistical Association}, vol. 62, no. 318, pp. 626--633, 1967.
+\bibitem{silvapulle2005} M. J. Silvapulle and P. K. Sen, \textit{Constrained Statistical Inference: Inequality, Order, and Shape Restrictions}, John Wiley \& Sons, 2005.
+\end{thebibliography}
+
+\end{document}

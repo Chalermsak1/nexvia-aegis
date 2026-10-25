@@ -1,0 +1,102 @@
+{
+  "schema_version": "nexvia-aegis-v9-m4-audit-manifest/1.0",
+  "milestone": "V9-M4 Preflight Audit",
+  "git_branch": "v9.0-runtime-assurance",
+  "source_commit": "083ade9bbad7b6e28b7e18abec7e6f861a45a7b7",
+  "created_utc": "2026-10-25T09:10:30.711424+00:00",
+  "audit_recommendation": "M4_STATISTICAL_AUDIT_PASS_WITH_QUALIFICATIONS",
+  "execution_status": "M4_EXECUTION_STRICTLY_BLOCKED_PENDING_REMEDIATION",
+  "holdout_data_accessed": false,
+  "reports": {
+    "phase_0": {
+      "title": "Executive Summary",
+      "markdown_file": "docs/reports/v9_m4_statistical_audit/00_executive_summary.md",
+      "markdown_sha256": "516d35f0fd45992e704034b2c2e9db43ba518549441f8b872a661c54f543883f",
+      "pdf_file": "docs/reports/v9_m4_statistical_audit/00_executive_summary.pdf",
+      "pdf_sha256": "03dc014dd6eb1957f4ce024011a85a7e626149580cdd764bdd8a9aa949d6943e",
+      "pdf_size_bytes": 92219,
+      "pdf_validation": "PASS",
+      "status": "FINAL"
+    },
+    "phase_1": {
+      "title": "Protocol and Hypothesis Review",
+      "markdown_file": "docs/reports/v9_m4_statistical_audit/01_protocol_and_hypothesis_review.md",
+      "markdown_sha256": "0990faca9b6146f29403c02f7d98435f7fa6fa903187044c62f93bbac1ddf14e",
+      "pdf_file": "docs/reports/v9_m4_statistical_audit/01_protocol_and_hypothesis_review.pdf",
+      "pdf_sha256": "1bde104978b458838bbe8675cde3148ec53eb75a5bbc6440599ec266e7d21197",
+      "pdf_size_bytes": 119304,
+      "pdf_validation": "PASS",
+      "status": "FINAL"
+    },
+    "phase_2": {
+      "title": "H1 Selective-Risk Audit",
+      "markdown_file": "docs/reports/v9_m4_statistical_audit/02_h1_selective_risk_audit.md",
+      "markdown_sha256": "5471f2c95d48ceec9387798fe872aebd584259746d5fd6106723218791d9a87f",
+      "pdf_file": "docs/reports/v9_m4_statistical_audit/02_h1_selective_risk_audit.pdf",
+      "pdf_sha256": "5710aab2a68a71bb902ee8a36134e81a4b2699b52d72d0c6bd9d456a7e96d33c",
+      "pdf_size_bytes": 97460,
+      "pdf_validation": "PASS",
+      "status": "FINAL"
+    },
+    "phase_3": {
+      "title": "H5 IUT and Multiplicity Audit",
+      "markdown_file": "docs/reports/v9_m4_statistical_audit/03_h5_iut_multiplicity_audit.md",
+      "markdown_sha256": "f0f1215b328f4ce67ba49c75ef8650982e7d75e461c182b6575069fc66af6a69",
+      "pdf_file": "docs/reports/v9_m4_statistical_audit/03_h5_iut_multiplicity_audit.pdf",
+      "pdf_sha256": "844c24a0ecbb91b9d655df481bd7d4811fa338c7407d509de27b281fe74835d3",
+      "pdf_size_bytes": 109586,
+      "pdf_validation": "PASS",
+      "status": "FINAL"
+    },
+    "phase_4": {
+      "title": "H2/H3 Paired Comparisons Audit",
+      "markdown_file": "docs/reports/v9_m4_statistical_audit/04_h2_h3_paired_comparison_audit.md",
+      "markdown_sha256": "8075a18c65e29e1c1e616431fc167be7438c52b34126afa078707b58ae73f54c",
+      "pdf_file": "docs/reports/v9_m4_statistical_audit/04_h2_h3_paired_comparison_audit.pdf",
+      "pdf_sha256": "c952b4bfcd60e77a52f75fc878f3577787900678b7c6fd4c6dccef83e2602ccf",
+      "pdf_size_bytes": 101634,
+      "pdf_validation": "PASS",
+      "status": "FINAL"
+    },
+    "phase_5": {
+      "title": "H4 Coverage Analysis Audit",
+      "markdown_file": "docs/reports/v9_m4_statistical_audit/05_h4_coverage_audit.md",
+      "markdown_sha256": "d8cb184ab1814142bd434eccc28dfa37280a8cf475e3d56a1c9437955f4317fb",
+      "pdf_file": "docs/reports/v9_m4_statistical_audit/05_h4_coverage_audit.pdf",
+      "pdf_sha256": "38f124efa60503f723f793adf7b7282c071b382a3c06261f91e9ac81c84423cc",
+      "pdf_size_bytes": 93683,
+      "pdf_validation": "PASS",
+      "status": "FINAL"
+    },
+    "phase_6": {
+      "title": "Execution Guard Audit",
+      "markdown_file": "docs/reports/v9_m4_statistical_audit/06_execution_guard_audit.md",
+      "markdown_sha256": "fae396a56d12b1044c1b179aaf03f837cba283f63ea5da177e12974ae19b652c",
+      "pdf_file": "docs/reports/v9_m4_statistical_audit/06_execution_guard_audit.pdf",
+      "pdf_sha256": "32ccb757e1ee681670cda1f8dbb35074a3d25fb50ab593be8c0a3e6fcec1f07d",
+      "pdf_size_bytes": 73784,
+      "pdf_validation": "PASS",
+      "status": "FINAL"
+    },
+    "phase_7": {
+      "title": "Regression and Findings",
+      "markdown_file": "docs/reports/v9_m4_statistical_audit/07_regression_and_findings.md",
+      "markdown_sha256": "ecf60cad83316e67ef99ac330a9696896231af4e6f0912cf9134923233360fc7",
+      "pdf_file": "docs/reports/v9_m4_statistical_audit/07_regression_and_findings.pdf",
+      "pdf_sha256": "dde901c6c25d2ccfb5a2b379df8544d33b01a60f9cc6315b7d4b10dc47c4caf4",
+      "pdf_size_bytes": 83699,
+      "pdf_validation": "PASS",
+      "status": "FINAL"
+    },
+    "phase_8": {
+      "title": "Final Integrated Audit",
+      "markdown_file": "docs/reports/v9_m4_statistical_audit/08_v9_m4_independent_statistical_audit.md",
+      "markdown_sha256": "b3ba2bf182d55bac675be982c49a3261d71bcb07a4b3f2f69724e409f2929c61",
+      "pdf_file": "docs/reports/v9_m4_statistical_audit/08_v9_m4_independent_statistical_audit.pdf",
+      "pdf_sha256": "d0aadbde4551b709e732544b34ae42fb683c64556d8170127594d8e1d63fa73d",
+      "pdf_size_bytes": 129955,
+      "pdf_validation": "PASS",
+      "status": "FINAL"
+    }
+  }
+}

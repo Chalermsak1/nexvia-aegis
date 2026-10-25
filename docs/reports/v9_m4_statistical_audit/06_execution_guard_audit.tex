@@ -1,0 +1,160 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[margin=2.0cm]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb,amsfonts,amsthm,mathtools}
+\usepackage{booktabs,tabularx,colortbl,array,multirow}
+\usepackage[table]{xcolor}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{microtype}
+\usepackage{hyperref}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    citecolor=blue!70!black,
+    urlcolor=blue!70!black
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\footnotesize \textbf{NEXVIA AEGIS V9-M4 Statistical Audit}}
+\lhead{\footnotesize Phase 6: Execution Guards \& Isolation Audit}
+\rfoot{\footnotesize Page \thepage}
+\lfoot{\footnotesize Document ID: AEGIS-V9-M4-AUD-06}
+
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{NEXVIA AEGIS V9-M4 Independent Statistical Audit}}\\[6pt]
+    {\Large \textbf{Phase 6: Audit of Production Execution Guards and Holdout Partition Isolation}}\\[10pt]
+    \textbf{Autonomous Verification Subsystem (Google DeepMind Antigravity)}\\
+    \textit{Git Branch: v9.0-runtime-assurance \quad $\cdot$ \quad Commit: 083ade9 \quad $\cdot$ \quad Date: October 25, 2026}\\[12pt]
+\end{center}
+
+\begin{abstract}
+\noindent This audit report conducts an empirical and architectural verification of the execution security boundaries, partition isolation mechanisms, and single-shot overwrite guards implemented in the NEXVIA AEGIS V9-M4 confirmatory evaluation harness (\texttt{experiments/v9\_evaluate\_holdout.py}). We audit the default CLI behavior, the read-only preflight status inspector, the fail-closed execution authorization token barrier, seed-block boundary enforcement, directory isolation rules, and cryptographic payload verification. Crucially, we perform an automated filesystem audit confirming that no production holdout manifests (\texttt{test\_mix\_manifest\_r1.json}, \texttt{test\_scen\_manifest\_r1.json}) or production holdout results (\texttt{results/v9/test\_mix/}, \texttt{results/v9/test\_scen/}) exist, establishing that the reserved confirmatory holdout partitions remain completely untouched.
+\end{abstract}
+
+\vspace{6pt}
+\noindent \textbf{Keywords:} Execution Guardrails, Holdout Confidentiality, Fail-Closed Security, Single-Shot Overwrite Protection, Seed Isolation, Cryptographic Integrity Verification.
+
+\section{Executive Summary \& Audit Mandate}
+The confirmatory holdout evaluation (V9-M4) represents the terminal, unrepeatable test of the NEXVIA AEGIS runtime assurance policy. Under research governance rules:
+\begin{itemize}
+    \item No execution of live holdout episodes is permitted during the preflight or audit milestones.
+    \item The evaluation software must fail closed by default.
+    \item No developer or automated script may accidentally instantiate the production simulation, generate production holdout manifests, or overwrite previous experimental data.
+\end{itemize}
+Phase 6 of this independent audit formally verifies:
+\begin{enumerate}
+    \item \textbf{Default Preflight Execution:} Does running the evaluation script without arguments execute only safe read-only checks?
+    \item \textbf{Fail-Closed Authorization Barrier:} Does the runner strictly reject unauthorized live execution requests?
+    \item \textbf{Single-Shot Overwrite Guard:} Does the runner refuse to modify or overwrite existing output artifacts?
+    \item \textbf{Holdout Partition Isolation:} Does the runner confine outputs to designated directories and prevent contamination between mixture and scenario partitions?
+    \item \textbf{Physical Partition Status:} Are all reserved holdout manifests, seed streams, and output directories completely untouched?
+\end{enumerate}
+
+\section{Architecture of the M4 Execution Guard System}
+The execution guard system in \texttt{experiments/v9\_evaluate\_holdout.py} employs defense-in-depth across six distinct layers:
+\begin{enumerate}
+    \item \textbf{Layer 1 (CLI Default Mode):} Uses \texttt{argparse.BooleanOptionalAction} defaulting to \texttt{--preflight-only = True}.
+    \item \textbf{Layer 2 (Policy \& Manifest Cryptographic Verification):} Enforces canonical SHA-256 digest matching before loading any configuration.
+    \item \textbf{Layer 3 (Seed Block Boundary Check):} Restricts mixture seeds to $[73000, 74439]$ and scenario seeds to $[75000, 75119]$.
+    \item \textbf{Layer 4 (Directory Path Isolation):} Strictly requires output paths to be under \texttt{results/v9/} and segregated into \texttt{test\_mix} and \texttt{test\_scen}.
+    \item \textbf{Layer 5 (Fail-Closed Authorization Guard):} Fails closed on unauthorized execution and blocks live simulation during preflight.
+    \item \textbf{Layer 6 (Single-Shot Overwrite Protection):} Refuses execution if output CSV or JSON report files pre-exist in the target folder.
+\end{enumerate}
+
+\section{Layer-by-Layer Verification Findings}
+
+\subsection{Layer 1 \& 2: Default Preflight \& Read-Only Checks}
+When invoked without flags or in preflight mode, the script executes \texttt{run\_preflight\_checks()} which performs read-only inspection of the selected policy, verifies that holdout manifests are uncreated, and outputs a structured status JSON before exiting with return code 0.
+\begin{itemize}
+    \item \textbf{Verification Command:} \texttt{PYTHONPATH=src uv run python experiments/v9\_evaluate\_holdout.py --partition mixture}
+    \item \textbf{Observed Result:} Returns \texttt{status: "PREFLIGHT\_PASS"}, \texttt{real\_holdouts\_executed: false}, with manifests marked \texttt{NOT\_YET\_GENERATED}. No disk writes occur.
+\end{itemize}
+
+\subsection{Layer 3: Seed Block Boundary Enforcement}
+Function \texttt{enforce\_holdout\_seeds(seeds, partition)} (lines 122--139) inspects all episode seeds against preregistered bounds:
+\begin{itemize}
+    \item Mixture partition: strictly requires all seeds $\in [73000, 74439]$.
+    \item Scenario partition: strictly requires all seeds $\in [75000, 75119]$.
+\end{itemize}
+Passing seeds from development ($77000..77029$), calibration ($76000..76959$), or validation ($72000..72039$) raises \texttt{ValueError} immediately.
+
+\subsection{Layer 4: Directory Path \& Partition Isolation}
+Function \texttt{enforce\_holdout\_output\_directory(out\_dir, partition)} (lines 141--158) requires that:
+\begin{itemize}
+    \item Output directory is located under \texttt{results/v9/}.
+    \item Mixture holdout outputs are written strictly to paths ending in \texttt{test\_mix} or \texttt{test\_mix\_*}.
+    \item Scenario holdout outputs are written strictly to paths ending in \texttt{test\_scen} or \texttt{test\_scen\_*}.
+\end{itemize}
+Attempting to direct mixture outputs to a scenario folder or writing outside \texttt{results/v9/} raises \texttt{ValueError}, preventing accidental cross-contamination.
+
+\subsection{Layer 5: Fail-Closed Authorization Barrier}
+In \texttt{execute\_holdout\_workflow()} (lines 869--877):
+\begin{verbatim}
+is_synthetic = synthetic_records is not None
+if not is_synthetic and not freeze_only:
+    if authorized_execution_token != REQUIRED_EXECUTION_TOKEN:
+        raise RuntimeError(
+            "EXECUTION GUARD: M4 holdout evaluation is not authorized for live execution during preflight. "
+            "Explicit authorized_execution_token is required. Holdout partitions remain strictly untouched."
+        )
+    raise NotImplementedError("Live simulator execution is blocked during preflight milestone.")
+\end{verbatim}
+\begin{itemize}
+    \item \textbf{Verification Command:} \texttt{PYTHONPATH=src uv run python experiments/v9\_evaluate\_holdout.py --partition mixture --no-preflight-only}
+    \item \textbf{Observed Result:} Raises \texttt{RuntimeError: EXECUTION GUARD: M4 holdout evaluation is not authorized...} Exits with code 1 without disk writes.
+    \item \textbf{Preflight Double-Lock:} Even if an unauthorized operator specifies \texttt{--authorized-execution-token}, the runner raises \texttt{NotImplementedError}, guaranteeing that live simulator execution cannot occur during the preflight audit milestone.
+\end{itemize}
+
+\subsection{Layer 6: Single-Shot Overwrite Guard}
+Lines 879--889 inspect whether \texttt{test\_mix\_episodes.csv} or \texttt{test\_mix\_report.json} already exists in the target directory:
+\begin{verbatim}
+if episodes_csv.exists() or report_json.exists():
+    raise RuntimeError(
+        f"SINGLE-SHOT EXECUTION GUARD: Holdout output already exists in `{enforced_out_dir}`. "
+        "Re-running holdout or overwriting holdout artifacts is strictly prohibited."
+    )
+\end{verbatim}
+When output files pre-exist, the runner raises \texttt{RuntimeError} before any simulation, configuration update, or data writing can occur.
+
+\section{Direct Audit of Holdout Partition Filesystem Status}
+We performed an independent automated audit of the workspace filesystem to verify that no holdout artifacts exist. Results are summarized in Table~\ref{tab:holdout_audit}.
+
+\begin{table}[h!]
+\centering
+\small
+\begin{tabularx}{\textwidth}{lXcc}
+\toprule
+\textbf{Target Holdout Artifact} & \textbf{Expected Status} & \textbf{Actual Status} & \textbf{Verification} \\
+\midrule
+\texttt{results/v9/manifests/test\_mix\_manifest\_r1.json} & Must Not Exist & Non-existent & \textbf{CLEAN} \\
+\texttt{results/v9/manifests/test\_scen\_manifest\_r1.json} & Must Not Exist & Non-existent & \textbf{CLEAN} \\
+\texttt{results/v9/test\_mix/} & Must Not Exist & Non-existent & \textbf{CLEAN} \\
+\texttt{results/v9/test\_scen/} & Must Not Exist & Non-existent & \textbf{CLEAN} \\
+Historical Calibration Artifacts (\texttt{results/v9/cal\_r2/}) & Unaltered & Hash Verified & \textbf{UNTOUCHED} \\
+Historical Validation Artifacts (\texttt{results/v9/val\_r1/}) & Unaltered & Hash Verified & \textbf{UNTOUCHED} \\
+\bottomrule
+\end{tabularx}
+\caption{Filesystem audit of holdout partition isolation and historical artifact integrity.}
+\label{tab:holdout_audit}
+\end{table}
+
+\section{Conclusion}
+Phase 6 audit confirms that all six defensive guard layers operate effectively. Preflight mode is strictly read-only, unauthorized production simulation fails closed, overwrite protection is active, and the reserved holdout partitions remain completely untouched.
+
+\noindent \textbf{Phase 6 Recommendation:} \texttt{AUDIT\_PHASE\_6\_PASS}
+
+\begin{thebibliography}{9}
+\bibitem{ieee730} IEEE Standard for Software Quality Assurance Processes, \textit{IEEE Std 730-2014}, IEEE, 2014.
+\bibitem{saltzer1975} J. Saltzer and M. Schroeder, ``The protection of information in computer systems,'' \textit{Proceedings of the IEEE}, vol. 63, no. 9, pp. 1278--1308, 1975.
+\bibitem{nist80053} NIST Special Publication 800-53, \textit{Security and Privacy Controls for Information Systems and Organizations}, Rev. 5, National Institute of Standards and Technology, 2020.
+\end{thebibliography}
+
+\end{document}

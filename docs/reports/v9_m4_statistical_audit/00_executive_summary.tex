@@ -1,0 +1,117 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[margin=2.0cm]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb,amsfonts,amsthm,mathtools}
+\usepackage{booktabs,tabularx,colortbl,array,multirow}
+\usepackage[table]{xcolor}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{microtype}
+\usepackage{hyperref}
+
+\newfontfamily\thaifont{Sarabun}[Scale=0.95]
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    citecolor=blue!70!black,
+    urlcolor=blue!70!black
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\footnotesize \textbf{NEXVIA AEGIS V9-M4 Executive Summary}}
+\lhead{\footnotesize Independent Statistical Readiness Audit}
+\rfoot{\footnotesize Page \thepage}
+\lfoot{\footnotesize Document ID: AEGIS-V9-M4-AUD-00}
+
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{NEXVIA AEGIS V9-M4 Independent Statistical Audit}}\\[6pt]
+    {\Large \textbf{Executive Summary \& Pre-Execution Readiness Assessment}}\\[10pt]
+    \textbf{Autonomous Verification Subsystem (Google DeepMind Antigravity)}\\
+    \textit{Git Branch: v9.0-runtime-assurance \quad $\cdot$ \quad Commit: 083ade9 \quad $\cdot$ \quad Date: October 25, 2026}\\[12pt]
+\end{center}
+
+\noindent\fbox{
+\parbox{0.97\textwidth}{
+\textbf{CRITICAL GOVERNANCE NOTICE:}\\
+This document reports an independent statistical, mathematical, and implementation audit of the NEXVIA AEGIS V9-M4 confirmatory holdout evaluation harness. \textbf{No real holdout execution was authorized or performed as part of this audit.} All empirical tests reported herein are based strictly on synthetic mock records or unit regression baselines. The reserved holdout seed blocks ($73000..74439$ for mixture holdout and $75000..75119$ for scenario holdout) remain completely uninstantiated and 100\% untouched. This audit report does NOT constitute authorization to execute V9-M4.
+}
+}
+
+\vspace{10pt}
+
+\section{English Executive Summary (For Research Evaluation)}
+
+\subsection{Context and Scope of the Audit}
+Milestone V9-M4 constitutes the terminal confirmatory evaluation of the certified runtime assurance policy $\hat{\pi} = \text{V9\_CAND\_1\_TIER1\_STRICTEST}$ on reserved holdout data. Because holdout partitions are strictly single-shot and unrepeatable, this independent statistical audit was executed prior to any holdout simulation to verify:
+\begin{enumerate}
+    \item Complete mathematical and algorithmic fidelity to the preregistered experiment protocol (\texttt{docs/v9\_experiment\_protocol.md} and \texttt{docs/v9\_m4\_readiness\_review.md}).
+    \item Exactness and boundary stability of statistical estimators for Hypotheses $H_1$ through $H_5$.
+    \item Robustness of fail-closed execution guards and physical holdout partition isolation.
+    \item Absence of algorithmic regressions across the codebase.
+\end{enumerate}
+
+\subsection{Summary of Verified Successes}
+\begin{itemize}
+    \item \textbf{Regression Invariance:} All 125 repository regression tests passed with zero failures in 30.72 seconds.
+    \item \textbf{Selective Risk Inversion ($H_1$):} Mathematical derivation confirmed that $M \ge 59$ accepted decisions is the exact theoretical threshold below which 95\% Clopper--Pearson certification of $R_{\mathrm{sel}} \le 0.05$ is impossible even under zero false successes ($U_{\mathrm{CP}, 1}(0, 58) \approx 0.0503 > 0.05$ vs.\ $U_{\mathrm{CP}, 1}(0, 59) \approx 0.0495 \le 0.05$). The harness strictly prevents certification gaming when false successes are observed ($M = 59, K = 1 \implies U_{\mathrm{CP}, 1} \approx 0.0779 > 0.05$, correctly rejected).
+    \item \textbf{Coverage Utility Precondition ($H_4$):} Correctly evaluates empirical sample coverage $\hat{C} \ge 0.35$ as an operational utility floor, cleanly distinguishing an empirical precondition from an inferential lower confidence bound. At $M = 503$, it fails; at $M = 504$, it passes. Anti-gaming logic overrides $H_1$ if coverage is below 35\%.
+    \item \textbf{Paired Comparisons ($H_2, H_3$):} Exact McNemar testing, Newcombe paired difference intervals (Method 10), and Student's $t$ lower confidence bounds for TSR noninferiority ($\mathrm{LCB}_{95} > -0.05$) are mathematically exact.
+    \item \textbf{Holdout Partition Isolation:} Direct filesystem audits confirm that zero production holdout manifests or output directories exist. The fail-closed execution guard blocks live execution unless an explicit authorization token is supplied, and enforces a preflight double-lock.
+\end{itemize}
+
+\subsection{Identified Findings Requiring Remediation}
+\begin{enumerate}
+    \item \textbf{Finding M4-F02 (High Severity --- Estimand Inversion in Berger IUT for $H_5$):} The preregistered protocol specifies that the multi-scenario safety envelope ($H_5$) is evaluated using Berger's Intersection-Union Test over \textit{unconditional false-success incidence} $R_{\mathrm{inc}, s} = K_s / N_s$ ($N_s = 120$). In \texttt{experiments/v9\_evaluate\_holdout.py}, line 698 computes binomial $p$-values over \textit{accepted decisions} ($M_s$) with a fallback of $p=1.0$ under total abstention ($M_s = 0$). In catastrophic fault scenarios (e.g.\ \texttt{FAULTY\_REFERENCE\_SENSOR}), safe runtime assurance abstains on 100\% of episodes ($M_s=0, K_s=0$), achieving unconditional incidence of $0/120 = 0.0\%$ ($p = 0.0021 \le 0.05$). However, because the harness assigns $p = 1.0$, the Berger IUT is guaranteed to fail.\\
+    \textit{Remediation:} Compute $p_{\mathrm{inc}, s} = \mathrm{binom.cdf}(fs_s, n_s, 0.05)$ on $N_s = 120$ for the IUT, while continuing to report selective risk descriptively.
+    \item \textbf{Finding M4-F03 (Medium Severity --- Implicit Key Ordering in Paired Comparisons):} Paired loops use \texttt{zip(records, baseline\_records)} without explicitly verifying matching seeds and scenarios.\\
+    \textit{Remediation:} Add explicit assertions \texttt{assert r["seed"] == v["seed"] and r["scenario"] == v["scenario"]}.
+\end{enumerate}
+
+\subsection{Pre-Execution Audit Recommendation}
+We issue an overall audit finding of:
+\begin{equation}
+\mathbf{M4\_STATISTICAL\_AUDIT\_PASS\_WITH\_QUALIFICATIONS}
+\end{equation}
+Execution of V9-M4 must remain strictly blocked until Finding M4-F02 and Finding M4-F03 are remediated and verified.
+
+\vspace{10pt}
+
+\section{สรุปผลการตรวจสอบสำหรับผู้บริหารและเจ้าของโครงการ (Thai Executive Summary)}
+{\thaifont
+\subsection{วัตถุประสงค์ของการตรวจสอบ}
+การตรวจสอบครั้งนี้เป็นการตรวจสอบความถูกต้องทางสถิติและสถาปัตยกรรมซอฟต์แวร์แบบอิสระ (Independent Statistical Audit) สำหรับชุดประเมินผลชุดข้อมูลทดสอบขั้นสุดท้าย (Confirmatory Holdout Evaluation Harness: V9-M4) ก่อนที่จะมีการพิจารณาอนุมัติให้ดำเนินการรันจริงบนชุดข้อมูลที่ถูกเก็บรักษาไว้ (Reserved Holdouts)
+
+\subsection{ผลการตรวจสอบที่ผ่านเกณฑ์อย่างสมบูรณ์}
+\begin{enumerate}
+    \item \textbf{การผ่านการทดสอบแบบถดถอย 100\% (Regression Pass):} ชุดทดสอบระบบทั้งหมด 125 รายการในคลังโค้ดผ่านการทดสอบทั้งหมด (125 passed in 30.72s) โดยไม่มีข้อผิดพลาดใด ๆ
+    \item \textbf{ความถูกต้องของการควบคุมความเสี่ยงแบบเลือก (Selective Risk $H_1$):}
+    \begin{itemize}
+        \item ได้รับการพิสูจน์ทางคณิตศาสตร์แล้วว่า เกณฑ์ขั้นต่ำที่ต้องยอมรับการตัดสินใจอย่างน้อย $M \ge 59$ ครั้ง เป็นขอบเขตทางทฤษฎีที่จำเป็น (Exact Mathematical Bound) สำหรับการรับรองความเสี่ยงต่ำกว่า $5.0\%$ ที่ระดับความเชื่อมั่น $95\%$
+        \item ระบบป้องกันการทุจริตผลการทดสอบ (Anti-Gaming Protection) ทำงานได้อย่างสมบูรณ์ หากเกิด False Success ขึ้นแม้เพียง 1 ครั้งใน 59 ครั้ง ($K=1$) ระบบจะปฏิเสธการรับรองทันที ($U_{\mathrm{CP}, 1} \approx 7.79\% > 5.0\%$)
+    \end{itemize}
+    \item \textbf{การปกป้องการทำงานและการแยกส่วนข้อมูล (Holdout Isolation \& Execution Guard):}
+    \begin{itemize}
+        \item ตรวจสอบยืนยันแล้วว่า \textbf{ไม่มีการสร้างหรือเข้าถึงชุดข้อมูล Holdout จริงใด ๆ ทั้งสิ้น} ไฟล์ Manifest และโฟลเดอร์ผลลัพธ์ของ Holdout ยังไม่ถูกสร้างขึ้น ($100\%$ Clean)
+        \item ระบบป้องกัน Single-Shot Overwrite และ Fail-Closed Guard ทำงานได้อย่างรัดกุม โดยจะปฏิเสธการรันจริงทันทีหากไม่มี Token อนุมัติ
+    \end{itemize}
+\end{enumerate}
+
+\subsection{ประเด็นสำคัญที่ต้องแก้ไขก่อนการรันจริง (Key Remediation Items)}
+\begin{itemize}
+    \item \textbf{ข้อตรวจพบ M4-F02 (ความสำคัญระดับสูง - High Severity):} ในการทดสอบสมมติฐานความปลอดภัยกรณีเลวร้ายที่สุด 12 สถานการณ์ ($H_5$ ผ่าน Berger Intersection-Union Test) โปรโตคอลกำหนดให้ทดสอบบน \textbf{อัตราการเกิดอุบัติการณ์จริงแบบไม่มีเงื่อนไข (Unconditional Incidence: $N_s = 120$)} แต่ในโค้ดปัจจุบันได้นำจำนวนครั้งที่ยอมรับ ($M_s$) ไปคำนวณและตั้งค่า $p = 1.0$ เมื่อมีการละเว้นการทำงาน ($M_s = 0$) ส่งผลให้ในสถานการณ์ที่ระบบตรวจพบเซ็นเซอร์เสียหายรุนแรงและสั่งหยุดทำงานอย่างปลอดภัย ($FS = 0$) กลับถูกคิดค่า $p = 1.0$ จนทำให้การทดสอบ $H_5$ ล้มเหลว\\
+    \textit{แนวทางแก้ไข:} ปรับแก้การคำนวณค่า $p$ ของ IUT ให้ใช้ $N_s = 120$ ตามที่ระบุไว้ในโปรโตคอลหลักก่อนเริ่มการรันจริง
+    \item \textbf{ข้อตรวจพบ M4-F03 (ความสำคัญระดับปานกลาง - Medium Severity):} เพิ่มการตรวจสอบความตรงกันของ Seed และ Scenario ในลูปการเปรียบเทียบคู่แบบชัดเจน (\texttt{assert r["seed"] == v["seed"]}) เพื่อป้องกันข้อผิดพลาดจากการเรียงลำดับข้อมูล
+\end{itemize}
+
+\subsection{ข้อสรุปและสถานะของโครงการ}
+ผลการประเมินสถานะในภาพรวมคือ \textbf{\texttt{M4\_STATISTICAL\_AUDIT\_PASS\_WITH\_QUALIFICATIONS}} (ผ่านการตรวจสอบโดยมีเงื่อนไขการปรับปรุง) โดยโครงการยังคง \textbf{ระงับการรันบนชุดข้อมูล Holdout จริงไว้โดยสมบูรณ์} จนกว่าจะดำเนินการแก้ไขข้อตรวจพบ M4-F02 และ M4-F03 ให้เรียบร้อย
+}
+
+\end{document}
