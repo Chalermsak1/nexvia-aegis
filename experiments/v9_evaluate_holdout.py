@@ -917,6 +917,7 @@ def evaluate_scenario_holdout(
     h3_v8_status = "NOT_EVALUATED_NO_V8_DATA"
     h3_v8_lcb95 = float("nan")
     h3_v8_newcombe_lcb95 = float("nan")
+    h3_v8_newcombe_concurs = False
     h3_v8_mean_delta = float("nan")
     n11_v8 = n10_v8 = n01_v8 = n00_v8 = 0
     if v8_records is not None and len(v8_records) > 0:
@@ -941,15 +942,18 @@ def evaluate_scenario_holdout(
             h3_v8_mean_delta = float(np.mean(matched_diffs_v8))
             h3_v8_lcb95 = paired_difference_lcb(matched_diffs_v8, confidence=0.95)
             h3_v8_newcombe_lcb95 = newcombe_paired_difference_lcb(n11_v8, n10_v8, n01_v8, n00_v8, confidence=0.95)
-            # Rejects noninferiority null if both Student-t and Newcombe paired LCB exceed -0.05
-            h3_v8_passed = bool(h3_v8_lcb95 > -0.05 and h3_v8_newcombe_lcb95 > -0.05 and nominal_tsr_hat >= 0.94)
+            # Authoritative decision rule per preregistered protocol (Section 3.2.4 & Table 3.5.1):
+            # Student-t Wald paired difference LCB > -0.05 on S_10 and nominal TSR >= 0.94
+            h3_v8_passed = bool(h3_v8_lcb95 > -0.05 and nominal_tsr_hat >= 0.94)
             h3_v8_status = "CONFIRMATORY_PASS" if h3_v8_passed else "FAIL_NONINFERIORITY_OR_NOMINAL"
+            h3_v8_newcombe_concurs = bool(h3_v8_newcombe_lcb95 > -0.05) if not math.isnan(h3_v8_newcombe_lcb95) else False
 
     # Evaluation against V7 (Co-Evaluated Baseline)
     h3_v7_passed = False
     h3_v7_status = "NOT_EVALUATED_NO_V7_DATA"
     h3_v7_lcb95 = float("nan")
     h3_v7_newcombe_lcb95 = float("nan")
+    h3_v7_newcombe_concurs = False
     h3_v7_mean_delta = float("nan")
     n11_v7 = n10_v7 = n01_v7 = n00_v7 = 0
     if v7_records is not None and len(v7_records) > 0:
@@ -974,8 +978,11 @@ def evaluate_scenario_holdout(
             h3_v7_mean_delta = float(np.mean(matched_diffs_v7))
             h3_v7_lcb95 = paired_difference_lcb(matched_diffs_v7, confidence=0.95)
             h3_v7_newcombe_lcb95 = newcombe_paired_difference_lcb(n11_v7, n10_v7, n01_v7, n00_v7, confidence=0.95)
-            h3_v7_passed = bool(h3_v7_lcb95 > -0.05 and h3_v7_newcombe_lcb95 > -0.05 and nominal_tsr_hat >= 0.94)
+            # Authoritative decision rule per preregistered protocol (Section 3.2.4 & Table 3.5.1):
+            # Student-t Wald paired difference LCB > -0.05 on S_10 and nominal TSR >= 0.94
+            h3_v7_passed = bool(h3_v7_lcb95 > -0.05 and nominal_tsr_hat >= 0.94)
             h3_v7_status = "CONFIRMATORY_PASS" if h3_v7_passed else "FAIL_NONINFERIORITY_OR_NOMINAL"
+            h3_v7_newcombe_concurs = bool(h3_v7_newcombe_lcb95 > -0.05) if not math.isnan(h3_v7_newcombe_lcb95) else False
 
     # Overall H_3 determination per Protocol Section 3.1.1:
     if v8_records is not None and len(v8_records) > 0:
@@ -1010,7 +1017,7 @@ def evaluate_scenario_holdout(
         "nominal_tsr_hat": round(nominal_tsr_hat, 6),
         "h3_overall": {
             "hypothesis": "H_3",
-            "decision_rule": "Primary noninferiority vs V8.1 (LCB95 > -0.05 on S_10 via Student-t and Newcombe) AND TSR_nominal >= 0.94; co-evaluated vs V7",
+            "decision_rule": "Primary noninferiority vs V8.1 (LCB95 > -0.05 on S_10 via paired Student-t Wald LCB) AND TSR_nominal >= 0.94; Newcombe Method 10 reported as prespecified sensitivity analysis; co-evaluated vs V7",
             "primary_baseline": "v8_martingale",
             "primary_passed": h3_v8_passed,
             "primary_status": h3_v8_status,
@@ -1025,11 +1032,14 @@ def evaluate_scenario_holdout(
         "h3_tsr_noninferiority_vs_v8": {
             "hypothesis": "H_3",
             "baseline": "v8_martingale",
+            "authoritative_method": "paired_difference_student_t_wald_lcb",
             "estimand": "LCB95(Delta TSR) > -0.05 on S_10 and TSR_nominal >= 0.94",
             "nominal_tsr": round(nominal_tsr_hat, 6),
             "mean_delta_tsr": round(h3_v8_mean_delta, 6) if not math.isnan(h3_v8_mean_delta) else "N/A",
             "lcb95_delta_tsr": round(h3_v8_lcb95, 6) if not math.isnan(h3_v8_lcb95) else "N/A",
+            "sensitivity_newcombe_lcb95_delta_tsr": round(h3_v8_newcombe_lcb95, 6) if not math.isnan(h3_v8_newcombe_lcb95) else "N/A",
             "newcombe_lcb95_delta_tsr": round(h3_v8_newcombe_lcb95, 6) if not math.isnan(h3_v8_newcombe_lcb95) else "N/A",
+            "sensitivity_newcombe_concurs": h3_v8_newcombe_concurs,
             "table_n11_n10_n01_n00": [n11_v8, n10_v8, n01_v8, n00_v8],
             "status": h3_v8_status,
             "passed": h3_v8_passed,
@@ -1037,11 +1047,14 @@ def evaluate_scenario_holdout(
         "h3_tsr_noninferiority_vs_v7": {
             "hypothesis": "H_3",
             "baseline": "v7_mpc",
+            "authoritative_method": "paired_difference_student_t_wald_lcb",
             "estimand": "LCB95(Delta TSR) > -0.05 on S_10 and TSR_nominal >= 0.94",
             "nominal_tsr": round(nominal_tsr_hat, 6),
             "mean_delta_tsr": round(h3_v7_mean_delta, 6) if not math.isnan(h3_v7_mean_delta) else "N/A",
             "lcb95_delta_tsr": round(h3_v7_lcb95, 6) if not math.isnan(h3_v7_lcb95) else "N/A",
+            "sensitivity_newcombe_lcb95_delta_tsr": round(h3_v7_newcombe_lcb95, 6) if not math.isnan(h3_v7_newcombe_lcb95) else "N/A",
             "newcombe_lcb95_delta_tsr": round(h3_v7_newcombe_lcb95, 6) if not math.isnan(h3_v7_newcombe_lcb95) else "N/A",
+            "sensitivity_newcombe_concurs": h3_v7_newcombe_concurs,
             "table_n11_n10_n01_n00": [n11_v7, n10_v7, n01_v7, n00_v7],
             "status": h3_v7_status,
             "passed": h3_v7_passed,

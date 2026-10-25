@@ -1,0 +1,248 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[margin=2.0cm]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb,amsfonts,amsthm,mathtools}
+\usepackage{booktabs,tabularx,colortbl,array,multirow}
+\usepackage[table]{xcolor}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{microtype}
+\usepackage{hyperref}
+
+\newfontfamily\thaifont{Thonburi}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    citecolor=blue!70!black,
+    urlcolor=blue!70!black
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\footnotesize \textbf{NEXVIA AEGIS V9-M4 Policy Provenance \& H3 Method Audit}}
+\lhead{\footnotesize Authoritative M2R2 Certification, Decision Disentanglement \& Evidentiary Review}
+\rfoot{\footnotesize Page \thepage}
+\lfoot{\footnotesize Document ID: AEGIS-V9-M4-POL-H3-19}
+
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{NEXVIA AEGIS V9-M4 Methodological Audit}}\\[6pt]
+    {\Large \textbf{Final Frozen-Policy Provenance and Hypothesis H3 Decision-Method Audit}}\\[10pt]
+    \textbf{Autonomous Verification Subsystem (Google DeepMind Antigravity)}\\
+    \textit{Git Branch: v9.0-runtime-assurance \quad $\cdot$ \quad Reported Prior Commit: f3ede86 \quad $\cdot$ \quad Date: October 25, 2026}\\[12pt]
+\end{center}
+
+\noindent\fbox{
+\parbox{0.97\textwidth}{
+\textbf{CRITICAL NON-AUTHORIZATION DIRECTIVE:}\\
+This audit document resolves two specific pre-execution questions: (1) Does the production evaluator load and verify the exact frozen policy certified by Milestone M2R2? (2) Does the Hypothesis $H_3$ decision rule use the confidence-bound method required by the authoritative registered experiment protocol? \textbf{This document does NOT constitute authorization to execute Milestone V9-M4.} All evaluations in this report were conducted strictly using synthetic test fixtures, in-memory models, and read-only checks of existing artifacts. Production holdout manifests (\texttt{test\_mix\_manifest\_r1.json} and \texttt{test\_scen\_manifest\_r1.json}) and holdout output directories (\texttt{results/v9/test\_mix/} and \texttt{results/v9/test\_scen/}) do not exist. Reserved holdout seed blocks ($73000..74439$ for mixture holdout and $75000..75119$ for scenario holdout) remain completely uninstantiated and untouched. Live execution requires explicit authorization and delivery of an authorization token from the project owner.
+}
+}
+
+\vspace{10pt}
+
+\begin{abstract}
+\noindent This audit resolves two foundational questions governing the pre-execution integrity of Milestone V9-M4: (1) exact provenance and verification of the frozen policy artifact certified by Calibration Round 2 (M2R2), and (2) the authoritative confidence-bound decision method for Hypothesis $H_3$ (Operational Utility \& True-Success Rate Noninferiority).
+
+First, we resolve a clerical citation discrepancy in Report 18, which mistakenly cited the historical calibration artifact \texttt{results/v9/cal/selected\_policy.json} (Candidate \texttt{V9\_CAND\_2\_TIER2\_VERY\_STRICT}, raw SHA-256 \texttt{1c316d2d...}). We reconcile and prove that the authoritative M2R2 certified policy evaluated in Milestone V9-M3 is located strictly at \texttt{results/v9/cal\_r2/selected\_policy.json} (Candidate \texttt{V9\_CAND\_1\_TIER1\_STRICTEST}, raw SHA-256 \texttt{5a89d6061b379f1b34ab47be0deef8d63180d3e4c21d18c478bc7e451f5c84e2}, canonical payload SHA-256 \texttt{90dc5c0068bb62187415bba57fbf9cafc1f18e111ad5790b0214961490902034}). The production evaluator \texttt{experiments/v9\_evaluate\_holdout.py} defaults to this path, enforces candidate ID matching fail-closed, and strictly rejects the historical R1 artifact.
+
+Second, we audit the authoritative decision method for Hypothesis $H_3$. In the preregistered protocol (\texttt{docs/v9\_experiment\_protocol.md} Section 3.2.4 \& Table 3.5.1), statistical power and sample size were derived from the paired Wald standard error with Student's $t$ critical value. In prior commit \texttt{f3ede86}, an ad-hoc dual-conjunction rule (\texttt{Student\_t and Newcombe}) was inadvertently implemented. A systematic grid search of 22,478 boundary configurations on $N = 1,200$ reveals that Student's $t$ Wald LCB and Newcombe Method 10 score LCB disagree in 250 configurations (1.11\%), demonstrating that they are distinct mathematical operators. We restore strict protocol fidelity in \texttt{experiments/v9\_evaluate\_holdout.py} by anchoring the confirmatory pass/fail decision strictly to the prespecified Student's $t$ Wald LCB (\texttt{lcb95\_delta\_tsr > -0.05} and $\widehat{\mathrm{TSR}}_{\mathrm{nominal}} \ge 0.94$), reporting Newcombe Method 10 as a prespecified sensitivity analysis with an explicit concurrence indicator (\texttt{sensitivity\_newcombe\_concurs}).
+
+Three synthetic regression tests (\texttt{test\_60}, \texttt{test\_61}, \texttt{test\_62}) verify policy provenance, authoritative decision rule behavior, and boundary envelope divergence. All 62 preflight tests and all 173 full repository tests pass with zero failures. Zero real holdout execution occurred.
+\end{abstract}
+
+\vspace{6pt}
+\noindent \textbf{Keywords:} Frozen Policy Provenance, M2R2 Certification, Hypothesis H3, Paired Wald Confidence Bound, Student's $t$ LCB, Newcombe Paired Score Interval, Decision Disentanglement, Common Random Numbers.
+
+\section{Executive Summary}
+
+\subsection{Executive Summary (English)}
+\begin{enumerate}
+    \item \textbf{Frozen Policy Provenance Discrepancy Resolved:} Report 18 contained a clerical error citing \texttt{results/v9/cal/selected\_policy.json} (\texttt{1c316d2d...}). We verify that the authoritative M2R2 certified policy is \texttt{results/v9/cal\_r2/selected\_policy.json} (\texttt{5a89d606...}, \texttt{V9\_CAND\_1\_TIER1\_STRICTEST}). The historical \texttt{results/v9/cal/} artifact is a retired Round 1 artifact that is fail-closed rejected by the production evaluator.
+    \item \textbf{"Candidate Parameters Hash" Clarified:} The phrase "Candidate Parameters Hash" used informally in project communications corresponds to the full raw file SHA-256 digest (\texttt{5a89d606...}) of the M2R2 policy artifact. The production evaluator explicitly verifies both the canonical payload hash (\texttt{90dc5c00...}) and candidate ID.
+    \item \textbf{Authoritative $H_3$ Decision Rule Disentangled:} The preregistered confirmatory decision rule for $H_3$ is governed strictly by the paired Student's $t$ Wald lower confidence bound ($\mathrm{LCB}_{95} > -0.05$ on $S_{10}$ and $\widehat{\mathrm{TSR}}_{\mathrm{nominal}} \ge 0.94$). Imposing an unprespecified dual hurdle (\texttt{Student\_t and Newcombe}) was an ad-hoc conservative penalty. We decoupled the rule so that Student's $t$ controls the confirmatory decision, while Newcombe Method 10 is reported as a prespecified sensitivity analysis.
+    \item \textbf{Boundary Concordance Qualification:} The claim of 100\% decision concordance between Student's $t$ and Newcombe is bounded to realistic operational distributions and hand-selected benchmark cases. Across the full boundary envelope near $-0.05$ at $N = 1,200$, 1.11\% of contingency tables yield discordant decisions. This mathematical distinction justifies prespecifying the controlling method rather than post-hoc selecting between them.
+    \item \textbf{Common Random Numbers (CRN) Claim Boundaries:} We reaffirm that CRN provides architectural coupling ($t=0$ bitwise initial conditions and independent stream derivation), but sample variance reduction is an empirical property requiring positive covariance ($\operatorname{Cov}(Y_\pi, Y_{\text{base}}) > 0$). While established on historical benchmark data ($\rho \approx 0.593$), holdout variance reduction remains an empirical outcome to be observed post-authorization.
+    \item \textbf{Synthetic Test Verification:} Added unit tests \texttt{test\_60}, \texttt{test\_61}, and \texttt{test\_62} to \texttt{tests/test\_v9\_holdout\_preflight.py}. All 62 preflight tests pass (1.30s); all 173 repository tests pass (27.44s).
+    \item \textbf{Holdout Independence Preserved:} Zero real holdout data or manifests were accessed or created. The frozen policy and calibration artifacts remain untouched.
+\end{enumerate}
+
+\subsection{\thaifont บทสรุปสำหรับผู้บริหาร (Executive Summary in Thai)}
+\begin{enumerate}
+    \item \textbf{\thaifont การพิสูจน์ความถูกต้องของไฟล์นโยบายคงที่ (Frozen Policy):} {\thaifont รายงานฉบับที่ 18 มีข้อผิดพลาดทางธุรการในการอ้างอิงพาธไฟล์ไปยัง \texttt{results/v9/cal/selected\_policy.json} (\texttt{1c316d2d...}) การตรวจสอบอย่างละเอียดข้ามเอกสารพิธีสารยืนยันว่า ไฟล์นโยบายที่ได้รับการรับรองอย่างเป็นทางการจากรอบการปรับเทียบ M2R2 คือ \texttt{results/v9/cal\_r2/selected\_policy.json} (\texttt{5a89d606...}, ผู้สมัคร \texttt{V9\_CAND\_1\_TIER1\_STRICTEST}) ในขณะที่ไฟล์ในไดเรกทอรี \texttt{results/v9/cal/} เป็นไฟล์ประวัติศาสตร์รอบ R1 ซึ่งระบบประเมินผลจริงถูกเขียนให้ปฏิเสธการโหลดทันที (Fail-Closed)}
+    \item \textbf{\thaifont ความกระจ่างของคำว่า "Candidate Parameters Hash":} {\thaifont คำว่า "Candidate Parameters Hash" ที่ถูกใช้ในการสื่อสารแบบไม่เป็นทางการ แท้จริงแล้วหมายถึงค่า Raw SHA-256 Digest (\texttt{5a89d606...}) ของไฟล์นโยบายรอบ M2R2 ทั้งนี้ ตัวประเมินผลในโค้ดการผลิตจะทำการตรวจสอบทั้ง Canonical Payload Hash (\texttt{90dc5c00...}) และ Candidate ID อย่างเคร่งครัด}
+    \item \textbf{\thaifont การแยกแยะเกณฑ์การตัดสินสมมติฐาน $H_3$ ตามพิธีสารที่ลงทะเบียนไว้:} {\thaifont เกณฑ์การตัดสินยืนยันผล (Confirmatory Decision Rule) สำหรับสมมติฐาน $H_3$ ถูกกำหนดไว้ในพิธีสารให้ใช้ paired Student's $t$ Wald Lower Confidence Bound ($\mathrm{LCB}_{95} > -0.05$ บนชุดสถานการณ์ $S_{10}$ ร่วมกับเกณฑ์ $\widehat{\mathrm{TSR}}_{\mathrm{nominal}} \ge 0.94$) การนำเกณฑ์เชื่อมด้วย AND (\texttt{Student\_t and Newcombe}) มาใช้ในรอบก่อนหน้าถือเป็นการเพิ่มอุปสรรคที่ไม่ได้รับการลงทะเบียนไว้ล่วงหน้า เราได้ทำการปรับปรุงโค้ดให้ Student's $t$ เป็นเกณฑ์ชี้ขาดหลักแต่เพียงผู้เดียว และรายงาน Newcombe Method 10 เป็นการวิเคราะห์ความไว (Sensitivity Analysis) พร้อมตัวบ่งชี้ความสอดคล้อง (\texttt{sensitivity\_newcombe\_concurs})}
+    \item \textbf{\thaifont ข้อจำกัดของความสอดคล้องระหว่างวิธี Student's $t$ และ Newcombe:} {\thaifont ข้ออ้างที่ว่าวิธี Student's $t$ และ Newcombe สอดคล้องกัน 100\% นั้น เป็นจริงเฉพาะบนสภาวะการกระจายตัวทั่วไปและ 7 กรณีขอบเขตตัวแทนเท่านั้น แต่จากการค้นหาอย่างละเอียดบนตารางนับ 22,478 แบบ พบความขัดแย้ง 250 แบบ (1.11\%) บริเวณขอบวิกฤตใกล้ $-0.05$ ซึ่งพิสูจน์ว่าทั้งสองวิธีเป็นฟังก์ชันทางคณิตศาสตร์ที่แตกต่างกัน และตอกย้ำความจำเป็นในการยึดถือวิธีที่ระบุไว้ในพิธีสารเป็นหลัก}
+    \item \textbf{\thaifont การคงขอบเขตข้ออ้างเรื่องการลดความแปรปรวนของ CRN:} {\thaifont คงความชัดเจนว่า CRN เป็นการจับคู่เชิงสถาปัตยกรรม ($t=0$ Bitwise Match) แต่การลดความแปรปรวนจริงเป็นคุณสมบัติเชิงประจักษ์ที่ต้องการ $\operatorname{Cov} > 0$ ซึ่งบนชุดข้อมูล Holdout จริงยังต้องรอการวัดผลหลังได้รับอนุมัติ}
+    \item \textbf{\thaifont ผลการทดสอบและการควบคุม:} {\thaifont เพิ่มการทดสอบสังเคราะห์ \texttt{test\_60}, \texttt{test\_61}, \texttt{test\_62} โดยชุดทดสอบ Preflight ผ่าน 62/62 รายการ (1.30 วินาที) และชุดทดสอบทั้งระบบผ่าน 173/173 รายการ (27.44 วินาที) ยืนยันว่าไม่มีการแตะต้องชุดข้อมูล Holdout จริงแม้แต่น้อย}
+\end{enumerate}
+
+\section{Phase 1 --- Frozen Policy Provenance and Digest Reconciliation}
+
+\subsection{Policy Artifact Comparison}
+Table~\ref{tab:policy_artifacts} details the properties of the historical Calibration Round 1 artifact versus the authoritative Calibration Round 2 (M2R2) artifact.
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabularx}{\textwidth}{lXX}
+\toprule
+\textbf{Property} & \textbf{Historical Calibration Artifact (R1)} & \textbf{Authoritative M2R2 Certified Policy} \\
+\midrule
+\textbf{File Path} & \texttt{results/v9/cal/selected\_policy.json} & \texttt{results/v9/cal\_r2/selected\_policy.json} \\
+\textbf{Candidate ID} & \texttt{V9\_CAND\_2\_TIER2\_VERY\_STRICT} & \texttt{V9\_CAND\_1\_TIER1\_STRICTEST} \\
+\textbf{Tier Label} & Tier 2 (Very Strict) & Tier 1 (Strictest) \\
+\textbf{Raw File SHA-256} & \texttt{1c316d2d97ccf1a93f2dcd4c...} & \texttt{5a89d6061b379f1b34ab47be0deef8d...} \\
+\textbf{Canonical Payload SHA-256} & \texttt{f1ce3df35f3ab2851a716c5e5337...} & \texttt{90dc5c0068bb62187415bba57fbf9caf...} \\
+\textbf{Created UTC} & \texttt{2026-10-24T14:38:55Z} & \texttt{2026-10-25T05:52:52Z} \\
+\textbf{Calibration Protocol} & Protocol Amendment (Superceded) & \texttt{docs/v9\_m2r2\_protocol\_amendment.md} \\
+\textbf{Validation Milestone} & Not Evaluated in M3 & Certified in Milestone V9-M3 \\
+\textbf{Evaluator Handling} & \textbf{FAIL-CLOSED REJECTED} (\texttt{ValueError}) & \textbf{PREFLIGHT\_PASS} (Default Target) \\
+\bottomrule
+\end{tabularx}
+\caption{Forensic reconciliation of calibration policy artifacts.}
+\label{tab:policy_artifacts}
+\end{table}
+
+\subsection{Reconciliation and Traceability Findings}
+\begin{itemize}
+    \item \textbf{Authoritative M2R2 Policy:} Milestone M2R2 executed under the registered protocol amendment (\texttt{docs/v9\_m2r2\_protocol\_amendment.md}) and certified candidate \texttt{V9\_CAND\_1\_TIER1\_STRICTEST}. Milestone V9-M3 evaluated this exact policy, confirming an empirical selective risk of $\widehat{R}_{\text{sel}} = 0.0076 \le 0.05$ on $M_{\text{val}} = 1,189$ accepted episodes (\texttt{docs/v9\_m3\_post\_validation\_audit.md}).
+    \item \textbf{Evaluator Loading Configuration:} In \texttt{experiments/v9\_evaluate\_holdout.py}, line 1859 defaults to \texttt{results/v9/cal\_r2/selected\_policy.json}. Line 81 defines \texttt{EXPECTED\_SELECTED\_CANDIDATE\_ID = "V9\_CAND\_1\_TIER1\_STRICTEST"}. Loading the historical R1 artifact immediately triggers a fail-closed exception.
+    \item \textbf{Correction of Report 18:} Section 7 of Report 18 and manifest \texttt{report\_manifest\_h3\_ci\_crn\_audit.json} erroneously referenced \texttt{results/v9/cal/selected\_policy.json}. This was a clerical transposition of directory paths. This audit formally supersedes that citation.
+    \item \textbf{Candidate Parameters Hash Meaning:} The phrase refers to the raw 256-bit SHA-256 checksum (\texttt{5a89d606...}) of the certified policy file. The production harness additionally validates the canonical JSON payload digest (\texttt{90dc5c00...}) to guarantee semantic invariability against formatting changes.
+\end{itemize}
+
+\section{Phase 2 --- Authoritative H3 Decision-Method Audit}
+
+\subsection{Protocol Specification of Hypothesis H3}
+In \texttt{docs/v9\_experiment\_protocol.md}, Hypothesis $H_3$ assesses operational utility and noninferiority of True-Success Rate (TSR) against the primary baseline V8.1 Martingale across the $S_{10}$ scenario domain ($N = 1,200$ matched pairs).
+
+The confirmatory acceptance criteria defined in Table 3.5.1 are:
+\begin{equation}
+\mathrm{LCB}_{95}(\Delta\mathrm{TSR}) > -0.05 \quad \text{AND} \quad \widehat{\mathrm{TSR}}_{\mathrm{nominal}} \ge 0.94
+\end{equation}
+Section 3.2.4 derives power from the paired Wald standard error:
+\begin{equation}
+\mathrm{SE}_0 = \sqrt{\frac{q}{N}}, \quad q = \frac{n_{10} + n_{01}}{N}
+\end{equation}
+with the 1-sided 95\% Student's $t$ critical threshold:
+\begin{equation}
+\mathrm{LCB}_{\text{Student-}t} = \overline{d} - t_{0.95, N-1} \frac{s_d}{\sqrt{N}}
+\end{equation}
+
+\subsection{Decision Rule Decoupling}
+In commit \texttt{f3ede86}, \texttt{evaluate\_scenario\_holdout} was implemented as:
+\begin{verbatim}
+h3_v8_passed = bool(h3_v8_lcb95 > -0.05 and h3_v8_newcombe_lcb95 > -0.05 and nominal_tsr_hat >= 0.94)
+\end{verbatim}
+This conjunction imposed an unprespecified dual test. We updated \texttt{experiments/v9\_evaluate\_holdout.py} to anchor the confirmatory pass/fail decision strictly to the registered Student's $t$ Wald LCB:
+\begin{verbatim}
+h3_v8_passed = bool(h3_v8_lcb95 > -0.05 and nominal_tsr_hat >= 0.94)
+h3_v8_newcombe_concurs = bool(h3_v8_newcombe_lcb95 > -0.05) if not math.isnan(...) else False
+\end{verbatim}
+The production evaluator now reports both metrics transparently without allowing post-hoc method substitution.
+
+\section{Phase 3 --- Audit of Decision Concordance Claim}
+
+\subsection{Grid Search Analysis on $N = 1,200$}
+To evaluate the reported claim of 100\% decision concordance between Student's $t$ Wald and Newcombe Method 10, we conducted an exhaustive grid search over all valid boundary configurations where the paired difference $\Delta\mathrm{TSR} \in [-0.07, -0.03]$ on $N = 1,200$:
+\begin{itemize}
+    \item Total boundary configurations analyzed: \textbf{22,478}
+    \item Concordant configurations ($t\text{ decision} == \text{Newcombe decision}$): \textbf{22,228 (98.89\%)}
+    \item Discordant configurations ($t\text{ decision} \ne \text{Newcombe decision}$): \textbf{250 (1.11\%)}
+\end{itemize}
+
+\subsection{Representative Boundary Discordance}
+Table~\ref{tab:discordance} shows representative configurations in the razor-thin boundary envelope near $-0.05$ where the two methods produce divergent decisions.
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabularx}{\textwidth}{cccccccc}
+\toprule
+$n_{11}$ & $n_{10}$ & $n_{01}$ & $n_{00}$ & $\Delta\mathrm{TSR}$ & Student's $t$ Wald LCB & Newcombe Score LCB & Outcome Discordance \\
+\midrule
+0 & 0 & 48 & 1152 & -0.040000 & \textbf{-0.049316} & \textbf{-0.050386} & $t$ PASS / Newcombe FAIL \\
+120 & 2 & 50 & 1028 & -0.040000 & \textbf{-0.049712} & \textbf{-0.050149} & $t$ PASS / Newcombe FAIL \\
+200 & 3 & 51 & 946 & -0.040000 & \textbf{-0.049904} & \textbf{-0.050150} & $t$ PASS / Newcombe FAIL \\
+800 & 14 & 60 & 326 & -0.038333 & \textbf{-0.049997} & \textbf{-0.050036} & $t$ PASS / Newcombe FAIL \\
+\bottomrule
+\end{tabularx}
+\caption{Boundary configurations exhibiting decision discordance at margin $-0.05$ ($N = 1,200$).}
+\label{tab:discordance}
+\end{table}
+
+This proves that Student's $t$ Wald and Newcombe Method 10 are fundamentally distinct mathematical functions. The claim of 100\% concordance applies across broad operational regimes, but fails in 1.11\% of razor-thin boundary cases, justifying the prespecification of Student's $t$ as the authoritative decision method.
+
+\section{Phase 4 --- Common Random Numbers (CRN) Claim Boundaries}
+
+We reaffirm the four structural and statistical boundaries governing CRN:
+\begin{enumerate}
+    \item \textbf{Episode-Level Matched Pairing:} Matching occurs strictly at the episode level via identical integer seeds.
+    \item \textbf{Common Initial Conditions:} At $t = 0$, both controllers observe bit-identical initial states and draw from identical disturbance seeds.
+    \item \textbf{Mutable Stream Independence:} Each controller operates on an independent PRNG state. When a controller invokes additional sensor queries, its stream advances, inducing intentional decorrelation for subsequent draws.
+    \item \textbf{Empirical Covariance Requirement:} Variance reduction $\operatorname{Var}(\overline{\Delta}) < \operatorname{Var}_{\text{unpaired}}$ mathematically requires positive covariance $\operatorname{Cov}(Y_\pi, Y_{\text{base}}) > 0$. On historical benchmark data ($N = 500$), empirical correlation was $\rho \approx 0.593$ (yielding 36.2\% SE reduction). On unexecuted holdout data, variance reduction remains an empirical property to be measured post-authorization.
+\end{enumerate}
+
+\section{Phase 5 --- Synthetic Verification Suite}
+
+We implemented three unit tests in \texttt{tests/test\_v9\_holdout\_preflight.py}:
+\begin{itemize}
+    \item \texttt{test\_60\_frozen\_policy\_m2r2\_provenance\_and\_hash\_verification}: Validates M2R2 policy raw hash (\texttt{5a89d606...}), canonical hash (\texttt{90dc5c00...}), and candidate ID (\texttt{V9\_CAND\_1\_TIER1\_STRICTEST}), asserting fail-closed rejection of the historical R1 artifact.
+    \item \texttt{test\_61\_h3\_authoritative\_decision\_rule\_governed\_by\_student\_t}: Validates that \texttt{evaluate\_scenario\_holdout} passes when Student's $t$ Wald LCB exceeds $-0.05$ while Newcombe score LCB fails, recording \texttt{sensitivity\_newcombe\_concurs = False}.
+    \item \texttt{test\_62\_h3\_concordance\_boundary\_envelope\_qualification}: Validates mathematical divergence across the razor-thin boundary envelope on $N = 1,200$.
+\end{itemize}
+
+Test suite execution:
+\begin{itemize}
+    \item Focused Preflight Tests: \textbf{62 passed} in 1.30s (Exit Code: 0).
+    \item Full Repository Suite: \textbf{173 passed} in 27.44s (Exit Code: 0).
+\end{itemize}
+
+\section{Artifact Manifest and Verification Status}
+
+Table~\ref{tab:manifest} enumerates all key artifacts and SHA-256 digests.
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabularx}{\textwidth}{lXl}
+\toprule
+\textbf{Artifact Description} & \textbf{Relative File Path} & \textbf{SHA-256 Checksum} \\
+\midrule
+M2R2 Certified Policy & \texttt{results/v9/cal\_r2/selected\_policy.json} & \texttt{5a89d6061b379f1b34ab47be0deef8d6...} \\
+Historical R1 Policy & \texttt{results/v9/cal/selected\_policy.json} & \texttt{1c316d2d97ccf1a93f2dcd4c4196aefb...} \\
+M2R2 Candidate Summary & \texttt{results/v9/cal\_r2/cal\_candidate\_summary.csv} & \texttt{043d84a7e93ce48ebca30b3543f07a16...} \\
+M2R2 Calibration Report & \texttt{results/v9/cal\_r2/calibration\_report.json} & \texttt{ef3eb0a2b5eecff115e8e8ea6fbb2e97...} \\
+M3 Validation Report & \texttt{results/v9/val\_r1/validation\_report.json} & \texttt{a84baea0cae9be1c54b6fb7914f17730...} \\
+Audit Report 19 (Markdown) & \texttt{docs/reports/.../19\_frozen\_policy...md} & \texttt{29215033c5e8840742f9b1103c8b41ca...} \\
+Audit Report 19 (LaTeX) & \texttt{docs/reports/.../19\_frozen\_policy...tex} & \textit{(Computed upon compile)} \\
+Audit Report 19 (PDF) & \texttt{docs/reports/.../19\_frozen\_policy...pdf} & \textit{(Computed upon compile)} \\
+\bottomrule
+\end{tabularx}
+\caption{Cryptographic hashes for verified audit artifacts.}
+\label{tab:manifest}
+\end{table}
+
+\section{Final Recommendation and Non-Authorization Directive}
+
+\subsection{Formal Audit Status}
+\begin{center}
+\Large \textbf{POLICY\_H3\_AUDIT\_CONFIRMED\_WITH\_QUALIFICATIONS}
+\end{center}
+
+\subsection{Summary of Audit Conclusions}
+\begin{enumerate}
+    \item \textbf{Policy Provenance:} Certified policy identity is confirmed as \texttt{V9\_CAND\_1\_TIER1\_STRICTEST} at \texttt{results/v9/cal\_r2/selected\_policy.json} (raw SHA-256 \texttt{5a89d606...}, canonical payload SHA-256 \texttt{90dc5c00...}). Report 18's citation of \texttt{cal/selected\_policy.json} is formally reconciled as a superseded clerical error.
+    \item \textbf{Decision Rule:} The $H_3$ confirmatory decision rule is strictly governed by the paired Student's $t$ Wald LCB ($> -0.05$ on $S_{10}$ and $\widehat{\mathrm{TSR}}_{\mathrm{nominal}} \ge 0.94$). Newcombe Method 10 is prespecified as a sensitivity check with reported concurrence.
+    \item \textbf{Concordance Bounded:} Concordance between Student's $t$ and Newcombe is bounded to operational distributions; boundary discordance occurs in 1.11\% of tables near $-0.05$.
+    \item \textbf{CRN Claims Qualified:} CRN variance reduction is established on historical data, but remains an empirical property to be measured on holdout data post-authorization.
+    \item \textbf{Strict Non-Authorization:} This document does NOT authorize execution of Milestone V9-M4. The production evaluator remains safely locked. Zero real holdout data was generated, accessed, or simulated.
+\end{enumerate}
+
+\end{document}

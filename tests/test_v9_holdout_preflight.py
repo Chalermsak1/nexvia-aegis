@@ -44,6 +44,7 @@ from aegis.v9.risk_statistics import (
 )
 from experiments.v9_evaluate_dev import build_v9_s12_scenarios
 from experiments.v9_evaluate_holdout import (
+    EXPECTED_SELECTED_CANDIDATE_ID,
     REQUIRED_EXECUTION_TOKEN,
     TEST_MIX_ALLOWED_SEEDS,
     TEST_SCEN_ALLOWED_SEEDS,
@@ -53,6 +54,7 @@ from experiments.v9_evaluate_holdout import (
     align_and_pair_records,
     berger_intersection_union_test,
     clopper_pearson_one_sided_ucb,
+    compute_canonical_payload_sha256,
     enforce_holdout_output_directory,
     enforce_holdout_seeds,
     evaluate_mixture_holdout,
@@ -2218,6 +2220,164 @@ def test_59_crn_variance_reduction_empirical_distinction():
     var_paired_neg = float(np.var([a - b for a, b in zip(y1_neg, y2_neg)], ddof=1) / n)
     var_unpaired_neg = float((np.var(y1_neg, ddof=1) + np.var(y2_neg, ddof=1)) / n)
     assert var_paired_neg > var_unpaired_neg
+
+
+def test_60_frozen_policy_m2r2_provenance_and_hash_verification():
+    """
+    Audits the frozen policy provenance against M2R2 and M3 certifications:
+    1. Asserts that the authoritative M2R2 certified policy is at
+       results/v9/cal_r2/selected_policy.json with candidate ID V9_CAND_1_TIER1_STRICTEST.
+    2. Verifies the exact raw SHA-256 (5a89d606...) and canonical payload SHA-256 (90dc5c00...).
+    3. Confirms that verify_and_load_selected_policy successfully loads this artifact.
+    4. Audits the historical R1 artifact results/v9/cal/selected_policy.json:
+       - Candidate ID: V9_CAND_2_TIER2_VERY_STRICT
+       - Raw SHA-256: 1c316d2d...
+       - Confirms fail-closed rejection if supplied to verify_and_load_selected_policy.
+    """
+    cal_r2_path = Path("results/v9/cal_r2/selected_policy.json")
+    assert cal_r2_path.exists(), "M2R2 certified policy file missing from results/v9/cal_r2/selected_policy.json"
+
+    # 1 & 2: Hash verification on authoritative M2R2 artifact
+    raw_sha = sha256_file(cal_r2_path)
+    expected_raw_sha = "5a89d6061b379f1b34ab47be0deef8d63180d3e4c21d18c478bc7e451f5c84e2"
+    assert raw_sha == expected_raw_sha, f"M2R2 raw SHA-256 mismatch: {raw_sha} vs {expected_raw_sha}"
+
+    with open(cal_r2_path, "r", encoding="utf-8") as f:
+        payload = json.load(f)
+    canonical_sha = compute_canonical_payload_sha256(payload)
+    expected_canonical_sha = "90dc5c0068bb62187415bba57fbf9cafc1f18e111ad5790b0214961490902034"
+    assert canonical_sha == expected_canonical_sha, f"M2R2 canonical SHA-256 mismatch: {canonical_sha}"
+
+    # 3: Verified loading
+    cand_params, loaded_payload, loaded_raw_sha = verify_and_load_selected_policy(cal_r2_path)
+    assert cand_params.candidate_id == EXPECTED_SELECTED_CANDIDATE_ID
+    assert cand_params.candidate_id == "V9_CAND_1_TIER1_STRICTEST"
+    assert loaded_raw_sha == expected_raw_sha
+
+    # 4: Historical R1 artifact separation and fail-closed rejection
+    cal_r1_path = Path("results/v9/cal/selected_policy.json")
+    assert cal_r1_path.exists(), "Historical R1 policy file missing from results/v9/cal/selected_policy.json"
+    raw_sha_r1 = sha256_file(cal_r1_path)
+    expected_raw_sha_r1 = "1c316d2d97ccf1a93f2dcd4c4196aefbb3817f7bc951dee5b0290468f7de7b87"
+    assert raw_sha_r1 == expected_raw_sha_r1, f"R1 raw SHA-256 mismatch: {raw_sha_r1}"
+
+    with open(cal_r1_path, "r", encoding="utf-8") as f:
+        payload_r1 = json.load(f)
+    assert payload_r1["selected_candidate"]["candidate_id"] == "V9_CAND_2_TIER2_VERY_STRICT"
+
+    # Confirms fail-closed rejection by production policy loader
+    with pytest.raises(ValueError, match="Selected policy candidate ID mismatch"):
+        verify_and_load_selected_policy(cal_r1_path)
+
+
+def test_61_h3_authoritative_decision_rule_governed_by_student_t():
+    """
+    Verifies that evaluate_scenario_holdout anchors the authoritative H3 decision
+    rule strictly to the Student's t Wald LCB (> -0.05 on S_10 and nominal TSR >= 0.94),
+    while reporting Newcombe profile score as a prespecified sensitivity analysis.
+    """
+    scenarios = build_v9_s12_scenarios()
+    seeds_per_scen = 120
+    s10_names = {s.name for s in scenarios if s.suite == "S_10"}
+    assert len(s10_names) == 10
+
+    # Total episodes = 12 scenarios x 120 seeds = 1440 episodes
+    # S_10 scenarios total = 10 x 120 = 1200 episodes.
+    # Boundary condition on S_10: n11=120, n10=2, n01=50, n00=1028
+    # (NOMINAL provides n11=120, ensuring TSR_nominal = 1.0 >= 0.94)
+    # Delta TSR = (2 - 50)/1200 = -0.040.
+    # Student's t Wald LCB is -0.049712 > -0.05 (PASS)
+    # Newcombe score LCB is -0.050149 <= -0.05 (FAIL)
+    pol_records = []
+    v8_records = []
+    ep_idx = 0
+    n10_remaining = 2
+    n01_remaining = 50
+
+    for sc_idx, scen in enumerate(scenarios):
+        for s_idx in range(seeds_per_scen):
+            seed = 96000 + sc_idx * 500 + s_idx
+            if scen.name == "NOMINAL":
+                # NOMINAL: all 120 episodes are (1, 1) -> n11 = 120
+                y_pi = True
+                y_v8 = True
+            elif scen.suite == "S_10":
+                if n10_remaining > 0:
+                    y_pi = True
+                    y_v8 = False
+                    n10_remaining -= 1
+                elif n01_remaining > 0:
+                    y_pi = False
+                    y_v8 = True
+                    n01_remaining -= 1
+                else:
+                    y_pi = False
+                    y_v8 = False
+            else:
+                # S_ext scenarios (not in S_10)
+                y_pi = False
+                y_v8 = False
+
+            pol_records.append(make_synthetic_episode_record(
+                episode_index=ep_idx, seed=seed, scenario=scen.name,
+                scenario_index=sc_idx, accepted=y_pi,
+                outcome="TERMINAL_SUCCESS" if y_pi else "ABSTAINED",
+            ))
+            v8_records.append(make_synthetic_episode_record(
+                episode_index=ep_idx, seed=seed, scenario=scen.name,
+                scenario_index=sc_idx, accepted=y_v8,
+                outcome="TERMINAL_SUCCESS" if y_v8 else "ABSTAINED",
+            ))
+            ep_idx += 1
+
+    res = evaluate_scenario_holdout(
+        records=pol_records,
+        v8_records=v8_records,
+        v7_records=None,
+        expected_seeds_per_scenario=seeds_per_scen,
+    )
+
+    h3_v8 = res["h3_tsr_noninferiority_vs_v8"]
+    assert h3_v8["authoritative_method"] == "paired_difference_student_t_wald_lcb"
+    assert h3_v8["table_n11_n10_n01_n00"] == [120, 2, 50, 1028]
+    # Student's t Wald LCB is > -0.05
+    assert h3_v8["lcb95_delta_tsr"] > -0.05
+    # Newcombe LCB is <= -0.05
+    assert h3_v8["sensitivity_newcombe_lcb95_delta_tsr"] <= -0.05
+    # Sensitivity concurrence is False
+    assert h3_v8["sensitivity_newcombe_concurs"] is False
+    # Authoritative pass/fail is determined strictly by Student's t Wald LCB and nominal TSR
+    assert h3_v8["passed"] is True
+    assert h3_v8["status"] == "CONFIRMATORY_PASS"
+    assert res["h3_overall"]["primary_passed"] is True
+    assert res["h3_overall"]["passed"] is True
+
+
+def test_62_h3_concordance_boundary_envelope_qualification():
+    """
+    Audits the claim of Student's t vs Newcombe concordance:
+    Proves that while concordance is 100% across typical operating conditions,
+    the two methods diverge in a razor-thin boundary envelope near -0.05.
+    This establishes that the methods are not mathematically identical,
+    justifying the preregistered designation of Student's t Wald as authoritative
+    and Newcombe as a prespecified sensitivity analysis.
+    """
+    # 1. Operational broad concordance
+    for n10, n01 in [(10, 10), (50, 40), (20, 30), (0, 0), (100, 100)]:
+        t_lcb = paired_difference_lcb([1.0] * n10 + [-1.0] * n01 + [0.0] * (1200 - n10 - n01), confidence=0.95)
+        newc_lcb = newcombe_paired_difference_lcb(800, n10, n01, 1200 - 800 - n10 - n01, confidence=0.95)
+        assert (t_lcb > -0.05) == (newc_lcb > -0.05)
+
+    # 2. Razor-thin boundary envelope divergence
+    # Case: n11=0, n10=0, n01=48, n00=1152
+    diffs = [-1.0] * 48 + [0.0] * 1152
+    t_lcb_b = paired_difference_lcb(diffs, confidence=0.95)
+    newc_lcb_b = newcombe_paired_difference_lcb(0, 0, 48, 1152, confidence=0.95)
+
+    assert t_lcb_b > -0.05, f"Expected t_lcb > -0.05, got {t_lcb_b}"
+    assert newc_lcb_b <= -0.05, f"Expected newc_lcb <= -0.05, got {newc_lcb_b}"
+    assert (t_lcb_b > -0.05) != (newc_lcb_b > -0.05), "Expected boundary divergence"
+
 
 
 
