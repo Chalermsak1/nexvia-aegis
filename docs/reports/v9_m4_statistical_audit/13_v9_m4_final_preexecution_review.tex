@@ -1,0 +1,195 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[margin=2.0cm]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb,amsfonts,amsthm,mathtools}
+\usepackage{booktabs,tabularx,colortbl,array,multirow}
+\usepackage[table]{xcolor}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{microtype}
+\usepackage{hyperref}
+
+\newfontfamily\thaifont{Thonburi}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    citecolor=blue!70!black,
+    urlcolor=blue!70!black
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\footnotesize \textbf{NEXVIA AEGIS V9-M4 Pre-Execution Review}}
+\lhead{\footnotesize Final Baseline Integrity \& Production Readiness Audit}
+\rfoot{\footnotesize Page \thepage}
+\lfoot{\footnotesize Document ID: AEGIS-V9-M4-REV-13}
+
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{NEXVIA AEGIS V9-M4 Final Pre-Execution Review}}\\[6pt]
+    {\Large \textbf{Baseline Integrity Audit, Statistical Decision Verification,}}\\[3pt]
+    {\Large \textbf{and Production Holdout Readiness Assessment}}\\[10pt]
+    \textbf{Autonomous Verification Subsystem (Google DeepMind Antigravity)}\\
+    \textit{Git Branch: v9.0-runtime-assurance \quad $\cdot$ \quad Baseline Commit: a66bcc9 \quad $\cdot$ \quad Date: October 25, 2026}\\[12pt]
+\end{center}
+
+\noindent\fbox{
+\parbox{0.97\textwidth}{
+\textbf{CRITICAL NON-AUTHORIZATION DIRECTIVE:}\\
+This comprehensive document reports the final pre-execution technical review and baseline integrity audit of the NEXVIA AEGIS V9-M4 confirmatory holdout evaluation pipeline. \textbf{This document does NOT constitute authorization to execute Milestone V9-M4.} No real holdout manifests or episode datasets were generated, loaded, or inspected. The reserved holdout seed blocks ($73000..74439$ for mixture holdout and $75000..75119$ for scenario holdout) remain completely uninstantiated and pristine. Execution of V9-M4 requires an explicit, separate instruction and authorization decision from the project owner.
+}
+}
+
+\vspace{10pt}
+
+\begin{abstract}
+\noindent This report delivers the final pre-execution audit of Milestone V9-M4 (Confirmatory Holdout Evaluation) for the NEXVIA AEGIS runtime assurance architecture. We systematically examine: (1)~cryptographic provenance and parameter immutability of the selected policy \texttt{V9\_CAND\_1\_TIER1\_STRICTEST}; (2)~mathematical and statistical consistency of confirmatory decision rules for Hypotheses $H_1$ through $H_5$; (3)~baseline integrity, provenance, and pairing readiness for V8.1 and V7 reference controllers; (4)~single-shot execution guards, read-only preflight operations, and directory isolation; and (5)~regression test reproducibility across 140 unit and subsystem tests. We confirm that the evaluation harness in \texttt{experiments/v9\_evaluate\_holdout.py} satisfies all preregistered inferential requirements, that all historical audit findings (M4-F01, M4-F02, M4-F03, and H5 numerical reconciliation) are fully resolved, and that holdout partitions remain completely untouched. Based on this evidence, the autonomous verification subsystem issues the final recommendation: \textbf{M4\_READY\_WITH\_QUALIFICATIONS}.
+\end{abstract}
+
+\vspace{6pt}
+\noindent \textbf{Keywords:} Milestone Readiness, Baseline Integrity, Intersection--Union Test, Holm--Šidák Step-Down, Bijective Record Pairing, Confirmatory Holdout Evaluation.
+
+\section{Executive Summary}
+
+\subsection{Executive Summary (English)}
+\begin{enumerate}
+    \item \textbf{Frozen Policy Integrity:} The selected policy at \texttt{results/v9/cal\_r2/selected\_policy.json} matches the expected raw SHA-256 digest \texttt{5a89d6061b379f1b34ab47be0deef8d63180d3e4c21d18c478bc7e451f5c84e2} bit-for-bit.
+    \item \textbf{Decision-Rule Consistency ($H_1$--$H_5$):} All five confirmatory hypotheses strictly adhere to the preregistered protocol. $H_5$ correctly evaluates unconditional incidence on $N_s = 120$ via Berger's IUT ($\max p_s \le 0.05$), with auxiliary Holm--Šidák step-down enforcing the sequential break stopping rule. Selective risk remains undefined when coverage is zero.
+    \item \textbf{Baseline Integrity \& Pairing ($H_2$, $H_3$):} Baseline implementations for V8.1 (\texttt{AegisNextController}, commit \texttt{4d891c7}) and V7 (\texttt{AegisV7MPCBaselineController}) are verified, sharing identical simulation dynamics and outcome algebra. The bijective pairing function \texttt{align\_and\_pair\_records} enforces order-invariant matching on $(seed, scenario)$ fail-closed across 8 unit tests (\texttt{test\_22}--\texttt{test\_29}).
+    \item \textbf{Execution Safeguards:} Defense-in-depth is enforced: default preflight read-only inspection, prohibited seed range validation, single-shot directory overwrite blocks, and a fail-closed execution authorization barrier. Zero real holdout manifests or output directories exist.
+    \item \textbf{Readiness Determination:} The pipeline is determined to be \textbf{M4\_READY\_WITH\_QUALIFICATIONS}. Live simulation is intentionally blocked in preflight to guarantee holdout isolation. Production execution requires wiring the simulator loop to execute the frozen policy alongside the registered baseline controllers over authorized holdout manifests.
+\end{enumerate}
+
+\subsection{\texorpdfstring{บทสรุปสำหรับผู้บริหาร (Executive Summary in Thai)}{Executive Summary in Thai}}
+{\thaifont\small
+\begin{enumerate}
+    \item \textbf{ความสมบูรณ์ของนโยบายที่ถูกตรึง (Policy Immutability):} นโยบายควบคุมที่ผ่านการสอบเทียบ (\texttt{results/v9/cal\_r2/selected\_policy.json}) ได้รับการยืนยันค่าแฮช SHA-256 แบบ Raw ตรงกับ \texttt{5a89d6061b379f1b34ab47be0deef8d63180d3e4c21d18c478bc7e451f5c84e2} อย่างสมบูรณ์ ไม่มีการดัดแปลงค่าพารามิเตอร์ใดๆ ภายหลังการสอบเทียบ
+    \item \textbf{ความสอดคล้องของสมมติฐาน $H_1$--$H_5$:} กฎการตัดสินใจทางสถิติทั้ง 5 ข้อเป็นไปตามระเบียบวิธีวิจัยที่ลงทะเบียนไว้ล่วงหน้าอย่างเคร่งครัด โดย $H_5$ ประเมินความเสี่ยงอุบัติการณ์แบบไม่มีเงื่อนไข (Unconditional Incidence) บนขนาดตัวอย่าง $N_s = 120$ ด้วยการทดสอบ Berger IUT ($\max p_s \le 0.05$) พร้อมระบบ Holm--Šidák step-down ที่หยุดการปฏิเสธทันทีเมื่อพบความล้มเหลวแรก และรักษาคำนิยาม Selective Risk เป็น \texttt{UNDEFINED} เมื่อไม่มีการยอมรับภารกิจ
+    \item \textbf{ความพร้อมของระบบเปรียบเทียบ Baseline ($H_2, H_3$):} ตัวควบคุมอ้างอิง V8.1 (\texttt{AegisNextController}, commit \texttt{4d891c7}) และ V7 (\texttt{AegisV7MPCBaselineController}) มีประวัติความถูกต้องชัดเจน ใช้ระบบพลศาสตร์และคำจำกัดความผลลัพธ์เดียวกัน ฟังก์ชันจับคู่ \texttt{align\_and\_pair\_records} ผ่านการทดสอบความถูกต้องอย่างเข้มงวด 8 รูปแบบ
+    \item \textbf{กลไกป้องกันการรันโดยไม่ได้รับอนุญาต:} มีระบบป้องกันหลายชั้น คำสั่ง CLI เริ่มต้นในโหมด Read-only Preflight, มีระบบบล็อก Seed ต้องห้าม, ป้องกันการเขียนทับไฟล์ผลลัพธ์, และระบบตรวจจับ Token ควบคุมการรัน นอกจากนี้ได้รับการยืนยันว่าไม่มีการสร้างไฟล์ Manifest หรือโฟลเดอร์ผลลัพธ์ Holdout จริงในระบบ
+    \item \textbf{ข้อสรุปความพร้อม:} ผลการประเมินคือ \textbf{M4\_READY\_WITH\_QUALIFICATIONS} ระบบมีความพร้อมทางสถิติและซอฟต์แวร์ครบถ้วน แต่มีข้อกำหนดทางเทคนิคว่า Live Simulator ถูกบล็อกไว้ในขั้นตอน Preflight เพื่อป้องกันอุบัติเหตุ เมื่อเจ้าของโครงการอนุมัติการรันจริง ระบบจะต้องเปิดใช้งาน Simulator loop เพื่อรันทั้งนโยบาย V9 และ Baselines ควบคู่กันบน Holdout Manifests
+\end{enumerate}
+}
+
+\section{Traceability Matrix: Preregistered Protocol to Implementation}
+
+Table~\ref{tab:traceability} documents the mapping from authoritative protocol requirements to implementation logic, estimands, decision thresholds, and regression tests.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Definitive Protocol-to-Implementation Traceability Matrix for Milestone V9-M4}
+\label{tab:traceability}
+\begin{tabularx}{\textwidth}{clp{3.2cm}Xllc}
+\toprule
+\textbf{Hyp.} & \textbf{Claim Name} & \textbf{Population \& Size} & \textbf{Estimand \& Rule} & \textbf{Code Location} & \textbf{Tests} & \textbf{Status} \\
+\midrule
+\textbf{$H_1$} & Selective Risk Control & $\mathcal{D}_{\text{test}}^{\text{mix}}$ ($N=1,440$) & 1-sided 95\% Clopper--Pearson UCB $\le 0.05$ on $M \ge 59$ & \texttt{v9\_eval:626-631} & \texttt{t\_1, t\_7} & \textbf{READY} \\
+\textbf{$H_2$} & Unconditional Incidence Reduction & $\mathcal{D}_{\text{test}}^{\text{mix}}$ ($N=1,440$) & Exact McNemar $p < 0.05$, $n_{10} < n_{01}$ vs V8.1 \& V7 & \texttt{v9\_eval:636-672} & \texttt{t\_22--t\_29} & \textbf{READY} \\
+\textbf{$H_3$} & Utility Noninferiority & $\mathcal{D}_{\text{test}}^{\text{scen}}$ on $\mathcal{S}_{10}$ ($N=1,200$) & 1-sided 95\% LCB($\Delta\text{TSR}$) $> -0.05$ and $\widehat{\text{TSR}}_{\text{NOM}} \ge 0.94$ & \texttt{v9\_eval:863-888} & \texttt{t\_8, t\_22+} & \textbf{READY} \\
+\textbf{$H_4$} & Coverage Floor & $\mathcal{D}_{\text{test}}^{\text{mix}}$ ($N=1,440$) & Empirical coverage $\widehat{\text{Cov}} = M / N \ge 0.35$ & \texttt{v9\_eval:632-635} & \texttt{t\_1, t\_8} & \textbf{READY} \\
+\textbf{$H_5$} & Worst-Case Safety & $\mathcal{D}_{\text{test}}^{\text{scen}}$ ($12 \times 120$) & Berger IUT $\max_s p_{\mathrm{inc}, s} \le 0.05$ on $N_s = 120$ & \texttt{v9\_eval:801+, 891+} & \texttt{t\_15--t\_21} & \textbf{READY} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Research Provenance \& Frozen Policy Audit}
+
+\subsection{Selected Policy Verification}
+The frozen policy at \texttt{results/v9/cal\_r2/selected\_policy.json} was verified:
+\begin{itemize}
+    \item \textbf{Raw SHA-256:} \texttt{5a89d6061b379f1b34ab47be0deef8d63180d3e4c21d18c478bc7e451f5c84e2}
+    \item \textbf{Candidate Identity:} \texttt{V9\_CAND\_1\_TIER1\_STRICTEST}
+    \item \textbf{Parameter Vector:} $\alpha_{\mathrm{mon}} = 0.01$, $h_{\mathrm{cusum}} = 6.0$, $\tau_{\mathrm{diff}} = 3.2$, $\tau_{\mathrm{ar}} = 3.8$, $\tau_{\mathrm{val}} = 0.1$, $\tau_{\mathrm{stop}} = 0.36$, $\gamma_{\mathrm{ville}} = 1.0$, $N_{\mathrm{probe}} = 36$, $\lambda_{\mathrm{fim},\min} = 0.001$, $d_{\mathrm{arr},\mathrm{tol}} = 0.22\text{ m}$, $d_{\mathrm{chord},\min} = 0.40\text{ m}$, $Q_{\mathrm{anchor},\max} = 4$.
+    \item \textbf{Provenance:} Certified on Milestone V9-M2R2 under manifest \texttt{cal\_manifest\_r2.json} (\texttt{9154ec5a...}) with status \texttt{V9\_CALIBRATION\_CERTIFIED}.
+\end{itemize}
+
+\subsection{Prerequisite Historical Artifacts}
+All prerequisite milestone reports were verified against their recorded SHA-256 digests:
+\begin{itemize}
+    \item \texttt{results/v9/cal\_r2/calibration\_report.json}: \texttt{a91b9b008d7486e421be016ef3d55169992b1525a720dc55f848dd37397ef050}
+    \item \texttt{results/v9/val\_r1/validation\_report.json}: \texttt{c97fffa626d70eb47d34be24aa4693b047530e14cce316d296c095ec40daec4e}
+\end{itemize}
+
+\section{Baseline Integrity Audit for $H_2$ and $H_3$}
+
+\subsection{Baseline Provenance and Dynamics Parity}
+\begin{itemize}
+    \item \textbf{Baseline V8.1 (\texttt{AegisNextController}):} Located at \texttt{src/aegis/next/agent\_next.py}. Provenance corresponds to audited snapshot commit \texttt{4d891c7500cfb4c8110f276038455bc62765ef3b} (\texttt{v8.1-audited}). Evaluates sequential Ville martingale monitoring with fixed orthogonal probing.
+    \item \textbf{Baseline V7 (\texttt{AegisV7MPCBaselineController}):} Located at \texttt{src/aegis/next/baselines.py:423-455}. Evaluates risk-constrained pseudo-MPC with on-demand anchor queries via \texttt{AegisV7RecoveryController}.
+\end{itemize}
+Both baselines share exact dynamic parity with V9 under \texttt{run\_single\_episode}: identical timestep ($\Delta t = 0.02$), maximum steps ($T=300$), arrival tolerance ($0.22\text{ m}$), terminal success radius ($0.45\text{ m}$), and fail-unsafe crash accounting.
+
+\subsection{Bijective Record Pairing}
+The verification primitive \texttt{align\_and\_pair\_records} in \texttt{experiments/v9\_evaluate\_holdout.py:350-435} enforces:
+(1)~bijective 1-to-1 matching on $(seed, scenario)$; (2)~order-invariance (verified by \texttt{test\_23} under reversed rows); and (3)~fail-closed rejection of missing, duplicate, or mismatched identity keys (\texttt{test\_24}--\texttt{test\_28}).
+
+\section{Execution Guard \& Holdout Isolation Assessment}
+
+\subsection{Defensive Guard Mechanisms}
+\begin{enumerate}
+    \item \textbf{Default Preflight Read-Only Inspection:} Invocation without flags defaults to \texttt{--preflight-only}, inspecting policies and manifests non-destructively.
+    \item \textbf{Fail-Closed Execution Authorization Guard:} Running with \texttt{--no-preflight-only} requires explicit execution authorization, failing closed with \texttt{RuntimeError} if absent.
+    \item \textbf{Preflight Simulator Hard Block:} In preflight mode, line~1010 raises \texttt{NotImplementedError}, preventing accidental simulation calls.
+    \item \textbf{Single-Shot Directory Overwrite Guard:} Refuses to overwrite existing holdout files.
+    \item \textbf{Token Privacy Invariant:} The authorization token is strictly a technical guard and is never logged or recorded.
+\end{enumerate}
+
+\subsection{Holdout Isolation Verification}
+Direct filesystem checks confirmed that the following paths do not exist:
+\begin{itemize}
+    \item \texttt{results/v9/manifests/test\_mix\_manifest\_r1.json}: \textbf{DOES NOT EXIST}
+    \item \texttt{results/v9/manifests/test\_scen\_manifest\_r1.json}: \textbf{DOES NOT EXIST}
+    \item \texttt{results/v9/test\_mix/}: \textbf{DOES NOT EXIST}
+    \item \texttt{results/v9/test\_scen/}: \textbf{DOES NOT EXIST}
+\end{itemize}
+The reserved holdout seed blocks ($73000..74439$ and $75000..75119$) remain completely pristine.
+
+\section{Regression Testing \& Synthetic Evidence}
+\begin{itemize}
+    \item \textbf{Full Repository Suite (\texttt{pytest -q}):} \textbf{140 passed} in 30.71 seconds (Exit Code: 0).
+    \item \textbf{Focused Preflight Suite (\texttt{test\_v9\_holdout\_preflight.py}):} \textbf{29 passed} in 1.13 seconds (Exit Code: 0).
+\end{itemize}
+
+\section{Audit Findings Register}
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Milestone V9-M4 Audit Findings Register}
+\label{tab:findings}
+\begin{tabularx}{\textwidth}{cclXX}
+\toprule
+\textbf{ID} & \textbf{Severity} & \textbf{Category} & \textbf{Description} & \textbf{Resolution / Status} \\
+\midrule
+\textbf{M4-F01} & LOW & Protocol & Divergence in hypothesis numbering across early docs. & \textbf{RESOLVED:} Traceability matrix establishes mapping. \\
+\textbf{M4-F02} & HIGH & Statistical & $H_5$ selective-risk inversion under safe abstention. & \textbf{RESOLVED:} Decoupled unconditional incidence on $N_s=120$. \\
+\textbf{M4-F03} & MEDIUM & Integrity & Naive sequential pairing loops in $H_2/H_3$. & \textbf{RESOLVED:} Bijective \texttt{align\_and\_pair\_records} enforced. \\
+\textbf{M4-F04} & LOW & Numerical & Narrative reference discrepancy ($0.148197$ for $K=3$). & \textbf{RESOLVED:} Reconciled in Addendum 12; test hardened to $10^{-12}$. \\
+\textbf{M4-F05} & MEDIUM & Technical & Simulator execution blocked during preflight. & \textbf{QUALIFICATION:} Requires simulator wiring upon authorization. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Final Readiness Recommendation}
+
+\begin{center}
+\large \textbf{FINAL DETERMINATION: M4\_READY\_WITH\_QUALIFICATIONS}
+\end{center}
+
+\noindent \textbf{Qualifications:} (1)~The preflight block in \texttt{execute\_holdout\_workflow} must be connected to the simulator loop upon authorization; (2)~paired baseline runs ($V_8$ and $V_7$) must be executed alongside V9 over authorized holdout seeds; (3)~dual reporting of both global Berger IUT status and scenario Holm--Šidák counts must be maintained; (4)~simulation results do not certify unshielded physical hardware safety.
+
+\section{Explicit Non-Authorization Statement}
+\noindent\fbox{
+\parbox{0.97\textwidth}{
+\textbf{NON-AUTHORIZATION FORMAL DECLARATION:}\\
+This document certifies that the NEXVIA AEGIS V9-M4 confirmatory holdout evaluation pipeline is mathematically verified, technically hardened, and compliant with all preregistered protocols. \textbf{However, this document does NOT authorize execution of Milestone V9-M4.} Milestone V9-M4 production holdout execution is strictly reserved for an explicit, separate instruction and authorization decision from the project owner.
+}
+}
+
+\end{document}
