@@ -202,19 +202,21 @@ def freeze_or_verify_cal_manifest(manifest_path: Path) -> tuple[dict[str, Any], 
     Writes `cal_manifest.json` if absent, or verifies an existing `cal_manifest.json`
     bit-for-bit against the deterministic preregistered specification.
     """
-    if "r1" in manifest_path.name:
+    if "r1" in manifest_path.name or "r2" in manifest_path.name:
         if not manifest_path.exists():
             raise FileNotFoundError(f"Fresh calibration manifest not found: {manifest_path}")
         loaded = json.loads(manifest_path.read_text(encoding="utf-8"))
-        if loaded.get("partition") not in ("D_cal,r1", "calibration_r1"):
-            raise ValueError(f"Expected partition D_cal,r1 or calibration_r1, got {loaded.get('partition')}")
+        is_r2 = ("r2" in manifest_path.name)
+        expected_part = ("D_cal,r2", "calibration_r2") if is_r2 else ("D_cal,r1", "calibration_r1")
+        if loaded.get("partition") not in expected_part:
+            raise ValueError(f"Expected partition in {expected_part}, got {loaded.get('partition')}")
         if loaded.get("planned_episodes") != CAL_EXPECTED_EPISODES:
             raise ValueError(f"Expected {CAL_EXPECTED_EPISODES} episodes, got {loaded.get('planned_episodes')}")
         if (
             loaded.get("manifest_id_start") != CAL_R1_SEED_START
             or loaded.get("manifest_id_stop_exclusive") != CAL_R1_SEED_STOP_EXCLUSIVE
         ):
-            raise ValueError("Manifest ID range mismatch for D_cal,r1.")
+            raise ValueError("Manifest ID range mismatch for D_cal.")
         stored_integrity = loaded.get("integrity_sha256")
         canon_bytes = json.dumps(
             {k: v for k, v in loaded.items() if k != "integrity_sha256"},
@@ -223,7 +225,7 @@ def freeze_or_verify_cal_manifest(manifest_path: Path) -> tuple[dict[str, Any], 
         ).encode("utf-8")
         computed_integrity = hashlib.sha256(canon_bytes).hexdigest()
         if stored_integrity != computed_integrity:
-            raise ValueError(f"cal_manifest_r1 integrity hash mismatch: {stored_integrity} != {computed_integrity}")
+            raise ValueError(f"{manifest_path.name} integrity hash mismatch: {stored_integrity} != {computed_integrity}")
         return loaded, sha256_file(manifest_path)
 
     expected = build_preregistered_cal_manifest_payload()
@@ -354,13 +356,19 @@ def freeze_run_configuration(
     m_min_eff = max(m_min_0, m_min_cov)
 
     out_dir.mkdir(parents=True, exist_ok=True)
-    is_r1 = ("r1" in candidates_path.name or "r1" in manifest_path.name)
-    run_cfg_path = out_dir / ("calibration_run_config_frozen_r1.json" if is_r1 else "calibration_run_config_frozen.json")
+    is_r2 = ("r2" in manifest_path.name)
+    is_r1 = ("r1" in manifest_path.name and not is_r2)
+    cfg_name = (
+        "calibration_run_config_frozen_r2.json"
+        if is_r2
+        else ("calibration_run_config_frozen_r1.json" if is_r1 else "calibration_run_config_frozen.json")
+    )
+    run_cfg_path = out_dir / cfg_name
 
-    if is_r1 and run_cfg_path.exists():
+    if (is_r1 or is_r2) and run_cfg_path.exists():
         existing = json.loads(run_cfg_path.read_text(encoding="utf-8"))
         if existing.get("integrity_sha256") != compute_canonical_payload_sha256(existing):
-            raise ValueError("Existing calibration_run_config_frozen_r1.json failed integrity check.")
+            raise ValueError(f"Existing {cfg_name} failed integrity check.")
         return existing
 
     spec = cand_meta["ltt_calibration_spec"]
@@ -481,10 +489,10 @@ def execute_single_shot_calibration(
     if freeze_only:
         return {"status": "FROZEN_READY", "run_config": run_cfg}
 
-    if "r1" in man_path.name:
+    if "r1" in man_path.name or "r2" in man_path.name:
         raise RuntimeError(
-            "EXECUTION GUARD: Single-shot calibration for V9-M2R1 (D_cal,r1 76000..76959) is deferred "
-            "pending independent protocol review. Calibration episodes must NOT be generated or executed in Milestone V9-M2R1 Phase 6."
+            "EXECUTION GUARD: Single-shot calibration for V9-M2R1/R2 (D_cal 76000..76959) is deferred "
+            "pending independent protocol review. Calibration episodes must NOT be generated or executed in Milestone V9-M2R1."
         )
 
     candidates, _, _ = verify_and_load_frozen_candidates(cand_path)

@@ -57,9 +57,19 @@ def create_decoupled_rng_pair(
     return rng_env, rng_sensors
 
 
+PARTITION_BRANCH_DEV: int = 1
+PARTITION_BRANCH_CALIBRATION: int = 2
+PARTITION_BRANCH_VALIDATION: int = 3
+PARTITION_BRANCH_TEST_MIXTURE: int = 4
+PARTITION_BRANCH_TEST_SCENARIO: int = 5
+PARTITION_BRANCH_DIAGNOSTIC_TESTS: int = 6
+
+
 class V9HierarchicalManifestGenerator:
     """
-    Hierarchical SeedSequence manifest generator for NEXVIA AEGIS V9-M2R1.
+    Hierarchical SeedSequence manifest generator for NEXVIA AEGIS V9-M2R1/R2.
+    Supports partition-aware child branch derivation to guarantee mathematical
+    stream disjointness across development, calibration, validation, and holdout suites.
     """
 
     def __init__(self, master_entropy: int = 20261025):
@@ -72,18 +82,26 @@ class V9HierarchicalManifestGenerator:
         partition_name: str,
         manifest_id_start: int,
         count: int,
+        partition_index: int | None = None,
     ) -> dict[str, Any]:
         """
         Generates an auditable manifest payload pairing manifest IDs with uniform scenario draws
         and decoupled SeedSequence child streams.
+        When partition_index is provided (e.g. 2 for calibration_r2), derives streams from a dedicated
+        partition child branch, guaranteeing zero stream collision with any other partition.
         """
         scenarios = build_v9_s12_scenarios()
         n_scen = len(scenarios)
         if n_scen != 12:
             raise RuntimeError(f"Expected 12 scenarios, found {n_scen}")
 
-        # Spawn master branches: branch 0 for scenario selection, branch 1 for episode streams
-        branch_scen_ss, branch_eps_ss = self.master_ss.spawn(2)
+        if partition_index is not None:
+            part_ss = np.random.SeedSequence(self.master_entropy, spawn_key=(partition_index,))
+            branch_scen_ss, branch_eps_ss = part_ss.spawn(2)
+        else:
+            # Historical unbranched derivation (preserved for r1 provenance verification)
+            master_ss = np.random.SeedSequence(self.master_entropy)
+            branch_scen_ss, branch_eps_ss = master_ss.spawn(2)
 
         scen_rng = np.random.default_rng(branch_scen_ss)
         scen_indices = scen_rng.integers(0, n_scen, size=count)
@@ -103,7 +121,7 @@ class V9HierarchicalManifestGenerator:
             ep_ss = ep_sequences[idx]
             env_ss, sens_ss = ep_ss.spawn(2)
 
-            ep_item = {
+            ep_item: dict[str, Any] = {
                 "episode_index": idx,
                 "manifest_id": m_id,
                 "scenario_index": sc_idx,
@@ -114,6 +132,8 @@ class V9HierarchicalManifestGenerator:
                 "env_spawn_key": list(env_ss.spawn_key),
                 "sensor_spawn_key": list(sens_ss.spawn_key),
             }
+            if partition_index is not None:
+                ep_item["partition_index"] = partition_index
             episodes.append(ep_item)
             pairs_for_hash.append((scen_name, m_id, sc_idx))
 
@@ -150,10 +170,15 @@ class V9HierarchicalManifestGenerator:
         manifest_id_start: int,
         scen_index: int,
         scen_name: str,
+        partition_index: int | None = None,
     ) -> DecoupledEpisodeRNG:
         """Instantiates the exact decoupled generators for episode ep_index."""
-        master = np.random.SeedSequence(self.master_entropy)
-        _branch_scen_ss, branch_eps_ss = master.spawn(2)
+        if partition_index is not None:
+            part_ss = np.random.SeedSequence(self.master_entropy, spawn_key=(partition_index,))
+            _branch_scen_ss, branch_eps_ss = part_ss.spawn(2)
+        else:
+            master = np.random.SeedSequence(self.master_entropy)
+            _branch_scen_ss, branch_eps_ss = master.spawn(2)
         ep_sequences = branch_eps_ss.spawn(count)
         ep_ss = ep_sequences[ep_index]
         env_ss, sens_ss = ep_ss.spawn(2)

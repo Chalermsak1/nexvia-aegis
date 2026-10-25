@@ -121,3 +121,47 @@ def test_manifest_generation_uniform_scenarios_and_integrity():
     s1 = recon_rng.rng_sensors.normal(size=10)
     s2 = direct_rng.rng_sensors.normal(size=10)
     np.testing.assert_array_equal(s1, s2)
+
+
+def test_partition_branching_disjointness():
+    """
+    Verify that partition-branched SeedSequence generation guarantees 100%
+    stream disjointness between calibration (branch 2) and dev (branch 1).
+    """
+    from aegis.v9.randomization import PARTITION_BRANCH_CALIBRATION, PARTITION_BRANCH_DEV
+
+    gen = V9HierarchicalManifestGenerator(master_entropy=20261025)
+    cal_man = gen.generate_manifest(
+        partition_name="calibration_r2",
+        manifest_id_start=76000,
+        count=30,
+        partition_index=PARTITION_BRANCH_CALIBRATION,
+    )
+    dev_man = gen.generate_manifest(
+        partition_name="dev_r2",
+        manifest_id_start=77000,
+        count=30,
+        partition_index=PARTITION_BRANCH_DEV,
+    )
+
+    for i in range(30):
+        c_ep = cal_man["episodes"][i]
+        d_ep = dev_man["episodes"][i]
+
+        # Spawn keys must be strictly disjoint at the partition root
+        assert c_ep["spawn_key"][0] == 2
+        assert d_ep["spawn_key"][0] == 1
+        assert c_ep["env_spawn_key"] != d_ep["env_spawn_key"]
+        assert c_ep["sensor_spawn_key"] != d_ep["sensor_spawn_key"]
+
+        c_rng = instantiate_episode_rngs_from_manifest_item(c_ep)
+        d_rng = instantiate_episode_rngs_from_manifest_item(d_ep)
+
+        c_env_draw = c_rng.rng_env.normal(size=10)
+        d_env_draw = d_rng.rng_env.normal(size=10)
+        assert not np.array_equal(c_env_draw, d_env_draw)
+
+        c_sens_draw = c_rng.rng_sensors.normal(size=10)
+        d_sens_draw = d_rng.rng_sensors.normal(size=10)
+        assert not np.array_equal(c_sens_draw, d_sens_draw)
+
