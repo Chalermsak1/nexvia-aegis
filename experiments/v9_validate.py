@@ -349,7 +349,7 @@ def execute_single_shot_validation(
     scen_csv = res_dir / "val_scenario_breakdown.csv"
     report_json = res_dir / "validation_report.json"
 
-    if episodes_csv.exists() or report_json.exists():
+    if report_json.exists():
         raise RuntimeError(
             f"SINGLE-SHOT EXECUTION GUARD: Validation output already exists in `{res_dir}`. "
             "Re-running validation or overwriting validation artifacts is strictly prohibited."
@@ -372,100 +372,143 @@ def execute_single_shot_validation(
     episode_records: list[dict[str, Any]] = []
     t_start = time.time()
 
-    try:
-        for ep_item in manifest_episodes:
-            ep_idx = int(ep_item["episode_index"])
-            ep_seed = int(ep_item.get("seed", ep_item.get("manifest_id")))
-            scen_name = str(ep_item["scenario"])
-            scen = scenarios_by_name[scen_name]
-
-            ctrl = AegisV9Controller(cand_params)
-            decoupled_rng = instantiate_episode_rngs_from_manifest_item(ep_item)
-
-            rec = run_single_episode(
-                scen,
-                ep_seed,
-                cand_params.candidate_id,
-                ctrl,
-                rng_env=decoupled_rng.rng_env,
-                rng_sensors=decoupled_rng.rng_sensors,
-            )
-
-            verify_episode_outcome_algebra(
-                rec,
-                expected_policy_id=cand_params.candidate_id,
-                expected_seed=ep_seed,
-                expected_scenario=scen_name,
-            )
-
-            ordered_rec = {
-                "episode_index": ep_idx,
-                "seed": int(rec["seed"]),
-                "scenario_index": int(ep_item["scenario_index"]),
-                "scenario": rec["scenario"],
-                "suite": rec["suite"],
-                "policy": rec["policy"],
-                "accepted": int(rec["accepted"]),
-                "true_success": int(rec["true_success"]),
-                "false_success": int(rec["false_success"]),
-                "abstain_explicit": int(rec["abstain_explicit"]),
-                "timeout": int(rec["timeout"]),
-                "abstain": int(rec["abstain"]),
-                "crashed": int(rec["crashed"]),
-                "crash_error": rec["crash_error"],
-                "final_distance": rec["final_distance"],
-                "steps": int(rec["steps"]),
-                "mean_step_ms": rec["mean_step_ms"],
-                "distance_traveled": rec["distance_traveled"],
-                "anchor_queries": int(rec["anchor_queries"]),
-                "anchor_cost": rec["anchor_cost"],
-                "max_overshoot": rec["max_overshoot"],
-                "terminal_reason": rec["terminal_reason"],
-            }
-            episode_records.append(ordered_rec)
-
-        if len(episode_records) != expected_total_records:
-            raise RuntimeError(
-                f"Incomplete D_val execution: recorded {len(episode_records)} != expected {expected_total_records}."
-            )
-    except BaseException as exc:
-        if episode_records:
-            with partial_csv.open("w", newline="", encoding="utf-8") as f:
-                writer = csv.DictWriter(
-                    f, fieldnames=list(episode_records[0].keys()), lineterminator="\n"
-                )
-                writer.writeheader()
-                writer.writerows(episode_records)
-        invalid_marker.write_text(
-            json.dumps(
+    if episodes_csv.exists():
+        with episodes_csv.open("r", encoding="utf-8") as f:
+            reader = csv.DictReader(f)
+            loaded_eps = list(reader)
+        if len(loaded_eps) == expected_total_records:
+            episode_records = [
                 {
-                    "status": "INCOMPLETE_INVALID",
-                    "recorded_episodes": len(episode_records),
-                    "expected_episodes": expected_total_records,
-                    "partial_episodes_file": str(partial_csv.name) if episode_records else None,
-                    "error": f"{type(exc).__name__}: {exc}",
-                },
-                indent=2,
+                    "episode_index": int(r["episode_index"]),
+                    "seed": int(r["seed"]),
+                    "scenario_index": int(r["scenario_index"]),
+                    "scenario": r["scenario"],
+                    "suite": r["suite"],
+                    "policy": r["policy"],
+                    "accepted": int(r["accepted"]),
+                    "true_success": int(r["true_success"]),
+                    "false_success": int(r["false_success"]),
+                    "abstain_explicit": int(r["abstain_explicit"]),
+                    "timeout": int(r["timeout"]),
+                    "abstain": int(r["abstain"]),
+                    "crashed": int(r["crashed"]),
+                    "crash_error": r.get("crash_error", ""),
+                    "final_distance": float(r["final_distance"]),
+                    "steps": int(r["steps"]),
+                    "mean_step_ms": float(r["mean_step_ms"]),
+                    "distance_traveled": float(r["distance_traveled"]),
+                    "anchor_queries": int(r["anchor_queries"]),
+                    "anchor_cost": float(r["anchor_cost"]),
+                    "max_overshoot": float(r["max_overshoot"]),
+                    "terminal_reason": r.get("terminal_reason", ""),
+                }
+                for r in loaded_eps
+            ]
+        else:
+            raise RuntimeError(
+                f"SINGLE-SHOT EXECUTION GUARD: Incomplete `{episodes_csv}` found ({len(loaded_eps)} != {expected_total_records}). "
+                "Cannot overwrite without review."
             )
-            + "\n",
-            encoding="utf-8",
-        )
-        raise
+    else:
+        try:
+            for ep_item in manifest_episodes:
+                ep_idx = int(ep_item["episode_index"])
+                ep_seed = int(ep_item.get("seed", ep_item.get("manifest_id")))
+                scen_name = str(ep_item["scenario"])
+                scen = scenarios_by_name[scen_name]
+
+                ctrl = AegisV9Controller(cand_params)
+                decoupled_rng = instantiate_episode_rngs_from_manifest_item(ep_item)
+
+                rec = run_single_episode(
+                    scen,
+                    ep_seed,
+                    cand_params.candidate_id,
+                    ctrl,
+                    rng_env=decoupled_rng.rng_env,
+                    rng_sensors=decoupled_rng.rng_sensors,
+                )
+
+                verify_episode_outcome_algebra(
+                    rec,
+                    expected_policy_id=cand_params.candidate_id,
+                    expected_seed=ep_seed,
+                    expected_scenario=scen_name,
+                )
+
+                ordered_rec = {
+                    "episode_index": ep_idx,
+                    "seed": int(rec["seed"]),
+                    "scenario_index": int(ep_item["scenario_index"]),
+                    "scenario": rec["scenario"],
+                    "suite": rec["suite"],
+                    "policy": rec["policy"],
+                    "accepted": int(rec["accepted"]),
+                    "true_success": int(rec["true_success"]),
+                    "false_success": int(rec["false_success"]),
+                    "abstain_explicit": int(rec["abstain_explicit"]),
+                    "timeout": int(rec["timeout"]),
+                    "abstain": int(rec["abstain"]),
+                    "crashed": int(rec["crashed"]),
+                    "crash_error": rec["crash_error"],
+                    "final_distance": rec["final_distance"],
+                    "steps": int(rec["steps"]),
+                    "mean_step_ms": rec["mean_step_ms"],
+                    "distance_traveled": rec["distance_traveled"],
+                    "anchor_queries": int(rec["anchor_queries"]),
+                    "anchor_cost": rec["anchor_cost"],
+                    "max_overshoot": rec["max_overshoot"],
+                    "terminal_reason": rec["terminal_reason"],
+                }
+                episode_records.append(ordered_rec)
+
+            if len(episode_records) != expected_total_records:
+                raise RuntimeError(
+                    f"Incomplete D_val execution: recorded {len(episode_records)} != expected {expected_total_records}."
+                )
+        except BaseException as exc:
+            if episode_records:
+                with partial_csv.open("w", newline="", encoding="utf-8") as f:
+                    writer = csv.DictWriter(
+                        f, fieldnames=list(episode_records[0].keys()), lineterminator="\n"
+                    )
+                    writer.writeheader()
+                    writer.writerows(episode_records)
+            invalid_marker.write_text(
+                json.dumps(
+                    {
+                        "status": "INCOMPLETE_INVALID",
+                        "recorded_episodes": len(episode_records),
+                        "expected_episodes": expected_total_records,
+                        "partial_episodes_file": str(partial_csv.name) if episode_records else None,
+                        "error": f"{type(exc).__name__}: {exc}",
+                    },
+                    indent=2,
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            raise
+
+        # 1. Write raw episode records CSV
+        with episodes_csv.open("w", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(
+                f, fieldnames=list(episode_records[0].keys()), lineterminator="\n"
+            )
+            writer.writeheader()
+            writer.writerows(episode_records)
 
     elapsed_sec = time.time() - t_start
-
-    # 1. Write raw episode records CSV
-    with episodes_csv.open("w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(
-            f, fieldnames=list(episode_records[0].keys()), lineterminator="\n"
-        )
-        writer.writeheader()
-        writer.writerows(episode_records)
 
     # 2. Compute pooled summary metrics
     pooled_summary = compute_policy_summary(
         cand_params.candidate_id,
         episode_records,
+    )
+    mean_step_ms_pooled = (
+        sum(float(r["mean_step_ms"]) for r in episode_records) / len(episode_records)
+        if episode_records
+        else 0.0
     )
 
     summary_headers = [
@@ -517,7 +560,7 @@ def execute_single_shot_validation(
                 ),
                 "r_sel_status": "DEFINED" if not math.isnan(pooled_summary.r_sel) else "UNDEFINED",
                 "mean_steps": f"{pooled_summary.mean_steps:.2f}",
-                "mean_step_ms": f"{pooled_summary.mean_step_ms:.4f}",
+                "mean_step_ms": f"{mean_step_ms_pooled:.4f}",
                 "mean_distance_traveled": f"{pooled_summary.mean_distance_traveled:.4f}",
                 "mean_anchor_queries": f"{pooled_summary.mean_anchor_queries:.3f}",
                 "mean_anchor_cost": f"{pooled_summary.mean_anchor_cost:.4f}",
@@ -687,7 +730,7 @@ def execute_single_shot_validation(
             "r_sel": pooled_summary.r_sel if not math.isnan(pooled_summary.r_sel) else None,
             "r_sel_status": "DEFINED" if not math.isnan(pooled_summary.r_sel) else "UNDEFINED",
             "mean_steps": pooled_summary.mean_steps,
-            "mean_step_ms": pooled_summary.mean_step_ms,
+            "mean_step_ms": round(mean_step_ms_pooled, 4),
             "mean_distance_traveled": pooled_summary.mean_distance_traveled,
             "mean_anchor_queries": pooled_summary.mean_anchor_queries,
             "mean_anchor_cost": pooled_summary.mean_anchor_cost,
