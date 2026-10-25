@@ -586,14 +586,22 @@ def test_16_h5_unconditional_incidence_independent_of_accepted_count():
 
 def test_17_h5_unconditional_incidence_single_and_multiple_fs():
     """
-    M4-F02 Boundary 3 & 4: Exact mathematical evaluation for FS_s in {0, 1, 2, 3} at N_s = 120.
-    - FS_s = 0: p = (0.95)^120 ~ 0.002122 <= 0.05 (PASS)
-    - FS_s = 1: p = (0.95)^120 + 120 * 0.05 * (0.95)^119 ~ 0.015522 <= 0.05 (PASS)
-    - FS_s = 2: p ~ 0.057398 > 0.05 (FAIL)
-    - FS_s = 3: p ~ 0.148197 > 0.05 (FAIL)
+    M4-F02 Boundary 3 & 4 & H5 Numerical Reconciliation:
+    Exact mathematical evaluation for FS_s in {0, 1, 2, 3} at N_s = 120, p_0 = 0.05.
+    - FS_s = 0: p = (0.95)^120 = 0.0021224263786981585 <= 0.05 (PASS)
+    - FS_s = 1: p = 0.015527224559949685 <= 0.05 (PASS)
+    - FS_s = 2: p = 0.05750540833807949 > 0.05 (FAIL)
+    - FS_s = 3: p = 0.14440761335245347 > 0.05 (FAIL)
     """
     scenarios = build_v9_s12_scenarios()
     target_scen = scenarios[0]
+
+    reconciled_references = {
+        0: 0.0021224263786981585,
+        1: 0.015527224559949685,
+        2: 0.05750540833807949,
+        3: 0.14440761335245347,
+    }
 
     for fs_count, should_pass in [(0, True), (1, True), (2, False), (3, False)]:
         records: list[dict[str, Any]] = []
@@ -626,9 +634,13 @@ def test_17_h5_unconditional_incidence_single_and_multiple_fs():
         target_row = [r for r in summary["scenario_breakdown"] if r["scenario"] == target_scen.name][0]
 
         expected_p = float(binom.cdf(fs_count, 120, 0.05))
+        assert math.isclose(expected_p, reconciled_references[fs_count], rel_tol=1e-12)
+
         p_val = float(target_row["p_value_binomial_005"])
-        assert math.isclose(p_val, expected_p, abs_tol=1e-5)
+        assert math.isclose(p_val, round(expected_p, 6), abs_tol=1e-7)
         assert (p_val <= 0.05) is should_pass
+
+
 
 
 def test_18_h5_invalid_denominator_or_inconsistent_episode_counts():
