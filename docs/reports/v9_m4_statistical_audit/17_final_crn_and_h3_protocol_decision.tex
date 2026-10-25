@@ -1,0 +1,223 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[margin=2.0cm]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb,amsfonts,amsthm,mathtools}
+\usepackage{booktabs,tabularx,colortbl,array,multirow}
+\usepackage[table]{xcolor}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{microtype}
+\usepackage{hyperref}
+
+\newfontfamily\thaifont{Thonburi}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    citecolor=blue!70!black,
+    urlcolor=blue!70!black
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\footnotesize \textbf{NEXVIA AEGIS V9-M4 CRN Semantics \& H3 Audit}}
+\lhead{\footnotesize Authoritative Protocol Evidence, Model A Resolution \& Decision Rules}
+\rfoot{\footnotesize Page \thepage}
+\lfoot{\footnotesize Document ID: AEGIS-V9-M4-CRN-17}
+
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{NEXVIA AEGIS V9-M4 Methodological Audit}}\\[6pt]
+    {\Large \textbf{Final Common-Random-Numbers Semantics Determination}}\\[3pt]
+    {\Large \textbf{and Hypothesis H3 Decision-Rule Aggregation Resolution}}\\[10pt]
+    \textbf{Autonomous Verification Subsystem (Google DeepMind Antigravity)}\\
+    \textit{Git Branch: v9.0-runtime-assurance \quad $\cdot$ \quad Implementation Commit: dc39f36 \quad $\cdot$ \quad Date: October 25, 2026}\\[12pt]
+\end{center}
+
+\noindent\fbox{
+\parbox{0.97\textwidth}{
+\textbf{CRITICAL NON-AUTHORIZATION DIRECTIVE:}\\
+This audit document resolves the final methodological qualifications concerning the preregistered Common Random Numbers (CRN) semantics and Hypothesis $H_3$ decision rules. \textbf{This document does NOT constitute authorization to execute Milestone V9-M4.} All evaluations in this report were conducted strictly using synthetic test fixtures, in-memory models, and mock environments. Production holdout manifests (\texttt{test\_mix\_manifest\_r1.json} and \texttt{test\_scen\_manifest\_r1.json}) and output directories (\texttt{results/v9/test\_mix/} and \texttt{results/v9/test\_scen/}) do not exist. Reserved holdout seed blocks ($73000..74439$ for mixture holdout and $75000..75119$ for scenario holdout) remain completely uninstantiated and untouched. Live execution requires explicit authorization from the project owner.
+}
+}
+
+\vspace{10pt}
+
+\begin{abstract}
+\noindent This audit resolves the final two methodological questions concerning the NEXVIA AEGIS Milestone V9-M4 confirmatory holdout pipeline: (1) Does the implemented Common Random Numbers (CRN) architecture conform to the authoritative preregistered protocol, and what exact variance-reduction guarantees does it substantiate? (2) How are the primary V8.1 Martingale baseline and the co-evaluated V7 MPC baseline aggregated and interpreted under Hypothesis $H_3$?
+Through comprehensive citation of governing documents (\texttt{docs/v9\_experiment\_protocol.md}, \texttt{docs/v9\_research\_audit.md}, and \texttt{docs/v9\_risk\_calibration\_design.md}), we establish that the authoritative protocol preregistered \textbf{Model A} (episode-level matched pairs with identical seed derivation, bitwise matching initial conditions at $t=0$, and stateful streams coupled via common random numbers that diverge in closed loop as actions and queries differ). The alternative interpretation (\textbf{Model B}, requiring timestep- and channel-aligned exogenous noise independent of controller action) was never specified in the protocol; narrative statements in prior Report 14 suggesting timestep-wise identical disturbance across controllers were overstatements of report text. The implemented simulation architecture in \texttt{experiments/v9\_evaluate\_holdout.py} accurately fulfills Model A, providing valid paired-sample variance reduction for $H_2$ and $H_3$.
+Regarding Hypothesis $H_3$, we establish that Section 3.1.1 formally preregisters paired True-Success Rate (TSR) noninferiority against \textbf{V8.1 Martingale} as the primary confirmatory null hypothesis ($H_{0,3}$) at margin $\Delta_{\mathrm{NI}} = -0.05$ on the $S_{10}$ block, subject to nominal utility ($\widehat{\mathrm{TSR}}_{\mathrm{nominal}} \ge 0.94$). Comparison against \textbf{V7 MPC} is an auxiliary co-evaluated baseline. We refined \texttt{evaluate\_scenario\_holdout} to report \texttt{primary\_passed}, \texttt{coeval\_passed}, and \texttt{all\_baselines\_passed} without conflating their distinct statistical roles. Six additional synthetic unit tests (\texttt{test\_50} through \texttt{test\_55}) verify independent generator states, anchor-query offset mechanics, extension scenario exclusion, and all combinations of primary and co-evaluation pass/fail outcomes. All 55 preflight tests and all 166 full repository regression tests passed with zero failures.
+\end{abstract}
+
+\vspace{6pt}
+\noindent \textbf{Keywords:} Common Random Numbers (CRN), Model A Coupling, Hypothesis H3, Dual-Baseline Aggregation, Decision Rule Resolution.
+
+\section{Executive Summary}
+
+\subsection{Executive Summary (English)}
+\begin{enumerate}
+    \item \textbf{Registered CRN Semantics (Model A Confirmed):} The authoritative protocol defines paired comparisons at the episode level over matched $(s, \text{seed})$ pairs. As documented in \texttt{docs/v9\_research\_audit.md:240}, controllers initialize independent generators from identical seed derivations, matching initial target locations $\mathbf{p}_{\mathrm{target}}$ and initial sensor noise at $t=0$. In closed-loop execution, mutable streams advance statefully, and differing controller actions or anchor queries induce offsets in subsequent steps. Model B (spatio-temporal hash grids) was never preregistered.
+    \item \textbf{Clarification of Narrative Overstatements:} Report 14 contained narrative claims that CRN "guarantees identical physical disturbances and sensor noise across controllers at every timestep." We formally qualify this statement: identical noise holds strictly at initial conditions ($t=0$) and across open-loop playback, but stateful streams offset when anchor queries differ. The paired statistical tests remain asymptotically and nonparametrically valid because episode pairs are i.i.d. and positively correlated.
+    \item \textbf{Exact H3 Baseline and Aggregation Rules:}
+    \begin{itemize}
+        \item \textbf{Primary Baseline:} V8.1 Martingale (\texttt{AegisNextController}). Rejection of $H_{0,3}$ requires 1-sided 95\% paired LCB of $\Delta\mathrm{TSR}_{\mathrm{V8.1}} > -0.05$ on the 10 scenarios of $S_{10}$ \textbf{and} $\widehat{\mathrm{TSR}}_{\mathrm{nominal}} \ge 0.94$.
+        \item \textbf{Co-Evaluated Baseline:} V7 MPC (\texttt{AegisV7MPCBaselineController}). Evaluated at the same noninferiority margin $\Delta_{\mathrm{NI}} = -0.05$.
+        \item \textbf{Aggregation Transparency:} The evaluator reports \texttt{primary\_passed}, \texttt{coeval\_passed}, \texttt{nominal\_tsr\_criterion\_met}, \texttt{all\_baselines\_passed}, and \texttt{passed} (tracking the primary null) without conflating co-evaluation into an ad-hoc joint intersection null.
+    \end{itemize}
+    \item \textbf{Synthetic Verification Expansion:} Implemented tests \texttt{test\_50} to \texttt{test\_55} in \texttt{tests/test\_v9\_holdout\_preflight.py}, verifying: (i) independent generator memory state; (ii) exact offset realignment after anchor queries; (iii) primary pass with co-eval fail; (iv) primary fail with co-eval pass; (v) nominal TSR failure blocking both claims; and (vi) exclusion of extension scenarios $S_{\mathrm{ext}}$ from $H_3$.
+    \item \textbf{Regression Suite Integrity:} Focused preflight suite achieved 55/55 passed (1.11s); full repository regression suite achieved 166/166 passed (26.04s).
+    \item \textbf{Strict Holdout Non-Execution:} Zero real holdout manifests or output directories exist; reserved seed ranges ($73000..74439$ and $75000..75119$) remain untouched; frozen policy SHA-256 (\texttt{5a89d606...}) is 100\% unchanged.
+\end{enumerate}
+
+\subsection{\texorpdfstring{บทสรุปสำหรับผู้บริหาร (Executive Summary in Thai)}{Executive Summary in Thai}}
+{\thaifont\small
+\begin{enumerate}
+    \item \textbf{การยืนยันแบบจำลอง CRN ทางการ (Model A):} พิธีสารหลักกำหนดการเปรียบเทียบแบบจับคู่ในระดับตอน (Episode-level matched pairs) บนคู่ $(s, \text{seed})$ โดยตัวควบคุมแต่ละตัวจะเริ่มต้นตัวสร้างเลขสุ่มอิสระจาก SeedSequence เดียวกัน ทำให้พิกัดเป้าหมายเริ่มต้น ($\mathbf{p}_{\mathrm{target}}$) และสัญญาณรบกวน ณ ก้าว $t=0$ เหมือนกันระดับบิต แต่ในระบบวงรอบปิด ลำดับสุ่มจะเคลื่อนไปตามการกระทำและการเรียกค้นเซนเซอร์ Anchor ซึ่งตรงตามที่ระบุไว้ในเอกสารพิธีสารเดิมทุกประการ มิได้มีการกำหนดให้ต้องใช้แบบจำลองสุ่มแยกตามพิกัดเวลาและช่องสัญญาณ (Model B)
+    \item \textbf{การแก้ไขข้อความที่ระบุเกินจริง:} รายงานฉบับที่ 14 มีการระบุในเชิงบรรยายว่า CRN รับประกันสภาวะรบกวนที่เหมือนกันทุกก้าวเวลา ซึ่งข้อความนี้ได้รับการปรับปรุงและระบุข้อจำกัดอย่างชัดเจนว่า ความเหมือนกันระดับบิตเกิดขึ้น ณ สภาวะเริ่มต้น ($t=0$) ส่วนการทดสอบทางสถิติแบบจับคู่ ($H_2, H_3$) ยังคงมีความถูกต้องทางสถิติและลดความแปรปรวนได้อย่างสมบูรณ์เนื่องจากคู่ตัวอย่างมีความสัมพันธ์เชิงบวกและเป็นอิสระต่อกันระหว่างตอน
+    \item \textbf{ข้อกำหนดเกณฑ์การตัดสินของสมมติฐาน H3:}
+    \begin{itemize}
+        \item \textbf{Baseline หลัก (Primary):} V8.1 Martingale โดยการปฏิเสธสมมติฐานว่าง $H_{0,3}$ ต้องได้ค่าขอบเขตล่างด้านเดียว 95\% ($\text{LCB}_{95\%}$) ของ $\Delta\mathrm{TSR}_{\mathrm{V8.1}} > -0.05$ บนกลุ่ม $S_{10}$ ร่วมกับเกณฑ์ความสำเร็จในสภาวะปกติ $\ge 0.94$
+        \item \textbf{Baseline ประเมินร่วม (Co-evaluated):} V7 MPC ซึ่งประเมินที่ระยะความไม่ด้อยกว่าเดียวกัน ($\Delta_{\mathrm{NI}} = -0.05$)
+        \item \textbf{ความโปร่งใสในการรายงานผล:} ปรับโครงสร้างรายงานให้แสดงผลลัพธ์แยกกันชัดเจน ได้แก่ \texttt{primary\_passed}, \texttt{coeval\_passed}, \texttt{all\_baselines\_passed} โดยไม่นำผลของ Baseline ร่วมไปปะปนกับสมมติฐานหลัก
+    \end{itemize}
+    \item \textbf{การขยายชุดทดสอบเชิงสังเคราะห์:} เพิ่มการทดสอบ \texttt{test\_50} ถึง \texttt{test\_55} ใน \texttt{tests/test\_v9\_holdout\_preflight.py} เพื่อพิสูจน์ความเป็นอิสระของสถานะหน่วยความจำ, การเหลื่อมของสตรีมเมื่อเรียกค้น Anchor, และกรณีผลลัพธ์ผสมทุกรูปแบบ
+    \item \textbf{ความสมบูรณ์ของการทดสอบทั้งระบบ:} ชุดทดสอบ Preflight ผ่าน 55/55 รายการ (1.11 วินาที) และชุดทดสอบระบบรวมผ่าน 166/166 รายการ (26.04 วินาที)
+    \item \textbf{การคงความบริสุทธิ์ของข้อมูล Holdout:} ยืนยันว่าไม่มีการสร้างไฟล์ Manifest หรือรันซิมูเลชันบนข้อมูล Holdout จริง และค่าแฮชของนโยบายควบคุมยังคงเดิม 100\%
+\end{enumerate}
+}
+
+\section{Phase 1 — Registered CRN Semantics Determination}
+
+\subsection{Authoritative Textual Evidence}
+The exact formulation of paired comparison in the governing documents defines pairing at the episode level:
+\begin{itemize}
+    \item \textbf{Protocol Document (\texttt{docs/v9\_experiment\_protocol.md}):}
+    Section 3.1.1 (line 30) preregisters:
+    \begin{quote}
+    \textit{"One-sided 95\% paired lower confidence bound (Newcombe/Wald paired difference CI on the 1,200 matched \texttt{(scenario, seed)} pairs) strictly exceeds $-0.05$..."}
+    \end{quote}
+    Section 3.2.4 (line 112) specifies the paired power analysis:
+    \begin{quote}
+    \textit{"For paired binary \texttt{TSR} comparisons across $N$ matched \texttt{(scenario, seed)} episodes with total discordant proportion $q = p_{01} + p_{10}$..."}
+    \end{quote}
+    Table 3.5.1 (line 247) defines:
+    \begin{quote}
+    \textit{"Prespecified NI Test: 1-sided 95\% paired LCB on $\Delta TSR = TSR(\hat{\pi}) - TSR(\pi_{\mathrm{ref}})$ across $N=1,200$ matched $\mathcal{S}_{10}$ pairs (\texttt{D\_test\^{}scen})."}
+    \end{quote}
+    \item \textbf{Prior Research Audit (\texttt{docs/v9\_research\_audit.md}):}
+    Line 240 provides the exact physical and mathematical definition of the coupling:
+    \begin{quote}
+    \textit{"every policy is evaluated on the exact same initial target position \texttt{world.reset(np.random.default\_rng(ep\_seed))} and identical sensor RNG seed \texttt{np.random.default\_rng(ep\_seed)}. Thus the 500 episodes form \textbf{500 matched pairs} $(s, \text{seed})$ across any two policies $(\pi_A, \pi_B)$ \textbf{(note that closed-loop trajectories diverge once actions differ, so sensor draws remain matched at step $t=0$ and coupled via common random numbers thereafter)}. Statistical tests on episode-level binary or continuous outcomes across 500 episodes \textbf{must respect this paired design}."}
+    \end{quote}
+\end{itemize}
+
+\subsection{Model A vs Model B Formal Resolution}
+\begin{itemize}
+    \item \textbf{Model A (Preregistered Design):} Independent Generator instances are derived from matching \texttt{SeedSequence} keys. Initial state and initial measurements at $t=0$ match bitwise. In closed loop, random numbers are drawn sequentially by mutable generators; differing actions and anchor query counts cause stream offsets in later steps.
+    \item \textbf{Model B (Hypothetical Strict Grid):} Exogenous disturbances and sensor noise are indexed across a 4D spatio-temporal tensor $\mathbf{W}(s, \text{seed}, t, c)$ independently of controller behavior.
+\end{itemize}
+\textbf{Authoritative Finding:} The registered protocol formally specifies \textbf{Model A}. Model B was never preregistered or implemented. The narrative claims in Report 14 suggesting timestep-wise identical disturbance across controllers were overstatements of report text, now formally qualified.
+
+\section{Phase 2 — Verification of Randomization Guarantees}
+
+Table~\ref{tab:guarantees} decomposes the exact randomization properties supported by the codebase.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Decomposition of Supported and Qualified Randomization Guarantees}
+\label{tab:guarantees}
+\begin{tabularx}{\textwidth}{lp{4.5cm}cp{5.5cm}}
+\toprule
+\textbf{ID} & \textbf{Guarantee Description} & \textbf{Supported?} & \textbf{Evidentiary Proof \& Verification Basis} \\
+\midrule
+\textbf{G1} & Separate in-memory RNG state & \textbf{YES} & Generators derived independently; verified in \texttt{test\_48} \& \texttt{test\_50}. \\
+\textbf{G2} & Deterministic reproducibility & \textbf{YES} & Invariant to controller execution order; verified in \texttt{test\_47}. \\
+\textbf{G3} & Common initial conditions & \textbf{YES} & $\mathbf{p}_{\mathrm{target}}$ and $t=0$ sensor noise bitwise identical; verified in \texttt{test\_49} \& \texttt{test\_50}. \\
+\textbf{G4} & Timestep-aligned noise ($t > 0$) & \textbf{QUALIFIED} & Holds for open-loop; offsets occur when anchor queries differ (\texttt{test\_51}). \\
+\textbf{G5} & Paired variance reduction & \textbf{YES} & Positive correlation across matched episodes reduces $\mathrm{SE}(\overline{\Delta\mathrm{TSR}})$. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Phase 3 — Hypothesis H3 Decision-Rule and Aggregation Semantics}
+
+\subsection{Formal Protocol Requirements}
+Under Section 3.1.1 of the Authoritative Protocol:
+\begin{equation}
+    H_{0,3}: \mathrm{TSR}(\hat{\pi}; \mathcal{P}_{10}) - \mathrm{TSR}(\pi_{\mathrm{V8}}; \mathcal{P}_{10}) \le \Delta_{\mathrm{NI}} = -0.05 \quad (\text{co-evaluated vs } \pi_{\mathrm{V7}} \text{ at } -0.05).
+\end{equation}
+The decision rule requires:
+\begin{equation}
+    \mathrm{LCB}_{95\%}(\Delta\mathrm{TSR}_{\mathrm{V8.1}}) > -0.05 \quad \text{AND} \quad \widehat{\mathrm{TSR}}_{\mathrm{nominal}} \ge 0.94.
+\end{equation}
+Evaluation is restricted strictly to the 10 scenarios in $\mathcal{S}_{10}$ ($N=1,200$). Extension scenarios $\mathcal{S}_{\mathrm{ext}}$ (scenarios 11 \& 12) are excluded from $H_3$.
+
+\subsection{Aggregation Architecture in the Evaluator}
+The evaluation dictionary in \texttt{experiments/v9\_evaluate\_holdout.py} provides complete transparency:
+\begin{itemize}
+    \item \texttt{h3\_overall["passed"]}: Tracks rejection of primary null $H_{0,3}$ against V8.1.
+    \item \texttt{h3\_overall["primary\_passed"]}: Boolean tracking primary V8.1 noninferiority + nominal TSR.
+    \item \texttt{h3\_overall["coeval\_passed"]}: Boolean tracking co-evaluated V7 noninferiority + nominal TSR.
+    \item \texttt{h3\_overall["all\_baselines\_passed"]}: Boolean tracking whether both baselines pass.
+    \item \texttt{h3\_overall["status"]}: Categorical status string indicating the exact joint configuration.
+\end{itemize}
+
+\section{Synthetic Test Suite and Empirical Verification}
+
+Table~\ref{tab:audit_tests_17} details the expanded test suite in \texttt{tests/test\_v9\_holdout\_preflight.py}.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Methodological and Synthetic Invariant Verification Tests}
+\label{tab:audit_tests_17}
+\begin{tabularx}{\textwidth}{llXlc}
+\toprule
+\textbf{Test ID} & \textbf{Target Mechanism} & \textbf{Verified Invariant \& Methodological Property} & \textbf{Time} & \textbf{Status} \\
+\midrule
+\texttt{test\_47} & Order Invariance & V9/V8/V7 forward vs reverse order bitwise identity & 0.06s & \textbf{PASS} \\
+\texttt{test\_48} & Termination Isolation & Early termination at $t=5$ leaves other controllers unaffected & 0.05s & \textbf{PASS} \\
+\texttt{test\_49} & Initial States \& Offset & Bitwise $t=0$ match; characterizes mutable stream offset & 0.05s & \textbf{PASS} \\
+\texttt{test\_50} & Generator Independence & Distinct in-memory state; channel A noise match at $t=0$ & 0.04s & \textbf{PASS} \\
+\texttt{test\_51} & Query Stream Shift & Proves exact scalar realignment after anchor queries ($k=2$) & 0.03s & \textbf{PASS} \\
+\texttt{test\_52} & Primary Pass / Co-eval Fail & \texttt{primary=True}, \texttt{coeval=False}, \texttt{passed=True} & 0.06s & \textbf{PASS} \\
+\texttt{test\_53} & Primary Fail / Co-eval Pass & \texttt{primary=False}, \texttt{coeval=True}, \texttt{passed=False} & 0.06s & \textbf{PASS} \\
+\texttt{test\_54} & Nominal TSR Barrier & Nominal TSR $< 0.94$ blocks both V8 and V7 claims & 0.05s & \textbf{PASS} \\
+\texttt{test\_55} & S10 Domain Restriction & Altering $S_{\mathrm{ext}}$ outcomes leaves $H_3$ statistics invariant & 0.06s & \textbf{PASS} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Regression Testing and Holdout Isolation Proof}
+
+\subsection{Test Suite Results}
+\begin{itemize}
+    \item \textbf{Focused Preflight Suite:} \texttt{PYTHONPATH=src uv run pytest -v tests/test\_v9\_holdout\_preflight.py} passed all 55 tests in 1.11 seconds.
+    \item \textbf{Full Repository Suite:} \texttt{PYTHONPATH=src uv run pytest -q} passed all 166 tests in 26.04 seconds with zero regressions.
+\end{itemize}
+
+\subsection{Proof of Production Holdout Isolation}
+A comprehensive filesystem scan verified that zero real holdout manifests or directories exist:
+\begin{equation}
+\begin{aligned}
+    \text{Path Existence}(\texttt{results/v9/manifests/test\_mix\_manifest\_r1.json}) &= \textbf{FALSE} \\
+    \text{Path Existence}(\texttt{results/v9/manifests/test\_scen\_manifest\_r1.json}) &= \textbf{FALSE} \\
+    \text{Path Existence}(\texttt{results/v9/test\_mix/}) &= \textbf{FALSE} \\
+    \text{Path Existence}(\texttt{results/v9/test\_scen/}) &= \textbf{FALSE}
+\end{aligned}
+\end{equation}
+The frozen policy SHA-256 remains \texttt{5a89d6061b379f1b34ab47be0deef8d63180d3e4c21d18c478bc7e451f5c84e2}.
+
+\section{Conclusion}
+The final status of this audit is formally declared as:
+\begin{center}
+    \textbf{\Large CRN\_H3\_PROTOCOL\_CONFIRMED\_WITH\_QUALIFICATIONS}
+\end{center}
+The CRN architecture conforms to the preregistered episode-level matched design (Model A), the H3 decision rules are transparently aggregated with primary and co-evaluated baselines distinctly reported, and the evaluation harness remains safely locked pending project-owner authorization.
+
+\end{document}

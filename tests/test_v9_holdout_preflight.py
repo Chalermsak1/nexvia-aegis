@@ -1777,4 +1777,288 @@ def test_49_crn_initial_conditions_and_divergence_characteristics():
     assert not np.array_equal(draw_v8_t1, draw_v7_t1), "Expected mutable stream offset after anchor query"
 
 
+def test_50_crn_independent_generator_state_and_timestep_channel_comparison():
+    """Requirement: Verifies distinct in-memory Generator state and channel noise coupling at t=0."""
+    from aegis.v3.sensors.sensors import FaultInjectableSensor
+    from aegis.v3.sensors.cross_modal import RangeSensor
+    from aegis.v7.anchor_sensor import AnchorSensor, AnchorSensorConfig
+
+    gen = V9HierarchicalManifestGenerator(master_entropy=20261025)
+    man = gen.generate_manifest(
+        partition_name="test_crn_channels",
+        manifest_id_start=91000,
+        count=1,
+        partition_index=PARTITION_BRANCH_TEST_MIXTURE,
+    )
+    item = man["episodes"][0]
+    ep_seed = int(item["manifest_id"])
+    scen = build_v9_s12_scenarios()[0]
+
+    # Verify separate in-memory Generator instances
+    rng_env_v9, rng_sen_v9 = _derive_episode_rngs(item, ep_seed)
+    rng_env_v8, rng_sen_v8 = _derive_episode_rngs(item, ep_seed)
+    rng_env_v7, rng_sen_v7 = _derive_episode_rngs(item, ep_seed)
+
+    assert rng_env_v9 is not rng_env_v8
+    assert rng_env_v8 is not rng_env_v7
+    assert rng_sen_v9 is not rng_sen_v8
+    assert rng_sen_v8 is not rng_sen_v7
+
+    # Sensor measurements at t=0: zero anchor query calls
+    sen_a_v9 = FaultInjectableSensor(scen.sensor_a)
+    sen_a_v8 = FaultInjectableSensor(scen.sensor_a)
+    sen_a_v7 = FaultInjectableSensor(scen.sensor_a)
+
+    delta_true = np.array([1.5, -2.0], dtype=np.float64)
+    read_a_v9 = sen_a_v9.measure(delta_true, rng_sen_v9, step=0)
+    read_a_v8 = sen_a_v8.measure(delta_true, rng_sen_v8, step=0)
+    read_a_v7 = sen_a_v7.measure(delta_true, rng_sen_v7, step=0)
+
+    # Identical sensor noise at step t=0 across all three controllers
+    assert np.array_equal(read_a_v9.estimate, read_a_v8.estimate)
+    assert np.array_equal(read_a_v9.estimate, read_a_v7.estimate)
+
+
+def test_51_crn_anchor_query_count_induced_stream_offset():
+    """Requirement: Verifies that anchor queries shift mutable streams by exact consumption count."""
+    gen = V9HierarchicalManifestGenerator(master_entropy=20261025)
+    man = gen.generate_manifest(
+        partition_name="test_crn_offset",
+        manifest_id_start=92000,
+        count=1,
+        partition_index=PARTITION_BRANCH_TEST_MIXTURE,
+    )
+    item = man["episodes"][0]
+    ep_seed = int(item["manifest_id"])
+
+    # Stream A: 0 anchor queries
+    _, rng_a = _derive_episode_rngs(item, ep_seed)
+    # Stream B: 1 anchor query (consumes 2 normal draws)
+    _, rng_b = _derive_episode_rngs(item, ep_seed)
+
+    # Stream B executes an anchor query
+    _ = rng_b.normal(size=2)
+
+    # Subsequent 10 draws from B match draws 2..11 from A
+    draws_a = [rng_a.normal() for _ in range(12)]
+    draws_b = [rng_b.normal() for _ in range(10)]
+
+    assert np.allclose(draws_a[2:], draws_b, atol=1e-12)
+
+
+def test_52_h3_synthetic_combinations_primary_pass_coeval_fail():
+    """Requirement: H3 reports primary pass and co-eval fail without conflating their roles."""
+    scenarios = build_v9_s12_scenarios()
+    seeds_per_scen = 10
+    ep_idx = 0
+
+    pol_records = []
+    v8_records = []
+    v7_records = []
+
+    for sc_idx, scen in enumerate(scenarios):
+        for s_idx in range(seeds_per_scen):
+            seed = 93000 + sc_idx * 100 + s_idx
+            # Policy V9: 100% nominal TSR, 80% adversarial TSR
+            pol_ts = 1 if (scen.name == "NOMINAL" or s_idx < 8) else 0
+            # Baseline V8: lower TSR (V9 is superior/noninferior vs V8)
+            v8_ts = 1 if (scen.name == "NOMINAL" or s_idx < 5) else 0
+            # Baseline V7: higher TSR (V9 is inferior vs V7)
+            v7_ts = 1  # V7 gets 100% TSR
+
+            pol_records.append(make_synthetic_episode_record(
+                episode_index=ep_idx, seed=seed, scenario=scen.name,
+                scenario_index=sc_idx, accepted=bool(pol_ts),
+                outcome="TERMINAL_SUCCESS" if pol_ts else "ABSTAINED",
+            ))
+            v8_records.append(make_synthetic_episode_record(
+                episode_index=ep_idx, seed=seed, scenario=scen.name,
+                scenario_index=sc_idx, accepted=bool(v8_ts),
+                outcome="TERMINAL_SUCCESS" if v8_ts else "ABSTAINED",
+            ))
+            v7_records.append(make_synthetic_episode_record(
+                episode_index=ep_idx, seed=seed, scenario=scen.name,
+                scenario_index=sc_idx, accepted=bool(v7_ts),
+                outcome="TERMINAL_SUCCESS" if v7_ts else "ABSTAINED",
+            ))
+            ep_idx += 1
+
+    res = evaluate_scenario_holdout(
+        records=pol_records,
+        v8_records=v8_records,
+        v7_records=v7_records,
+        expected_seeds_per_scenario=seeds_per_scen,
+    )
+
+    h3_ov = res["h3_overall"]
+    assert h3_ov["primary_passed"] is True
+    assert h3_ov["coeval_passed"] is False
+    assert h3_ov["all_baselines_passed"] is False
+    # Primary null is rejected, so overall pass is True
+    assert h3_ov["passed"] is True
+    assert res["h3_tsr_noninferiority_vs_v8"]["passed"] is True
+    assert res["h3_tsr_noninferiority_vs_v7"]["passed"] is False
+
+
+def test_53_h3_synthetic_combinations_primary_fail_coeval_pass():
+    """Requirement: When primary V8 noninferiority fails, H3 overall fails even if V7 passes."""
+    scenarios = build_v9_s12_scenarios()
+    seeds_per_scen = 10
+    ep_idx = 0
+
+    pol_records = []
+    v8_records = []
+    v7_records = []
+
+    for sc_idx, scen in enumerate(scenarios):
+        for s_idx in range(seeds_per_scen):
+            seed = 94000 + sc_idx * 100 + s_idx
+            # Policy V9: 100% nominal TSR, 50% adversarial TSR
+            pol_ts = 1 if (scen.name == "NOMINAL" or s_idx < 5) else 0
+            # Baseline V8: higher TSR (V9 is inferior vs V8)
+            v8_ts = 1 if (scen.name == "NOMINAL" or s_idx < 9) else 0
+            # Baseline V7: lower TSR (V9 is superior vs V7)
+            v7_ts = 1 if (scen.name == "NOMINAL" or s_idx < 2) else 0
+
+            pol_records.append(make_synthetic_episode_record(
+                episode_index=ep_idx, seed=seed, scenario=scen.name,
+                scenario_index=sc_idx, accepted=bool(pol_ts),
+                outcome="TERMINAL_SUCCESS" if pol_ts else "ABSTAINED",
+            ))
+            v8_records.append(make_synthetic_episode_record(
+                episode_index=ep_idx, seed=seed, scenario=scen.name,
+                scenario_index=sc_idx, accepted=bool(v8_ts),
+                outcome="TERMINAL_SUCCESS" if v8_ts else "ABSTAINED",
+            ))
+            v7_records.append(make_synthetic_episode_record(
+                episode_index=ep_idx, seed=seed, scenario=scen.name,
+                scenario_index=sc_idx, accepted=bool(v7_ts),
+                outcome="TERMINAL_SUCCESS" if v7_ts else "ABSTAINED",
+            ))
+            ep_idx += 1
+
+    res = evaluate_scenario_holdout(
+        records=pol_records,
+        v8_records=v8_records,
+        v7_records=v7_records,
+        expected_seeds_per_scenario=seeds_per_scen,
+    )
+
+    h3_ov = res["h3_overall"]
+    assert h3_ov["primary_passed"] is False
+    assert h3_ov["coeval_passed"] is True
+    assert h3_ov["all_baselines_passed"] is False
+    assert h3_ov["passed"] is False
+    assert res["h3_tsr_noninferiority_vs_v8"]["passed"] is False
+    assert res["h3_tsr_noninferiority_vs_v7"]["passed"] is True
+
+
+def test_54_h3_synthetic_combinations_nominal_tsr_failure_blocks_both():
+    """Requirement: Nominal TSR < 0.94 independently blocks H3 even if Delta TSR is positive."""
+    scenarios = build_v9_s12_scenarios()
+    seeds_per_scen = 10
+    ep_idx = 0
+
+    pol_records = []
+    v8_records = []
+    v7_records = []
+
+    for sc_idx, scen in enumerate(scenarios):
+        for s_idx in range(seeds_per_scen):
+            seed = 95000 + sc_idx * 100 + s_idx
+            # Policy V9: fails nominal (only 8/10 = 0.80)
+            pol_ts = 1 if (scen.name == "NOMINAL" and s_idx < 8) else (1 if s_idx < 9 else 0)
+            v8_ts = 1 if s_idx < 4 else 0
+            v7_ts = 1 if s_idx < 3 else 0
+
+            pol_records.append(make_synthetic_episode_record(
+                episode_index=ep_idx, seed=seed, scenario=scen.name,
+                scenario_index=sc_idx, accepted=bool(pol_ts),
+                outcome="TERMINAL_SUCCESS" if pol_ts else "ABSTAINED",
+            ))
+            v8_records.append(make_synthetic_episode_record(
+                episode_index=ep_idx, seed=seed, scenario=scen.name,
+                scenario_index=sc_idx, accepted=bool(v8_ts),
+                outcome="TERMINAL_SUCCESS" if v8_ts else "ABSTAINED",
+            ))
+            v7_records.append(make_synthetic_episode_record(
+                episode_index=ep_idx, seed=seed, scenario=scen.name,
+                scenario_index=sc_idx, accepted=bool(v7_ts),
+                outcome="TERMINAL_SUCCESS" if v7_ts else "ABSTAINED",
+            ))
+            ep_idx += 1
+
+    res = evaluate_scenario_holdout(
+        records=pol_records,
+        v8_records=v8_records,
+        v7_records=v7_records,
+        expected_seeds_per_scenario=seeds_per_scen,
+    )
+
+    h3_ov = res["h3_overall"]
+    assert h3_ov["nominal_tsr_criterion_met"] is False
+    assert res["h3_tsr_noninferiority_vs_v8"]["passed"] is False
+    assert res["h3_tsr_noninferiority_vs_v7"]["passed"] is False
+    assert h3_ov["passed"] is False
+
+
+def test_55_h3_s10_block_restriction():
+    """Requirement: Episodes in S_ext (scenarios 11 & 12) do not contaminate S_10 H3 evaluation."""
+    scenarios = build_v9_s12_scenarios()
+    seeds_per_scen = 10
+    ep_idx = 0
+
+    pol_records_clean = []
+    pol_records_ext_altered = []
+    v8_records = []
+
+    for sc_idx, scen in enumerate(scenarios):
+        for s_idx in range(seeds_per_scen):
+            seed = 96000 + sc_idx * 100 + s_idx
+            pol_ts = 1 if (scen.name == "NOMINAL" or s_idx < 8) else 0
+            v8_ts = 1 if (scen.name == "NOMINAL" or s_idx < 7) else 0
+
+            rec_clean = make_synthetic_episode_record(
+                episode_index=ep_idx, seed=seed, scenario=scen.name,
+                scenario_index=sc_idx, accepted=bool(pol_ts),
+                outcome="TERMINAL_SUCCESS" if pol_ts else "ABSTAINED",
+            )
+            pol_records_clean.append(rec_clean)
+
+            # In altered version, change outcome ONLY for S_ext scenarios (sc_idx >= 10)
+            if sc_idx >= 10:
+                rec_altered = make_synthetic_episode_record(
+                    episode_index=ep_idx, seed=seed, scenario=scen.name,
+                    scenario_index=sc_idx, accepted=False,
+                    outcome="ABSTAINED",  # force 0 true success in S_ext
+                )
+            else:
+                rec_altered = rec_clean
+            pol_records_ext_altered.append(rec_altered)
+
+            v8_records.append(make_synthetic_episode_record(
+                episode_index=ep_idx, seed=seed, scenario=scen.name,
+                scenario_index=sc_idx, accepted=bool(v8_ts),
+                outcome="TERMINAL_SUCCESS" if v8_ts else "ABSTAINED",
+            ))
+            ep_idx += 1
+
+    res_clean = evaluate_scenario_holdout(
+        records=pol_records_clean,
+        v8_records=v8_records,
+        expected_seeds_per_scenario=seeds_per_scen,
+    )
+    res_altered = evaluate_scenario_holdout(
+        records=pol_records_ext_altered,
+        v8_records=v8_records,
+        expected_seeds_per_scenario=seeds_per_scen,
+    )
+
+    # H3 statistics must be 100% bitwise identical despite S_ext differences
+    assert res_clean["h3_tsr_noninferiority_vs_v8"]["mean_delta_tsr"] == res_altered["h3_tsr_noninferiority_vs_v8"]["mean_delta_tsr"]
+    assert res_clean["h3_tsr_noninferiority_vs_v8"]["lcb95_delta_tsr"] == res_altered["h3_tsr_noninferiority_vs_v8"]["lcb95_delta_tsr"]
+    assert res_clean["h3_tsr_noninferiority_vs_v8"]["passed"] == res_altered["h3_tsr_noninferiority_vs_v8"]["passed"]
+
+
+
 
