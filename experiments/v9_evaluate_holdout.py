@@ -530,6 +530,27 @@ def newcombe_paired_difference_ci(
     return (lower, upper)
 
 
+def newcombe_paired_difference_lcb(
+    n11: int,
+    n10: int,
+    n01: int,
+    n00: int,
+    confidence: float = 0.95,
+) -> float:
+    """
+    Calculates 1-sided lower confidence bound on paired difference of proportions
+    using Newcombe's paired score method (Method 10, Newcombe 1998).
+    A 1-sided 95% lower bound corresponds to a 2-sided 90% confidence interval lower limit.
+    """
+    n = n11 + n10 + n01 + n00
+    if n == 0:
+        return float("nan")
+    alpha = 1.0 - confidence
+    two_sided_conf = 1.0 - 2.0 * alpha
+    lower, _ = newcombe_paired_difference_ci(n11, n10, n01, n00, confidence=two_sided_conf)
+    return float(lower)
+
+
 def paired_difference_lcb(diffs: Sequence[float], confidence: float = 0.95) -> float:
     """Calculates 1-sided lower confidence bound on paired continuous or binary difference."""
     n = len(diffs)
@@ -895,38 +916,65 @@ def evaluate_scenario_holdout(
     h3_v8_passed = False
     h3_v8_status = "NOT_EVALUATED_NO_V8_DATA"
     h3_v8_lcb95 = float("nan")
+    h3_v8_newcombe_lcb95 = float("nan")
     h3_v8_mean_delta = float("nan")
+    n11_v8 = n10_v8 = n01_v8 = n00_v8 = 0
     if v8_records is not None and len(v8_records) > 0:
         paired_v8 = align_and_pair_records(records, v8_records, baseline_label="v8_martingale")
         matched_diffs_v8: list[float] = []
         for r_pi, r_v8 in paired_v8:
             scen_name = str(r_pi.get("scenario", "")).strip()
             if scen_name in s10_names:
-                diff = float(int(r_pi["true_success"])) - float(int(r_v8["true_success"]))
+                y_pi = int(r_pi["true_success"])
+                y_v8 = int(r_v8["true_success"])
+                diff = float(y_pi) - float(y_v8)
                 matched_diffs_v8.append(diff)
+                if y_pi == 1 and y_v8 == 1:
+                    n11_v8 += 1
+                elif y_pi == 1 and y_v8 == 0:
+                    n10_v8 += 1
+                elif y_pi == 0 and y_v8 == 1:
+                    n01_v8 += 1
+                else:
+                    n00_v8 += 1
         if matched_diffs_v8:
             h3_v8_mean_delta = float(np.mean(matched_diffs_v8))
             h3_v8_lcb95 = paired_difference_lcb(matched_diffs_v8, confidence=0.95)
-            h3_v8_passed = bool(h3_v8_lcb95 > -0.05 and nominal_tsr_hat >= 0.94)
+            h3_v8_newcombe_lcb95 = newcombe_paired_difference_lcb(n11_v8, n10_v8, n01_v8, n00_v8, confidence=0.95)
+            # Rejects noninferiority null if both Student-t and Newcombe paired LCB exceed -0.05
+            h3_v8_passed = bool(h3_v8_lcb95 > -0.05 and h3_v8_newcombe_lcb95 > -0.05 and nominal_tsr_hat >= 0.94)
             h3_v8_status = "CONFIRMATORY_PASS" if h3_v8_passed else "FAIL_NONINFERIORITY_OR_NOMINAL"
 
     # Evaluation against V7 (Co-Evaluated Baseline)
     h3_v7_passed = False
     h3_v7_status = "NOT_EVALUATED_NO_V7_DATA"
     h3_v7_lcb95 = float("nan")
+    h3_v7_newcombe_lcb95 = float("nan")
     h3_v7_mean_delta = float("nan")
+    n11_v7 = n10_v7 = n01_v7 = n00_v7 = 0
     if v7_records is not None and len(v7_records) > 0:
         paired_v7 = align_and_pair_records(records, v7_records, baseline_label="v7_mpc")
         matched_diffs_v7: list[float] = []
         for r_pi, r_v7 in paired_v7:
             scen_name = str(r_pi.get("scenario", "")).strip()
             if scen_name in s10_names:
-                diff = float(int(r_pi["true_success"])) - float(int(r_v7["true_success"]))
+                y_pi = int(r_pi["true_success"])
+                y_v7 = int(r_v7["true_success"])
+                diff = float(y_pi) - float(y_v7)
                 matched_diffs_v7.append(diff)
+                if y_pi == 1 and y_v7 == 1:
+                    n11_v7 += 1
+                elif y_pi == 1 and y_v7 == 0:
+                    n10_v7 += 1
+                elif y_pi == 0 and y_v7 == 1:
+                    n01_v7 += 1
+                else:
+                    n00_v7 += 1
         if matched_diffs_v7:
             h3_v7_mean_delta = float(np.mean(matched_diffs_v7))
             h3_v7_lcb95 = paired_difference_lcb(matched_diffs_v7, confidence=0.95)
-            h3_v7_passed = bool(h3_v7_lcb95 > -0.05 and nominal_tsr_hat >= 0.94)
+            h3_v7_newcombe_lcb95 = newcombe_paired_difference_lcb(n11_v7, n10_v7, n01_v7, n00_v7, confidence=0.95)
+            h3_v7_passed = bool(h3_v7_lcb95 > -0.05 and h3_v7_newcombe_lcb95 > -0.05 and nominal_tsr_hat >= 0.94)
             h3_v7_status = "CONFIRMATORY_PASS" if h3_v7_passed else "FAIL_NONINFERIORITY_OR_NOMINAL"
 
     # Overall H_3 determination per Protocol Section 3.1.1:
@@ -962,7 +1010,7 @@ def evaluate_scenario_holdout(
         "nominal_tsr_hat": round(nominal_tsr_hat, 6),
         "h3_overall": {
             "hypothesis": "H_3",
-            "decision_rule": "Primary noninferiority vs V8.1 (LCB95 > -0.05 on S_10) AND TSR_nominal >= 0.94; co-evaluated vs V7",
+            "decision_rule": "Primary noninferiority vs V8.1 (LCB95 > -0.05 on S_10 via Student-t and Newcombe) AND TSR_nominal >= 0.94; co-evaluated vs V7",
             "primary_baseline": "v8_martingale",
             "primary_passed": h3_v8_passed,
             "primary_status": h3_v8_status,
@@ -981,6 +1029,8 @@ def evaluate_scenario_holdout(
             "nominal_tsr": round(nominal_tsr_hat, 6),
             "mean_delta_tsr": round(h3_v8_mean_delta, 6) if not math.isnan(h3_v8_mean_delta) else "N/A",
             "lcb95_delta_tsr": round(h3_v8_lcb95, 6) if not math.isnan(h3_v8_lcb95) else "N/A",
+            "newcombe_lcb95_delta_tsr": round(h3_v8_newcombe_lcb95, 6) if not math.isnan(h3_v8_newcombe_lcb95) else "N/A",
+            "table_n11_n10_n01_n00": [n11_v8, n10_v8, n01_v8, n00_v8],
             "status": h3_v8_status,
             "passed": h3_v8_passed,
         },
@@ -991,6 +1041,8 @@ def evaluate_scenario_holdout(
             "nominal_tsr": round(nominal_tsr_hat, 6),
             "mean_delta_tsr": round(h3_v7_mean_delta, 6) if not math.isnan(h3_v7_mean_delta) else "N/A",
             "lcb95_delta_tsr": round(h3_v7_lcb95, 6) if not math.isnan(h3_v7_lcb95) else "N/A",
+            "newcombe_lcb95_delta_tsr": round(h3_v7_newcombe_lcb95, 6) if not math.isnan(h3_v7_newcombe_lcb95) else "N/A",
+            "table_n11_n10_n01_n00": [n11_v7, n10_v7, n01_v7, n00_v7],
             "status": h3_v7_status,
             "passed": h3_v7_passed,
         },

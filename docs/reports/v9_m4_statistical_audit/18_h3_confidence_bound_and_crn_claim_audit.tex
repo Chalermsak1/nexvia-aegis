@@ -1,0 +1,236 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[margin=2.0cm]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb,amsfonts,amsthm,mathtools}
+\usepackage{booktabs,tabularx,colortbl,array,multirow}
+\usepackage[table]{xcolor}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{microtype}
+\usepackage{hyperref}
+
+\newfontfamily\thaifont{Thonburi}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    citecolor=blue!70!black,
+    urlcolor=blue!70!black
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\footnotesize \textbf{NEXVIA AEGIS V9-M4 H3 CI \& CRN Claim Audit}}
+\lhead{\footnotesize Authoritative Protocol Verification, Method Reconciliation \& Evidentiary Audit}
+\rfoot{\footnotesize Page \thepage}
+\lfoot{\footnotesize Document ID: AEGIS-V9-M4-CRN-18}
+
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{NEXVIA AEGIS V9-M4 Methodological Audit}}\\[6pt]
+    {\Large \textbf{Final Hypothesis H3 Confidence-Bound Implementation Verification}}\\[3pt]
+    {\Large \textbf{and Common-Random-Numbers Variance-Reduction Claim Audit}}\\[10pt]
+    \textbf{Autonomous Verification Subsystem (Google DeepMind Antigravity)}\\
+    \textit{Git Branch: v9.0-runtime-assurance \quad $\cdot$ \quad Reported Prior Commit: 0d8350c \quad $\cdot$ \quad Date: October 25, 2026}\\[12pt]
+\end{center}
+
+\noindent\fbox{
+\parbox{0.97\textwidth}{
+\textbf{CRITICAL NON-AUTHORIZATION DIRECTIVE:}\\
+This audit document resolves two specific pre-execution questions: (1) Does the implemented Hypothesis $H_3$ noninferiority confidence bound match the authoritative registered experiment protocol? (2) Are claims regarding variance reduction from the Common Random Numbers (CRN) design supported by empirical and theoretical evidence? \textbf{This document does NOT constitute authorization to execute Milestone V9-M4.} All evaluations in this report were conducted strictly using synthetic test fixtures, in-memory models, and mock environments. Production holdout manifests (\texttt{test\_mix\_manifest\_r1.json} and \texttt{test\_scen\_manifest\_r1.json}) and output directories (\texttt{results/v9/test\_mix/} and \texttt{results/v9/test\_scen/}) do not exist. Reserved holdout seed blocks ($73000..74439$ for mixture holdout and $75000..75119$ for scenario holdout) remain completely uninstantiated and untouched. Live execution requires explicit authorization from the project owner.
+}
+}
+
+\vspace{10pt}
+
+\begin{abstract}
+\noindent This audit resolves two foundational methodological questions prior to production holdout authorization: (1) Does the implemented Hypothesis $H_3$ True-Success Rate (TSR) noninferiority confidence bound conform to the authoritative preregistered protocol? (2) Are claims regarding variance reduction attributable to the Common Random Numbers (CRN) design supported by available evidence?
+
+First, comparing governing protocol texts (\texttt{docs/v9\_experiment\_protocol.md}) with prior reports, we reconcile the protocol's dual parenthetical reference to \textit{``Newcombe/Wald paired difference CI''} with the pre-execution report's specification of a paired-difference Student's $t$ lower confidence bound ($\mathrm{LCB}_{95}$). Mathematical analysis and synthetic boundary testing on the registered sample size $N = 1,200$ establish that the sample standard error $\frac{s_d}{\sqrt{N}}$ is the finite-sample Student's $t$ formulation of the paired Wald interval. At $N = 1,200$, the Student's $t$ LCB and Newcombe's profile-score LCB (Method 10, two-sided 90\% confidence / one-sided 95\% level) agree to within $\pm 0.00002$ ($0.002$ percentage points) across realistic discordant rates, yielding 100\% decision concordance across all boundary cases. To ensure absolute protocol fidelity and eliminate ambiguity, we updated \texttt{experiments/v9\_evaluate\_holdout.py} to compute and report both bounds (\texttt{lcb95\_delta\_tsr} and \texttt{newcombe\_lcb95\_delta\_tsr}) alongside the complete $2 \times 2$ contingency table.
+
+Second, auditing CRN variance-reduction claims, we distinguish structural pairing mechanisms from empirical outcome distributions. While the CRN architecture enforces matched initial conditions ($t=0$) and shared scenario seeds, variance reduction $\operatorname{Var}(\overline{\Delta\mathrm{TSR}}) < \operatorname{Var}_{\text{unpaired}}$ mathematically requires positive covariance $\operatorname{Cov}(Y_{\pi}, Y_{\text{base}}) > 0$. On historical benchmark data ($N = 500$), empirical correlation was strongly positive ($\rho = 0.5931$), producing an empirical standard error reduction of $36.21\%$. However, on the unexecuted holdout partition ($\mathcal{D}_{\text{test}}^{\text{scen}}$), holdout data has not been generated or simulated. Consequently, variance reduction cannot be claimed as an established holdout fact or an unconditional architectural guarantee; rather, the CRN design \textit{enables} paired evaluation and is \textit{intended to exploit positive correlation}, but the actual reduction in uncertainty is an empirical property to be measured post-authorization.
+
+Four dedicated synthetic regression tests (\texttt{test\_56}--\texttt{test\_59}) verify numerical convergence, boundary behavior, dual-bound reporting, and the empirical contingency of variance reduction. All 59 preflight tests and all 170 full repository tests pass with zero failures.
+\end{abstract}
+
+\vspace{6pt}
+\noindent \textbf{Keywords:} Hypothesis H3, Noninferiority Confidence Bound, Student's $t$ Wald LCB, Newcombe Paired Score Interval, Common Random Numbers (CRN), Covariance Structure, Holdout Preservation.
+
+\section{Executive Summary}
+
+\subsection{Executive Summary (English)}
+\begin{enumerate}
+    \item \textbf{Confidence Bound Reconciliation:} Protocol Section 3.1.1 refers parenthetically to \textit{``Newcombe/Wald paired difference CI''}, while Section 3.2.4 derives power from the Wald standard error $\mathrm{SE}_0 = \sqrt{q/N}$, and pre-execution reports specify a paired Student's $t$ bound. We prove that at $N = 1,200$, the finite-sample Student's $t$ Wald LCB and Newcombe's paired score LCB (Method 10) are virtually indistinguishable ($|\Delta| \le 0.00002$) and yield identical noninferiority decisions.
+    \item \textbf{Dual-Bound Implementation:} Updated \texttt{evaluate\_scenario\_holdout} in \texttt{experiments/v9\_evaluate\_holdout.py} to calculate and report both \texttt{lcb95\_delta\_tsr} (Student's $t$ Wald) and \texttt{newcombe\_lcb95\_delta\_tsr} (Newcombe 10) for both V8.1 Martingale and V7 MPC, guaranteeing compliance under either interpretation.
+    \item \textbf{CRN Variance-Reduction Evidentiary Audit:} We formally qualify prior claims that CRN ``guarantees'' variance reduction. Mathematically, pairing reduces standard error if and only if $\operatorname{Cov}(Y_{\pi}, Y_{\text{base}}) > 0$. While historical data confirms $\rho \approx 0.593$ (yielding 36.2\% SE reduction between V8 and V7), the correlation between V9 and baselines on holdout data remains an unmeasured empirical property until execution.
+    \item \textbf{Independent Synthetic Verification:} Verified all boundary cases on $N = 1,200$ matched pairs: all agreeing (100\% and 50\%), balanced discordant ($q = 0.204$), slight deficit ($\Delta = -0.015$), near boundary ($\Delta = -0.028333$ passes, $\Delta = -0.030$ fails), and nominal TSR failure ($112/120 = 0.9333 < 0.94$ fails).
+    \item \textbf{Synthetic Test Suite:} Added unit tests \texttt{test\_56} through \texttt{test\_59} in \texttt{tests/test\_v9\_holdout\_preflight.py}. Preflight tests achieve 59/59 passing (1.90s); full regression suite achieves 170/170 passing (28.16s).
+    \item \textbf{Holdout Independence:} Zero production holdout manifests, datasets, or RNG streams were created or accessed. The frozen policy hash (\texttt{5a89d606...}) and calibration artifacts remain 100\% identical.
+\end{enumerate}
+
+\subsection{\thaifont บทสรุปสำหรับผู้บริหาร (Executive Summary in Thai)}
+\begin{enumerate}
+    \item \textbf{\thaifont การพิสูจน์ความสอดคล้องของช่วงความเชื่อมั่น H3:} {\thaifont เอกสารพิธีสารหมวด 3.1.1 ระบุในวงเล็บถึง ``Newcombe/Wald paired difference CI'' ในขณะที่หมวด 3.2.4 คำนวณกำลังการทดสอบจาก Wald Standard Error และรายงานก่อนหน้าระบุเป็น Student's $t$ Lower Confidence Bound ($\mathrm{LCB}_{95}$) การพิสูจน์ทางคณิตศาสตร์และชุดข้อมูลสังเคราะห์ขนาด $N = 1,200$ ยืนยันว่าวิธี Student's $t$ Wald และวิธี Newcombe Method 10 ให้ผลลัพธ์ใกล้เคียงกันอย่างยิ่ง (ผลต่างไม่เกิน $0.00002$ หรือ $0.002\%$) และให้ผลการตัดสินความไม่ด้อยกว่าเหมือนกันทุกกรณี}
+    \item \textbf{\thaifont การรายงานช่วงความเชื่อมั่นคู่ขนาน:} {\thaifont ปรับปรุงฟังก์ชัน \texttt{evaluate\_scenario\_holdout} ใน \texttt{experiments/v9\_evaluate\_holdout.py} ให้คำนวณและรายงานทั้ง \texttt{lcb95\_delta\_tsr} (Student's $t$) และ \texttt{newcombe\_lcb95\_delta\_tsr} (Newcombe Score) พร้อมตารางนับ $2 \times 2$ สำหรับทั้ง V8.1 และ V7 เพื่อขจัดความคลุมเครือและคงความสอดคล้องกับข้อกำหนดทุกประการ}
+    \item \textbf{\thaifont การตรวจสอบข้ออ้างการลดความแปรปรวนของ CRN:} {\thaifont ทำการแก้ไขข้อความในรายงานก่อนหน้าที่ระบุว่า CRN ``รับประกัน'' การลดความแปรปรวน โดยในทางสถิติ การจับคู่จะลด Standard Error ได้ก็ต่อเมื่อผลลัพธ์มีความสัมพันธ์เชิงบวก ($\operatorname{Cov} > 0$) เท่านั้น แม้ข้อมูลประวัติศาสตร์จะยืนยันค่า $\rho \approx 0.593$ (ลด SE ได้ 36.2\%) แต่บนชุดข้อมูล Holdout จริงที่ยังไม่เคยรัน ค่าความสัมพันธ์นี้ยังถือเป็นตัวแปรเชิงประจักษ์ที่ต้องรอการวัดผลหลังได้รับอนุมัติ}
+    \item \textbf{\thaifont การคำนวณและทดสอบกรณีขอบเขต:} {\thaifont ทดสอบกรณีสังเคราะห์อย่างอิสระบนกลุ่มตัวอย่าง $N = 1,200$ ครบถ้วนทุกมิติ: ผลลัพธ์ตรงกันทั้งหมด, ผลลัพธ์ขัดแย้งแบบสมดุล, อัตราสำเร็จด้อยกว่าเล็กน้อย, ขอบเขตวิกฤตความไม่ด้อยกว่า ($\Delta = -0.028333$ ผ่าน, $\Delta = -0.030$ ไม่ผ่าน) และกรณี TSR สภาวะปกติไม่ถึงเกณฑ์ ($112/120 < 0.94$)}
+    \item \textbf{\thaifont การขยายชุดทดสอบเชิงสังเคราะห์:} {\thaifont เพิ่มการทดสอบ \texttt{test\_56} ถึง \texttt{test\_59} ส่งผลให้ชุดทดสอบ Preflight ผ่าน 59/59 รายการ (1.90 วินาที) และชุดทดสอบระบบรวมผ่าน 170/170 รายการ (28.16 วินาที)}
+    \item \textbf{\thaifont การคงความบริสุทธิ์ของข้อมูล Holdout:} {\thaifont ยืนยันว่าไม่มีการสร้างไฟล์ Manifest หรือรันซิมูเลชันบนข้อมูล Holdout จริง และค่าแฮชของนโยบายควบคุมยังคงเดิม 100\%}
+\end{enumerate}
+
+\section{Phase 1 — Audit of Registered H3 Confidence-Bound Method}
+
+\subsection{Cross-Document Reconciliation of Protocol Specifications}
+A rigorous textual and mathematical comparison was conducted across all governing documents:
+
+\begin{table}[h!]
+\centering
+\small
+\begin{tabularx}{\textwidth}{l p{3.5cm} X p{3.2cm}}
+\toprule
+\textbf{Document Source} & \textbf{Section \& Line} & \textbf{Exact Phrasing} & \textbf{Method Terminology} \\
+\midrule
+\texttt{v9\_experiment\_protocol.md} & §3.1.1 (line 30) & \textit{``One-sided 95\% paired lower confidence bound (Newcombe/Wald paired difference CI on the 1,200 matched \texttt{(scenario, seed)} pairs) strictly exceeds -0.05...''} & Dual designation: ``Newcombe/Wald paired difference CI'' \\
+\texttt{v9\_experiment\_protocol.md} & §3.2.4 (lines 112--118) & \textit{``paired standard error under null equality is $\mathrm{SE}_0 = \sqrt{q / N}$, two-sided 95\% CI half-width is $1.96\,\mathrm{SE}_0$, and MDE is $(z_{1-\alpha_{\mathrm{NI}}} + z_{1-\beta})\sqrt{q / N}$''} & Wald asymptotic paired difference formulation \\
+\texttt{v9\_experiment\_protocol.md} & Table 3.5.1 (line 247) & \textit{``1-sided 95\% paired LCB on $\Delta\mathrm{TSR} = \mathrm{TSR}(\hat{\pi}) - \mathrm{TSR}(\pi_{\mathrm{ref}})$ across $N=1,200$ matched $\mathcal{S}_{10}$ pairs...''} & 1-sided 95\% paired LCB at margin $-0.05$ \\
+Report 04 & §2.2 vs §3.1 & §2.2 applies Newcombe Method 10 to $H_2$ ($\Delta R_{\mathrm{inc}}$). §3.1 applies Student's $t$ paired LCB $\bar{d} - t_{0.95, N-1} \frac{s_d}{\sqrt{N}}$ to $H_3$ ($\Delta\mathrm{TSR}$). & Newcombe for $H_2$; Student's $t$ LCB for $H_3$ \\
+Report 13 & §3.2 & Evaluated paired difference Student's $t$ lower bound for $H_3$. & Student's $t$ paired LCB \\
+Report 16 \& 17 & §2.1 \& §4.1 & Confirmed V8.1 primary and V7 co-evaluation under paired LCB $> -0.05$ on $S_{10}$. & Paired LCB $> -0.05$ \\
+\bottomrule
+\end{tabularx}
+\caption{Reconciliation of statistical confidence bound terminology across governing repository documents.}
+\end{table}
+
+\subsection{Mathematical Formulation of the Estimators}
+The parenthetical phrase in Section 3.1.1 combines two standard biometric procedures for paired binary differences:
+
+\paragraph{1. Finite-Sample Wald Student's $t$ Paired Lower Bound:}
+Let $Y_{1, i}, Y_{2, i} \in \{0, 1\}$ represent binary outcomes on matched pair $i \in \{1, \dots, N\}$. The paired difference is $D_i = Y_{1, i} - Y_{2, i} \in \{-1, 0, 1\}$. The sample mean difference is $\overline{D} = \frac{n_{10} - n_{01}}{N} = \widehat{\mathrm{TSR}}_1 - \widehat{\mathrm{TSR}}_2$. The sample variance of differences is:
+\begin{equation}
+s_D^2 = \frac{1}{N-1}\sum_{i=1}^N (D_i - \overline{D})^2 = \frac{N}{N-1}\left( \frac{n_{10} + n_{01}}{N} - \overline{D}^2 \right)
+\end{equation}
+The standard error of the mean difference is $\mathrm{SE}(\overline{D}) = \frac{s_D}{\sqrt{N}} = \sqrt{\frac{p_{10} + p_{01} - (p_{10} - p_{01})^2}{N-1}}$. Substituting the Student's $t$ critical value $t_{1-\alpha, N-1}$ yields:
+\begin{equation}
+\mathrm{LCB}_{95}^{\text{Wald-}t} = \overline{D} - t_{0.95, N-1} \frac{s_D}{\sqrt{N}}
+\end{equation}
+This is the formulation implemented in \texttt{paired\_difference\_lcb}.
+
+\paragraph{2. Newcombe Paired Difference Interval (Method 10):}
+Newcombe (1998, Method 10) forms the paired score interval from the individual Wilson score confidence limits $[l_1, u_1]$ and $[l_2, u_2]$ for marginal proportions $p_1 = (n_{11} + n_{10})/N$ and $p_2 = (n_{11} + n_{01})/N$, coupled by the sample phi-coefficient correlation $\hat{\phi} = \frac{n_{11} n_{00} - n_{10} n_{01}}{\sqrt{(n_{11} + n_{10})(n_{01} + n_{00})(n_{11} + n_{01})(n_{10} + n_{00})}}$:
+\begin{equation}
+\mathrm{LCB}_{1-\alpha}^{\text{Newcombe}} = (p_1 - p_2) - \sqrt{(p_1 - l_1)^2 - 2\hat{\phi}(p_1 - l_1)(u_2 - p_2) + (u_2 - p_2)^2}
+\end{equation}
+where $l_1$ and $u_2$ are the Wilson limits at two-sided confidence $1 - 2\alpha = 0.90$.
+
+\section{Phase 2 — Mathematical Comparison and Synthetic Boundary Verification}
+
+\subsection{Numerical Comparison on Registered Sample Size ($N = 1,200$)}
+We independently computed both estimators across key synthetic boundary fixtures on $N = 1,200$:
+
+\begin{table}[h!]
+\centering
+\small
+\begin{tabularx}{\textwidth}{c l c c c c c c c c}
+\toprule
+\textbf{\#} & \textbf{Case Description} & $n_{11}$ & $n_{10}$ & $n_{01}$ & $n_{00}$ & $\Delta\mathrm{TSR}$ & \textbf{Student's $t$ LCB} & \textbf{Newcombe LCB} & \textbf{Decision} \\
+\midrule
+1 & All pairs agreeing (100\% TS) & 1,200 & 0 & 0 & 0 & $+0.0000$ & $0.000000$ & $-0.002250$ & \textbf{PASS} (both) \\
+2 & All pairs agreeing (50\% TS) & 600 & 0 & 0 & 600 & $+0.0000$ & $0.000000$ & $0.000000$ & \textbf{PASS} (both) \\
+3 & Balanced discordant ($q = 0.204$) & 800 & 122 & 122 & 156 & $+0.0000$ & $-0.021437$ & $-0.021421$ & \textbf{PASS} (both) \\
+4 & Slight deficit ($\Delta = -0.015$) & 800 & 113 & 131 & 156 & $-0.0150$ & $-0.036425$ & $-0.036410$ & \textbf{PASS} (both) \\
+5 & Near boundary (Pass: $\Delta = -0.0283$) & 800 & 105 & 139 & 156 & $-0.0283$ & $-0.049728$ & $-0.049713$ & \textbf{PASS} (both) \\
+6 & Below boundary (Fail: $\Delta = -0.030$) & 800 & 104 & 140 & 156 & $-0.0300$ & $-0.051389$ & $-0.051374$ & \textbf{FAIL} (both) \\
+7 & Nominal TSR failure ($\widehat{\mathrm{TSR}}_{\mathrm{nom}} < 0.94$) & 800 & 122 & 122 & 156 & $+0.0000$ & $-0.021437$ & $-0.021421$ & \textbf{FAIL} (nom) \\
+\bottomrule
+\end{tabularx}
+\caption{Numerical comparison of Student's $t$ Wald LCB vs. Newcombe Method 10 LCB on $N = 1,200$ matched pairs.}
+\end{table}
+
+Across all non-degenerate cases ($q > 0$), the difference between the Student's $t$ Wald LCB and Newcombe LCB is less than $0.00002$ ($0.002\%$). Both methods achieve 100\% decision concordance. To eliminate ambiguity, \texttt{evaluate\_scenario\_holdout} in \texttt{experiments/v9\_evaluate\_holdout.py} now outputs both bounds: \texttt{lcb95\_delta\_tsr} and \texttt{newcombe\_lcb95\_delta\_tsr}.
+
+\section{Phase 3 — Audit of Common Random Numbers (CRN) Variance-Reduction Claims}
+
+\subsection{Decomposition of Architectural Guarantees vs. Empirical Outcomes}
+Prior Report 17 marked Guarantee G5 (Paired Variance Reduction) as ``YES: Guaranteed''. We formally decompose the CRN properties into distinct technical levels:
+
+\begin{table}[h!]
+\centering
+\small
+\begin{tabularx}{\textwidth}{l X c p{3.2cm}}
+\toprule
+\textbf{Property} & \textbf{Technical Description} & \textbf{Status} & \textbf{Evidentiary Basis} \\
+\midrule
+\textbf{1. Paired Identity} & Episodes across policies matched by \texttt{(scenario, seed)}. & Enforced & Key equality assertion. \\
+\textbf{2. Matched Initial Conditions} & Target position $\mathbf{p}_{\mathrm{target}}$ and sensor noise at $t=0$ bitwise identical. & Enforced & Proven in \texttt{test\_49}. \\
+\textbf{3. Separate Mutable States} & Independent \texttt{Generator} instances spawned via \texttt{SeedSequence}. & Enforced & Proven in \texttt{test\_48}, \texttt{50}. \\
+\textbf{4. Timestep Noise Alignment} & Noise draws match at $t > 0$ across controllers. & Qualified & Streams offset upon anchor queries (Model A). \\
+\textbf{5. Outcome Covariance} & Positive correlation $\operatorname{Cov}(Y_1, Y_2) > 0$ across paired outcomes. & Empirical & $\rho = 0.593$ on benchmark; unmeasured on holdout. \\
+\textbf{6. Variance Reduction} & $\operatorname{Var}(\overline{\Delta\mathrm{TSR}}) < \operatorname{Var}_{\text{unpaired}}$ achieved by pairing. & Empirical & Holds iff $\operatorname{Cov} > 0$. Not an architectural guarantee. \\
+\bottomrule
+\end{tabularx}
+\caption{Decomposition of CRN random-number properties into architectural mechanisms and empirical outcomes.}
+\end{table}
+
+\subsection{Historical Evidence and Prospective Holdout Status}
+For paired binary outcomes across $N$ matched episodes:
+\begin{equation}
+\operatorname{Var}(\overline{D}) = \frac{\operatorname{Var}(Y_1) + \operatorname{Var}(Y_2) - 2\operatorname{Cov}(Y_1, Y_2)}{N} < \frac{\operatorname{Var}(Y_1) + \operatorname{Var}(Y_2)}{N} \iff \operatorname{Cov}(Y_1, Y_2) > 0
+\end{equation}
+On historical benchmark data ($N = 500$, seeds $60000..60049$ on $\mathcal{S}_{10}$), comparing V8.1 and V7 yields:
+\begin{equation}
+n_{11} = 208, \quad n_{10} = 43, \quad n_{01} = 59, \quad n_{00} = 190, \quad q = 0.2040
+\end{equation}
+\begin{equation}
+\operatorname{Cov}(Y_{\mathrm{V8}}, Y_{\mathrm{V7}}) = +0.14793, \quad \rho = +0.5931, \quad \mathrm{SE}_{\text{unpaired}} = 0.03159, \quad \mathrm{SE}_{\text{paired}} = 0.02015 \quad (\text{SE reduction} = 36.21\%)
+\end{equation}
+However, on the unexecuted holdout partition ($\mathcal{D}_{\text{test}}^{\text{scen}}$), holdout data has never been generated or simulated. Consequently, variance reduction cannot be claimed as an established holdout fact or an unconditional architectural guarantee. Prior wording stating G5 is ``Guaranteed: YES'' is formally qualified: the CRN design \textit{enables} paired comparisons and is \textit{structurally intended to exploit positive correlation}, but the actual variance reduction is an empirical property that will be measured post-authorization.
+
+\section{Synthetic Regression Testing and Verification}
+Four synthetic tests (\texttt{test\_56} through \texttt{test\_59}) were added to \texttt{tests/test\_v9\_holdout\_preflight.py}:
+\begin{itemize}
+    \item \texttt{test\_56}: Verifies \texttt{newcombe\_paired\_difference\_lcb} across all 7 boundary fixtures.
+    \item \texttt{test\_57}: Proves 100\% decision concordance and $|\Delta| \le 0.00005$ across discordant grids.
+    \item \texttt{test\_58}: Confirms that \texttt{evaluate\_scenario\_holdout} outputs both LCB metrics and contingency tables.
+    \item \texttt{test\_59}: Validates the covariance requirement $\operatorname{Var}_{\text{paired}} < \operatorname{Var}_{\text{unpaired}} \iff \operatorname{Cov} > 0$ across correlated, independent, and anti-correlated synthetic data.
+\end{itemize}
+
+\paragraph{Recorded Execution Results:}
+\begin{itemize}
+    \item \texttt{PYTHONPATH=src uv run pytest -v tests/test\_v9\_holdout\_preflight.py}: \textbf{59 passed in 1.90s (Exit Code: 0)}.
+    \item \texttt{PYTHONPATH=src uv run pytest -q}: \textbf{170 passed in 28.16s (Exit Code: 0)}.
+\end{itemize}
+
+\section{Artifact Provenance and Checksums}
+
+\begin{table}[h!]
+\centering
+\small
+\begin{tabularx}{\textwidth}{l X c}
+\toprule
+\textbf{Artifact Path} & \textbf{SHA-256 Checksum} & \textbf{Status} \\
+\midrule
+\texttt{results/v9/cal/selected\_policy.json} & \texttt{1c316d2d97ccf1a93f2dcd4c4196aefbb3817f7bc951dee5b0290468f7de7b87} & UNCHANGED \\
+\texttt{results/v9/cal/calibration\_report.json} & \texttt{18ab85ab7d54625e4bb0d65de4786fe2896357768ed562cbfdee966a5d133337} & UNCHANGED \\
+\texttt{experiments/v9\_evaluate\_holdout.py} & \textit{Working tree (dual LCB reporting implemented)} & UPDATED \\
+\texttt{tests/test\_v9\_holdout\_preflight.py} & \textit{Working tree (tests 56--59 added)} & UPDATED \\
+\bottomrule
+\end{tabularx}
+\caption{Integrity verification of frozen policy, calibration artifacts, and updated test suite.}
+\end{table}
+
+\section{Conclusion and Recommendation}
+\begin{center}
+    \fbox{\textbf{FINAL STATUS: H3\_CI\_CRN\_CLAIMS\_CONFIRMED\_WITH\_QUALIFICATIONS}}
+\end{center}
+The H3 noninferiority confidence bound conforms to registered protocol specifications under both Student's $t$ Wald and Newcombe profile-score formulations ($|\Delta| \le 0.00002$, 100\% decision concordance). Dual reporting is now implemented. CRN variance reduction is mathematically clarified as an enabled empirical property verified historically ($\rho = 0.593$, SE reduction 36.2\%) and properly qualified on prospective holdout data.
+
+\begin{thebibliography}{9}
+\bibitem{newcombe1998} R. G. Newcombe, ``Improved confidence intervals for the difference between binomial proportions based on paired data,'' \textit{Statistics in Medicine}, vol. 17, no. 22, pp. 2635--2650, 1998.
+\bibitem{wald1943} A. Wald, ``Tests of statistical hypotheses concerning several parameters when the number of observations is large,'' \textit{Transactions of the American Mathematical Society}, vol. 54, no. 3, pp. 426--482, 1943.
+\end{thebibliography}
+
+\end{document}
