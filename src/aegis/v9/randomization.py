@@ -88,7 +88,7 @@ class V9HierarchicalManifestGenerator:
         Generates an auditable manifest payload pairing manifest IDs with uniform scenario draws
         and decoupled SeedSequence child streams.
         When partition_index is provided (e.g. 2 for calibration_r2), derives streams from a dedicated
-        partition child branch, guaranteeing zero stream collision with any other partition.
+        partition child branch, producing streams designed to be independent and non-overlapping with negligible collision probability under NumPy's SeedSequence model.
         """
         scenarios = build_v9_s12_scenarios()
         n_scen = len(scenarios)
@@ -174,8 +174,8 @@ class V9HierarchicalManifestGenerator:
         """
         Generates an auditable stratified manifest for deterministic grids
         [(scenario, seed) for scenario in S_12 for seed in range(seed_start, seed_start + seeds_per_scenario)].
-        Uses partition-branched SeedSequence derivation (spawn_key=(partition_index,)) to guarantee
-        zero stream collision with any other partition.
+        Uses partition-branched SeedSequence derivation (spawn_key=(partition_index,)) to produce
+        pseudo-random streams designed to be independent and non-overlapping with any other partition under NumPy's SeedSequence model.
         """
         scenarios = build_v9_s12_scenarios()
         n_scen = len(scenarios)

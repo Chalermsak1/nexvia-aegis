@@ -69,7 +69,7 @@ Under the partition-branching architecture defined in `docs/v9_m2r2_protocol_ame
   $$\text{env\_ss}_i = \text{ep\_ss}_i.\text{spawn}(2)[0] \implies \text{env\_spawn\_key} = (3, 1, i, 0)$$
   $$\text{sens\_ss}_i = \text{ep\_ss}_i.\text{spawn}(2)[1] \implies \text{sensor\_spawn\_key} = (3, 1, i, 1)$$
 
-Because the root key is prefixed with $p = 3$, validation streams are mathematically disjoint from development ($p=1$), calibration ($p=2$), holdouts ($p=4, 5$), and test fixtures ($p=6$).
+Because the root key is prefixed with $p = 3$, validation streams use distinct hierarchical spawn paths $(3, 1, i, \cdot)$ under NumPy's `SeedSequence`. Under NumPy's PCG64/SplitMix64 model, distinct spawn keys produce pseudo-random streams designed to be independent and non-overlapping with negligible collision probability ($\approx K^2 / 2^{129} < 10^{-30}$), ensuring stream separation across development ($p=1$), calibration ($p=2$), holdouts ($p=4, 5$), and test fixtures ($p=6$).
 
 ---
 
