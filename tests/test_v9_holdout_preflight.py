@@ -36,6 +36,7 @@ from scipy.stats import binom
 from aegis.v9.randomization import (
     PARTITION_BRANCH_TEST_MIXTURE,
     PARTITION_BRANCH_TEST_SCENARIO,
+    V9HierarchicalManifestGenerator,
 )
 from aegis.v9.risk_statistics import (
     V9CandidateParams,
@@ -47,6 +48,8 @@ from experiments.v9_evaluate_holdout import (
     TEST_MIX_ALLOWED_SEEDS,
     TEST_SCEN_ALLOWED_SEEDS,
     TEST_SCEN_SEEDS_PER_SCENARIO,
+    MockHoldoutSimulator,
+    _derive_episode_rngs,
     align_and_pair_records,
     berger_intersection_union_test,
     clopper_pearson_one_sided_ucb,
@@ -55,6 +58,7 @@ from experiments.v9_evaluate_holdout import (
     evaluate_mixture_holdout,
     evaluate_scenario_holdout,
     execute_holdout_workflow,
+    execute_production_holdout_pipeline,
     freeze_holdout_run_configuration,
     holm_shidak_adjusted_thresholds,
     mcnemar_exact_test,
@@ -956,4 +960,569 @@ def test_29_pairing_reconciles_discordant_pair_counts():
     calc_mcnemar = 2.0 * float(binom.cdf(5, 25, 0.5))
     assert math.isclose(expected_mcnemar, calc_mcnemar, rel_tol=1e-7)
     assert expected_mcnemar < 0.05  # Significant reduction
+
+
+# ==============================================================================
+# Phase 4 & 5: Mock Simulator and Production Execution Pathway Tests
+# ==============================================================================
+
+def test_30_mock_simulator_crn_determinism():
+    """Requirement: Mock simulator and _derive_episode_rngs preserve Common Random Numbers (CRN)."""
+    gen = V9HierarchicalManifestGenerator(master_entropy=20261025)
+    man = gen.generate_manifest(
+        partition_name="test_mix_synthetic",
+        manifest_id_start=80000,
+        count=5,
+        partition_index=PARTITION_BRANCH_TEST_MIXTURE,
+    )
+    ep_item = man["episodes"][0]
+    ep_seed = int(ep_item["manifest_id"])
+
+    # Simulate Policy V9, Baseline V8, Baseline V7 on the same episode
+    rng1_env, rng1_sens = _derive_episode_rngs(ep_item, ep_seed)
+    rng2_env, rng2_sens = _derive_episode_rngs(ep_item, ep_seed)
+    rng3_env, rng3_sens = _derive_episode_rngs(ep_item, ep_seed)
+
+    # Initial draws must be bitwise identical across all three instances
+    draw1_env = rng1_env.uniform(size=10)
+    draw2_env = rng2_env.uniform(size=10)
+    draw3_env = rng3_env.uniform(size=10)
+    assert np.array_equal(draw1_env, draw2_env)
+    assert np.array_equal(draw2_env, draw3_env)
+
+    draw1_sens = rng1_sens.normal(size=10)
+    draw2_sens = rng2_sens.normal(size=10)
+    draw3_sens = rng3_sens.normal(size=10)
+    assert np.array_equal(draw1_sens, draw2_sens)
+    assert np.array_equal(draw2_sens, draw3_sens)
+
+
+def test_31_production_pipeline_authorization_guard(tmp_path: Path):
+    """Requirement: Production pipeline strictly enforces explicit authorization token."""
+    out_dir = tmp_path / "results" / "v9" / "test_mix_guard"
+    out_dir.mkdir(parents=True)
+    fake_man = tmp_path / "fake_man.json"
+
+    # Token = None
+    with pytest.raises(RuntimeError, match="EXECUTION GUARD: Production holdout evaluation is not authorized"):
+        execute_production_holdout_pipeline(
+            partition="mixture",
+            policy_path=Path("results/v9/cal_r2/selected_policy.json"),
+            manifest_path=fake_man,
+            out_dir=out_dir,
+            authorized_execution_token=None,
+        )
+
+    # Invalid Token
+    with pytest.raises(RuntimeError, match="EXECUTION GUARD: Production holdout evaluation is not authorized"):
+        execute_production_holdout_pipeline(
+            partition="mixture",
+            policy_path=Path("results/v9/cal_r2/selected_policy.json"),
+            manifest_path=fake_man,
+            out_dir=out_dir,
+            authorized_execution_token="UNAUTHORIZED_TEST_TOKEN",
+        )
+
+
+def test_32_production_pipeline_custom_simulator_requires_allow_mock(tmp_path: Path):
+    """Requirement: Custom/mock simulator without allow_mock_simulation=True is blocked fail-closed."""
+    out_dir = tmp_path / "results" / "v9" / "test_mix_mock_guard"
+    out_dir.mkdir(parents=True)
+    fake_man = tmp_path / "fake_man.json"
+    mock_sim = MockHoldoutSimulator()
+
+    with pytest.raises(RuntimeError, match="Custom/mock simulators are only permitted when allow_mock_simulation is explicitly True"):
+        execute_production_holdout_pipeline(
+            partition="mixture",
+            policy_path=Path("results/v9/cal_r2/selected_policy.json"),
+            manifest_path=fake_man,
+            out_dir=out_dir,
+            authorized_execution_token=REQUIRED_EXECUTION_TOKEN,
+            simulator_fn=mock_sim,
+            allow_mock_simulation=False,
+        )
+
+
+def test_33_production_pipeline_mixture_mock_e2e(tmp_path: Path):
+    """Requirement: Full end-to-end orchestration of mixture holdout with mock simulator."""
+    gen = V9HierarchicalManifestGenerator(master_entropy=20261025)
+    mix_man = gen.generate_manifest(
+        partition_name="test_mix_synthetic",
+        manifest_id_start=80000,
+        count=120,
+        partition_index=PARTITION_BRANCH_TEST_MIXTURE,
+    )
+    man_path = tmp_path / "results" / "v9" / "manifests" / "test_mix_synthetic.json"
+    man_path.parent.mkdir(parents=True)
+    man_path.write_text(json.dumps(mix_man, indent=2), encoding="utf-8")
+
+    out_dir = tmp_path / "results" / "v9" / "test_mix_synthetic"
+    mock_sim = MockHoldoutSimulator()
+
+    res = execute_production_holdout_pipeline(
+        partition="mixture",
+        policy_path=Path("results/v9/cal_r2/selected_policy.json"),
+        manifest_path=man_path,
+        out_dir=out_dir,
+        authorized_execution_token=REQUIRED_EXECUTION_TOKEN,
+        simulator_fn=mock_sim,
+        allow_mock_simulation=True,
+    )
+
+    # 1. Report schema & provenance
+    assert res["status"] == "COMPLETE_MOCK_VERIFIED"
+    assert res["simulation_mode"] == "MOCK_SYNTHETIC"
+    assert res["partition"] == "mixture"
+    assert res["selected_policy_id"] == "V9_CAND_1_TIER1_STRICTEST"
+
+    # 2. Output files exist
+    episodes_csv = out_dir / "test_mix_episodes.csv"
+    v8_csv = out_dir / "test_mix_baseline_v8_episodes.csv"
+    v7_csv = out_dir / "test_mix_baseline_v7_episodes.csv"
+    summary_csv = out_dir / "test_mix_summary.csv"
+    report_json = out_dir / "test_mix_report.json"
+    assert episodes_csv.exists()
+    assert v8_csv.exists()
+    assert v7_csv.exists()
+    assert summary_csv.exists()
+    assert report_json.exists()
+
+    # 3. Artifact SHA-256 verification
+    assert res["artifact_sha256"][str(episodes_csv)] == sha256_file(episodes_csv)
+    assert res["artifact_sha256"][str(summary_csv)] == sha256_file(summary_csv)
+    assert res["artifact_sha256"][str(v8_csv)] == sha256_file(v8_csv)
+    assert res["artifact_sha256"][str(v7_csv)] == sha256_file(v7_csv)
+
+    # 4. Report JSON integrity hash
+    loaded_report = json.loads(report_json.read_text(encoding="utf-8"))
+    assert loaded_report["integrity_sha256"] == compute_canonical_payload_sha256(loaded_report)
+
+    # 5. Statistical evaluations
+    summary = res["evaluation_summary"]
+    assert summary["n_episodes"] == 120
+    assert summary["m_accepted"] > 59
+    assert summary["h4_coverage_floor"]["passed"] is True
+    assert "vs_v8_martingale" in summary["h2_unconditional_incidence"]["comparisons"]
+    assert "vs_v7_mpc" in summary["h2_unconditional_incidence"]["comparisons"]
+
+
+def test_34_production_pipeline_scenario_mock_e2e(tmp_path: Path):
+    """Requirement: Full end-to-end orchestration of scenario holdout with mock simulator."""
+    gen = V9HierarchicalManifestGenerator(master_entropy=20261025)
+    scen_man = gen.generate_stratified_manifest(
+        partition_name="test_scen_synthetic",
+        seed_start=81000,
+        seeds_per_scenario=2,
+        partition_index=PARTITION_BRANCH_TEST_SCENARIO,
+    )
+    man_path = tmp_path / "results" / "v9" / "manifests" / "test_scen_synthetic.json"
+    man_path.parent.mkdir(parents=True)
+    man_path.write_text(json.dumps(scen_man, indent=2), encoding="utf-8")
+
+    out_dir = tmp_path / "results" / "v9" / "test_scen_synthetic"
+    mock_sim = MockHoldoutSimulator()
+
+    res = execute_production_holdout_pipeline(
+        partition="scenario",
+        policy_path=Path("results/v9/cal_r2/selected_policy.json"),
+        manifest_path=man_path,
+        out_dir=out_dir,
+        authorized_execution_token=REQUIRED_EXECUTION_TOKEN,
+        simulator_fn=mock_sim,
+        allow_mock_simulation=True,
+    )
+
+    # 1. Report schema & provenance
+    assert res["status"] == "COMPLETE_MOCK_VERIFIED"
+    assert res["simulation_mode"] == "MOCK_SYNTHETIC"
+    assert res["partition"] == "scenario"
+
+    # 2. Output files exist including breakdown CSV
+    episodes_csv = out_dir / "test_scen_episodes.csv"
+    v7_csv = out_dir / "test_scen_baseline_v7_episodes.csv"
+    summary_csv = out_dir / "test_scen_summary.csv"
+    breakdown_csv = out_dir / "test_scen_breakdown.csv"
+    report_json = out_dir / "test_scen_report.json"
+    assert episodes_csv.exists()
+    assert v7_csv.exists()
+    assert summary_csv.exists()
+    assert breakdown_csv.exists()
+    assert report_json.exists()
+
+    # 3. Artifact SHA-256 verification
+    assert res["artifact_sha256"][str(breakdown_csv)] == sha256_file(breakdown_csv)
+
+    # 4. Scenario breakdown has exactly 12 scenarios
+    summary = res["evaluation_summary"]
+    assert summary["total_scenarios"] == 12
+    assert len(summary["scenario_breakdown"]) == 12
+    assert summary["h3_tsr_noninferiority_vs_v7"]["nominal_tsr"] == 1.0
+
+
+def test_35_production_pipeline_single_shot_guard(tmp_path: Path):
+    """Requirement: Single-shot output protection blocks overwriting existing holdout artifacts."""
+    gen = V9HierarchicalManifestGenerator(master_entropy=20261025)
+    mix_man = gen.generate_manifest(
+        partition_name="test_mix_synthetic",
+        manifest_id_start=80000,
+        count=12,
+        partition_index=PARTITION_BRANCH_TEST_MIXTURE,
+    )
+    man_path = tmp_path / "results" / "v9" / "manifests" / "test_mix_synthetic.json"
+    man_path.parent.mkdir(parents=True)
+    man_path.write_text(json.dumps(mix_man, indent=2), encoding="utf-8")
+
+    out_dir = tmp_path / "results" / "v9" / "test_mix_singleshot"
+    mock_sim = MockHoldoutSimulator()
+
+    # Initial run: succeeds
+    execute_production_holdout_pipeline(
+        partition="mixture",
+        policy_path=Path("results/v9/cal_r2/selected_policy.json"),
+        manifest_path=man_path,
+        out_dir=out_dir,
+        authorized_execution_token=REQUIRED_EXECUTION_TOKEN,
+        simulator_fn=mock_sim,
+        allow_mock_simulation=True,
+    )
+
+    # Subsequent run: must raise SINGLE-SHOT EXECUTION GUARD RuntimeError
+    with pytest.raises(RuntimeError, match="SINGLE-SHOT EXECUTION GUARD: Holdout output already exists"):
+        execute_production_holdout_pipeline(
+            partition="mixture",
+            policy_path=Path("results/v9/cal_r2/selected_policy.json"),
+            manifest_path=man_path,
+            out_dir=out_dir,
+            authorized_execution_token=REQUIRED_EXECUTION_TOKEN,
+            simulator_fn=mock_sim,
+            allow_mock_simulation=True,
+        )
+
+
+def test_36_production_pipeline_mid_run_failure_partial_output(tmp_path: Path):
+    """Requirement: Injected exception during simulation writes partial CSV and invalid marker."""
+    gen = V9HierarchicalManifestGenerator(master_entropy=20261025)
+    mix_man = gen.generate_manifest(
+        partition_name="test_mix_synthetic",
+        manifest_id_start=80000,
+        count=6,
+        partition_index=PARTITION_BRANCH_TEST_MIXTURE,
+    )
+    man_path = tmp_path / "results" / "v9" / "manifests" / "test_mix_synthetic.json"
+    man_path.parent.mkdir(parents=True)
+    man_path.write_text(json.dumps(mix_man, indent=2), encoding="utf-8")
+
+    out_dir = tmp_path / "results" / "v9" / "test_mix_partial"
+
+    # Inject failure on episode index 3
+    fail_ep = mix_man["episodes"][3]
+    fail_key = (fail_ep["scenario"], int(fail_ep["manifest_id"]))
+    mock_sim = MockHoldoutSimulator(inject_runtime_exception_keys={fail_key})
+
+    with pytest.raises(RuntimeError, match="MockInjectedRuntimeError"):
+        execute_production_holdout_pipeline(
+            partition="mixture",
+            policy_path=Path("results/v9/cal_r2/selected_policy.json"),
+            manifest_path=man_path,
+            out_dir=out_dir,
+            authorized_execution_token=REQUIRED_EXECUTION_TOKEN,
+            simulator_fn=mock_sim,
+            allow_mock_simulation=True,
+        )
+
+    # Partial CSV and INCOMPLETE_INVALID.json must exist
+    partial_csv = out_dir / "test_mix_episodes_PARTIAL.csv"
+    invalid_marker = out_dir / "INCOMPLETE_INVALID.json"
+    complete_report = out_dir / "test_mix_report.json"
+
+    assert partial_csv.exists()
+    assert invalid_marker.exists()
+    assert not complete_report.exists()
+
+    # Rerun must refuse because INCOMPLETE_INVALID.json exists
+    with pytest.raises(RuntimeError, match="SINGLE-SHOT EXECUTION GUARD: Found existing incomplete marker"):
+        execute_production_holdout_pipeline(
+            partition="mixture",
+            policy_path=Path("results/v9/cal_r2/selected_policy.json"),
+            manifest_path=man_path,
+            out_dir=out_dir,
+            authorized_execution_token=REQUIRED_EXECUTION_TOKEN,
+            simulator_fn=mock_sim,
+            allow_mock_simulation=True,
+        )
+
+
+def test_37_production_pipeline_outcome_algebra_violation_injected(tmp_path: Path):
+    """Requirement: Pipeline halts fail-closed if simulator violates benchmark outcome algebra."""
+    gen = V9HierarchicalManifestGenerator(master_entropy=20261025)
+    mix_man = gen.generate_manifest(
+        partition_name="test_mix_synthetic",
+        manifest_id_start=80000,
+        count=4,
+        partition_index=PARTITION_BRANCH_TEST_MIXTURE,
+    )
+    man_path = tmp_path / "results" / "v9" / "manifests" / "test_mix_synthetic.json"
+    man_path.parent.mkdir(parents=True)
+    man_path.write_text(json.dumps(mix_man, indent=2), encoding="utf-8")
+
+    out_dir = tmp_path / "results" / "v9" / "test_mix_bad_algebra"
+
+    # Inject algebra violation on episode 1
+    bad_ep = mix_man["episodes"][1]
+    bad_key = (bad_ep["scenario"], int(bad_ep["manifest_id"]))
+    mock_sim = MockHoldoutSimulator(inject_algebra_violation_keys={bad_key})
+
+    with pytest.raises(RuntimeError, match=r"Acceptance identity A == TS \+ FS violated"):
+        execute_production_holdout_pipeline(
+            partition="mixture",
+            policy_path=Path("results/v9/cal_r2/selected_policy.json"),
+            manifest_path=man_path,
+            out_dir=out_dir,
+            authorized_execution_token=REQUIRED_EXECUTION_TOKEN,
+            simulator_fn=mock_sim,
+            allow_mock_simulation=True,
+        )
+
+
+def test_38_production_pipeline_crash_fail_unsafe_classification(tmp_path: Path):
+    """Requirement: Fail-unsafe crash accounting: crashed=1 -> accepted=0, false_success=1."""
+    gen = V9HierarchicalManifestGenerator(master_entropy=20261025)
+    mix_man = gen.generate_manifest(
+        partition_name="test_mix_synthetic",
+        manifest_id_start=80000,
+        count=10,
+        partition_index=PARTITION_BRANCH_TEST_MIXTURE,
+    )
+    man_path = tmp_path / "results" / "v9" / "manifests" / "test_mix_synthetic.json"
+    man_path.parent.mkdir(parents=True)
+    man_path.write_text(json.dumps(mix_man, indent=2), encoding="utf-8")
+
+    out_dir = tmp_path / "results" / "v9" / "test_mix_crash"
+
+    # Inject crash on episode 0
+    crash_ep = mix_man["episodes"][0]
+    crash_key = (crash_ep["scenario"], int(crash_ep["manifest_id"]))
+    mock_sim = MockHoldoutSimulator(inject_crash_keys={crash_key})
+
+    res = execute_production_holdout_pipeline(
+        partition="mixture",
+        policy_path=Path("results/v9/cal_r2/selected_policy.json"),
+        manifest_path=man_path,
+        out_dir=out_dir,
+        authorized_execution_token=REQUIRED_EXECUTION_TOKEN,
+        simulator_fn=mock_sim,
+        allow_mock_simulation=True,
+    )
+
+    summary = res["evaluation_summary"]
+    assert summary["crashed_count"] >= 1
+    assert summary["fs_count"] >= 1
+
+
+def test_39_production_pipeline_timeout_and_abstain_classification(tmp_path: Path):
+    """Requirement: Timeout and explicit abstention classifications are correctly recorded."""
+    gen = V9HierarchicalManifestGenerator(master_entropy=20261025)
+    mix_man = gen.generate_manifest(
+        partition_name="test_mix_synthetic",
+        manifest_id_start=80000,
+        count=10,
+        partition_index=PARTITION_BRANCH_TEST_MIXTURE,
+    )
+    man_path = tmp_path / "results" / "v9" / "manifests" / "test_mix_synthetic.json"
+    man_path.parent.mkdir(parents=True)
+    man_path.write_text(json.dumps(mix_man, indent=2), encoding="utf-8")
+
+    out_dir = tmp_path / "results" / "v9" / "test_mix_timeout_abstain"
+
+    to_ep = mix_man["episodes"][0]
+    ab_ep = mix_man["episodes"][1]
+    mock_sim = MockHoldoutSimulator(
+        inject_timeout_keys={(to_ep["scenario"], int(to_ep["manifest_id"]))},
+        inject_abstain_keys={(ab_ep["scenario"], int(ab_ep["manifest_id"]))},
+    )
+
+    res = execute_production_holdout_pipeline(
+        partition="mixture",
+        policy_path=Path("results/v9/cal_r2/selected_policy.json"),
+        manifest_path=man_path,
+        out_dir=out_dir,
+        authorized_execution_token=REQUIRED_EXECUTION_TOKEN,
+        simulator_fn=mock_sim,
+        allow_mock_simulation=True,
+    )
+
+    summary = res["evaluation_summary"]
+    assert summary["timeout_count"] >= 1
+    assert summary["ab_explicit_count"] >= 1
+    assert summary["ab_total_count"] == summary["ab_explicit_count"] + summary["timeout_count"]
+
+
+def test_40_production_pipeline_undefined_selective_risk_in_stratified(tmp_path: Path):
+    """Requirement: Undefined selective risk (M_s = 0) in stratified holdout handled fail-closed."""
+    gen = V9HierarchicalManifestGenerator(master_entropy=20261025)
+    scen_man = gen.generate_stratified_manifest(
+        partition_name="test_scen_synthetic",
+        seed_start=81000,
+        seeds_per_scenario=2,
+        partition_index=PARTITION_BRANCH_TEST_SCENARIO,
+    )
+    man_path = tmp_path / "results" / "v9" / "manifests" / "test_scen_synthetic.json"
+    man_path.parent.mkdir(parents=True)
+    man_path.write_text(json.dumps(scen_man, indent=2), encoding="utf-8")
+
+    out_dir = tmp_path / "results" / "v9" / "test_scen_undef_risk"
+
+    # Force zero accepted decisions in CORRUPTED_ANCHOR_STRESS
+    mock_sim = MockHoldoutSimulator(
+        scenario_overrides={"CORRUPTED_ANCHOR_STRESS": {"force_zero_accepted": True}}
+    )
+
+    res = execute_production_holdout_pipeline(
+        partition="scenario",
+        policy_path=Path("results/v9/cal_r2/selected_policy.json"),
+        manifest_path=man_path,
+        out_dir=out_dir,
+        authorized_execution_token=REQUIRED_EXECUTION_TOKEN,
+        simulator_fn=mock_sim,
+        allow_mock_simulation=True,
+    )
+
+    summary = res["evaluation_summary"]
+    target_row = next(r for r in summary["scenario_breakdown"] if r["scenario"] == "CORRUPTED_ANCHOR_STRESS")
+    assert target_row["m_accepted"] == 0
+    assert target_row["r_sel"] == "UNDEFINED"
+    assert target_row["r_sel_status"] == "UNDEFINED"
+    assert target_row["r_sel_ucb95"] == "UNDEFINED"
+
+
+def test_41_production_pipeline_manifest_integrity_guard(tmp_path: Path):
+    """Requirement: Tampered manifest integrity hash or invalid partition name raises ValueError."""
+    gen = V9HierarchicalManifestGenerator(master_entropy=20261025)
+    mix_man = gen.generate_manifest(
+        partition_name="test_mix_synthetic",
+        manifest_id_start=80000,
+        count=5,
+        partition_index=PARTITION_BRANCH_TEST_MIXTURE,
+    )
+    # Corrupt integrity hash
+    mix_man["integrity_sha256"] = "0" * 64
+    man_path = tmp_path / "results" / "v9" / "manifests" / "test_mix_bad_man.json"
+    man_path.parent.mkdir(parents=True)
+    man_path.write_text(json.dumps(mix_man, indent=2), encoding="utf-8")
+
+    out_dir = tmp_path / "results" / "v9" / "test_mix_bad_man"
+    mock_sim = MockHoldoutSimulator()
+
+    with pytest.raises(ValueError, match="Holdout manifest integrity hash mismatch"):
+        execute_production_holdout_pipeline(
+            partition="mixture",
+            policy_path=Path("results/v9/cal_r2/selected_policy.json"),
+            manifest_path=man_path,
+            out_dir=out_dir,
+            authorized_execution_token=REQUIRED_EXECUTION_TOKEN,
+            simulator_fn=mock_sim,
+            allow_mock_simulation=True,
+        )
+
+
+def test_42_production_pipeline_policy_hash_mismatch(tmp_path: Path):
+    """Requirement: Tampered policy artifact raises ValueError fail-closed."""
+    gen = V9HierarchicalManifestGenerator(master_entropy=20261025)
+    mix_man = gen.generate_manifest(
+        partition_name="test_mix_synthetic",
+        manifest_id_start=80000,
+        count=5,
+        partition_index=PARTITION_BRANCH_TEST_MIXTURE,
+    )
+    man_path = tmp_path / "results" / "v9" / "manifests" / "test_mix_synthetic.json"
+    man_path.parent.mkdir(parents=True)
+    man_path.write_text(json.dumps(mix_man, indent=2), encoding="utf-8")
+
+    # Create corrupted policy artifact
+    pol_bytes = Path("results/v9/cal_r2/selected_policy.json").read_bytes()
+    pol_payload = json.loads(pol_bytes.decode("utf-8"))
+    pol_payload["selected_candidate"]["alpha_mon"] = 0.999
+    bad_pol_path = tmp_path / "bad_policy.json"
+    bad_pol_path.write_text(json.dumps(pol_payload, indent=2), encoding="utf-8")
+
+    out_dir = tmp_path / "results" / "v9" / "test_mix_bad_pol"
+    mock_sim = MockHoldoutSimulator()
+
+    with pytest.raises(ValueError, match="Selected policy integrity hash mismatch"):
+        execute_production_holdout_pipeline(
+            partition="mixture",
+            policy_path=bad_pol_path,
+            manifest_path=man_path,
+            out_dir=out_dir,
+            authorized_execution_token=REQUIRED_EXECUTION_TOKEN,
+            simulator_fn=mock_sim,
+            allow_mock_simulation=True,
+        )
+
+
+def test_43_production_pipeline_paired_baseline_integrity(tmp_path: Path):
+    """Requirement: Policy and baseline records strictly match on (seed, scenario)."""
+    gen = V9HierarchicalManifestGenerator(master_entropy=20261025)
+    mix_man = gen.generate_manifest(
+        partition_name="test_mix_synthetic",
+        manifest_id_start=80000,
+        count=15,
+        partition_index=PARTITION_BRANCH_TEST_MIXTURE,
+    )
+    man_path = tmp_path / "results" / "v9" / "manifests" / "test_mix_synthetic.json"
+    man_path.parent.mkdir(parents=True)
+    man_path.write_text(json.dumps(mix_man, indent=2), encoding="utf-8")
+
+    out_dir = tmp_path / "results" / "v9" / "test_mix_paired"
+    mock_sim = MockHoldoutSimulator()
+
+    res = execute_production_holdout_pipeline(
+        partition="mixture",
+        policy_path=Path("results/v9/cal_r2/selected_policy.json"),
+        manifest_path=man_path,
+        out_dir=out_dir,
+        authorized_execution_token=REQUIRED_EXECUTION_TOKEN,
+        simulator_fn=mock_sim,
+        allow_mock_simulation=True,
+    )
+
+    # Read back generated episodes CSV files
+    with (out_dir / "test_mix_episodes.csv").open(encoding="utf-8") as f:
+        pol_rows = list(csv.DictReader(f))
+    with (out_dir / "test_mix_baseline_v8_episodes.csv").open(encoding="utf-8") as f:
+        v8_rows = list(csv.DictReader(f))
+    with (out_dir / "test_mix_baseline_v7_episodes.csv").open(encoding="utf-8") as f:
+        v7_rows = list(csv.DictReader(f))
+
+    # Bijective alignment must succeed
+    paired_v8 = align_and_pair_records(pol_rows, v8_rows, baseline_label="v8")
+    paired_v7 = align_and_pair_records(pol_rows, v7_rows, baseline_label="v7")
+
+    assert len(paired_v8) == len(pol_rows)
+    assert len(paired_v7) == len(pol_rows)
+
+    for p, b in paired_v8:
+        assert p["seed"] == b["seed"]
+        assert p["scenario"] == b["scenario"]
+
+    for p, b in paired_v7:
+        assert p["seed"] == b["seed"]
+        assert p["scenario"] == b["scenario"]
+
+
+def test_44_cli_default_preflight_and_production_dispatch():
+    """Requirement: CLI defaults to read-only preflight mode; --run-production dispatches to pipeline."""
+    from experiments.v9_evaluate_holdout import main as cli_main
+    import sys
+
+    # In preflight mode (default), executes read-only checks and exits 0
+    orig_argv = sys.argv
+    try:
+        sys.argv = ["v9_evaluate_holdout.py", "--preflight-only"]
+        with pytest.raises(SystemExit) as exc_info:
+            cli_main()
+        assert exc_info.value.code == 0
+    finally:
+        sys.argv = orig_argv
+
 

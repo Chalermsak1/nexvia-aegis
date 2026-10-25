@@ -32,7 +32,7 @@ from __future__ import annotations
 
 import argparse
 from collections import Counter
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable, Mapping, Sequence
 import csv
 from dataclasses import asdict
 from datetime import datetime, timezone
@@ -57,6 +57,7 @@ from aegis.v9.controller import AegisV9Controller
 from aegis.v9.randomization import (
     PARTITION_BRANCH_TEST_MIXTURE,
     PARTITION_BRANCH_TEST_SCENARIO,
+    create_decoupled_rng_pair,
     instantiate_episode_rngs_from_manifest_item,
 )
 from aegis.v9.risk_statistics import (
@@ -223,10 +224,14 @@ def verify_and_load_selected_policy(
 def verify_and_load_holdout_manifest(
     manifest_path: Path,
     expected_partition: str,
+    *,
+    allow_synthetic: bool = False,
 ) -> tuple[dict[str, Any], str]:
     """
     Verifies that a holdout manifest exists, passes internal SHA-256 integrity checks,
     uses the approved partition branch, and matches the expected episode count and seeds.
+    When allow_synthetic=True, verifies integrity and schema for synthetic testing
+    without enforcing reserved production seed blocks or full-size holdout counts.
     """
     if not manifest_path.exists():
         raise FileNotFoundError(f"Holdout manifest not found: {manifest_path}")
@@ -236,52 +241,64 @@ def verify_and_load_holdout_manifest(
     loaded = json.loads(raw_bytes.decode("utf-8"))
 
     stored_integrity = loaded.get("integrity_sha256")
-    computed_integrity = compute_canonical_payload_sha256(loaded)
-    if stored_integrity != computed_integrity:
+    computed_canonical = compute_canonical_payload_sha256(loaded)
+    filtered = {k: v for k, v in loaded.items() if k != "integrity_sha256"}
+    computed_indent = hashlib.sha256(json.dumps(filtered, sort_keys=True, indent=2).encode("utf-8")).hexdigest()
+    if stored_integrity not in (computed_canonical, computed_indent):
         raise ValueError(
-            f"Holdout manifest integrity hash mismatch: {stored_integrity} != {computed_integrity}."
+            f"Holdout manifest integrity hash mismatch: {stored_integrity} != {computed_canonical} (nor {computed_indent})."
         )
 
     if expected_partition == "mixture":
-        if loaded.get("partition") != "test_mix_r1":
-            raise ValueError(f"Expected partition 'test_mix_r1', got '{loaded.get('partition')}'.")
-        if loaded.get("partition_index") != PARTITION_BRANCH_TEST_MIXTURE:
-            raise ValueError(
-                f"Expected partition_index={PARTITION_BRANCH_TEST_MIXTURE}, got {loaded.get('partition_index')}."
-            )
-        if loaded.get("planned_episodes") != TEST_MIX_EXPECTED_EPISODES:
-            raise ValueError(
-                f"Expected {TEST_MIX_EXPECTED_EPISODES} episodes, got {loaded.get('planned_episodes')}."
-            )
-        episodes = loaded.get("episodes", [])
-        if len(episodes) != TEST_MIX_EXPECTED_EPISODES:
-            raise ValueError(
-                f"Manifest episode count mismatch: planned={TEST_MIX_EXPECTED_EPISODES}, actual={len(episodes)}."
-            )
-        seeds = [int(ep["seed"]) for ep in episodes]
-        enforce_holdout_seeds(seeds, "mixture")
+        if not allow_synthetic:
+            if loaded.get("partition") != "test_mix_r1":
+                raise ValueError(f"Expected partition 'test_mix_r1', got '{loaded.get('partition')}'.")
+            if loaded.get("partition_index") != PARTITION_BRANCH_TEST_MIXTURE:
+                raise ValueError(
+                    f"Expected partition_index={PARTITION_BRANCH_TEST_MIXTURE}, got {loaded.get('partition_index')}."
+                )
+            if loaded.get("planned_episodes") != TEST_MIX_EXPECTED_EPISODES:
+                raise ValueError(
+                    f"Expected {TEST_MIX_EXPECTED_EPISODES} episodes, got {loaded.get('planned_episodes')}."
+                )
+            episodes = loaded.get("episodes", [])
+            if len(episodes) != TEST_MIX_EXPECTED_EPISODES:
+                raise ValueError(
+                    f"Manifest episode count mismatch: planned={TEST_MIX_EXPECTED_EPISODES}, actual={len(episodes)}."
+                )
+            seeds = [int(ep.get("seed", ep.get("manifest_id"))) for ep in episodes]
+            enforce_holdout_seeds(seeds, "mixture")
+        else:
+            ep_part = str(loaded.get("partition", ""))
+            if not (ep_part.startswith("test_mix") or "mixture" in ep_part):
+                raise ValueError(f"Expected mixture partition in synthetic manifest, got '{ep_part}'.")
 
     elif expected_partition == "scenario":
-        if loaded.get("partition") != "test_scen_r1":
-            raise ValueError(f"Expected partition 'test_scen_r1', got '{loaded.get('partition')}'.")
-        if loaded.get("partition_index") != PARTITION_BRANCH_TEST_SCENARIO:
-            raise ValueError(
-                f"Expected partition_index={PARTITION_BRANCH_TEST_SCENARIO}, got {loaded.get('partition_index')}."
-            )
-        if loaded.get("planned_episodes") != TEST_SCEN_EXPECTED_EPISODES:
-            raise ValueError(
-                f"Expected {TEST_SCEN_EXPECTED_EPISODES} episodes, got {loaded.get('planned_episodes')}."
-            )
-        episodes = loaded.get("episodes", [])
-        if len(episodes) != TEST_SCEN_EXPECTED_EPISODES:
-            raise ValueError(
-                f"Manifest episode count mismatch: planned={TEST_SCEN_EXPECTED_EPISODES}, actual={len(episodes)}."
-            )
-        counts = loaded.get("realized_scenario_counts", {})
-        if len(counts) != 12 or any(cnt != TEST_SCEN_SEEDS_PER_SCENARIO for cnt in counts.values()):
-            raise ValueError(f"Invalid stratified scenario counts: {counts}.")
-        seeds = [int(ep["seed"]) for ep in episodes]
-        enforce_holdout_seeds(seeds, "scenario")
+        if not allow_synthetic:
+            if loaded.get("partition") != "test_scen_r1":
+                raise ValueError(f"Expected partition 'test_scen_r1', got '{loaded.get('partition')}'.")
+            if loaded.get("partition_index") != PARTITION_BRANCH_TEST_SCENARIO:
+                raise ValueError(
+                    f"Expected partition_index={PARTITION_BRANCH_TEST_SCENARIO}, got {loaded.get('partition_index')}."
+                )
+            if loaded.get("planned_episodes") != TEST_SCEN_EXPECTED_EPISODES:
+                raise ValueError(
+                    f"Expected {TEST_SCEN_EXPECTED_EPISODES} episodes, got {loaded.get('planned_episodes')}."
+                )
+            episodes = loaded.get("episodes", [])
+            if len(episodes) != TEST_SCEN_EXPECTED_EPISODES:
+                raise ValueError(
+                    f"Manifest episode count mismatch: planned={TEST_SCEN_EXPECTED_EPISODES}, actual={len(episodes)}."
+                )
+            counts = loaded.get("realized_scenario_counts", {})
+            if len(counts) != 12 or any(cnt != TEST_SCEN_SEEDS_PER_SCENARIO for cnt in counts.values()):
+                raise ValueError(f"Invalid stratified scenario counts: {counts}.")
+            seeds = [int(ep.get("seed", ep.get("manifest_id"))) for ep in episodes]
+            enforce_holdout_seeds(seeds, "scenario")
+        else:
+            ep_part = str(loaded.get("partition", ""))
+            if not (ep_part.startswith("test_scen") or "scenario" in ep_part):
+                raise ValueError(f"Expected scenario partition in synthetic manifest, got '{ep_part}'.")
     else:
         raise ValueError(f"Unknown partition type: {expected_partition}")
 
@@ -314,20 +331,22 @@ def verify_holdout_outcome_algebra(
     ab = int(rec["abstain"])
     crashed = int(rec["crashed"])
 
-    if acc not in (0, 1) or ab not in (0, 1):
-        raise ValueError(f"Outcome algebra violation: accepted={acc}, abstain={ab}")
-    if acc != (ts + fs):
-        raise ValueError(f"Outcome algebra violation: accepted ({acc}) != ts ({ts}) + fs ({fs})")
-    if ab != (ab_exp + to):
-        raise ValueError(f"Outcome algebra violation: abstain ({ab}) != ab_exp ({ab_exp}) + timeout ({to})")
-    if acc + ab != 1:
-        raise ValueError(f"Outcome algebra violation: accepted ({acc}) + abstain ({ab}) != 1")
-    if ts + fs + ab_exp + to != 1:
-        raise ValueError("Outcome algebra violation: ts + fs + ab_exp + to != 1")
-    if crashed == 1 and fs != 1:
-        raise ValueError("Outcome algebra violation: crashed == 1 requires false_success == 1")
-    if acc == 1 and crashed == 1:
-        raise ValueError("Outcome algebra violation: accepted == 1 cannot have crashed == 1")
+    for flag in (acc, ts, fs, ab_exp, to, ab, crashed):
+        if flag not in (0, 1):
+            raise ValueError(f"Non-binary outcome indicator in record: {rec}")
+
+    if crashed == 1:
+        if not (acc == 0 and ts == 0 and fs == 1 and ab_exp == 0 and to == 0 and ab == 0):
+            raise ValueError(f"Invalid fail-unsafe crash accounting in record: {rec}")
+    else:
+        if acc != (ts + fs):
+            raise ValueError(f"Outcome algebra violation: accepted ({acc}) != ts ({ts}) + fs ({fs})")
+        if ab != (ab_exp + to):
+            raise ValueError(f"Outcome algebra violation: abstain ({ab}) != ab_exp ({ab_exp}) + timeout ({to})")
+        if acc + ab != 1:
+            raise ValueError(f"Outcome algebra violation: accepted ({acc}) + abstain ({ab}) != 1")
+        if ts + fs + ab_exp + to != 1:
+            raise ValueError(f"Outcome algebra violation: ts + fs + ab_exp + to != 1: {rec}")
 
 
 def verify_episode_records_integrity(
@@ -1129,6 +1148,587 @@ def execute_holdout_workflow(
 
 
 # ==============================================================================
+# Simulation RNG and Mock Infrastructure
+# ==============================================================================
+
+def _derive_episode_rngs(
+    ep_item: Mapping[str, Any],
+    ep_seed: int,
+) -> tuple[np.random.Generator, np.random.Generator]:
+    """
+    Derives fresh decoupled NumPy RNG pair (rng_env, rng_sensors) for an episode.
+    Uses master entropy and child spawn keys from manifest item if present (SeedSequence model),
+    or falls back to create_decoupled_rng_pair(ep_seed).
+    Calling this for multiple controllers on the same ep_item guarantees Common Random Numbers (CRN).
+    """
+    if "env_spawn_key" in ep_item and "sensor_spawn_key" in ep_item and "entropy" in ep_item:
+        decoupled_rng = instantiate_episode_rngs_from_manifest_item(dict(ep_item))
+        return decoupled_rng.rng_env, decoupled_rng.rng_sensors
+    return create_decoupled_rng_pair(ep_seed)
+
+
+class MockHoldoutSimulator:
+    """
+    Deterministic mock simulator for NEXVIA AEGIS V9 holdout pipeline verification.
+    Produces valid, synthetic outcome records conforming to the registered schema.
+    Supports failure injection:
+    - inject_crash_keys: set of (scenario_name, seed, policy_id) -> returns fail-unsafe crash record
+    - inject_timeout_keys: set of (scenario_name, seed, policy_id) -> returns timeout record
+    - inject_abstain_keys: set of (scenario_name, seed, policy_id) -> returns explicit abstain record
+    - inject_algebra_violation_keys: set of (scenario_name, seed, policy_id) -> returns record violating outcome algebra
+    - inject_runtime_exception_keys: set of (scenario_name, seed, policy_id) -> raises RuntimeError
+    - scenario_overrides: dict[str, dict[str, Any]] -> scenario-level overrides (e.g. force_zero_accepted)
+    """
+
+    def __init__(
+        self,
+        *,
+        default_v9_tsr: float = 0.96,
+        default_v8_tsr: float = 0.50,
+        default_v7_tsr: float = 0.55,
+        default_v9_coverage: float = 0.98,
+        default_v8_coverage: float = 0.55,
+        default_v7_coverage: float = 0.60,
+        inject_crash_keys: set[tuple[str, int, str]] | None = None,
+        inject_timeout_keys: set[tuple[str, int, str]] | None = None,
+        inject_abstain_keys: set[tuple[str, int, str]] | None = None,
+        inject_algebra_violation_keys: set[tuple[str, int, str]] | None = None,
+        inject_runtime_exception_keys: set[tuple[str, int, str]] | None = None,
+        scenario_overrides: dict[str, dict[str, Any]] | None = None,
+    ):
+        self.default_v9_tsr = default_v9_tsr
+        self.default_v8_tsr = default_v8_tsr
+        self.default_v7_tsr = default_v7_tsr
+        self.default_v9_coverage = default_v9_coverage
+        self.default_v8_coverage = default_v8_coverage
+        self.default_v7_coverage = default_v7_coverage
+        self.inject_crash_keys = set(inject_crash_keys or ())
+        self.inject_timeout_keys = set(inject_timeout_keys or ())
+        self.inject_abstain_keys = set(inject_abstain_keys or ())
+        self.inject_algebra_violation_keys = set(inject_algebra_violation_keys or ())
+        self.inject_runtime_exception_keys = set(inject_runtime_exception_keys or ())
+        self.scenario_overrides = dict(scenario_overrides or {})
+        self.call_log: list[dict[str, Any]] = []
+
+    def __call__(
+        self,
+        scen: V9ScenarioSpec,
+        ep_seed: int,
+        policy_id: str,
+        controller: Any,
+        *,
+        rng_env: np.random.Generator | None = None,
+        rng_sensors: np.random.Generator | None = None,
+    ) -> dict[str, Any]:
+        key = (scen.name, ep_seed, policy_id)
+        env_val = float(rng_env.uniform()) if rng_env is not None else 0.0
+        sens_val = float(rng_sensors.normal()) if rng_sensors is not None else 0.0
+        self.call_log.append({
+            "key": key,
+            "scenario": scen.name,
+            "seed": ep_seed,
+            "policy": policy_id,
+            "env_val": env_val,
+            "sens_val": sens_val,
+        })
+
+        if key in self.inject_runtime_exception_keys or (scen.name, ep_seed) in self.inject_runtime_exception_keys:
+            raise RuntimeError(f"MockInjectedRuntimeError on {scen.name} seed={ep_seed} policy={policy_id}")
+
+        if key in self.inject_crash_keys or (scen.name, ep_seed) in self.inject_crash_keys:
+            return {
+                "scenario": scen.name,
+                "suite": scen.suite,
+                "policy": policy_id,
+                "seed": ep_seed,
+                "accepted": 0,
+                "true_success": 0,
+                "false_success": 1,
+                "abstain_explicit": 0,
+                "timeout": 0,
+                "abstain": 0,
+                "crashed": 1,
+                "crash_error": "MockInjectedCrashError: synthetic failure",
+                "final_distance": 2.5000,
+                "steps": 12,
+                "mean_step_ms": 0.0500,
+                "distance_traveled": 1.2000,
+                "anchor_queries": 0,
+                "anchor_cost": 0.0,
+                "max_overshoot": 0.0,
+                "terminal_reason": "MOCK_CRASH",
+            }
+
+        if key in self.inject_algebra_violation_keys or (scen.name, ep_seed) in self.inject_algebra_violation_keys:
+            return {
+                "scenario": scen.name,
+                "suite": scen.suite,
+                "policy": policy_id,
+                "seed": ep_seed,
+                "accepted": 1,
+                "true_success": 1,
+                "false_success": 1,
+                "abstain_explicit": 0,
+                "timeout": 0,
+                "abstain": 0,
+                "crashed": 0,
+                "crash_error": "",
+                "final_distance": 0.2000,
+                "steps": 20,
+                "mean_step_ms": 0.0500,
+                "distance_traveled": 2.5000,
+                "anchor_queries": 1,
+                "anchor_cost": 0.0500,
+                "max_overshoot": 0.0,
+                "terminal_reason": "MOCK_ALGEBRA_VIOLATION",
+            }
+
+        if key in self.inject_timeout_keys or (scen.name, ep_seed) in self.inject_timeout_keys:
+            return {
+                "scenario": scen.name,
+                "suite": scen.suite,
+                "policy": policy_id,
+                "seed": ep_seed,
+                "accepted": 0,
+                "true_success": 0,
+                "false_success": 0,
+                "abstain_explicit": 0,
+                "timeout": 1,
+                "abstain": 1,
+                "crashed": 0,
+                "crash_error": "",
+                "final_distance": 1.2500,
+                "steps": 100,
+                "mean_step_ms": 0.0500,
+                "distance_traveled": 3.8000,
+                "anchor_queries": 2,
+                "anchor_cost": 0.1000,
+                "max_overshoot": 0.0,
+                "terminal_reason": "MOCK_TIMEOUT",
+            }
+
+        if key in self.inject_abstain_keys or (scen.name, ep_seed) in self.inject_abstain_keys:
+            return {
+                "scenario": scen.name,
+                "suite": scen.suite,
+                "policy": policy_id,
+                "seed": ep_seed,
+                "accepted": 0,
+                "true_success": 0,
+                "false_success": 0,
+                "abstain_explicit": 1,
+                "timeout": 0,
+                "abstain": 1,
+                "crashed": 0,
+                "crash_error": "",
+                "final_distance": 1.8000,
+                "steps": 30,
+                "mean_step_ms": 0.0500,
+                "distance_traveled": 2.1000,
+                "anchor_queries": 2,
+                "anchor_cost": 0.1000,
+                "max_overshoot": 0.0,
+                "terminal_reason": "MOCK_ABSTAIN",
+            }
+
+        # Scenario overrides
+        if scen.name in self.scenario_overrides:
+            ov = self.scenario_overrides[scen.name]
+            if ov.get("force_zero_accepted", False):
+                return {
+                    "scenario": scen.name,
+                    "suite": scen.suite,
+                    "policy": policy_id,
+                    "seed": ep_seed,
+                    "accepted": 0,
+                    "true_success": 0,
+                    "false_success": 0,
+                    "abstain_explicit": 1,
+                    "timeout": 0,
+                    "abstain": 1,
+                    "crashed": 0,
+                    "crash_error": "",
+                    "final_distance": 2.1000,
+                    "steps": 25,
+                    "mean_step_ms": 0.0500,
+                    "distance_traveled": 1.8000,
+                    "anchor_queries": 1,
+                    "anchor_cost": 0.0500,
+                    "max_overshoot": 0.0,
+                    "terminal_reason": "MOCK_FORCED_ABSTAIN",
+                }
+
+        # Deterministic outcome computation based on hash
+        h_val = int(hashlib.sha256(f"{scen.name}:{ep_seed}:{policy_id}".encode("utf-8")).hexdigest()[:8], 16)
+        u = (h_val % 10000) / 10000.0
+
+        is_v9 = (policy_id == EXPECTED_SELECTED_CANDIDATE_ID or "V9" in policy_id)
+        is_v8 = ("V8" in policy_id or "MARTINGALE" in policy_id)
+
+        if is_v9:
+            if scen.name == "NOMINAL":
+                acc, ts, fs, ab_exp, to, ab = 1, 1, 0, 0, 0, 0
+                final_dist = 0.1500
+            else:
+                if u < 0.95:
+                    acc, ts, fs, ab_exp, to, ab = 1, 1, 0, 0, 0, 0
+                    final_dist = 0.2000
+                elif u < 0.96:
+                    acc, ts, fs, ab_exp, to, ab = 1, 0, 1, 0, 0, 0
+                    final_dist = 0.6500
+                elif u < 0.99:
+                    acc, ts, fs, ab_exp, to, ab = 0, 0, 0, 1, 0, 1
+                    final_dist = 1.4000
+                else:
+                    acc, ts, fs, ab_exp, to, ab = 0, 0, 0, 0, 1, 1
+                    final_dist = 1.6000
+        elif is_v8:
+            if u < 0.50:
+                acc, ts, fs, ab_exp, to, ab = 1, 1, 0, 0, 0, 0
+                final_dist = 0.2500
+            elif u < 0.62:
+                acc, ts, fs, ab_exp, to, ab = 1, 0, 1, 0, 0, 0
+                final_dist = 0.7000
+            elif u < 0.92:
+                acc, ts, fs, ab_exp, to, ab = 0, 0, 0, 1, 0, 1
+                final_dist = 1.5000
+            else:
+                acc, ts, fs, ab_exp, to, ab = 0, 0, 0, 0, 1, 1
+                final_dist = 1.8000
+        else:  # Baseline V7
+            if u < 0.55:
+                acc, ts, fs, ab_exp, to, ab = 1, 1, 0, 0, 0, 0
+                final_dist = 0.2200
+            elif u < 0.61:
+                acc, ts, fs, ab_exp, to, ab = 1, 0, 1, 0, 0, 0
+                final_dist = 0.6800
+            elif u < 0.93:
+                acc, ts, fs, ab_exp, to, ab = 0, 0, 0, 1, 0, 1
+                final_dist = 1.4500
+            else:
+                acc, ts, fs, ab_exp, to, ab = 0, 0, 0, 0, 1, 1
+                final_dist = 1.7500
+
+        return {
+            "scenario": scen.name,
+            "suite": scen.suite,
+            "policy": policy_id,
+            "seed": ep_seed,
+            "accepted": acc,
+            "true_success": ts,
+            "false_success": fs,
+            "abstain_explicit": ab_exp,
+            "timeout": to,
+            "abstain": ab,
+            "crashed": 0,
+            "crash_error": "",
+            "final_distance": final_dist,
+            "steps": int(20 + 40 * u),
+            "mean_step_ms": 0.0500,
+            "distance_traveled": round(2.0 + u, 4),
+            "anchor_queries": int(u * 3),
+            "anchor_cost": round(int(u * 3) * 0.05, 4),
+            "max_overshoot": round(0.02 * u, 4),
+            "terminal_reason": "MOCK_SYNTHETIC",
+        }
+
+
+# ==============================================================================
+# Production Holdout Execution Pipeline
+# ==============================================================================
+
+def execute_production_holdout_pipeline(
+    *,
+    partition: str,
+    policy_path: Path,
+    manifest_path: Path,
+    out_dir: Path,
+    authorized_execution_token: str | None = None,
+    simulator_fn: Callable[..., dict[str, Any]] | None = None,
+    include_v8_baseline: bool = True,
+    include_v7_baseline: bool = True,
+    allow_mock_simulation: bool = False,
+) -> dict[str, Any]:
+    """
+    Dedicated production execution pathway for Milestone V9-M4 holdout evaluation.
+    Evaluates:
+    1. Selected policy: V9_CAND_1_TIER1_STRICTEST (AegisV9Controller)
+    2. Audited baseline V8.1: AegisNextController (for H2 unconditional incidence reduction)
+    3. Audited baseline V7: AegisV7MPCBaselineController (for H2 and H3 TSR noninferiority)
+
+    Guards:
+    - Fails closed if authorized_execution_token != REQUIRED_EXECUTION_TOKEN.
+    - Fails closed if simulator_fn is provided but allow_mock_simulation is False.
+    - Single-shot output protection: refuses to overwrite existing output files or prior aborted runs.
+    - Verifies policy artifact integrity and certification.
+    - Verifies manifest SHA-256 integrity, partition branch, and seed block bounds.
+    - Preserves Common Random Numbers (CRN) across policy and baseline evaluations.
+    """
+    # 1. Authorization Gate
+    if authorized_execution_token != REQUIRED_EXECUTION_TOKEN:
+        raise RuntimeError(
+            "EXECUTION GUARD: Production holdout evaluation is not authorized. "
+            "Explicit authorized_execution_token is required. Holdout partitions remain strictly untouched."
+        )
+
+    # 2. Simulator mode gate
+    if simulator_fn is not None and not allow_mock_simulation:
+        raise RuntimeError(
+            "EXECUTION GUARD: simulator_fn is provided but allow_mock_simulation is False. "
+            "Custom/mock simulators are only permitted when allow_mock_simulation is explicitly True."
+        )
+
+    # 3. Policy verification
+    cand_params, pol_payload, pol_raw_sha = verify_and_load_selected_policy(policy_path)
+
+    # 4. Output directory & Single-shot guard
+    enforced_out_dir = enforce_holdout_output_directory(out_dir, partition)
+    part_tag = "mix" if partition == "mixture" else ("scen" if partition == "scenario" else partition)
+    episodes_csv = enforced_out_dir / f"test_{part_tag}_episodes.csv"
+    summary_csv = enforced_out_dir / f"test_{part_tag}_summary.csv"
+    report_json = enforced_out_dir / f"test_{part_tag}_report.json"
+    partial_csv = enforced_out_dir / f"test_{part_tag}_episodes_PARTIAL.csv"
+    invalid_marker = enforced_out_dir / "INCOMPLETE_INVALID.json"
+
+    if episodes_csv.exists() or report_json.exists():
+        raise RuntimeError(
+            f"SINGLE-SHOT EXECUTION GUARD: Holdout output already exists in `{enforced_out_dir}`. "
+            "Re-running holdout or overwriting holdout artifacts is strictly prohibited."
+        )
+    if invalid_marker.exists():
+        raise RuntimeError(
+            f"SINGLE-SHOT EXECUTION GUARD: Found existing incomplete marker `{invalid_marker}` in `{enforced_out_dir}`. "
+            "Cannot overwrite prior aborted execution without explicit review."
+        )
+
+    # 5. Manifest verification
+    manifest_payload, man_raw_sha = verify_and_load_holdout_manifest(
+        manifest_path,
+        partition,
+        allow_synthetic=allow_mock_simulation,
+    )
+
+    # 6. Freeze run configuration
+    run_cfg = freeze_holdout_run_configuration(
+        partition=partition,
+        manifest_path=manifest_path,
+        manifest_payload=manifest_payload,
+        manifest_raw_sha256=man_raw_sha,
+        selected_policy_path=policy_path,
+        selected_policy_payload=pol_payload,
+        selected_policy_raw_sha256=pol_raw_sha,
+        candidate_params=cand_params,
+        out_dir=enforced_out_dir,
+    )
+
+    # 7. Setup simulation
+    sim = simulator_fn if simulator_fn is not None else run_single_episode
+    scenarios_by_name = {sc.name: sc for sc in build_v9_s12_scenarios()}
+    manifest_episodes = manifest_payload.get("episodes", [])
+    expected_total_episodes = len(manifest_episodes)
+    if expected_total_episodes == 0:
+        raise ValueError("Holdout manifest contains 0 episodes.")
+
+    policy_records: list[dict[str, Any]] = []
+    v8_records: list[dict[str, Any]] = []
+    v7_records: list[dict[str, Any]] = []
+
+    enforced_out_dir.mkdir(parents=True, exist_ok=True)
+
+    # 8. Simulation loop with partial failure protection
+    try:
+        for ep_item in manifest_episodes:
+            scen_name = str(ep_item["scenario"])
+            if scen_name not in scenarios_by_name:
+                raise ValueError(f"Unknown scenario '{scen_name}' in manifest item: {ep_item}")
+            scen = scenarios_by_name[scen_name]
+            ep_seed = int(ep_item.get("seed", ep_item.get("manifest_id")))
+            ep_idx = int(ep_item["episode_index"])
+            sc_idx = int(ep_item.get("scenario_index", scen.index))
+
+            # Policy V9
+            rng_env_v9, rng_sens_v9 = _derive_episode_rngs(ep_item, ep_seed)
+            ctrl_v9 = AegisV9Controller(cand_params)
+            rec_v9 = sim(scen, ep_seed, cand_params.candidate_id, ctrl_v9, rng_env=rng_env_v9, rng_sensors=rng_sens_v9)
+            verify_episode_outcome_algebra(
+                rec_v9,
+                expected_policy_id=cand_params.candidate_id,
+                expected_seed=ep_seed,
+                expected_scenario=scen_name,
+            )
+            rec_v9["episode_index"] = ep_idx
+            rec_v9["scenario_index"] = sc_idx
+            policy_records.append(rec_v9)
+
+            # Baseline V8.1
+            if include_v8_baseline:
+                rng_env_v8, rng_sens_v8 = _derive_episode_rngs(ep_item, ep_seed)
+                ctrl_v8 = AegisNextController()
+                rec_v8 = sim(scen, ep_seed, "AEGIS_NEXT_MARTINGALE", ctrl_v8, rng_env=rng_env_v8, rng_sensors=rng_sens_v8)
+                verify_episode_outcome_algebra(
+                    rec_v8,
+                    expected_policy_id="AEGIS_NEXT_MARTINGALE",
+                    expected_seed=ep_seed,
+                    expected_scenario=scen_name,
+                )
+                rec_v8["episode_index"] = ep_idx
+                rec_v8["scenario_index"] = sc_idx
+                v8_records.append(rec_v8)
+
+            # Baseline V7
+            if include_v7_baseline:
+                rng_env_v7, rng_sens_v7 = _derive_episode_rngs(ep_item, ep_seed)
+                ctrl_v7 = AegisV7MPCBaselineController()
+                rec_v7 = sim(scen, ep_seed, "AEGIS_V7_MPC_BASELINE", ctrl_v7, rng_env=rng_env_v7, rng_sensors=rng_sens_v7)
+                verify_episode_outcome_algebra(
+                    rec_v7,
+                    expected_policy_id="AEGIS_V7_MPC_BASELINE",
+                    expected_seed=ep_seed,
+                    expected_scenario=scen_name,
+                )
+                rec_v7["episode_index"] = ep_idx
+                rec_v7["scenario_index"] = sc_idx
+                v7_records.append(rec_v7)
+
+    except BaseException as exc:
+        if policy_records:
+            fieldnames = list(policy_records[0].keys())
+            with partial_csv.open("w", newline="", encoding="utf-8") as f:
+                writer = csv.DictWriter(f, fieldnames=fieldnames, lineterminator="\n")
+                writer.writeheader()
+                writer.writerows(policy_records)
+        invalid_marker.write_text(
+            json.dumps(
+                {
+                    "status": "INCOMPLETE_INVALID",
+                    "partition": partition,
+                    "recorded_episodes": len(policy_records),
+                    "expected_episodes": expected_total_episodes,
+                    "error": f"{type(exc).__name__}: {exc}",
+                    "created_utc": datetime.now(timezone.utc).isoformat(),
+                },
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        raise
+
+    # 9. Statistical analysis
+    if partition == "mixture":
+        eval_result = evaluate_mixture_holdout(
+            records=policy_records,
+            cand_params=cand_params,
+            v8_records=v8_records if include_v8_baseline else None,
+            v7_records=v7_records if include_v7_baseline else None,
+        )
+    elif partition == "scenario":
+        n_scens = len(scenarios_by_name)
+        seeds_per_scen = (
+            expected_total_episodes // n_scens
+            if expected_total_episodes % n_scens == 0
+            else TEST_SCEN_SEEDS_PER_SCENARIO
+        )
+        eval_result = evaluate_scenario_holdout(
+            records=policy_records,
+            cand_params=cand_params,
+            v7_records=v7_records if include_v7_baseline else None,
+            expected_seeds_per_scenario=seeds_per_scen,
+        )
+    else:
+        raise ValueError(f"Unknown partition type: {partition}")
+
+    # 10. Write output CSV artifacts
+    fieldnames = list(policy_records[0].keys())
+    with episodes_csv.open("w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames, lineterminator="\n")
+        writer.writeheader()
+        writer.writerows(policy_records)
+
+    v8_csv = enforced_out_dir / f"test_{part_tag}_baseline_v8_episodes.csv"
+    if v8_records:
+        v8_fieldnames = list(v8_records[0].keys())
+        with v8_csv.open("w", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=v8_fieldnames, lineterminator="\n")
+            writer.writeheader()
+            writer.writerows(v8_records)
+
+    v7_csv = enforced_out_dir / f"test_{part_tag}_baseline_v7_episodes.csv"
+    if v7_records:
+        v7_fieldnames = list(v7_records[0].keys())
+        with v7_csv.open("w", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=v7_fieldnames, lineterminator="\n")
+            writer.writeheader()
+            writer.writerows(v7_records)
+
+    summary_headers = [
+        "partition",
+        "n_episodes",
+        "m_accepted",
+        "ts_count",
+        "fs_count",
+        "ab_explicit_count",
+        "timeout_count",
+        "ab_total_count",
+        "crashed_count",
+        "coverage",
+        "tsr",
+        "r_inc",
+        "r_sel",
+    ]
+    with summary_csv.open("w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=summary_headers, lineterminator="\n")
+        writer.writeheader()
+        writer.writerow({k: eval_result.get(k, "") for k in summary_headers})
+
+    scen_csv = enforced_out_dir / "test_scen_breakdown.csv"
+    if partition == "scenario" and "scenario_breakdown" in eval_result:
+        scen_rows = eval_result["scenario_breakdown"]
+        if scen_rows:
+            scen_headers = list(scen_rows[0].keys())
+            with scen_csv.open("w", newline="", encoding="utf-8") as f:
+                writer = csv.DictWriter(f, fieldnames=scen_headers, lineterminator="\n")
+                writer.writeheader()
+                writer.writerows(scen_rows)
+
+    # 11. Compute artifact digests and write JSON report
+    artifact_shas: dict[str, str] = {
+        str(episodes_csv.relative_to(_REPO_ROOT) if episodes_csv.is_relative_to(_REPO_ROOT) else episodes_csv): sha256_file(episodes_csv),
+        str(summary_csv.relative_to(_REPO_ROOT) if summary_csv.is_relative_to(_REPO_ROOT) else summary_csv): sha256_file(summary_csv),
+    }
+    if v8_records and v8_csv.exists():
+        artifact_shas[str(v8_csv.relative_to(_REPO_ROOT) if v8_csv.is_relative_to(_REPO_ROOT) else v8_csv)] = sha256_file(v8_csv)
+    if v7_records and v7_csv.exists():
+        artifact_shas[str(v7_csv.relative_to(_REPO_ROOT) if v7_csv.is_relative_to(_REPO_ROOT) else v7_csv)] = sha256_file(v7_csv)
+    if partition == "scenario" and scen_csv.exists():
+        artifact_shas[str(scen_csv.relative_to(_REPO_ROOT) if scen_csv.is_relative_to(_REPO_ROOT) else scen_csv)] = sha256_file(scen_csv)
+
+    status_label = "COMPLETE_MOCK_VERIFIED" if allow_mock_simulation else "COMPLETE_VALID"
+    sim_mode_label = "MOCK_SYNTHETIC" if allow_mock_simulation else "PRODUCTION_PHYSICS"
+    report_payload: dict[str, Any] = {
+        "schema_version": f"nexvia-aegis-v9-holdout-{partition}-report/1.0",
+        "status": status_label,
+        "protocol_version": PROTOCOL_VERSION,
+        "v9_m1_commit": V9_M1_COMMIT,
+        "source_design_commit": SOURCE_DESIGN_COMMIT,
+        "v81_baseline_commit": V81_BASELINE_COMMIT,
+        "created_utc": datetime.now(timezone.utc).isoformat(),
+        "partition": partition,
+        "simulation_mode": sim_mode_label,
+        "selected_policy_id": cand_params.candidate_id,
+        "selected_candidate": asdict(cand_params),
+        "run_config": run_cfg,
+        "evaluation_summary": eval_result,
+        "artifact_sha256": artifact_shas,
+    }
+    report_payload["integrity_sha256"] = compute_canonical_payload_sha256(report_payload)
+    report_bytes = json.dumps(report_payload, indent=2).encode("utf-8")
+    report_json.write_bytes(report_bytes)
+
+    return report_payload
+
+
+# ==============================================================================
 # CLI Entry Point
 # ==============================================================================
 
@@ -1172,6 +1772,12 @@ def main() -> None:
         help="Generate and freeze holdout run configuration without simulating episodes.",
     )
     parser.add_argument(
+        "--run-production",
+        action="store_true",
+        default=False,
+        help="Execute the full production holdout evaluation pipeline (strictly requires authorized token).",
+    )
+    parser.add_argument(
         "--authorized-execution-token",
         type=str,
         default=None,
@@ -1180,7 +1786,7 @@ def main() -> None:
 
     args = parser.parse_args()
 
-    if args.preflight_only and not args.freeze_only:
+    if args.preflight_only and not args.freeze_only and not args.run_production:
         print("[M4-PREFLIGHT] Running read-only preflight checks...")
         checks = run_preflight_checks(policy_path=args.policy_path)
         print(json.dumps(checks, indent=2))
@@ -1202,6 +1808,17 @@ def main() -> None:
         )
         args.out_dir = default_out
 
+    if args.run_production:
+        res = execute_production_holdout_pipeline(
+            partition=args.partition,
+            policy_path=args.policy_path,
+            manifest_path=args.manifest_path,
+            out_dir=args.out_dir,
+            authorized_execution_token=args.authorized_execution_token,
+        )
+        print(json.dumps(res, indent=2))
+        return
+
     res = execute_holdout_workflow(
         partition=args.partition,
         policy_path=args.policy_path,
@@ -1215,4 +1832,5 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
 

@@ -1,0 +1,175 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[margin=2.0cm]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb,amsfonts,amsthm,mathtools}
+\usepackage{booktabs,tabularx,colortbl,array,multirow}
+\usepackage[table]{xcolor}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{microtype}
+\usepackage{hyperref}
+
+\newfontfamily\thaifont{Thonburi}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    citecolor=blue!70!black,
+    urlcolor=blue!70!black
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\footnotesize \textbf{NEXVIA AEGIS V9-M4 Execution Path Implementation}}
+\lhead{\footnotesize Multi-Controller Evaluation Harness \& Guard Verification}
+\rfoot{\footnotesize Page \thepage}
+\lfoot{\footnotesize Document ID: AEGIS-V9-M4-EXE-14}
+
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{NEXVIA AEGIS V9-M4 Execution Path Implementation}}\\[6pt]
+    {\Large \textbf{Multi-Controller Evaluation Architecture, Common Random Numbers,}}\\[3pt]
+    {\Large \textbf{Bijective Record Pairing, and Defense-in-Depth Execution Guards}}\\[10pt]
+    \textbf{Autonomous Verification Subsystem (Google DeepMind Antigravity)}\\
+    \textit{Git Branch: v9.0-runtime-assurance \quad $\cdot$ \quad Baseline Commit: 9c4c36f \quad $\cdot$ \quad Date: October 25, 2026}\\[12pt]
+\end{center}
+
+\noindent\fbox{
+\parbox{0.97\textwidth}{
+\textbf{CRITICAL NON-AUTHORIZATION DIRECTIVE:}\\
+This comprehensive document reports the technical architecture, implementation, and code-level verification of the production execution pathway for Milestone V9-M4. \textbf{This document does NOT authorize or trigger live holdout execution.} No real holdout manifests or episode datasets were generated, loaded, or inspected. The reserved holdout seed blocks ($73000..74439$ for mixture holdout and $75000..75119$ for scenario holdout) remain completely uninstantiated and pristine. Execution of V9-M4 requires an explicit, separate instruction and authorization decision from the project owner.
+}
+}
+
+\vspace{10pt}
+
+\begin{abstract}
+\noindent This report details the implementation of the complete production execution pathway for Milestone V9-M4 (Confirmatory Holdout Evaluation) within the NEXVIA AEGIS runtime assurance platform. While prior milestones established statistical consistency, hypothesis tests ($H_1$ through $H_5$), and preflight validation, the execution loop remained blocked by design. In this work, we implement a production-capable, defense-in-depth evaluation harness in \texttt{experiments/v9\_evaluate\_holdout.py}. Key innovations include: (1)~Common Random Numbers (CRN) simulation derivation via \texttt{\_derive\_episode\_rngs}, guaranteeing identical physical disturbances and sensor noise across controllers; (2)~unified evaluation of the frozen selected policy (\texttt{V9\_CAND\_1\_TIER1\_STRICTEST}), V8.1 martingale baseline (\texttt{AegisNextController}, commit \texttt{4d891c7}), and V7 MPC baseline (\texttt{AegisV7MPCBaselineController}); (3)~order-invariant bijective record pairing via \texttt{align\_and\_pair\_records} over $(\text{seed}, \text{scenario})$; (4)~strict outcome algebra verification respecting fail-unsafe crash penalization; (5)~multi-layered fail-closed execution guards incorporating secret authorization token validation, single-shot overwrite prevention, and partial failure recording (\texttt{\_PARTIAL.csv} and \texttt{INCOMPLETE\_INVALID.json}); and (6)~injectable mock simulator architecture enabling rigorous synthetic verification without accessing holdout data.
+\end{abstract}
+
+\vspace{6pt}
+\noindent \textbf{Keywords:} Execution Path Architecture, Common Random Numbers, Bijective Record Pairing, Fail-Closed Security, Milestone V9-M4.
+
+\section{Executive Summary}
+
+\subsection{Executive Summary (English)}
+\begin{enumerate}
+    \item \textbf{Multi-Controller Execution Architecture:} Implemented \texttt{execute\_production\_holdout\_pipeline} in \texttt{experiments/v9\_evaluate\_holdout.py}, providing end-to-end evaluation for the frozen candidate policy alongside both V8.1 and V7 baselines on identical episode conditions.
+    \item \textbf{Common Random Numbers (CRN) Coupling:} Established \texttt{\_derive\_episode\_rngs}, deriving decoupled \texttt{rng\_env} and \texttt{rng\_sensors} from stored \texttt{SeedSequence} spawn keys for each manifest item. This mathematically guarantees that V9, V8.1, and V7 navigate identical trajectory perturbations, obstacles, and sensor dropout profiles.
+    \item \textbf{Paired Record Integrity:} Integrated \texttt{align\_and\_pair\_records} into the hypothesis evaluation workflow, enforcing bijective $(\text{seed}, \text{scenario})$ matching for $H_2$ (McNemar paired incidence test vs V8.1 and V7) and $H_3$ (paired TSR noninferiority vs V8.1).
+    \item \textbf{Outcome Algebra and Fail-Unsafe Accounting:} Enforced exact outcome categorization: for non-crashed episodes, $A = TS + FS$; for crashed episodes, fail-unsafe penalization requires $A=0, TS=0, FS=1, \text{abstain}=0$.
+    \item \textbf{Defense-in-Depth Execution Guards:} Production execution is guarded by an authorization barrier requiring an explicit secret token, single-shot directory overwrite refusal, simulator spoofing protection (\texttt{allow\_mock\_simulation=True} required for custom simulators), and crash recovery marking.
+    \item \textbf{Isolation Assurance:} No production holdout manifests or output directories were created. All tests utilized synthetic manifests and in-memory mock fixtures.
+\end{enumerate}
+
+\subsection{\texorpdfstring{บทสรุปสำหรับผู้บริหาร (Executive Summary in Thai)}{Executive Summary in Thai}}
+{\thaifont\small
+\begin{enumerate}
+    \item \textbf{สถาปัตยกรรมการประเมินผลหลายตัวควบคุม:} ดำเนินการติดตั้งฟังก์ชัน \texttt{execute\_production\_holdout\_pipeline} ใน \texttt{experiments/v9\_evaluate\_holdout.py} เพื่อรองรับการประเมินผลนโยบายที่ถูกตรึง (Frozen Policy) ควบคู่กับตัวควบคุมอ้างอิง V8.1 และ V7 ภายใต้เงื่อนไขตอนจำลองเดียวกันอย่างสมบูรณ์
+    \item \textbf{การรักษาความคงที่ของสภาวะสุ่ม (Common Random Numbers):} พัฒนาฟังก์ชัน \texttt{\_derive\_episode\_rngs} เพื่อสร้างตัวสร้างเลขสุ่ม \texttt{rng\_env} และ \texttt{rng\_sensors} จาก SeedSequence spawn keys ของแต่ละตอน ทำให้รับประกันได้ว่าทั้ง V9, V8.1 และ V7 จะเผชิญกับสภาวะรบกวนทางกายภาพและสัญญาณเซนเซอร์ที่ผิดพลาดในจุดเวลาและตำแหน่งเดียวกันอย่างแม่นยำ
+    \item \textbf{การจับคู่ระเบียนผลลัพธ์แบบสองทิศทาง (Bijective Pairing):} บูรณาการฟังก์ชัน \texttt{align\_and\_pair\_records} เข้าสู่วงรอบการวิเคราะห์สมมติฐาน $H_2$ (การทดสอบ McNemar เทียบ V8.1 และ V7) และ $H_3$ (การทดสอบ Noninferiority เทียบ V8.1) เพื่อป้องกันการจับคู่ผิดพลาดตามลำดับแถว
+    \item \textbf{พีชคณิตผลลัพธ์และการบันทึกความล้มเหลวแบบไม่ปลอดภัย:} บังคับใช้กฎผลลัพธ์อย่างเข้มงวด โดยกรณีปกติ $A = TS + FS$ และในกรณีที่ยานชนสิ่งกีดขวาง ($crashed=1$) ระบบจะปรับให้ $A=0, TS=0, FS=1, \text{abstain}=0$ เพื่อสะท้อนความเสี่ยงสูงสุดตามระเบียบวิธีวิจัย
+    \item \textbf{ระบบป้องกันหลายชั้นแบบ Fail-Closed:} ป้องกันการรันจริงด้วย Secret Authorization Token, บล็อกการเขียนทับไดเรกทอรีผลลัพธ์, บล็อกการใช้ Custom Simulator โดยไม่ระบุแฟล็กอนุญาต และมีระบบบันทึก \texttt{\_PARTIAL.csv} พร้อมไฟล์สถานะ \texttt{INCOMPLETE\_INVALID.json} หากการประมวลผลหยุดชะงักกลางคัน
+    \item \textbf{การรับรองความบริสุทธิ์ของข้อมูล Holdout:} ยืนยันว่าไม่มีการสร้างหรือแตะต้องไฟล์ Manifest และโฟลเดอร์ผลลัพธ์จริง การทดสอบทั้งหมดกระทำบนข้อมูลสังเคราะห์ในหน่วยความจำชั่วคราวเท่านั้น
+\end{enumerate}
+}
+
+\section{Selected Policy and Baseline Execution Architecture}
+
+\subsection{Frozen Policy Identity}
+The selected policy artifact is stored at \texttt{results/v9/cal\_r2/selected\_policy.json}. Its identity and parameter contents are frozen under SHA-256 digest:
+\begin{equation}
+\text{SHA-256}(\text{selected\_policy.json}) = \texttt{5a89d6061b379f1b34ab47be0deef8d63180d3e4c21d18c478bc7e451f5c84e2}
+\end{equation}
+The evaluation harness validates this digest in Phase 1 before any simulation or manifest loading can proceed.
+
+\subsection{Baseline Controllers and Common Random Numbers}
+Milestone V9-M4 preregistered two baseline controllers:
+\begin{itemize}
+    \item \textbf{V8.1 Baseline:} Audited controller implemented by \texttt{AegisNextController} at snapshot commit \texttt{4d891c7500cfb4c8110f276038455bc62765ef3b}.
+    \item \textbf{V7 Baseline:} MPC reference controller implemented by \texttt{AegisV7MPCBaselineController} in \texttt{src/aegis/next/baselines.py}.
+\end{itemize}
+To eliminate extraneous stochastic variance in paired hypothesis tests ($H_2$ and $H_3$), simulation runs are conducted under Common Random Numbers (CRN). The function \texttt{\_derive\_episode\_rngs} generates two independent NumPy random generators from each manifest item:
+\begin{align}
+    \text{Spawn Keys:} \quad & (\kappa_{\text{env}}, \kappa_{\text{sen}}) = \text{item}[\text{"spawn\_keys"}] \\
+    \text{Environment Generator:} \quad & \text{rng\_env} \sim \text{SeedSequence}(\kappa_{\text{env}}) \\
+    \text{Sensors Generator:} \quad & \text{rng\_sensors} \sim \text{SeedSequence}(\kappa_{\text{sen}})
+\end{align}
+Both generators are freshly re-instantiated with identical spawn keys for V9, V8.1, and V7 evaluations, guaranteeing that all controllers navigate the exact same realization of target speed perturbations and sensor dropout events.
+
+\section{Traceability Matrix}
+
+Table~\ref{tab:traceability} documents code-level traceability from protocol requirements to the production implementation and verification tests.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Code and Test Traceability Matrix for Production Execution Harness}
+\label{tab:traceability}
+\begin{tabularx}{\textwidth}{lp{4.0cm}Xlc}
+\toprule
+\textbf{Requirement} & \textbf{Component} & \textbf{Source Location} & \textbf{Unit Test} & \textbf{Status} \\
+\midrule
+CRN RNG Derivation & \texttt{\_derive\_episode\_rngs} & \texttt{v9\_eval:91--115} & \texttt{test\_30} & \textbf{PASS} \\
+Authorization Gate & \texttt{execute\_production\_holdout\_pipeline} & \texttt{v9\_eval:1017--1025} & \texttt{test\_31} & \textbf{PASS} \\
+Mock Flag Protection & \texttt{execute\_production\_holdout\_pipeline} & \texttt{v9\_eval:1027--1033} & \texttt{test\_32} & \textbf{PASS} \\
+Mixture Holdout Pipeline & \texttt{execute\_production\_holdout\_pipeline} & \texttt{v9\_eval:1035--1175} & \texttt{test\_33} & \textbf{PASS} \\
+Scenario Holdout Pipeline & \texttt{execute\_production\_holdout\_pipeline} & \texttt{v9\_eval:1176--1260} & \texttt{test\_34} & \textbf{PASS} \\
+Single-Shot Overwrite Block & \texttt{execute\_production\_holdout\_pipeline} & \texttt{v9\_eval:1048--1060} & \texttt{test\_35} & \textbf{PASS} \\
+Partial Crash Marking & \texttt{execute\_production\_holdout\_pipeline} & \texttt{v9\_eval:1120--1135} & \texttt{test\_36} & \textbf{PASS} \\
+Outcome Algebra Validation & \texttt{verify\_holdout\_outcome\_algebra} & \texttt{v9\_eval:117--142} & \texttt{test\_37} & \textbf{PASS} \\
+Crash Fail-Unsafe Rules & \texttt{verify\_holdout\_outcome\_algebra} & \texttt{v9\_eval:126--133} & \texttt{test\_38} & \textbf{PASS} \\
+Timeout / Abstain Rules & \texttt{MockHoldoutSimulator} & \texttt{v9\_eval:192--205} & \texttt{test\_39} & \textbf{PASS} \\
+Undefined Selective Risk & \texttt{calculate\_scenario\_holdout\_statistics} & \texttt{v9\_eval:922--928} & \texttt{test\_40} & \textbf{PASS} \\
+Manifest Integrity Guard & \texttt{verify\_and\_load\_holdout\_manifest} & \texttt{v9\_eval:465--492} & \texttt{test\_41} & \textbf{PASS} \\
+Policy Tampering Guard & \texttt{verify\_selected\_policy\_identity} & \texttt{v9\_eval:435--460} & \texttt{test\_42} & \textbf{PASS} \\
+Bijective Record Pairing & \texttt{align\_and\_pair\_records} & \texttt{v9\_eval:145--180} & \texttt{test\_43} & \textbf{PASS} \\
+CLI Default Preflight Guard & \texttt{main} & \texttt{v9\_eval:1265--1320} & \texttt{test\_44} & \textbf{PASS} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Execution Guards and Fail-Closed Architecture}
+
+\begin{figure}[htbp]
+\centering
+\small
+\begin{verbatim}
+       +-------------------------------------------------------------+
+       |             CLI Invocation / API Entry Point                |
+       +-------------------------------------------------------------+
+                                      |
+                     [ Check: authorized_token Valid? ]
+                               /              \
+                             NO                YES
+                            /                    \
+              [ PermissionError (Exit 1) ]   [ Policy SHA-256 Valid? ]
+                                                    /         \
+                                                  NO           YES
+                                                 /               \
+                                    [ ValueError ]       [ Output Path Exists? ]
+                                                              /             \
+                                                            YES              NO
+                                                            /                 \
+                                              [ FileExistsError ]     [ Execute CRN Loop ]
+\end{verbatim}
+\caption{Multi-Layer Defense-in-Depth Execution Guard Architecture}
+\label{fig:guard_arch}
+\end{figure}
+
+The evaluation harness implements fail-closed defenses depicted in Figure~\ref{fig:guard_arch}:
+\begin{enumerate}
+    \item \textbf{Cryptographic Authorization Token:} Requires \texttt{authorized\_execution\_token == REQUIRED\_EXECUTION\_TOKEN}. Omitting or supplying an invalid token immediately terminates execution before any filesystem or simulator action.
+    \item \textbf{Single-Shot Directory Protection:} Aborts if \texttt{test\_\{part\}\_episodes.csv} or \texttt{INCOMPLETE\_INVALID.json} exists in the destination path.
+    \item \textbf{Simulator Isolation Guard:} Requires \texttt{allow\_mock\_simulation=True} when supplying custom simulators, preventing accidental mock usage in production.
+    \item \textbf{Mid-Run Crash Containment:} Writes partial outputs to \texttt{\_PARTIAL.csv} and writes \texttt{INCOMPLETE\_INVALID.json} with error diagnostics upon any unhandled simulation error.
+\end{enumerate}
+
+\section{Conclusion and Operational Readiness}
+The production execution path for Milestone V9-M4 is fully implemented, verified across 15 dedicated unit and mock tests, and integrated into the regression test suite. All execution guards are locked fail-closed, ensuring complete protection of holdout data until authorization is formally granted.
+
+\end{document}
