@@ -69,7 +69,15 @@ Under the partition-branching architecture defined in `docs/v9_m2r2_protocol_ame
   $$\text{env\_ss}_i = \text{ep\_ss}_i.\text{spawn}(2)[0] \implies \text{env\_spawn\_key} = (3, 1, i, 0)$$
   $$\text{sens\_ss}_i = \text{ep\_ss}_i.\text{spawn}(2)[1] \implies \text{sensor\_spawn\_key} = (3, 1, i, 1)$$
 
-Because the root key is prefixed with $p = 3$, validation streams use distinct hierarchical spawn paths $(3, 1, i, \cdot)$ under NumPy's `SeedSequence`. Under NumPy's PCG64/SplitMix64 model, distinct spawn keys produce pseudo-random streams designed to be independent and non-overlapping with negligible collision probability ($\approx K^2 / 2^{129} < 10^{-30}$), ensuring stream separation across development ($p=1$), calibration ($p=2$), holdouts ($p=4, 5$), and test fixtures ($p=6$).
+Because the root key is prefixed with $p = 3$, validation streams use distinct hierarchical spawn paths $(3, 1, i, \cdot)$ under NumPy's `SeedSequence`.
+In NumPy's PRNG architecture, `SeedSequence` uses a 128-bit internal entropy pool (`pool_size=4` 32-bit words) mixed via an entropy-mixing algorithm designed by Melissa E. O'Neill to initialize BitGenerators (specifically `PCG64`).
+Distinct `spawn_key` tuples guarantee structural tree-path disjointness in the derivation hierarchy.
+Statistically, under the birthday paradox for hashing into a 128-bit state space ($S = 2^{128} \approx 3.4028 \times 10^{38}$ states), the approximate collision probability among $K$ spawned streams is modeled by:
+$$P_{\text{collision}} \approx 1 - \exp\left(-\frac{K(K-1)}{2 \times 2^{128}}\right) \approx \frac{K^2}{2^{129}}$$
+(Source: NumPy `SeedSequence` architectural specification / NEP 19).
+For the entire NEXVIA AEGIS project across all partitions (development $N=30$, calibration $N=960$, validation $N=480$, holdouts $N=2{,}880$, and unit test fixtures, yielding $K \approx 5{,}000$ streams total across environment and sensor generators), $K^2 \approx 2.5 \times 10^7$, giving an approximate collision probability of:
+$$P_{\text{collision}} \approx \frac{2.5 \times 10^7}{2 \times 3.4028 \times 10^{38}} \approx 3.67 \times 10^{-32} \ll 10^{-31}$$
+Crucially, this derivation provides high-probability independence and non-overlapping initial states, not a mathematical guarantee of zero collision probability.
 
 ---
 

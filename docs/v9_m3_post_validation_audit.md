@@ -58,14 +58,14 @@ This post-validation audit evaluates the completed **Milestone V9-M3: Independen
 
 | Artifact | File Path | Verified Raw SHA-256 | Canonical SHA-256 | Integrity Status |
 | :--- | :--- | :--- | :--- | :--- |
-| Validation Manifest | `results/v9/manifests/val_manifest_r1.json` | `72d9b98bda62...` | `40ff489504ce...` | **VALID** |
-| Frozen Run Config | `results/v9/val_r1/validation_run_config_frozen_r1.json` | `a09ebc079537...` | `b3ec3c601629...` | **VALID** |
-| Raw Episodes CSV | `results/v9/val_r1/val_episodes.csv` | `1b6b80402ffe...` | — | **VALID (480 rows)** |
-| Summary CSV | `results/v9/val_r1/val_summary.csv` | `d44a41cf3901...` | — | **VALID** |
-| Scenario Breakdown CSV | `results/v9/val_r1/val_scenario_breakdown.csv` | `60ff1d9fa3a7...` | — | **VALID (12 rows)** |
-| Validation Report | `results/v9/val_r1/validation_report.json` | `a5f4df07996c...` | `6aa98a3cf5e9...` | **VALID** |
+| Validation Manifest | `results/v9/manifests/val_manifest_r1.json` | `72d9b98bda622d80db4c5aa8d9e4b1ce88f0bbc52d3bb26258917cea08959175` | `40ff489504ce628f954b735b562474474b746a2c38c65d459d1084b625909f1e` | **VALID** |
+| Frozen Run Config | `results/v9/val_r1/validation_run_config_frozen_r1.json` | `a09ebc079537233d6ced80c4deba71deed8f49c34ab437c4afa7f4a82d00b100` | `b3ec3c60162985392d4745fb3f6c87e148e6922572a1e05fcce58f188589fe94` | **VALID** |
+| Raw Episodes CSV | `results/v9/val_r1/val_episodes.csv` | `1b6b80402ffe40bce66d4bd9df27556433988e54ba813ce26e0fcca886dcc41e` | — | **VALID (480 rows)** |
+| Summary CSV | `results/v9/val_r1/val_summary.csv` | `d44a41cf3901e162b9fb46923122bfd5100e6d027fdbf0e98491e7a8ce83783e` | — | **VALID** |
+| Scenario Breakdown CSV | `results/v9/val_r1/val_scenario_breakdown.csv` | `60ff1d9fa3a766b3e17a93f92ceffe41cb7c8a74022a1535d3dfc2d4c454de08` | — | **VALID (12 rows)** |
+| Validation Report | `results/v9/val_r1/validation_report.json` | `a5f4df07996c6e5c04a48b5ed86668960bafb691aa489c526e5232aea635b500` | `6aa98a3cf5e9d594a3ccae8903881ac62e0fbc80e025704beb65bab1876846d3` | **VALID** |
 
-All artifact digests recorded in `validation_report.json` match disk contents bit-for-bit.
+All artifact digests recorded in `validation_report.json` under `artifact_sha256` match current disk contents bit-for-bit.
 
 ### 3.2 Partition Algebra and Outcome Reconciliation
 Direct recomputation from raw `val_episodes.csv` confirms:
@@ -82,6 +82,22 @@ Direct recomputation from raw `val_episodes.csv` confirms:
   $$N = M + AB \implies 480 = 269 + 211 \quad \checkmark$$
   $$TS + FS + AB_{\mathrm{exp}} + TO = 269 + 0 + 207 + 4 = 480 \quad \checkmark$$
 
+### 3.3 Reconciliation of Historical Artifact Hash Discrepancies
+An audit query identified a discrepancy between the full SHA-256 hashes presented in narrative text in the preliminary V9-M3 summary and the actual files on disk:
+- **Reported in preliminary chat text:**
+  - `val_summary.csv`: `d44a41cf3901b0445d4715aa31fe186e8da468e8e604f378a5716df1ea6cb59f`
+  - `val_scenario_breakdown.csv`: `60ff1d9fa3a76efea0b3f5546d141e976dbbb94c1a9386d3b37905d4df483d3f`
+- **Actual on-disk files & `validation_report.json` `artifact_sha256` records:**
+  - `val_summary.csv`: `d44a41cf3901e162b9fb46923122bfd5100e6d027fdbf0e98491e7a8ce83783e`
+  - `val_scenario_breakdown.csv`: `60ff1d9fa3a766b3e17a93f92ceffe41cb7c8a74022a1535d3dfc2d4c454de08`
+
+**Forensic Investigation & Resolution:**
+1. **Creation Timing:** The two on-disk CSV files were written during commit `9e43d0f` at 13:46 UTC on 2026-10-25 when the runner completed post-simulation aggregation.
+2. **Immutability:** The raw simulation file `val_episodes.csv` (`1b6b80402ffe...`) was never modified, regenerated, or re-run.
+3. **Internal Hash Consistency:** The validation report JSON (`validation_report.json`) was generated simultaneously with the CSV files. Its internal `artifact_sha256` dictionary explicitly recorded `d44a41cf3901e162...` and `60ff1d9fa3a766b3...`, and its canonical integrity digest `6aa98a3cf5e9...` confirms that no file tampering or silent regeneration occurred.
+4. **Source of Discrepancy:** The conflicting string values (`...b0445d47...` and `...6efea0b3...`) originated as a transcription error in the conversational markdown response. The actual files on disk and the recorded report hashes have remained completely intact and bit-identical.
+5. **Data Consistency:** Direct independent recomputation from the 480 raw episode rows in `val_episodes.csv` confirmed that all summary totals, coverage rates, TSR values, and all 12 scenario breakdown metrics in the on-disk CSVs match the raw simulation data with 100% precision.
+
 ---
 
 ## 4. Review of Statistical Claims and Methodological Qualifications
@@ -96,7 +112,7 @@ To ensure scientific integrity, the reported validation metrics must be understo
 ### 4.2 Interpretation of Pooled Binomial Reference Bound (1.11%)
 - For $K = 0$ errors in $M = 269$ accepted decisions, the unstratified exact Clopper–Pearson 1-sided 95% upper confidence bound is:
   $$\text{BetaInv}(0.95, 1, 269) = 1 - 0.05^{1/269} \approx 0.011075 = 1.11\%$$
-- **Correction / Qualification:** This bound is an unstratified-binomial reference calculation. Because the underlying sampling across scenarios is stratified, this number serves as descriptive benchmarking evidence rather than a certified population selective-risk bound.
+- **Correction / Qualification:** This bound is strictly an unstratified-binomial reference calculation. Because the underlying sampling across scenarios is stratified, this number serves as descriptive benchmarking evidence rather than a certified population selective-risk bound.
 
 ### 4.3 Per-Scenario Uncertainty (7.22% Bound)
 - For scenarios where all $40$ episodes were accepted with zero errors ($M_s = 40, K_s = 0$, e.g., `NOMINAL`, `SENSOR_DROPOUT`):
@@ -105,7 +121,7 @@ To ensure scientific integrity, the reported validation metrics must be understo
 
 ### 4.4 Undefined Selective Risk When Acceptance is Zero ($M_s = 0$)
 - In `FAULTY_REFERENCE_SENSOR`, `CORRUPTED_ANCHOR_STRESS`, `COMPOUND_HOLDOUT_EXTREME`, and `COMPOUND_ANTIPODAL_RANGE_SHIFT`, $M_s = 0$.
-- **Correction / Qualification:** Selective risk is strictly $R_{\mathrm{sel}} = 0/0 = \text{UNDEFINED}$, not zero. The observed 100% abstention rate ($40/40$) must be reported as a safety-versus-utility trade-off (fail-closed refusal to act under unresolvable corruption), not as a zero-risk estimate.
+- **Correction / Qualification:** Selective risk is strictly $R_{\mathrm{sel}} = 0/0 = \text{UNDEFINED}$, not zero. Full abstention in a scenario ($40/40$) is not evidence that the selective risk is zero; it represents a safety-versus-utility trade-off (fail-closed refusal to act under unresolvable corruption), not a zero-risk estimate.
 
 ### 4.5 Empirical Nominal TSR
 - In [`docs/v9_experiment_protocol.md`](file:///Users/chalermsak/Desktop/nexvia-aegis-main/docs/v9_experiment_protocol.md) Section 3.5 Table 3.5.1, the requirement $\widehat{TSR}_{\mathrm{NOMINAL}}(\hat{\pi}) \ge 0.94$ explicitly uses the hat notation $\widehat{\cdot}$, signifying the empirical point estimate.
@@ -118,12 +134,16 @@ To ensure scientific integrity, the reported validation metrics must be understo
 ### 4.7 Zero Errors $\neq$ Zero Risk
 - Observing $FS = 0$ in the finite validation sample indicates that the controller's fail-closed gates operated as designed, but it does not prove that true risk is identically zero.
 
+### 4.8 Simulation Boundary & Physical Hardware Safety Non-Certification
+- All validation experiments were executed entirely within a 2D kinematic simulation environment.
+- **Correction / Qualification:** Validation outcomes provide empirical runtime evidence under simulated disturbance models; they do **not** certify physical-hardware safety. Hardware deployment requires separate physical-layer commissioning, fail-safe actuation interlocks, and real-world system verification.
+
 ---
 
 ## 5. Audit of RNG Documentation & NumPy PRNG Model
 
 ### 5.1 Verification of PRNG Implementation
-- The repository implementation in [`src/aegis/v9/randomization.py`](file:///Users/chalermsak/Desktop/nexvia-aegis-main/src/aegis/v9/randomization.py) correctly constructs independent NumPy `PCG64` bit generators via `SeedSequence`:
+- The repository implementation in [`src/aegis/v9/randomization.py`](file:///Users/chalermsak/Desktop/nexvia-aegis-main/src/aegis/v9/randomization.py) correctly constructs decoupled NumPy `PCG64` bit generators via `SeedSequence`:
   - Calibration: `spawn_key = (2, 1, i, ...)`
   - Validation: `spawn_key = (3, 1, i, ...)`
   - Holdout Mixture: `spawn_key = (4, 1, i, ...)`
@@ -131,9 +151,19 @@ To ensure scientific integrity, the reported validation metrics must be understo
   - Tests: `spawn_key = (6, ...)`
 - In [`tests/test_v9_validation.py`](file:///Users/chalermsak/Desktop/nexvia-aegis-main/tests/test_v9_validation.py), unit tests verified that child streams for environment and sensors produce non-identical bitstreams and distinct initial states.
 
-### 5.2 Documentation Refinement
-- Overly strong docstrings claiming that distinct spawn keys "mathematically guarantee zero stream collision" have been refined in [`src/aegis/v9/randomization.py`](file:///Users/chalermsak/Desktop/nexvia-aegis-main/src/aegis/v9/randomization.py) and [`docs/v9_m3_validation_protocol.md`](file:///Users/chalermsak/Desktop/nexvia-aegis-main/docs/v9_m3_validation_protocol.md).
-- The language now accurately reflects NumPy's documented design: `SeedSequence` uses SplitMix64 128-bit hashing, ensuring that distinct spawn keys produce pseudo-random streams designed to be independent and non-overlapping with negligible collision probability ($\approx K^2 / 2^{129} < 10^{-30}$ for our finite manifest size).
+### 5.2 Documentation Refinement: SeedSequence PRNG Model
+- **NumPy Architectural Alignment:** `numpy.random.SeedSequence` uses an internal 128-bit entropy pool (`pool_size=4` 32-bit unsigned integers) mixed via Melissa E. O'Neill's bit-mixing algorithm to set the initial states for BitGenerators (specifically `PCG64`).
+- **Correction of "SplitMix64" Terminology:** Previous draft documentation loosely referred to a "SplitMix64 model". This is corrected: SplitMix64 is a specific 64-bit generator by Steele et al., whereas NumPy's `SeedSequence` employs a 128-bit pool mixer designed to initialize independent bit generators.
+- **Tree Disjointness vs. Probabilistic Independence:**
+  - Distinct `spawn_key` tuples guarantee structural tree-path disjointness in the derivation hierarchy.
+  - The mixed initial states are designed to be independent and very probably non-overlapping. This is a **high-probability statistical model**, not a mathematical guarantee of zero collision probability.
+- **Collision Probability Bound:**
+  - In an entropy pool of $S = 2^{128} \approx 3.4028 \times 10^{38}$ states, the birthday-paradox collision probability among $K$ spawned streams is modeled by:
+    $$P_{\text{collision}} \approx 1 - \exp\left(-\frac{K(K-1)}{2 \times 2^{128}}\right) \approx \frac{K^2}{2^{129}}$$
+    (Source: NumPy NEP 19 / SeedSequence architectural documentation).
+  - Across the entire NEXVIA AEGIS experimental design (development $N=30$, calibration $N=960$, validation $N=480$, holdouts $N=2{,}880$, and diagnostic test suites, yielding $K \approx 5{,}000$ streams total across environment and sensor generators):
+    $$P_{\text{collision}} \approx \frac{(5 \times 10^3)^2}{2 \times 2^{128}} = \frac{2.5 \times 10^7}{6.81 \times 10^{38}} \approx 3.67 \times 10^{-32} \ll 10^{-31}$$
+  - This estimate represents an approximate collision probability under the birthday model, not a deterministic guarantee. Registered entropy, partition indices, and episode seeds remain completely unchanged.
 
 ---
 

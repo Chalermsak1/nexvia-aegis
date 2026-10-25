@@ -44,8 +44,9 @@ def create_decoupled_rng_pair(
     seed_or_ss: int | np.random.SeedSequence,
 ) -> tuple[np.random.Generator, np.random.Generator]:
     """
-    Creates two strictly independent NumPy PCG64 generators from a seed or SeedSequence.
-    Guarantees that rng_env and rng_sensors are initialized with different internal keys.
+    Creates two decoupled NumPy PCG64 generators from a seed or SeedSequence.
+    Spawns child SeedSequences to initialize rng_env and rng_sensors with independent
+    initial states with high probability under NumPy's 128-bit pool entropy-mixing model.
     """
     if isinstance(seed_or_ss, int):
         ss = np.random.SeedSequence(seed_or_ss)
@@ -68,8 +69,9 @@ PARTITION_BRANCH_DIAGNOSTIC_TESTS: int = 6
 class V9HierarchicalManifestGenerator:
     """
     Hierarchical SeedSequence manifest generator for NEXVIA AEGIS V9-M2R1/R2.
-    Supports partition-aware child branch derivation to guarantee mathematical
-    stream disjointness across development, calibration, validation, and holdout suites.
+    Supports partition-aware child branch derivation with distinct hierarchical spawn keys
+    to produce reproducible streams with high-probability independence across development,
+    calibration, validation, and holdout suites under NumPy's 128-bit pool SeedSequence model.
     """
 
     def __init__(self, master_entropy: int = 20261025):
@@ -88,7 +90,7 @@ class V9HierarchicalManifestGenerator:
         Generates an auditable manifest payload pairing manifest IDs with uniform scenario draws
         and decoupled SeedSequence child streams.
         When partition_index is provided (e.g. 2 for calibration_r2), derives streams from a dedicated
-        partition child branch, producing streams designed to be independent and non-overlapping with negligible collision probability under NumPy's SeedSequence model.
+        partition child branch, producing streams designed to be independent and non-overlapping with negligible collision probability under NumPy's 128-bit pool SeedSequence model.
         """
         scenarios = build_v9_s12_scenarios()
         n_scen = len(scenarios)
@@ -175,7 +177,7 @@ class V9HierarchicalManifestGenerator:
         Generates an auditable stratified manifest for deterministic grids
         [(scenario, seed) for scenario in S_12 for seed in range(seed_start, seed_start + seeds_per_scenario)].
         Uses partition-branched SeedSequence derivation (spawn_key=(partition_index,)) to produce
-        pseudo-random streams designed to be independent and non-overlapping with any other partition under NumPy's SeedSequence model.
+        pseudo-random streams designed to be independent and non-overlapping with any other partition under NumPy's 128-bit pool SeedSequence model.
         """
         scenarios = build_v9_s12_scenarios()
         n_scen = len(scenarios)
