@@ -42,6 +42,7 @@ import numpy as np
 from scipy.stats import beta, binom
 
 from aegis.v9.controller import AegisV9Controller
+from aegis.v9.randomization import instantiate_episode_rngs_from_manifest_item
 from aegis.v9.risk_statistics import (
     PREREGISTERED_CANDIDATE_FAMILY,
     PolicyEvaluationSummary,
@@ -365,11 +366,19 @@ def freeze_run_configuration(
     )
     run_cfg_path = out_dir / cfg_name
 
-    if (is_r1 or is_r2) and run_cfg_path.exists():
-        existing = json.loads(run_cfg_path.read_text(encoding="utf-8"))
-        if existing.get("integrity_sha256") != compute_canonical_payload_sha256(existing):
-            raise ValueError(f"Existing {cfg_name} failed integrity check.")
-        return existing
+    central_cfg = Path("results/v9/cal") / cfg_name
+    if (is_r1 or is_r2):
+        if run_cfg_path.exists():
+            existing = json.loads(run_cfg_path.read_text(encoding="utf-8"))
+            if existing.get("integrity_sha256") != compute_canonical_payload_sha256(existing):
+                raise ValueError(f"Existing {cfg_name} failed integrity check.")
+            return existing
+        elif is_r2 and central_cfg.exists():
+            existing = json.loads(central_cfg.read_text(encoding="utf-8"))
+            if existing.get("integrity_sha256") != compute_canonical_payload_sha256(existing):
+                raise ValueError(f"Existing central {cfg_name} failed integrity check.")
+            run_cfg_path.write_text(json.dumps(existing, indent=2) + "\n", encoding="utf-8")
+            return existing
 
     spec = cand_meta["ltt_calibration_spec"]
     if (
@@ -489,10 +498,27 @@ def execute_single_shot_calibration(
     if freeze_only:
         return {"status": "FROZEN_READY", "run_config": run_cfg}
 
-    if "r1" in man_path.name or "r2" in man_path.name:
+    # Execution guard: Authorize ONLY cal_manifest_r2.json with v9_candidates_frozen_r1.json in cal_r2
+    if "r1" in man_path.name and "r2" not in man_path.name:
         raise RuntimeError(
-            "EXECUTION GUARD: Single-shot calibration for V9-M2R1/R2 (D_cal 76000..76959) is deferred "
-            "pending independent protocol review. Calibration episodes must NOT be generated or executed in Milestone V9-M2R1."
+            "EXECUTION GUARD: Calibration manifest r1 (D_cal,r1 76000..76959) is RETIRED due to unpartitioned "
+            "test fixture overlap. Execution of cal_manifest_r1.json is strictly prohibited."
+        )
+
+    if man_path.name != "cal_manifest_r2.json":
+        raise RuntimeError(
+            f"EXECUTION GUARD: Only approved manifest `cal_manifest_r2.json` is authorized. Refusing `{man_path.name}`."
+        )
+
+    if cand_path.name != "v9_candidates_frozen_r1.json":
+        raise RuntimeError(
+            f"EXECUTION GUARD: Only approved frozen candidate configuration `v9_candidates_frozen_r1.json` is authorized. Refusing `{cand_path.name}`."
+        )
+
+    if res_dir == Path("results/v9/cal").resolve():
+        raise RuntimeError(
+            "EXECUTION GUARD: Direct execution into `results/v9/cal` is blocked to preserve historical calibration records. "
+            "Must use an isolated output directory (e.g. `results/v9/cal_r2`)."
         )
 
     candidates, _, _ = verify_and_load_frozen_candidates(cand_path)
@@ -502,7 +528,7 @@ def execute_single_shot_calibration(
         sc.name: sc for sc in build_v9_s12_scenarios()
     }
     manifest_episodes = manifest_payload["episodes"]
-    enforce_cal_only_seeds([int(item["seed"]) for item in manifest_episodes])
+    enforce_cal_only_seeds([int(item.get("manifest_id", item.get("seed"))) for item in manifest_episodes])
 
     expected_total_records = len(manifest_episodes) * len(candidates)
     episode_records: list[dict[str, Any]] = []
@@ -514,13 +540,24 @@ def execute_single_shot_calibration(
     try:
         for ep_item in manifest_episodes:
             ep_idx = int(ep_item["episode_index"])
-            ep_seed = int(ep_item["seed"])
+            ep_seed = int(ep_item.get("manifest_id", ep_item.get("seed")))
             scen_name = str(ep_item["scenario"])
             scen = scenarios_by_name[scen_name]
 
             for cand in candidates:
                 ctrl = AegisV9Controller(cand)
-                rec = run_single_episode(scen, ep_seed, cand.candidate_id, ctrl)
+                if "env_spawn_key" in ep_item:
+                    decoupled_rng = instantiate_episode_rngs_from_manifest_item(ep_item)
+                    rec = run_single_episode(
+                        scen,
+                        ep_seed,
+                        cand.candidate_id,
+                        ctrl,
+                        rng_env=decoupled_rng.rng_env,
+                        rng_sensors=decoupled_rng.rng_sensors,
+                    )
+                else:
+                    rec = run_single_episode(scen, ep_seed, cand.candidate_id, ctrl)
                 verify_episode_outcome_algebra(
                     rec,
                     expected_policy_id=cand.candidate_id,
@@ -864,16 +901,28 @@ def execute_single_shot_calibration(
     )
 
     # 6. Write complete calibration_report.json with artifact SHA-256 manifest
+    cfg_name = (
+        "calibration_run_config_frozen_r2.json"
+        if "r2" in man_path.name
+        else ("calibration_run_config_frozen_r1.json" if "r1" in man_path.name else "calibration_run_config_frozen.json")
+    )
+    cfg_file = res_dir / cfg_name
+    rel_cand = str(cand_path.relative_to(_REPO_ROOT)) if cand_path.is_relative_to(_REPO_ROOT) else str(cand_path)
+    rel_man = str(man_path.relative_to(_REPO_ROOT)) if man_path.is_relative_to(_REPO_ROOT) else str(man_path)
+    rel_cfg = str(cfg_file.relative_to(_REPO_ROOT)) if cfg_file.is_relative_to(_REPO_ROOT) else str(cfg_file)
+    rel_episodes = str(episodes_csv.relative_to(_REPO_ROOT)) if episodes_csv.is_relative_to(_REPO_ROOT) else str(episodes_csv)
+    rel_summary = str(summary_csv.relative_to(_REPO_ROOT)) if summary_csv.is_relative_to(_REPO_ROOT) else str(summary_csv)
+    rel_scen = str(scen_csv.relative_to(_REPO_ROOT)) if scen_csv.is_relative_to(_REPO_ROOT) else str(scen_csv)
+    rel_selected = str(selected_policy_path.relative_to(_REPO_ROOT)) if selected_policy_path.is_relative_to(_REPO_ROOT) else str(selected_policy_path)
+
     artifact_hashes = {
-        "configs/v9_candidates_frozen.json": sha256_file(cand_path),
-        "results/v9/manifests/cal_manifest.json": sha256_file(man_path),
-        "results/v9/cal/calibration_run_config_frozen.json": sha256_file(
-            res_dir / "calibration_run_config_frozen.json"
-        ),
-        "results/v9/cal/cal_episodes.csv": sha256_file(episodes_csv),
-        "results/v9/cal/cal_candidate_summary.csv": sha256_file(summary_csv),
-        "results/v9/cal/cal_scenario_breakdown_diagnostic.csv": sha256_file(scen_csv),
-        "results/v9/cal/selected_policy.json": sha256_file(selected_policy_path),
+        rel_cand: sha256_file(cand_path),
+        rel_man: sha256_file(man_path),
+        rel_cfg: sha256_file(cfg_file),
+        rel_episodes: sha256_file(episodes_csv),
+        rel_summary: sha256_file(summary_csv),
+        rel_scen: sha256_file(scen_csv),
+        rel_selected: sha256_file(selected_policy_path),
     }
 
     report_payload: dict[str, Any] = {

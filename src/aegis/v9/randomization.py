@@ -163,6 +163,95 @@ class V9HierarchicalManifestGenerator:
         payload["integrity_sha256"] = hashlib.sha256(canon_bytes).hexdigest()
         return payload
 
+    def generate_stratified_manifest(
+        self,
+        *,
+        partition_name: str,
+        seed_start: int,
+        seeds_per_scenario: int,
+        partition_index: int = PARTITION_BRANCH_VALIDATION,
+    ) -> dict[str, Any]:
+        """
+        Generates an auditable stratified manifest for deterministic grids
+        [(scenario, seed) for scenario in S_12 for seed in range(seed_start, seed_start + seeds_per_scenario)].
+        Uses partition-branched SeedSequence derivation (spawn_key=(partition_index,)) to guarantee
+        zero stream collision with any other partition.
+        """
+        scenarios = build_v9_s12_scenarios()
+        n_scen = len(scenarios)
+        if n_scen != 12:
+            raise RuntimeError(f"Expected 12 scenarios, found {n_scen}")
+
+        total_episodes = n_scen * seeds_per_scenario
+        part_ss = np.random.SeedSequence(self.master_entropy, spawn_key=(partition_index,))
+        branch_scen_ss, branch_eps_ss = part_ss.spawn(2)
+        ep_sequences = branch_eps_ss.spawn(total_episodes)
+
+        episodes: list[dict[str, Any]] = []
+        counts: dict[str, int] = {s.name: 0 for s in scenarios}
+        pairs_for_hash: list[tuple[str, int, int, int]] = []
+
+        ep_idx = 0
+        for sc_idx, scen in enumerate(scenarios):
+            for s_offset in range(seeds_per_scenario):
+                m_id = seed_start + s_offset
+                scen_name = scen.name
+                counts[scen_name] += 1
+
+                ep_ss = ep_sequences[ep_idx]
+                env_ss, sens_ss = ep_ss.spawn(2)
+
+                ep_item: dict[str, Any] = {
+                    "episode_index": ep_idx,
+                    "seed": m_id,
+                    "manifest_id": m_id,
+                    "scenario_index": sc_idx,
+                    "scenario": scen_name,
+                    "suite": scen.suite,
+                    "entropy": int(self.master_entropy),
+                    "partition_index": partition_index,
+                    "spawn_key": list(ep_ss.spawn_key),
+                    "env_spawn_key": list(env_ss.spawn_key),
+                    "sensor_spawn_key": list(sens_ss.spawn_key),
+                }
+                episodes.append(ep_item)
+                pairs_for_hash.append((scen_name, m_id, sc_idx, ep_idx))
+                ep_idx += 1
+
+        raw_ep_bytes = json.dumps(pairs_for_hash, sort_keys=True).encode("utf-8")
+        episodes_sha256 = hashlib.sha256(raw_ep_bytes).hexdigest()
+
+        payload: dict[str, Any] = {
+            "schema_version": "nexvia-aegis-v9-manifest/2.0-decoupled-rng",
+            "protocol_version": "v9.0-preregistered-2026-10-amendment-r2",
+            "source_commit": "150629aba9059fe627ca395d49489f139fb017db",
+            "v9_m1_commit": "6c87f66a9ea602c96d4fe8bfc97728d0513b157f",
+            "v81_baseline_commit": "4d891c7500cfb4c8110f276038455bc62765ef3b",
+            "partition": partition_name,
+            "sampling_design": "stratified_deterministic_grid",
+            "master_entropy": int(self.master_entropy),
+            "partition_index": partition_index,
+            "seed_start": seed_start,
+            "seed_stop_exclusive": seed_start + seeds_per_scenario,
+            "seeds_per_scenario": seeds_per_scenario,
+            "planned_episodes": total_episodes,
+            "num_scenarios": n_scen,
+            "scenario_catalog": [s.name for s in scenarios],
+            "target_mixture_weights_rational": {s.name: "1/12" for s in scenarios},
+            "target_mixture_weights_float": {s.name: 1.0 / 12.0 for s in scenarios},
+            "realized_scenario_counts": counts,
+            "episodes_sha256": episodes_sha256,
+            "episodes": episodes,
+        }
+
+        canon_bytes = json.dumps(
+            {k: v for k, v in payload.items() if k != "integrity_sha256"},
+            sort_keys=True,
+            indent=2,
+        ).encode("utf-8")
+        payload["integrity_sha256"] = hashlib.sha256(canon_bytes).hexdigest()
+        return payload
+
     def instantiate_episode_rngs(
         self,
         ep_index: int,
