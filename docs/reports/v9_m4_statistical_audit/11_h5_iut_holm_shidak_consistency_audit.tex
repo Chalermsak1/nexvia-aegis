@@ -1,0 +1,147 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[margin=2.0cm]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb,amsfonts,amsthm,mathtools}
+\usepackage{booktabs,tabularx,colortbl,array,multirow}
+\usepackage[table]{xcolor}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{microtype}
+\usepackage{hyperref}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    citecolor=blue!70!black,
+    urlcolor=blue!70!black
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\footnotesize \textbf{NEXVIA AEGIS V9-M4 Statistical Audit}}
+\lhead{\footnotesize H5 IUT / Holm--Šidák Consistency Audit}
+\rfoot{\footnotesize Page \thepage}
+\lfoot{\footnotesize Document ID: AEGIS-V9-M4-AUD-11}
+
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{NEXVIA AEGIS V9-M4 Statistical Consistency Audit}}\\[6pt]
+    {\Large \textbf{Narrow Verification of the Preregistered H5 Berger Intersection--Union Test,}}\\[3pt]
+    {\Large \textbf{the Holm--Šidák Step-Down Procedure, and Synthetic Boundary Cases}}\\[10pt]
+    \textbf{Autonomous Verification Subsystem (Google DeepMind Antigravity)}\\
+    \textit{Git Branch: v9.0-runtime-assurance \quad $\cdot$ \quad Baseline Commit: ffa8acf \quad $\cdot$ \quad Date: October 25, 2026}\\[12pt]
+\end{center}
+
+\noindent\fbox{
+\parbox{0.97\textwidth}{
+\textbf{CRITICAL NON-AUTHORIZATION DIRECTIVE:}\\
+This document reports an independent audit of the statistical and algorithmic interaction between the Berger Intersection--Union Test (IUT) and the Holm--Šidák step-down procedure in NEXVIA AEGIS V9-M4. \textbf{This document does NOT constitute authorization to execute V9-M4.} No real holdout manifests or episode data have been generated, loaded, or inspected. The reserved holdout seed blocks ($73000..74439$ and $75000..75119$) remain completely untouched and uninstantiated. All analyses are based solely on synthetic fixtures, mathematical derivations, and unit test suites.
+}
+}
+
+\vspace{10pt}
+
+\begin{abstract}
+\noindent This audit evaluates the theoretical fidelity, mathematical correctness, and algorithmic implementation of Hypothesis $H_5$ (Worst-Case Scenario Safety Envelope) in Milestone V9-M4 of NEXVIA AEGIS. Specifically, we investigate the interaction between the global Intersection--Union Test (IUT) of Berger (1982), the Holm--Šidák step-down multiplicity procedure, and synthetic boundary test fixtures. We establish that: (1)~the authoritative protocol preregisters $H_5$ as a single global conjunctive claim tested via unadjusted component tests at nominal level $\alpha = 0.05$, which mathematically bounds global Type~I error at $\alpha \le 0.05$ without multiplicity penalty; (2)~Holm--Šidák correction serves as an auxiliary procedure for simultaneous confidence intervals and individual scenario-level claims; (3)~an algorithmic defect in \texttt{experiments/v9\_evaluate\_holdout.py} that performed elementwise threshold comparisons without sequential stopping was identified and resolved; (4)~comprehensive verification across five synthetic boundary cases (Cases A--E) confirms exact agreement between implementation and theory. Based on this evidence, the audit determination is \textbf{H5\_CONSISTENCY\_CONFIRMED\_WITH\_QUALIFICATIONS}.
+\end{abstract}
+
+\vspace{6pt}
+\noindent \textbf{Keywords:} Intersection--Union Test, Holm--Šidák Step-Down, Multiple Testing, Familywise Error Rate, Exact Binomial Test, Confirmatory Holdout.
+
+\section{Authoritative Specification Audit}
+
+\subsection{Protocol Definition}
+The preregistered specification for Hypothesis $H_5$ is documented in \texttt{docs/v9\_experiment\_protocol.md} (Section~3.1.1, Item~5, and Section~3.1.2):
+\begin{quote}
+\textit{``Report simultaneous 95\% one-sided Clopper--Pearson bounds across all 12 scenarios using Šidák allocation $\delta_{\mathrm{Šidák}} = 1 - 0.95^{1/12} \approx 0.004265$ (and Holm step-down) for both $R_{\mathrm{inc},s}$ and $R_{\mathrm{sel},s}$ (explicitly marking $M_s = 0$ as \texttt{UNDEFINED}), plus Berger's Intersection--Union test ($\max_{s \in \mathcal{S}_{12}} p_{\mathrm{inc},s} \le 0.05$) for worst-case unconditional incidence $\max_{s \in \mathcal{S}_{12}} R_{\mathrm{inc},s}(\hat{\pi}) \le 0.05$.''}
+\end{quote}
+The global confirmatory objective is a single conjunctive claim across all 12 operational scenarios $\mathcal{S}_{12}$:
+\begin{equation}
+H_{0,5}: \bigcup_{s \in \mathcal{S}_{12}} \left\{ R_{\mathrm{inc}, s} > 0.05 \right\} \quad \text{versus} \quad H_{1,5}: \bigcap_{s \in \mathcal{S}_{12}} \left\{ R_{\mathrm{inc}, s} \le 0.05 \right\}
+\end{equation}
+
+\subsection{Inferential Foundations: Berger (1982) Intersection--Union Principle}
+Let $R_s$ denote the critical rejection region for component null hypothesis $H_{0,5,s}$ at significance level $\alpha$. Under the intersection-union formulation of Berger (1982), the global null hypothesis $H_{0,5}$ is rejected in favor of $H_{1,5}$ if and only if every component null hypothesis is rejected:
+\begin{equation}
+R = \bigcap_{s=1}^{12} R_s
+\end{equation}
+The global Type~I error probability is bounded by:
+\begin{equation}
+\sup_{\theta \in H_{0,5}} P_\theta(R) = \sup_{s=1,\dots,12} \sup_{\theta \in H_{0,5,s}} P_\theta\left(\bigcap_{j=1}^{12} R_j\right) \le \sup_{s=1,\dots,12} \sup_{\theta \in H_{0,5,s}} P_\theta(R_s) \le \alpha
+\end{equation}
+Because the intersection of rejection regions is a subset of any individual rejection region, testing each component hypothesis at the unadjusted nominal significance level $\alpha = 0.05$ guarantees that the overall familywise Type~I error of the global conjunctive test is $\le 0.05$. Applying multiplicity adjustments (such as Bonferroni or Holm--Šidák) to the component tests of an IUT is mathematically invalid and introduces severe conservatism.
+
+\subsection{The Role of Holm--Šidák Step-Down}
+The Holm--Šidák step-down procedure is preregistered for an entirely distinct purpose: \textbf{controlling the Familywise Error Rate (FWER) across individual scenario-level claims}. When an analyst wishes to assert that a specific scenario $s$ satisfies the safety bound independently of the other eleven scenarios, individual multiplicity correction is required. The step-down thresholds are:
+\begin{equation}
+\alpha_{(r)} = 1 - (1 - \alpha)^{1 / (K - r + 1)}, \quad r = 1, \dots, K \quad (K = 12, \ \alpha = 0.05)
+\end{equation}
+A scenario is certified under FWER control if and only if all ordered $p$-values up to its rank satisfy $p_{(j)} \le \alpha_{(j)}$.
+
+\section{Implementation Logic and Bug Remediation}
+
+\subsection{Evaluation Pipeline Trace}
+In \texttt{experiments/v9\_evaluate\_holdout.py}, \texttt{evaluate\_scenario\_holdout} performs the following exact sequence:
+\begin{enumerate}
+    \item Computes exact binomial CDF $p$-values on $N_s = 120$: $p_{\mathrm{inc}, s} = F_{\operatorname{Bin}(120, 0.05)}(FS_s)$.
+    \item Evaluates the global Berger IUT: \texttt{berger\_intersection\_union\_test(p\_values, alpha=0.05)}, which evaluates $\max_{s} p_{\mathrm{inc}, s} \le 0.05$.
+    \item Assigns overall status: \texttt{"CONFIRMATORY\_PASS\_IUT"} if $\max p \le 0.05$, else \texttt{"RETAIN\_SAFETY\_NULL"}.
+    \item Evaluates auxiliary Holm--Šidák step-down to compute \texttt{holm\_shidak\_rejections\_count}.
+\end{enumerate}
+
+\subsection{Remediation of the Step-Down Loop}
+Prior to this audit, line~895 computed rejections using an elementwise list comprehension:
+\begin{verbatim}
+    holm_rejections = [bool(p <= thresh) for p, thresh in zip(sorted_p, holm_thresholds)]
+\end{verbatim}
+This violated the sequentially rejective principle of Holm step-down by failing to stop when a test failed to reject. The implementation was corrected to:
+\begin{verbatim}
+    holm_rejections: list[bool] = []
+    stopped = False
+    for p, thresh in zip(sorted_p, holm_thresholds):
+        if not stopped and p <= thresh:
+            holm_rejections.append(True)
+        else:
+            stopped = True
+            holm_rejections.append(False)
+\end{verbatim}
+This guarantees that if $p_{(j)} > \alpha_{(j)}$, testing halts immediately, and zero subsequent hypotheses are rejected.
+
+\section{Boundary Audit Across Synthetic Cases A--E}
+
+Table~\ref{tab:cases_audit} summarizes the theoretical and empirical evaluation of the five boundary configurations in \texttt{test\_20}.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Systematic Audit of Synthetic Boundary Cases for $H_5$ ($N_s = 120$ per scenario)}
+\label{tab:cases_audit}
+\begin{tabularx}{\textwidth}{llXcccc}
+\toprule
+\textbf{Case} & \textbf{Configuration} & \textbf{Ordered $p$-Values} & \textbf{Step-Down Stop} & \textbf{H-Š Rej.} & \textbf{Berger IUT} & \textbf{Overall Status} \\
+\midrule
+\textbf{A} & All 12 $FS = 0$ & $p_{(1..12)} = 0.002122$ & No stop (all $\le \alpha_{(j)}$) & 12 / 12 & Pass & \texttt{CONFIRMATORY\_PASS\_IUT} \\
+\textbf{B} & All 12 $FS = 1$ & $p_{(1..12)} = 0.015523$ & Step 1 ($0.015523 > 0.004265$) & 0 / 12 & Pass & \texttt{CONFIRMATORY\_PASS\_IUT} \\
+\textbf{C} & 6 $FS=0$, 6 $FS=1$ & $p_{(1..6)}=0.002122, p_{(7..12)}=0.015523$ & Step 7 ($0.015523 > 0.008512$) & 6 / 12 & Pass & \texttt{CONFIRMATORY\_PASS\_IUT} \\
+\textbf{D} & 11 $FS=0$, 1 $FS=2$ & $p_{(1..11)}=0.002122, p_{(12)}=0.057505$ & Step 12 ($0.057505 > 0.050000$) & 11 / 12 & Fail & \texttt{RETAIN\_SAFETY\_NULL} \\
+\textbf{E} & 1 $FS=0$, 11 $FS=1$ & $p_{(1)}=0.002122, p_{(2..12)}=0.015523$ & Step 2 ($0.015523 > 0.004652$) & 1 / 12 & Pass & \texttt{CONFIRMATORY\_PASS\_IUT} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\noindent \textbf{Analysis of Case B:} Case~B perfectly illustrates the dual inferential structure. Because $FS \le 1$ for all scenarios, every component $p$-value ($0.015523$) is strictly below the unadjusted threshold of $0.05$. Thus, the global Berger IUT is satisfied and the overall status is \texttt{CONFIRMATORY\_PASS\_IUT}. However, because $p_{(1)} > \alpha_{(1)} = 0.004265$, zero scenarios are certified as individual post-hoc claims under FWER control.
+
+\section{Regression Verification and Conclusion}
+All 29 unit tests in \texttt{tests/test\_v9\_holdout\_preflight.py} and all 140 regression tests in the repository pass with 100\% success.
+
+\begin{center}
+\large \textbf{AUDIT DETERMINATION: H5\_CONSISTENCY\_CONFIRMED\_WITH\_QUALIFICATIONS}
+\end{center}
+
+\noindent \textbf{Qualifications:} (1)~The sequential stopping bug in \texttt{evaluate\_scenario\_holdout} has been resolved; (2)~research publications must clearly distinguish the global conjunctive IUT status from scenario-level FWER claims; (3)~no protocol amendment is needed because the implementation matches the registered decision rule.
+
+\end{document}

@@ -140,6 +140,16 @@
       "pdf_size_bytes": 95349,
       "pdf_validation": "PASS",
       "status": "FINAL"
+    },
+    "phase_11": {
+      "title": "H5 IUT and Holm-Šidák Consistency Audit",
+      "markdown_file": "docs/reports/v9_m4_statistical_audit/11_h5_iut_holm_shidak_consistency_audit.md",
+      "markdown_sha256": "8094bca57a4abd1a601f0daec824bad4fc63709849c958cf1b6ffb8377f4d879",
+      "pdf_file": "docs/reports/v9_m4_statistical_audit/11_h5_iut_holm_shidak_consistency_audit.pdf",
+      "pdf_sha256": "ed7cb02057bc8751d0936f07aea7784e351481559a40cebeef6a897e151b910b",
+      "pdf_size_bytes": 102174,
+      "pdf_validation": "PASS",
+      "status": "FINAL"
     }
   }
 }

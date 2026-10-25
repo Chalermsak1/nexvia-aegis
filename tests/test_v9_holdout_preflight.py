@@ -677,52 +677,72 @@ def test_19_h5_outcome_algebra_rejects_zero_accepted_one_fs():
 
 def test_20_h5_iut_aggregation_all_pass_vs_one_fail():
     """
-    M4-F02 Boundary 8 & 9: Berger IUT overall aggregation:
-    - All 12 scenarios pass (p_s <= 0.05) -> CONFIRMATORY_PASS_IUT.
-    - 11 scenarios pass, 1 fails (p_s > 0.05) -> RETAIN_SAFETY_NULL.
+    M4-F02 Boundary 8 & 9 & H5 Consistency Audit:
+    Comprehensive verification of Cases A, B, C, D, E covering the interaction between
+    the global Berger IUT conjunction (unadjusted max p_s <= 0.05) and the auxiliary
+    sequentially rejective Holm-Šidák step-down procedure.
     """
-    # Case A: All scenarios pass (FS_s = 1 in all 12 scenarios -> p_s ~ 0.015522 <= 0.05)
-    records_all_pass: list[dict[str, Any]] = []
     scenarios = build_v9_s12_scenarios()
-    ep_idx = 0
-    for scen in scenarios:
-        for s in range(120):
-            rec = make_synthetic_episode_record(
-                episode_index=ep_idx,
-                seed=99000 + ep_idx,
-                scenario=scen.name,
-                scenario_index=scen.index,
-                accepted=True,
-                outcome="FALSE_SUCCESS" if s == 0 else "TERMINAL_SUCCESS",
-            )
-            records_all_pass.append(rec)
-            ep_idx += 1
 
-    res_all_pass = evaluate_scenario_holdout(records=records_all_pass)
-    assert res_all_pass["h5_worst_case_safety"]["berger_iut_passed"] is True
-    assert res_all_pass["h5_worst_case_safety"]["status"] == "CONFIRMATORY_PASS_IUT"
+    def build_stratified_fixture(fs_counts_per_scen: list[int]) -> list[dict[str, Any]]:
+        records: list[dict[str, Any]] = []
+        ep_idx = 0
+        for scen_idx, scen in enumerate(scenarios):
+            target_fs = fs_counts_per_scen[scen_idx]
+            for s in range(120):
+                outcome = "FALSE_SUCCESS" if s < target_fs else "TERMINAL_SUCCESS"
+                rec = make_synthetic_episode_record(
+                    episode_index=ep_idx,
+                    seed=99000 + ep_idx,
+                    scenario=scen.name,
+                    scenario_index=scen.index,
+                    accepted=True,
+                    outcome=outcome,
+                )
+                records.append(rec)
+                ep_idx += 1
+        return records
 
-    # Case B: 11 pass (FS_s = 0), 1 fails (FS_s = 2 -> p_s ~ 0.057398 > 0.05)
-    records_one_fail: list[dict[str, Any]] = []
-    ep_idx = 0
-    for scen in scenarios:
-        for s in range(120):
-            is_fail_scen = scen.name == "OUTLIER_BURSTS"
-            outcome = "FALSE_SUCCESS" if (is_fail_scen and s < 2) else "TERMINAL_SUCCESS"
-            rec = make_synthetic_episode_record(
-                episode_index=ep_idx,
-                seed=99000 + ep_idx,
-                scenario=scen.name,
-                scenario_index=scen.index,
-                accepted=True,
-                outcome=outcome,
-            )
-            records_one_fail.append(rec)
-            ep_idx += 1
+    # Case A: All 12 scenarios have FS = 0 (p_s = 0.002122 <= 0.05)
+    # Both Berger IUT passes AND all 12 scenarios pass Holm-Šidák step-down.
+    res_a = evaluate_scenario_holdout(records=build_stratified_fixture([0] * 12))
+    assert res_a["h5_worst_case_safety"]["berger_iut_passed"] is True
+    assert res_a["h5_worst_case_safety"]["status"] == "CONFIRMATORY_PASS_IUT"
+    assert res_a["h5_worst_case_safety"]["holm_shidak_rejections_count"] == 12
 
-    res_one_fail = evaluate_scenario_holdout(records=records_one_fail)
-    assert res_one_fail["h5_worst_case_safety"]["berger_iut_passed"] is False
-    assert res_one_fail["h5_worst_case_safety"]["status"] == "RETAIN_SAFETY_NULL"
+    # Case B: All 12 scenarios have FS = 1 (p_s = 0.015527 <= 0.05)
+    # Global Berger IUT passes (max p = 0.015527 <= 0.05), BUT Holm-Šidák step-down
+    # stops at step 1 because p_(1) = 0.015527 > alpha_1 = 0.004265 (0 rejections).
+    res_b = evaluate_scenario_holdout(records=build_stratified_fixture([1] * 12))
+    assert res_b["h5_worst_case_safety"]["berger_iut_passed"] is True
+    assert res_b["h5_worst_case_safety"]["status"] == "CONFIRMATORY_PASS_IUT"
+    assert res_b["h5_worst_case_safety"]["holm_shidak_rejections_count"] == 0
+
+    # Case C: 6 scenarios have FS = 0, 6 scenarios have FS = 1
+    # Global Berger IUT passes (max p = 0.015527 <= 0.05).
+    # Holm-Šidák step-down rejects the first 6 (p=0.002122 <= alpha_r for r<=6)
+    # and stops at r=7 (p=0.015527 > alpha_7 = 0.008512).
+    res_c = evaluate_scenario_holdout(records=build_stratified_fixture([0] * 6 + [1] * 6))
+    assert res_c["h5_worst_case_safety"]["berger_iut_passed"] is True
+    assert res_c["h5_worst_case_safety"]["status"] == "CONFIRMATORY_PASS_IUT"
+    assert res_c["h5_worst_case_safety"]["holm_shidak_rejections_count"] == 6
+
+    # Case D: 11 scenarios have FS = 0, 1 scenario has FS = 2 (p = 0.057505 > 0.05)
+    # Global Berger IUT fails (max p = 0.057505 > 0.05 -> RETAIN_SAFETY_NULL).
+    # Holm-Šidák step-down rejects the first 11 scenarios and stops at r=12.
+    res_d = evaluate_scenario_holdout(records=build_stratified_fixture([0] * 11 + [2]))
+    assert res_d["h5_worst_case_safety"]["berger_iut_passed"] is False
+    assert res_d["h5_worst_case_safety"]["status"] == "RETAIN_SAFETY_NULL"
+    assert res_d["h5_worst_case_safety"]["holm_shidak_rejections_count"] == 11
+
+    # Case E: 1 scenario has FS = 0, 11 scenarios have FS = 1
+    # Global Berger IUT passes (max p = 0.015527 <= 0.05).
+    # Holm-Šidák step-down rejects exactly 1 scenario (p_(1) = 0.002122 <= alpha_1 = 0.004265)
+    # and stops at r=2 (p_(2) = 0.015527 > alpha_2 = 0.004652).
+    res_e = evaluate_scenario_holdout(records=build_stratified_fixture([0] * 1 + [1] * 11))
+    assert res_e["h5_worst_case_safety"]["berger_iut_passed"] is True
+    assert res_e["h5_worst_case_safety"]["status"] == "CONFIRMATORY_PASS_IUT"
+    assert res_e["h5_worst_case_safety"]["holm_shidak_rejections_count"] == 1
 
 
 def test_21_h5_holm_shidak_step_down_thresholds():

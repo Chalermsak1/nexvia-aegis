@@ -892,7 +892,15 @@ def evaluate_scenario_holdout(
     # Hypothesis H_5: Worst-Case Scenario Safety via Berger IUT and Holm-Šidák
     holm_thresholds = holm_shidak_adjusted_thresholds(len(p_values_for_iut), alpha=0.05)
     sorted_p = sorted(p_values_for_iut)
-    holm_rejections = [bool(p <= thresh) for p, thresh in zip(sorted_p, holm_thresholds)]
+    # Sequentially rejective step-down: stop at the first non-rejection
+    holm_rejections: list[bool] = []
+    stopped = False
+    for p, thresh in zip(sorted_p, holm_thresholds):
+        if not stopped and p <= thresh:
+            holm_rejections.append(True)
+        else:
+            stopped = True
+            holm_rejections.append(False)
     iut_passed = berger_intersection_union_test(p_values_for_iut, alpha=0.05)
     h5_status = "CONFIRMATORY_PASS_IUT" if iut_passed else "RETAIN_SAFETY_NULL"
 
