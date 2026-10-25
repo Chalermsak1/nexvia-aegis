@@ -347,6 +347,92 @@ def verify_episode_records_integrity(
         verify_holdout_outcome_algebra(rec)
 
 
+def align_and_pair_records(
+    policy_records: Sequence[Mapping[str, Any]],
+    baseline_records: Sequence[Mapping[str, Any]],
+    *,
+    baseline_label: str = "baseline",
+    require_exact_length: bool = True,
+) -> list[tuple[Mapping[str, Any], Mapping[str, Any]]]:
+    """
+    Strictly aligns and pairs policy and baseline episode records using authoritative identity keys:
+    (seed: int, scenario: str).
+
+    Enforces:
+    1. Pairing keys 'seed' and 'scenario' must be present, non-empty, and correctly typed in both record sets.
+    2. No duplicate pairing keys in either policy or baseline records.
+    3. If require_exact_length is True, len(policy_records) must equal len(baseline_records).
+    4. Exactly one corresponding baseline record for every policy record (bijective keyed match).
+    5. Rejects any missing, unmatchable, or extraneous records.
+    """
+    if require_exact_length and len(policy_records) != len(baseline_records):
+        raise ValueError(
+            f"Record count mismatch in paired comparison vs {baseline_label}: "
+            f"policy has {len(policy_records)} records, baseline has {len(baseline_records)} records."
+        )
+
+    # 1. Parse and validate policy keys
+    policy_keys: set[tuple[int, str]] = set()
+    for i, r in enumerate(policy_records):
+        seed_raw = r.get("seed")
+        if seed_raw is None:
+            raise ValueError(f"Policy record index {i} is missing required identity key 'seed'.")
+        try:
+            seed = int(seed_raw)
+        except (ValueError, TypeError) as err:
+            raise ValueError(f"Policy record index {i} has invalid integer seed '{seed_raw}': {err}") from err
+
+        scen_raw = r.get("scenario")
+        if scen_raw is None or not str(scen_raw).strip():
+            raise ValueError(f"Policy record index {i} is missing required identity key 'scenario'.")
+        scenario = str(scen_raw).strip()
+
+        key = (seed, scenario)
+        if key in policy_keys:
+            raise ValueError(f"Duplicate identity key (seed={seed}, scenario='{scenario}') in policy records.")
+        policy_keys.add(key)
+
+    # 2. Parse and index baseline records
+    baseline_dict: dict[tuple[int, str], Mapping[str, Any]] = {}
+    for i, r in enumerate(baseline_records):
+        seed_raw = r.get("seed")
+        if seed_raw is None:
+            raise ValueError(f"Baseline {baseline_label} record index {i} is missing required identity key 'seed'.")
+        try:
+            seed = int(seed_raw)
+        except (ValueError, TypeError) as err:
+            raise ValueError(f"Baseline {baseline_label} record index {i} has invalid integer seed '{seed_raw}': {err}") from err
+
+        scen_raw = r.get("scenario")
+        if scen_raw is None or not str(scen_raw).strip():
+            raise ValueError(f"Baseline {baseline_label} record index {i} is missing required identity key 'scenario'.")
+        scenario = str(scen_raw).strip()
+
+        key = (seed, scenario)
+        if key in baseline_dict:
+            raise ValueError(f"Duplicate identity key (seed={seed}, scenario='{scenario}') in baseline {baseline_label} records.")
+        baseline_dict[key] = r
+
+    # 3. Check for count/key mismatch
+    if len(baseline_dict) != len(policy_keys):
+        raise ValueError(
+            f"Key count mismatch in paired comparison vs {baseline_label}: "
+            f"{len(policy_keys)} unique policy keys vs {len(baseline_dict)} unique baseline keys."
+        )
+
+    # 4. Perform bijective keyed join preserving policy evaluation order
+    paired: list[tuple[Mapping[str, Any], Mapping[str, Any]]] = []
+    for r_pi in policy_records:
+        key = (int(r_pi["seed"]), str(r_pi["scenario"]).strip())
+        if key not in baseline_dict:
+            raise ValueError(
+                f"Missing baseline {baseline_label} record for episode with seed={key[0]}, scenario='{key[1]}'."
+            )
+        paired.append((r_pi, baseline_dict[key]))
+
+    return paired
+
+
 # ==============================================================================
 # Statistical Estimators & Hypothesis Testing
 # ==============================================================================
@@ -552,30 +638,32 @@ def evaluate_mixture_holdout(
     h2_passed = False
     pooled_ucb95_fs = clopper_pearson_one_sided_ucb(fs, n, delta=0.05)
 
-    if v8_records is not None and len(v8_records) == n:
-        n11 = sum(1 for r, v in zip(records, v8_records) if int(r["false_success"]) == 1 and int(v["false_success"]) == 1)
-        n10 = sum(1 for r, v in zip(records, v8_records) if int(r["false_success"]) == 1 and int(v["false_success"]) == 0)
-        n01 = sum(1 for r, v in zip(records, v8_records) if int(r["false_success"]) == 0 and int(v["false_success"]) == 1)
-        n00 = sum(1 for r, v in zip(records, v8_records) if int(r["false_success"]) == 0 and int(v["false_success"]) == 0)
+    if v8_records is not None:
+        paired_v8 = align_and_pair_records(records, v8_records, baseline_label="v8_martingale")
+        n11 = sum(1 for r, v in paired_v8 if int(r["false_success"]) == 1 and int(v["false_success"]) == 1)
+        n10 = sum(1 for r, v in paired_v8 if int(r["false_success"]) == 1 and int(v["false_success"]) == 0)
+        n01 = sum(1 for r, v in paired_v8 if int(r["false_success"]) == 0 and int(v["false_success"]) == 1)
+        n00 = sum(1 for r, v in paired_v8 if int(r["false_success"]) == 0 and int(v["false_success"]) == 0)
         mcnemar_p_v8 = mcnemar_exact_test(n10, n01)
         newcombe_ci_v8 = newcombe_paired_difference_ci(n11, n10, n01, n00)
         h2_results["vs_v8_martingale"] = {
-            "n_matched": n,
+            "n_matched": len(paired_v8),
             "table_n11_n10_n01_n00": [n11, n10, n01, n00],
             "mcnemar_exact_p": mcnemar_p_v8,
             "newcombe_diff_ci95": [float(newcombe_ci_v8[0]), float(newcombe_ci_v8[1])],
             "significant_reduction": bool(n10 < n01 and mcnemar_p_v8 < 0.05),
         }
 
-    if v7_records is not None and len(v7_records) == n:
-        n11_7 = sum(1 for r, v in zip(records, v7_records) if int(r["false_success"]) == 1 and int(v["false_success"]) == 1)
-        n10_7 = sum(1 for r, v in zip(records, v7_records) if int(r["false_success"]) == 1 and int(v["false_success"]) == 0)
-        n01_7 = sum(1 for r, v in zip(records, v7_records) if int(r["false_success"]) == 0 and int(v["false_success"]) == 1)
-        n00_7 = sum(1 for r, v in zip(records, v7_records) if int(r["false_success"]) == 0 and int(v["false_success"]) == 0)
+    if v7_records is not None:
+        paired_v7 = align_and_pair_records(records, v7_records, baseline_label="v7_mpc")
+        n11_7 = sum(1 for r, v in paired_v7 if int(r["false_success"]) == 1 and int(v["false_success"]) == 1)
+        n10_7 = sum(1 for r, v in paired_v7 if int(r["false_success"]) == 1 and int(v["false_success"]) == 0)
+        n01_7 = sum(1 for r, v in paired_v7 if int(r["false_success"]) == 0 and int(v["false_success"]) == 1)
+        n00_7 = sum(1 for r, v in paired_v7 if int(r["false_success"]) == 0 and int(v["false_success"]) == 0)
         mcnemar_p_v7 = mcnemar_exact_test(n10_7, n01_7)
         newcombe_ci_v7 = newcombe_paired_difference_ci(n11_7, n10_7, n01_7, n00_7)
         h2_results["vs_v7_mpc"] = {
-            "n_matched": n,
+            "n_matched": len(paired_v7),
             "table_n11_n10_n01_n00": [n11_7, n10_7, n01_7, n00_7],
             "mcnemar_exact_p": mcnemar_p_v7,
             "newcombe_diff_ci95": [float(newcombe_ci_v7[0]), float(newcombe_ci_v7[1])],
@@ -655,30 +743,49 @@ def evaluate_mixture_holdout(
 # ==============================================================================
 
 def evaluate_scenario_holdout(
-    *,
     records: Sequence[Mapping[str, Any]],
-    cand_params: V9CandidateParams,
+    *,
+    cand_params: V9CandidateParams | None = None,
     v7_records: Sequence[Mapping[str, Any]] | None = None,
+    expected_seeds_per_scenario: int = TEST_SCEN_SEEDS_PER_SCENARIO,
 ) -> dict[str, Any]:
     """
     Executes the confirmatory statistical analysis for the scenario holdout partition D_test^scen:
     - Produces exact 12-scenario stratified breakdown table.
+    - Validates that scenario episode count reconciles with the registered scenario design.
     - Handles undefined selective risk (R_sel = UNDEFINED when M_s = 0) fail-closed.
-    - Tests H_3: Operational Utility & TSR Noninferiority vs V7 (1-sided 95% LCB > -0.05 on S_10, TSR_nominal >= 0.94).
-    - Tests H_5: Worst-Case Scenario Safety via Holm-Šidák simultaneous bounds + Berger IUT.
+    - Tests H_3: Operational Utility & TSR Noninferiority vs V7 (1-sided 95% LCB > -0.05 on S_10, TSR_nominal >= 0.94)
+      using strict paired-record identity alignment.
+    - Tests H_5: Worst-Case Scenario Safety via Holm-Šidák simultaneous bounds + Berger IUT on unconditional incidence.
     """
-    verify_episode_records_integrity(records, len(records))
+    if expected_seeds_per_scenario <= 0:
+        raise ValueError(
+            f"Invalid denominator: expected_seeds_per_scenario must be positive, got {expected_seeds_per_scenario}."
+        )
+
     scenarios = build_v9_s12_scenarios()
-    scen_map = {s.name: s for s in scenarios}
+    expected_total = len(scenarios) * expected_seeds_per_scenario
+    if len(records) != expected_total:
+        raise ValueError(
+            f"Stratified scenario record count mismatch: expected {expected_total} "
+            f"({len(scenarios)} scenarios x {expected_seeds_per_scenario} seeds), got {len(records)}."
+        )
+
+    verify_episode_records_integrity(records, len(records))
 
     breakdown_rows: list[dict[str, Any]] = []
     p_values_for_iut: list[float] = []
 
+    # Sidak alpha for 12 simultaneous hypotheses: 1 - (1 - 0.05)**(1/12)
+    delta_shidak = 1.0 - (1.0 - 0.05) ** (1.0 / len(scenarios))
+
     for scen in scenarios:
-        s_eps = [r for r in records if str(r.get("scenario", "")) == scen.name]
+        s_eps = [r for r in records if str(r.get("scenario", "")).strip() == scen.name]
         n_s = len(s_eps)
-        if n_s == 0:
-            continue
+        if n_s != expected_seeds_per_scenario:
+            raise ValueError(
+                f"Scenario '{scen.name}' episode count mismatch: expected {expected_seeds_per_scenario}, got {n_s}."
+            )
 
         m_s = sum(1 for r in s_eps if int(r["accepted"]) == 1)
         ts_s = sum(1 for r in s_eps if int(r["true_success"]) == 1)
@@ -691,18 +798,29 @@ def evaluate_scenario_holdout(
         tsr_s = ts_s / n_s
         r_inc_s = fs_s / n_s
 
+        # Unconditional false-success incidence estimand:
+        # H0,5,s: R_inc,s > 0.05 vs H1,5,s: R_inc,s <= 0.05
+        # Test statistic FS_s ~ Bin(N_s, 0.05) under null boundary
+        p_inc_s = float(binom.cdf(fs_s, n_s, 0.05))
+        ucb95_inc_s = clopper_pearson_one_sided_ucb(fs_s, n_s, delta=0.05)
+        ucb_shidak_inc_s = clopper_pearson_one_sided_ucb(fs_s, n_s, delta=delta_shidak)
+
+        # H5 IUT evaluates unconditional incidence across all 12 scenarios
+        p_values_for_iut.append(p_inc_s)
+
+        # Selective risk estimand (defined only when M_s > 0):
         if m_s > 0:
             r_sel_s = fs_s / m_s
             r_sel_status = "DEFINED"
-            ucb95_s = clopper_pearson_one_sided_ucb(fs_s, m_s, delta=0.05)
-            p_val_s = float(binom.cdf(fs_s, m_s, 0.05))
+            ucb95_sel_s = clopper_pearson_one_sided_ucb(fs_s, m_s, delta=0.05)
+            ucb_shidak_sel_s = clopper_pearson_one_sided_ucb(fs_s, m_s, delta=delta_shidak)
+            p_sel_s = float(binom.cdf(fs_s, m_s, 0.05))
         else:
             r_sel_s = float("nan")
             r_sel_status = "UNDEFINED"
-            ucb95_s = float("nan")
-            p_val_s = 1.0  # conservative p-value for zero coverage
-
-        p_values_for_iut.append(p_val_s)
+            ucb95_sel_s = float("nan")
+            ucb_shidak_sel_s = float("nan")
+            p_sel_s = float("nan")
 
         mean_steps = float(np.mean([float(r["steps"]) for r in s_eps]))
         mean_step_ms = float(np.mean([float(r.get("mean_step_ms", 0.0)) for r in s_eps]))
@@ -725,10 +843,15 @@ def evaluate_scenario_holdout(
             "coverage": f"{cov_s:.6f}",
             "tsr": f"{tsr_s:.6f}",
             "r_inc": f"{r_inc_s:.6f}",
+            "r_inc_ucb95": f"{ucb95_inc_s:.6f}",
+            "r_inc_ucb_shidak": f"{ucb_shidak_inc_s:.6f}",
             "r_sel": f"{r_sel_s:.6f}" if not math.isnan(r_sel_s) else "UNDEFINED",
             "r_sel_status": r_sel_status,
-            "r_sel_ucb95": f"{ucb95_s:.6f}" if not math.isnan(ucb95_s) else "UNDEFINED",
-            "p_value_binomial_005": f"{p_val_s:.6f}",
+            "r_sel_ucb95": f"{ucb95_sel_s:.6f}" if not math.isnan(ucb95_sel_s) else "UNDEFINED",
+            "r_sel_ucb_shidak": f"{ucb_shidak_sel_s:.6f}" if not math.isnan(ucb_shidak_sel_s) else "UNDEFINED",
+            "p_value_binomial_005": f"{p_inc_s:.6f}",
+            "p_value_unconditional_incidence_005": f"{p_inc_s:.6f}",
+            "p_value_selective_risk_005": f"{p_sel_s:.6f}" if not math.isnan(p_sel_s) else "UNDEFINED",
             "mean_steps": f"{mean_steps:.2f}",
             "mean_step_ms": f"{mean_step_ms:.4f}",
             "mean_distance_traveled": f"{mean_dist:.4f}",
@@ -749,11 +872,12 @@ def evaluate_scenario_holdout(
     mean_delta_tsr = float("nan")
 
     if v7_records is not None and len(v7_records) > 0:
+        paired_v7 = align_and_pair_records(records, v7_records, baseline_label="v7_mpc")
         # Evaluate matched pairs on S_10 scenarios (excluding extension scenarios)
         s10_names = {s.name for s in scenarios if s.suite == "S_10"}
         matched_diffs: list[float] = []
-        for r_pi, r_v7 in zip(records, v7_records):
-            scen_name = str(r_pi.get("scenario", ""))
+        for r_pi, r_v7 in paired_v7:
+            scen_name = str(r_pi.get("scenario", "")).strip()
             if scen_name in s10_names:
                 diff = float(int(r_pi["true_success"])) - float(int(r_v7["true_success"]))
                 matched_diffs.append(diff)
@@ -788,8 +912,9 @@ def evaluate_scenario_holdout(
         },
         "h5_worst_case_safety": {
             "hypothesis": "H_5",
-            "estimand": "Berger IUT max(p_s) <= 0.05 across all 12 scenarios",
+            "estimand": "Berger IUT max(p_inc_s) <= 0.05 on unconditional incidence R_inc,s across all 12 scenarios",
             "berger_iut_passed": iut_passed,
+            "max_p_inc": round(max(p_values_for_iut), 6) if p_values_for_iut else float("nan"),
             "holm_shidak_rejections_count": sum(holm_rejections),
             "status": h5_status,
             "passed": iut_passed,

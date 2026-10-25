@@ -31,6 +31,7 @@ from pathlib import Path
 from typing import Any
 import numpy as np
 import pytest
+from scipy.stats import binom
 
 from aegis.v9.randomization import (
     PARTITION_BRANCH_TEST_MIXTURE,
@@ -45,6 +46,8 @@ from experiments.v9_evaluate_holdout import (
     REQUIRED_EXECUTION_TOKEN,
     TEST_MIX_ALLOWED_SEEDS,
     TEST_SCEN_ALLOWED_SEEDS,
+    TEST_SCEN_SEEDS_PER_SCENARIO,
+    align_and_pair_records,
     berger_intersection_union_test,
     clopper_pearson_one_sided_ucb,
     enforce_holdout_output_directory,
@@ -149,7 +152,7 @@ def make_synthetic_mixture_dataset(n: int = 120) -> list[dict[str, Any]]:
     return records
 
 
-def make_synthetic_stratified_dataset(seeds_per_scen: int = 10) -> list[dict[str, Any]]:
+def make_synthetic_stratified_dataset(seeds_per_scen: int = 120) -> list[dict[str, Any]]:
     """Creates synthetic stratified dataset across all 12 scenarios."""
     records: list[dict[str, Any]] = []
     scenarios = build_v9_s12_scenarios()
@@ -352,7 +355,7 @@ def test_8_correct_separation_of_mixture_and_stratified_analyses():
     assert "h3_tsr_noninferiority_vs_v7" not in mix_res
 
     # Stratified evaluation evaluates H_3, H_5 and per-scenario breakdown
-    scen_records = make_synthetic_stratified_dataset(seeds_per_scen=10)
+    scen_records = make_synthetic_stratified_dataset(seeds_per_scen=120)
     scen_res = evaluate_scenario_holdout(records=scen_records, cand_params=cand_params)
     assert "h3_tsr_noninferiority_vs_v7" in scen_res
     assert "h5_worst_case_safety" in scen_res
@@ -475,3 +478,450 @@ def test_14_preflight_checks_read_only_status():
     assert checks["policy_id"] == "V9_CAND_1_TIER1_STRICTEST"
     assert checks["certified"] is True
     assert checks["real_holdouts_executed"] is False
+
+
+# ==============================================================================
+# M4-F02 Remediation Tests: H5 Unconditional Incidence & Scenario Safety
+# ==============================================================================
+
+def test_15_h5_unconditional_incidence_zero_accepted_zero_fs():
+    """
+    M4-F02 Boundary 1: N_s = 120, FS_s = 0, M_s = 0 (all 120 episodes abstained).
+    The unconditional-incidence test uses all 120 episodes and does not assign p = 1.0
+    solely because every episode was abstained. Selective risk must remain UNDEFINED.
+    """
+    scenarios = build_v9_s12_scenarios()
+    records: list[dict[str, Any]] = []
+    ep_idx = 0
+    for scen in scenarios:
+        for s in range(120):
+            # All abstained for all scenarios
+            rec = make_synthetic_episode_record(
+                episode_index=ep_idx,
+                seed=99000 + ep_idx,
+                scenario=scen.name,
+                scenario_index=scen.index,
+                accepted=False,
+                outcome="ABSTAINED",
+            )
+            records.append(rec)
+            ep_idx += 1
+
+    summary = evaluate_scenario_holdout(records=records)
+    assert len(summary["scenario_breakdown"]) == 12
+
+    # Theoretical exact binomial p-value under null boundary p0 = 0.05:
+    # P(Bin(120, 0.05) <= 0) = (0.95)^120
+    expected_p = float(binom.cdf(0, 120, 0.05))
+    assert math.isclose(expected_p, (0.95)**120, rel_tol=1e-9)
+    assert expected_p < 0.05
+
+    for row in summary["scenario_breakdown"]:
+        assert int(row["n_episodes"]) == 120
+        assert int(row["m_accepted"]) == 0
+        assert int(row["fs_count"]) == 0
+        assert row["coverage"] == "0.000000"
+        assert row["r_inc"] == "0.000000"
+
+        # Crucial M4-F02 check: p-value must be ~ 0.002122, NOT 1.0!
+        p_val = float(row["p_value_binomial_005"])
+        assert math.isclose(p_val, expected_p, abs_tol=1e-5)
+        assert p_val < 0.05
+
+        # Selective risk must remain UNDEFINED, not 0.0
+        assert row["r_sel"] == "UNDEFINED"
+        assert row["r_sel_status"] == "UNDEFINED"
+        assert row["r_sel_ucb95"] == "UNDEFINED"
+        assert row["r_sel_ucb_shidak"] == "UNDEFINED"
+
+    # All individual components pass -> Berger IUT must pass
+    assert summary["h5_worst_case_safety"]["berger_iut_passed"] is True
+    assert summary["h5_worst_case_safety"]["status"] == "CONFIRMATORY_PASS_IUT"
+
+
+def test_16_h5_unconditional_incidence_independent_of_accepted_count():
+    """
+    M4-F02 Boundary 2: N_s = 120, FS_s = 0, M_s > 0 vs M_s = 0.
+    The H5 unconditional incidence p-value must be completely invariant to accepted count M_s
+    when FS_s = 0 and total episode count N_s = 120 are unchanged.
+    """
+    scenarios = build_v9_s12_scenarios()
+    nominal_scen = scenarios[0]
+
+    expected_p = float(binom.cdf(0, 120, 0.05))
+
+    # Test varying M_s in {0, 30, 60, 120}
+    for m_accepted in [0, 30, 60, 120]:
+        records: list[dict[str, Any]] = []
+        ep_idx = 0
+        for scen in scenarios:
+            for s in range(120):
+                is_accepted = (s < m_accepted) if scen.name == nominal_scen.name else True
+                rec = make_synthetic_episode_record(
+                    episode_index=ep_idx,
+                    seed=99000 + ep_idx,
+                    scenario=scen.name,
+                    scenario_index=scen.index,
+                    accepted=is_accepted,
+                    outcome="TERMINAL_SUCCESS" if is_accepted else "ABSTAINED",
+                )
+                records.append(rec)
+                ep_idx += 1
+
+        summary = evaluate_scenario_holdout(records=records)
+        nom_row = [r for r in summary["scenario_breakdown"] if r["scenario"] == nominal_scen.name][0]
+
+        assert int(nom_row["m_accepted"]) == m_accepted
+        assert int(nom_row["fs_count"]) == 0
+        p_val = float(nom_row["p_value_binomial_005"])
+        assert math.isclose(p_val, expected_p, abs_tol=1e-5), f"Failed for m_accepted={m_accepted}"
+
+        if m_accepted == 0:
+            assert nom_row["r_sel"] == "UNDEFINED"
+            assert nom_row["r_sel_status"] == "UNDEFINED"
+        else:
+            assert nom_row["r_sel"] == "0.000000"
+            assert nom_row["r_sel_status"] == "DEFINED"
+
+
+def test_17_h5_unconditional_incidence_single_and_multiple_fs():
+    """
+    M4-F02 Boundary 3 & 4: Exact mathematical evaluation for FS_s in {0, 1, 2, 3} at N_s = 120.
+    - FS_s = 0: p = (0.95)^120 ~ 0.002122 <= 0.05 (PASS)
+    - FS_s = 1: p = (0.95)^120 + 120 * 0.05 * (0.95)^119 ~ 0.015522 <= 0.05 (PASS)
+    - FS_s = 2: p ~ 0.057398 > 0.05 (FAIL)
+    - FS_s = 3: p ~ 0.148197 > 0.05 (FAIL)
+    """
+    scenarios = build_v9_s12_scenarios()
+    target_scen = scenarios[0]
+
+    for fs_count, should_pass in [(0, True), (1, True), (2, False), (3, False)]:
+        records: list[dict[str, Any]] = []
+        ep_idx = 0
+        for scen in scenarios:
+            for s in range(120):
+                if scen.name == target_scen.name:
+                    if s < fs_count:
+                        outcome = "FALSE_SUCCESS"
+                        accepted = True
+                    else:
+                        outcome = "TERMINAL_SUCCESS"
+                        accepted = True
+                else:
+                    outcome = "TERMINAL_SUCCESS"
+                    accepted = True
+
+                rec = make_synthetic_episode_record(
+                    episode_index=ep_idx,
+                    seed=99000 + ep_idx,
+                    scenario=scen.name,
+                    scenario_index=scen.index,
+                    accepted=accepted,
+                    outcome=outcome,
+                )
+                records.append(rec)
+                ep_idx += 1
+
+        summary = evaluate_scenario_holdout(records=records)
+        target_row = [r for r in summary["scenario_breakdown"] if r["scenario"] == target_scen.name][0]
+
+        expected_p = float(binom.cdf(fs_count, 120, 0.05))
+        p_val = float(target_row["p_value_binomial_005"])
+        assert math.isclose(p_val, expected_p, abs_tol=1e-5)
+        assert (p_val <= 0.05) is should_pass
+
+
+def test_18_h5_invalid_denominator_or_inconsistent_episode_counts():
+    """
+    M4-F02 Boundary 5: Reject invalid denominator (N_s <= 0), total record count mismatch,
+    or inconsistent per-scenario episode counts.
+    """
+    records = make_synthetic_stratified_dataset(seeds_per_scen=120)
+
+    # 1. Non-positive denominator
+    with pytest.raises(ValueError, match="Invalid denominator"):
+        evaluate_scenario_holdout(records=records, expected_seeds_per_scenario=0)
+    with pytest.raises(ValueError, match="Invalid denominator"):
+        evaluate_scenario_holdout(records=records, expected_seeds_per_scenario=-5)
+
+    # 2. Total record count mismatch
+    with pytest.raises(ValueError, match="Stratified scenario record count mismatch"):
+        evaluate_scenario_holdout(records=records[:1439], expected_seeds_per_scenario=120)
+
+    # 3. Inconsistent per-scenario count (e.g., scenario 0 has 119, scenario 1 has 121)
+    bad_records = list(records)
+    # Move one record from scenario 0 to scenario 1
+    bad_records[0] = dict(bad_records[0])
+    bad_records[0]["scenario"] = bad_records[120]["scenario"]
+    bad_records[0]["scenario_index"] = bad_records[120]["scenario_index"]
+
+    with pytest.raises(ValueError, match="episode count mismatch"):
+        evaluate_scenario_holdout(records=bad_records, expected_seeds_per_scenario=120)
+
+
+def test_19_h5_outcome_algebra_rejects_zero_accepted_one_fs():
+    """
+    M4-F02 Boundary 7: A scenario with zero accepted decisions and one false success
+    violates benchmark outcome algebra and must be strictly rejected.
+    """
+    bad_record = make_synthetic_episode_record(
+        episode_index=0,
+        accepted=False,
+        outcome="ABSTAINED",
+    )
+    bad_record["false_success"] = "1"  # Violates accepted (0) == ts (0) + fs (1)
+
+    with pytest.raises(ValueError, match="Outcome algebra violation"):
+        verify_holdout_outcome_algebra(bad_record)
+
+
+def test_20_h5_iut_aggregation_all_pass_vs_one_fail():
+    """
+    M4-F02 Boundary 8 & 9: Berger IUT overall aggregation:
+    - All 12 scenarios pass (p_s <= 0.05) -> CONFIRMATORY_PASS_IUT.
+    - 11 scenarios pass, 1 fails (p_s > 0.05) -> RETAIN_SAFETY_NULL.
+    """
+    # Case A: All scenarios pass (FS_s = 1 in all 12 scenarios -> p_s ~ 0.015522 <= 0.05)
+    records_all_pass: list[dict[str, Any]] = []
+    scenarios = build_v9_s12_scenarios()
+    ep_idx = 0
+    for scen in scenarios:
+        for s in range(120):
+            rec = make_synthetic_episode_record(
+                episode_index=ep_idx,
+                seed=99000 + ep_idx,
+                scenario=scen.name,
+                scenario_index=scen.index,
+                accepted=True,
+                outcome="FALSE_SUCCESS" if s == 0 else "TERMINAL_SUCCESS",
+            )
+            records_all_pass.append(rec)
+            ep_idx += 1
+
+    res_all_pass = evaluate_scenario_holdout(records=records_all_pass)
+    assert res_all_pass["h5_worst_case_safety"]["berger_iut_passed"] is True
+    assert res_all_pass["h5_worst_case_safety"]["status"] == "CONFIRMATORY_PASS_IUT"
+
+    # Case B: 11 pass (FS_s = 0), 1 fails (FS_s = 2 -> p_s ~ 0.057398 > 0.05)
+    records_one_fail: list[dict[str, Any]] = []
+    ep_idx = 0
+    for scen in scenarios:
+        for s in range(120):
+            is_fail_scen = scen.name == "OUTLIER_BURSTS"
+            outcome = "FALSE_SUCCESS" if (is_fail_scen and s < 2) else "TERMINAL_SUCCESS"
+            rec = make_synthetic_episode_record(
+                episode_index=ep_idx,
+                seed=99000 + ep_idx,
+                scenario=scen.name,
+                scenario_index=scen.index,
+                accepted=True,
+                outcome=outcome,
+            )
+            records_one_fail.append(rec)
+            ep_idx += 1
+
+    res_one_fail = evaluate_scenario_holdout(records=records_one_fail)
+    assert res_one_fail["h5_worst_case_safety"]["berger_iut_passed"] is False
+    assert res_one_fail["h5_worst_case_safety"]["status"] == "RETAIN_SAFETY_NULL"
+
+
+def test_21_h5_holm_shidak_step_down_thresholds():
+    """
+    M4-F02 Boundary 10: Verify exact mathematical implementation and monotonic ordering
+    of Holm-Šidák step-down thresholds for k = 12, alpha = 0.05.
+    """
+    thresholds = holm_shidak_adjusted_thresholds(12, alpha=0.05)
+    assert len(thresholds) == 12
+
+    # Verify strict monotonic increase
+    for i in range(len(thresholds) - 1):
+        assert thresholds[i] < thresholds[i + 1]
+
+    # Verify boundary points
+    # First threshold: 1 - (1 - 0.05)**(1/12)
+    expected_first = 1.0 - (0.95) ** (1.0 / 12.0)
+    assert math.isclose(thresholds[0], expected_first, rel_tol=1e-7)
+    assert math.isclose(thresholds[0], 0.004265324, abs_tol=1e-6)
+
+    # Last threshold: 1 - (1 - 0.05)**(1/1) = 0.05
+    assert math.isclose(thresholds[-1], 0.05, rel_tol=1e-7)
+
+
+# ==============================================================================
+# M4-F03 Remediation Tests: Paired Record Identity Alignment
+# ==============================================================================
+
+def test_22_pairing_correct_matching_records():
+    """M4-F03 Test 1: Exactly matching records pair cleanly in forward order."""
+    policy_records = make_synthetic_mixture_dataset(n=50)
+    baseline_records = make_synthetic_mixture_dataset(n=50)
+
+    paired = align_and_pair_records(policy_records, baseline_records, baseline_label="test_v8")
+    assert len(paired) == 50
+    for r_pi, r_b in paired:
+        assert int(r_pi["seed"]) == int(r_b["seed"])
+        assert str(r_pi["scenario"]) == str(r_b["scenario"])
+
+
+def test_23_pairing_reversed_baseline_row_order():
+    """
+    M4-F03 Test 2: Reversed baseline row order is resolved by keyed join to produce
+    identical pairing and identical contingency counts without order distortion.
+    """
+    policy_records = make_synthetic_mixture_dataset(n=50)
+    baseline_records = make_synthetic_mixture_dataset(n=50)
+
+    # Inject some divergent false-success outcomes to test contingency counts
+    for i in range(10):
+        policy_records[i]["false_success"] = "1"
+        policy_records[i]["true_success"] = "0"
+    for i in range(5, 15):
+        baseline_records[i]["false_success"] = "1"
+        baseline_records[i]["true_success"] = "0"
+
+    # Forward pairing
+    paired_forward = align_and_pair_records(policy_records, baseline_records, baseline_label="test_v8")
+    n11_f = sum(1 for r, v in paired_forward if int(r["false_success"]) == 1 and int(v["false_success"]) == 1)
+    n10_f = sum(1 for r, v in paired_forward if int(r["false_success"]) == 1 and int(v["false_success"]) == 0)
+    n01_f = sum(1 for r, v in paired_forward if int(r["false_success"]) == 0 and int(v["false_success"]) == 1)
+    n00_f = sum(1 for r, v in paired_forward if int(r["false_success"]) == 0 and int(v["false_success"]) == 0)
+
+    # Reverse baseline rows
+    reversed_baseline = list(reversed(baseline_records))
+    paired_reversed = align_and_pair_records(policy_records, reversed_baseline, baseline_label="test_v8")
+    n11_r = sum(1 for r, v in paired_reversed if int(r["false_success"]) == 1 and int(v["false_success"]) == 1)
+    n10_r = sum(1 for r, v in paired_reversed if int(r["false_success"]) == 1 and int(v["false_success"]) == 0)
+    n01_r = sum(1 for r, v in paired_reversed if int(r["false_success"]) == 0 and int(v["false_success"]) == 1)
+    n00_r = sum(1 for r, v in paired_reversed if int(r["false_success"]) == 0 and int(v["false_success"]) == 0)
+
+    # Contingency table MUST be bit-identical despite row-order inversion
+    assert (n11_f, n10_f, n01_f, n00_f) == (n11_r, n10_r, n01_r, n00_r)
+    assert (n11_f, n10_f, n01_f, n00_f) == (5, 5, 5, 35)
+
+
+def test_24_pairing_rejects_mismatched_seed():
+    """M4-F03 Test 3: Reject baseline record with mismatched seed."""
+    policy_records = make_synthetic_mixture_dataset(n=10)
+    baseline_records = make_synthetic_mixture_dataset(n=10)
+
+    # Corrupt seed of one baseline episode
+    baseline_records[3] = dict(baseline_records[3])
+    baseline_records[3]["seed"] = "99999"
+
+    with pytest.raises(ValueError, match="Missing baseline"):
+        align_and_pair_records(policy_records, baseline_records, baseline_label="v8")
+
+
+def test_25_pairing_rejects_mismatched_scenario():
+    """M4-F03 Test 4: Reject baseline record with mismatched scenario."""
+    policy_records = make_synthetic_mixture_dataset(n=10)
+    baseline_records = make_synthetic_mixture_dataset(n=10)
+
+    # Corrupt scenario of one baseline episode
+    baseline_records[2] = dict(baseline_records[2])
+    baseline_records[2]["scenario"] = "NONEXISTENT_SCENARIO"
+
+    with pytest.raises(ValueError, match="Missing baseline"):
+        align_and_pair_records(policy_records, baseline_records, baseline_label="v7")
+
+
+def test_26_pairing_rejects_duplicate_identity_keys():
+    """M4-F03 Test 5: Reject duplicate (seed, scenario) identity keys in policy or baseline."""
+    policy_records = make_synthetic_mixture_dataset(n=10)
+    baseline_records = make_synthetic_mixture_dataset(n=10)
+
+    # Duplicate key in policy records
+    dup_policy = list(policy_records)
+    dup_policy[1] = dict(dup_policy[0])
+    with pytest.raises(ValueError, match="Duplicate identity key"):
+        align_and_pair_records(dup_policy, baseline_records)
+
+    # Duplicate key in baseline records
+    dup_baseline = list(baseline_records)
+    dup_baseline[1] = dict(dup_baseline[0])
+    with pytest.raises(ValueError, match="Duplicate identity key"):
+        align_and_pair_records(policy_records, dup_baseline)
+
+
+def test_27_pairing_rejects_missing_baseline_or_policy_episodes():
+    """M4-F03 Test 6 & 7: Reject missing baseline or policy episodes (count mismatch)."""
+    policy_records = make_synthetic_mixture_dataset(n=20)
+    baseline_records = make_synthetic_mixture_dataset(n=19)
+
+    with pytest.raises(ValueError, match="Record count mismatch"):
+        align_and_pair_records(policy_records, baseline_records, baseline_label="v8")
+
+
+def test_28_pairing_rejects_invalid_or_absent_identity_fields():
+    """M4-F03 Test 8: Reject missing, empty, or unparseable identity fields."""
+    # 1. Missing seed
+    bad_pol1 = make_synthetic_mixture_dataset(n=5)
+    del bad_pol1[0]["seed"]
+    with pytest.raises(ValueError, match="missing required identity key 'seed'"):
+        align_and_pair_records(bad_pol1, make_synthetic_mixture_dataset(n=5))
+
+    # 2. Non-integer seed
+    bad_pol2 = make_synthetic_mixture_dataset(n=5)
+    bad_pol2[0]["seed"] = "invalid_int_seed"
+    with pytest.raises(ValueError, match="invalid integer seed"):
+        align_and_pair_records(bad_pol2, make_synthetic_mixture_dataset(n=5))
+
+    # 3. Missing scenario
+    bad_pol3 = make_synthetic_mixture_dataset(n=5)
+    del bad_pol3[0]["scenario"]
+    with pytest.raises(ValueError, match="missing required identity key 'scenario'"):
+        align_and_pair_records(bad_pol3, make_synthetic_mixture_dataset(n=5))
+
+    # 4. Empty scenario
+    bad_pol4 = make_synthetic_mixture_dataset(n=5)
+    bad_pol4[0]["scenario"] = "   "
+    with pytest.raises(ValueError, match="missing required identity key 'scenario'"):
+        align_and_pair_records(bad_pol4, make_synthetic_mixture_dataset(n=5))
+
+
+def test_29_pairing_reconciles_discordant_pair_counts():
+    """
+    M4-F03 Test 9: Exact reconciliation of discordant-pair counts (n_10, n_01)
+    and paired McNemar exact test calculation.
+    """
+    n = 100
+    policy_records: list[dict[str, Any]] = []
+    baseline_records: list[dict[str, Any]] = []
+
+    # Construct known contingency distribution:
+    # n_11 = 10, n_10 = 5, n_01 = 20, n_00 = 65
+    for i in range(n):
+        seed = 98000 + i
+        scen = "NOMINAL"
+        if i < 10:  # Both FS
+            p_fs, b_fs = 1, 1
+        elif i < 15:  # Policy FS, Baseline TS
+            p_fs, b_fs = 1, 0
+        elif i < 35:  # Policy TS, Baseline FS
+            p_fs, b_fs = 0, 1
+        else:  # Both TS
+            p_fs, b_fs = 0, 0
+
+        policy_records.append(make_synthetic_episode_record(
+            episode_index=i, seed=seed, scenario=scen, accepted=True,
+            outcome="FALSE_SUCCESS" if p_fs else "TERMINAL_SUCCESS"
+        ))
+        baseline_records.append(make_synthetic_episode_record(
+            episode_index=i, seed=seed, scenario=scen, accepted=True,
+            outcome="FALSE_SUCCESS" if b_fs else "TERMINAL_SUCCESS"
+        ))
+
+    paired = align_and_pair_records(policy_records, baseline_records)
+    n11 = sum(1 for r, v in paired if int(r["false_success"]) == 1 and int(v["false_success"]) == 1)
+    n10 = sum(1 for r, v in paired if int(r["false_success"]) == 1 and int(v["false_success"]) == 0)
+    n01 = sum(1 for r, v in paired if int(r["false_success"]) == 0 and int(v["false_success"]) == 1)
+    n00 = sum(1 for r, v in paired if int(r["false_success"]) == 0 and int(v["false_success"]) == 0)
+
+    assert (n11, n10, n01, n00) == (10, 5, 20, 65)
+
+    # McNemar exact test: 2 * binom.cdf(min(5, 20), 25, 0.5)
+    expected_mcnemar = float(mcnemar_exact_test(n10, n01))
+    calc_mcnemar = 2.0 * float(binom.cdf(5, 25, 0.5))
+    assert math.isclose(expected_mcnemar, calc_mcnemar, rel_tol=1e-7)
+    assert expected_mcnemar < 0.05  # Significant reduction
+
