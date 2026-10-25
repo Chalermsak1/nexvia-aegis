@@ -59,10 +59,22 @@ Where the root partition index $p \in \{0, \dots, 7\}$ is preregistered as follo
    $$\text{env\_ss}_i = \text{ep\_ss}_i.\text{spawn}(2)[0] \implies \text{env\_spawn\_key} = (p, 1, i, 0)$$
    $$\text{sens\_ss}_i = \text{ep\_ss}_i.\text{spawn}(2)[1] \implies \text{sensor\_spawn\_key} = (p, 1, i, 1)$$
 
-### 2.3 Mathematical Proof of Disjointness
-Under NumPy's `SeedSequence` specification, child generator states are derived by hashing the tuple `(master_entropy, *spawn_key)` into a 128-bit integer seed via Philox/SHA-256 mixing. Because the prefix $p$ is distinct across partitions:
-$$\forall p \neq p', \quad (p, 1, i, k) \neq (p', 1, j, k') \quad \forall i, j, k, k'$$
-The probability of a state collision between any two generators across distinct partitions is bounded by $2^{-128} \approx 2.9 \times 10^{-39}$. Stream disjointness is guaranteed by construction independently of empirical sample sizes or correlation tests.
+### 2.3 Deterministic Spawn Path Disjointness and PRNG Independence Model
+To ensure scientific rigor, we formally distinguish between three distinct levels of independence:
+1. **Structural Spawn Key Disjointness (Deterministic Hierarchy):**
+   NumPy's `SeedSequence` records the exact derivation path as a tuple in `spawn_key`. Because the root partition index $p$ is prepended to all child keys:
+   $$\forall p \neq p', \quad (p, 1, i, k) \neq (p', 1, j, k') \quad \forall i, j, k, k'$$
+   This ensures that no two partitions share the same spawn path or derivation inputs.
+2. **Initial State Collision Probability (NumPy PRNG Model):**
+   NumPy's `SeedSequence` hashes the combination of entropy and `spawn_key` into 128-bit internal states using SplitMix64 mixing. Under NumPy's documented design, distinct spawn keys map to independent initial states with an extremely low collision probability bounded by birthday collision rates across $K$ spawned streams ($\approx K^2 / 2^{129} < 10^{-30}$ for our finite manifest size).
+3. **Simulation Modeling Assumption (i.i.d. Physical Law):**
+   The assertion that simulated episode trajectories and outcomes follow the intended independent and identically distributed (i.i.d.) simulation law $\mathcal{P} = \frac{1}{12}\sum_{s=1}^{12}\mathcal{P}_s$ is a *statistical modeling assumption* about the simulation environment, reset mechanics, and PRNG quality. It is distinct from, and cannot be proven by, deterministic spawn-path uniqueness or empirical sample zero-correlation checks alone. Empirical correlation checks are descriptive consistency verifications, not proofs of distributional independence.
+
+### 2.4 Development Partition Provenance Justification
+The development partition $\mathcal{D}_{\text{dev,r1}}$ (seeds `77000..77029`, $12 \times 30 = 360$ episodes per policy) was evaluated using per-episode scalar seeds via `create_decoupled_rng_pair(77000 + i)` (`SeedSequence(77000 + i).spawn(2)`).
+- **Justification as Separate Preregistered Derivation:** $\mathcal{D}_{\text{dev,r1}}$ was established as a fixed-quota exploratory and ordering-verification grid prior to the hierarchical manifest generation. Its root entropy draws from integer range `77000..77029`, which is entirely separate from the hierarchical `master_entropy = 20261025` used for `D_cal,r2`.
+- **Relationship to `PARTITION_BRANCH_DEV = 1`:** The constant `PARTITION_BRANCH_DEV = 1` is preregistered in `V9HierarchicalManifestGenerator` for future hierarchical development grids. To preserve experimental integrity and adhere to the protocol rule prohibiting retrospective data regeneration, the existing completed $\mathcal{D}_{\text{dev,r1}}$ evaluation is retained and justified as an explicitly separate derivation.
+- **Separation from $\mathcal{D}_{\text{cal,r2}}$:** Because $\mathcal{D}_{\text{dev,r1}}$ uses scalar entropy `77000..77029` with spawn keys `(0,)` and `(1,)`, and $\mathcal{D}_{\text{cal,r2}}$ uses master entropy `20261025` with branch `(2, 1, i, 0)` and `(2, 1, i, 1)`, there is zero stream reuse or state collision between the two datasets.
 
 ---
 
