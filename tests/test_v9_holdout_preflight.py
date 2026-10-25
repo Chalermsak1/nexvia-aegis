@@ -1526,3 +1526,255 @@ def test_44_cli_default_preflight_and_production_dispatch():
         sys.argv = orig_argv
 
 
+def test_45_h3_authoritative_v8_and_v7_dual_baseline_evaluation():
+    """Requirement: H3 evaluates primary noninferiority vs V8.1 and co-evaluates vs V7 per Protocol 3.1.1."""
+    scenarios = build_v9_s12_scenarios()
+    seeds_per_scen = 10
+    pol_records = []
+    v8_records = []
+    v7_records = []
+
+    ep_idx = 0
+    for sc_idx, scen in enumerate(scenarios):
+        for s_idx in range(seeds_per_scen):
+            seed = 85000 + sc_idx * 100 + s_idx
+            # Policy V9: high true success (1.0 on nominal, 1.0 on all)
+            pol_records.append(make_synthetic_episode_record(
+                episode_index=ep_idx,
+                seed=seed,
+                scenario=scen.name,
+                scenario_index=sc_idx,
+                accepted=True,
+                outcome="TERMINAL_SUCCESS",
+            ))
+            # Baseline V8.1: moderate true success
+            v8_records.append(make_synthetic_episode_record(
+                episode_index=ep_idx,
+                seed=seed,
+                scenario=scen.name,
+                scenario_index=sc_idx,
+                accepted=True,
+                outcome="TERMINAL_SUCCESS" if s_idx < 8 else "FALSE_SUCCESS",
+            ))
+            # Baseline V7: lower true success
+            v7_records.append(make_synthetic_episode_record(
+                episode_index=ep_idx,
+                seed=seed,
+                scenario=scen.name,
+                scenario_index=sc_idx,
+                accepted=True,
+                outcome="TERMINAL_SUCCESS" if s_idx < 7 else "FALSE_SUCCESS",
+            ))
+            ep_idx += 1
+
+    res = evaluate_scenario_holdout(
+        records=pol_records,
+        v8_records=v8_records,
+        v7_records=v7_records,
+        expected_seeds_per_scenario=seeds_per_scen,
+    )
+
+    # 1. H3 overall summary is present and confirms primary V8.1 and co-evaluated V7
+    assert "h3_overall" in res
+    assert res["h3_overall"]["primary_baseline"] == "v8_martingale"
+    assert res["h3_overall"]["co_evaluated_baseline"] == "v7_mpc"
+    assert res["h3_overall"]["passed"] is True
+    assert res["h3_overall"]["status"] == "CONFIRMATORY_PASS"
+
+    # 2. Primary V8.1 noninferiority evaluation
+    assert "h3_tsr_noninferiority_vs_v8" in res
+    h3_v8 = res["h3_tsr_noninferiority_vs_v8"]
+    assert h3_v8["baseline"] == "v8_martingale"
+    assert h3_v8["nominal_tsr"] == 1.0
+    assert h3_v8["mean_delta_tsr"] > 0.0
+    assert h3_v8["lcb95_delta_tsr"] > -0.05
+    assert h3_v8["passed"] is True
+
+    # 3. Co-evaluated V7 noninferiority evaluation (preserving backward-compatible key)
+    assert "h3_tsr_noninferiority_vs_v7" in res
+    h3_v7 = res["h3_tsr_noninferiority_vs_v7"]
+    assert h3_v7["baseline"] == "v7_mpc"
+    assert h3_v7["nominal_tsr"] == 1.0
+    assert h3_v7["mean_delta_tsr"] > 0.0
+    assert h3_v7["lcb95_delta_tsr"] > -0.05
+    assert h3_v7["passed"] is True
+
+
+def test_46_h3_baseline_substitution_rejection():
+    """Requirement: Unintended baseline substitution or mismatched identity keys fails closed."""
+    scenarios = build_v9_s12_scenarios()
+    seeds_per_scen = 5
+    pol_records = []
+    corrupted_baseline = []
+
+    ep_idx = 0
+    for sc_idx, scen in enumerate(scenarios):
+        for s_idx in range(seeds_per_scen):
+            seed = 86000 + sc_idx * 100 + s_idx
+            pol_records.append(make_synthetic_episode_record(
+                episode_index=ep_idx,
+                seed=seed,
+                scenario=scen.name,
+                scenario_index=sc_idx,
+                accepted=True,
+                outcome="TERMINAL_SUCCESS",
+            ))
+            # Substituted/corrupted seed in baseline
+            corrupted_baseline.append(make_synthetic_episode_record(
+                episode_index=ep_idx,
+                seed=seed + 9999,  # Mismatched seed
+                scenario=scen.name,
+                scenario_index=sc_idx,
+                accepted=True,
+                outcome="TERMINAL_SUCCESS",
+            ))
+            ep_idx += 1
+
+    # Passing mismatched baseline into v8_records must raise ValueError
+    with pytest.raises(ValueError, match="Missing baseline v8_martingale record for episode"):
+        evaluate_scenario_holdout(
+            records=pol_records,
+            v8_records=corrupted_baseline,
+            expected_seeds_per_scenario=seeds_per_scen,
+        )
+
+    # Passing mismatched baseline into v7_records must also raise ValueError
+    with pytest.raises(ValueError, match="Missing baseline v7_mpc record for episode"):
+        evaluate_scenario_holdout(
+            records=pol_records,
+            v7_records=corrupted_baseline,
+            expected_seeds_per_scenario=seeds_per_scen,
+        )
+
+
+def test_47_crn_controller_order_invariance():
+    """Requirement: Simulating controllers in different orders produces bitwise identical random streams."""
+    gen = V9HierarchicalManifestGenerator(master_entropy=20261025)
+    man = gen.generate_manifest(
+        partition_name="test_crn_order",
+        manifest_id_start=87000,
+        count=3,
+        partition_index=PARTITION_BRANCH_TEST_MIXTURE,
+    )
+    scen = build_v9_s12_scenarios()[0]
+
+    for item in man["episodes"]:
+        ep_seed = int(item["manifest_id"])
+
+        # Order 1: V9 -> V8 -> V7
+        sim_1 = MockHoldoutSimulator()
+        rng_env_pi1, rng_sen_pi1 = _derive_episode_rngs(item, ep_seed)
+        sim_1(scen, ep_seed, "V9", None, rng_env=rng_env_pi1, rng_sensors=rng_sen_pi1)
+
+        rng_env_v81, rng_sen_v81 = _derive_episode_rngs(item, ep_seed)
+        sim_1(scen, ep_seed, "V8", None, rng_env=rng_env_v81, rng_sensors=rng_sen_v81)
+
+        rng_env_v71, rng_sen_v71 = _derive_episode_rngs(item, ep_seed)
+        sim_1(scen, ep_seed, "V7", None, rng_env=rng_env_v71, rng_sensors=rng_sen_v71)
+
+        # Order 2: V7 -> V8 -> V9
+        sim_2 = MockHoldoutSimulator()
+        rng_env_v72, rng_sen_v72 = _derive_episode_rngs(item, ep_seed)
+        sim_2(scen, ep_seed, "V7", None, rng_env=rng_env_v72, rng_sensors=rng_sen_v72)
+
+        rng_env_v82, rng_sen_v82 = _derive_episode_rngs(item, ep_seed)
+        sim_2(scen, ep_seed, "V8", None, rng_env=rng_env_v82, rng_sensors=rng_sen_v82)
+
+        rng_env_pi2, rng_sen_pi2 = _derive_episode_rngs(item, ep_seed)
+        sim_2(scen, ep_seed, "V9", None, rng_env=rng_env_pi2, rng_sensors=rng_sen_pi2)
+
+        # Look up records by policy
+        log1 = {entry["policy"]: entry for entry in sim_1.call_log}
+        log2 = {entry["policy"]: entry for entry in sim_2.call_log}
+
+        for pol in ["V9", "V8", "V7"]:
+            assert log1[pol]["env_val"] == log2[pol]["env_val"], f"Order discrepancy in env for {pol}"
+            assert log1[pol]["sens_val"] == log2[pol]["sens_val"], f"Order discrepancy in sens for {pol}"
+
+
+def test_48_crn_consumption_and_early_termination_isolation():
+    """Requirement: Early termination or divergent draw counts in one controller does not alter another."""
+    gen = V9HierarchicalManifestGenerator(master_entropy=20261025)
+    man = gen.generate_manifest(
+        partition_name="test_crn_isolation",
+        manifest_id_start=88000,
+        count=1,
+        partition_index=PARTITION_BRANCH_TEST_MIXTURE,
+    )
+    item = man["episodes"][0]
+    ep_seed = int(item["manifest_id"])
+
+    # Reference full stream for Controller 2 (runs 100 steps)
+    rng_ref_env, rng_ref_sen = _derive_episode_rngs(item, ep_seed)
+    ref_env_draws = [rng_ref_env.uniform() for _ in range(100)]
+    ref_sen_draws = [rng_ref_sen.normal() for _ in range(100)]
+
+    # Experiment: Controller 1 terminates early after drawing 5 numbers
+    rng_ctrl1_env, rng_ctrl1_sen = _derive_episode_rngs(item, ep_seed)
+    _ = [rng_ctrl1_env.uniform() for _ in range(5)]
+    _ = [rng_ctrl1_sen.normal() for _ in range(5)]
+
+    # Controller 2 is now instantiated and run
+    rng_ctrl2_env, rng_ctrl2_sen = _derive_episode_rngs(item, ep_seed)
+    ctrl2_env_draws = [rng_ctrl2_env.uniform() for _ in range(100)]
+    ctrl2_sen_draws = [rng_ctrl2_sen.normal() for _ in range(100)]
+
+    # Assert 100% bitwise equivalence with the reference run
+    assert ctrl2_env_draws == ref_env_draws, "Controller 1 early termination contaminated Controller 2 env stream"
+    assert ctrl2_sen_draws == ref_sen_draws, "Controller 1 early termination contaminated Controller 2 sens stream"
+
+
+def test_49_crn_initial_conditions_and_divergence_characteristics():
+    """Requirement: Verifies common initial conditions and documents mutable-stream divergence characteristics."""
+    from aegis.v3.env.world import AegisPhysicalWorld
+
+    gen = V9HierarchicalManifestGenerator(master_entropy=20261025)
+    man = gen.generate_manifest(
+        partition_name="test_crn_physics",
+        manifest_id_start=89000,
+        count=1,
+        partition_index=PARTITION_BRANCH_TEST_MIXTURE,
+    )
+    item = man["episodes"][0]
+    ep_seed = int(item["manifest_id"])
+
+    # 1. Physical world target position is 100% bitwise identical across all 3 controllers
+    rng_env_v9, _ = _derive_episode_rngs(item, ep_seed)
+    w_v9 = AegisPhysicalWorld()
+    st_v9 = w_v9.reset(rng_env_v9)
+
+    rng_env_v8, _ = _derive_episode_rngs(item, ep_seed)
+    w_v8 = AegisPhysicalWorld()
+    st_v8 = w_v8.reset(rng_env_v8)
+
+    rng_env_v7, _ = _derive_episode_rngs(item, ep_seed)
+    w_v7 = AegisPhysicalWorld()
+    st_v7 = w_v7.reset(rng_env_v7)
+
+    assert np.array_equal(st_v9["target_pos"], st_v8["target_pos"])
+    assert np.array_equal(st_v9["target_pos"], st_v7["target_pos"])
+    assert np.array_equal(st_v9["robot_pos"], st_v8["robot_pos"])
+    assert np.array_equal(st_v9["robot_pos"], st_v7["robot_pos"])
+
+    # 2. Initial sensor noise draws at step t=0 are identical
+    _, rng_sen_v9 = _derive_episode_rngs(item, ep_seed)
+    _, rng_sen_v8 = _derive_episode_rngs(item, ep_seed)
+    _, rng_sen_v7 = _derive_episode_rngs(item, ep_seed)
+
+    draw_v9_t0 = rng_sen_v9.normal(size=4)
+    draw_v8_t0 = rng_sen_v8.normal(size=4)
+    draw_v7_t0 = rng_sen_v7.normal(size=4)
+    assert np.array_equal(draw_v9_t0, draw_v8_t0)
+    assert np.array_equal(draw_v9_t0, draw_v7_t0)
+
+    # 3. Document mutable-stream offset divergence when anchor is queried
+    # Suppose V8 queries anchor at step 0 (advances 2 draws), but V7 does not
+    _ = rng_sen_v8.normal(size=2)  # anchor query draws
+
+    # Step t=1: sensor noise draws now diverge in mutable stream
+    draw_v8_t1 = rng_sen_v8.normal(size=2)
+    draw_v7_t1 = rng_sen_v7.normal(size=2)
+    assert not np.array_equal(draw_v8_t1, draw_v7_t1), "Expected mutable stream offset after anchor query"
+
+
+

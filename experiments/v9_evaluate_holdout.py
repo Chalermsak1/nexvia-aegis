@@ -765,6 +765,7 @@ def evaluate_scenario_holdout(
     records: Sequence[Mapping[str, Any]],
     *,
     cand_params: V9CandidateParams | None = None,
+    v8_records: Sequence[Mapping[str, Any]] | None = None,
     v7_records: Sequence[Mapping[str, Any]] | None = None,
     expected_seeds_per_scenario: int = TEST_SCEN_SEEDS_PER_SCENARIO,
 ) -> dict[str, Any]:
@@ -773,8 +774,9 @@ def evaluate_scenario_holdout(
     - Produces exact 12-scenario stratified breakdown table.
     - Validates that scenario episode count reconciles with the registered scenario design.
     - Handles undefined selective risk (R_sel = UNDEFINED when M_s = 0) fail-closed.
-    - Tests H_3: Operational Utility & TSR Noninferiority vs V7 (1-sided 95% LCB > -0.05 on S_10, TSR_nominal >= 0.94)
-      using strict paired-record identity alignment.
+    - Tests H_3: Operational Utility & TSR Noninferiority (Protocol Section 3.1.1):
+      Primary null against V8.1 (1-sided 95% LCB > -0.05 on S_10, TSR_nominal >= 0.94),
+      co-evaluated against V7 baseline using strict paired-record identity alignment.
     - Tests H_5: Worst-Case Scenario Safety via Holm-Šidák simultaneous bounds + Berger IUT on unconditional incidence.
     """
     if expected_seeds_per_scenario <= 0:
@@ -879,34 +881,64 @@ def evaluate_scenario_holdout(
             "mean_max_overshoot": f"{mean_overshoot:.4f}",
         })
 
-    # Hypothesis H_3: Operational Utility & TSR Noninferiority vs V7
-    h3_passed = False
-    h3_status = "NOT_EVALUATED_NO_V7_DATA"
+    # Hypothesis H_3: Operational Utility & TSR Noninferiority
+    # Authoritative Protocol Section 3.1.1:
+    # H0,3: TSR(pi; P_10) - TSR(pi_V8; P_10) <= -0.05 (and co-evaluated against pi_V7 at -0.05).
+    # Pass Criterion: 1-sided 95% paired LCB(Delta TSR) > -0.05 on S_10 AND TSR_nominal >= 0.94.
+    s10_names = {s.name for s in scenarios if s.suite == "S_10"}
     nominal_tsr_hat = 0.0
     nom_rows = [r for r in breakdown_rows if r["scenario"] == "NOMINAL"]
     if nom_rows:
         nominal_tsr_hat = float(nom_rows[0]["tsr"])
 
-    h3_lcb95 = float("nan")
-    mean_delta_tsr = float("nan")
+    # Evaluation against V8.1 (Primary Protocol Baseline)
+    h3_v8_passed = False
+    h3_v8_status = "NOT_EVALUATED_NO_V8_DATA"
+    h3_v8_lcb95 = float("nan")
+    h3_v8_mean_delta = float("nan")
+    if v8_records is not None and len(v8_records) > 0:
+        paired_v8 = align_and_pair_records(records, v8_records, baseline_label="v8_martingale")
+        matched_diffs_v8: list[float] = []
+        for r_pi, r_v8 in paired_v8:
+            scen_name = str(r_pi.get("scenario", "")).strip()
+            if scen_name in s10_names:
+                diff = float(int(r_pi["true_success"])) - float(int(r_v8["true_success"]))
+                matched_diffs_v8.append(diff)
+        if matched_diffs_v8:
+            h3_v8_mean_delta = float(np.mean(matched_diffs_v8))
+            h3_v8_lcb95 = paired_difference_lcb(matched_diffs_v8, confidence=0.95)
+            h3_v8_passed = bool(h3_v8_lcb95 > -0.05 and nominal_tsr_hat >= 0.94)
+            h3_v8_status = "CONFIRMATORY_PASS" if h3_v8_passed else "FAIL_NONINFERIORITY_OR_NOMINAL"
 
+    # Evaluation against V7 (Co-Evaluated Baseline)
+    h3_v7_passed = False
+    h3_v7_status = "NOT_EVALUATED_NO_V7_DATA"
+    h3_v7_lcb95 = float("nan")
+    h3_v7_mean_delta = float("nan")
     if v7_records is not None and len(v7_records) > 0:
         paired_v7 = align_and_pair_records(records, v7_records, baseline_label="v7_mpc")
-        # Evaluate matched pairs on S_10 scenarios (excluding extension scenarios)
-        s10_names = {s.name for s in scenarios if s.suite == "S_10"}
-        matched_diffs: list[float] = []
+        matched_diffs_v7: list[float] = []
         for r_pi, r_v7 in paired_v7:
             scen_name = str(r_pi.get("scenario", "")).strip()
             if scen_name in s10_names:
                 diff = float(int(r_pi["true_success"])) - float(int(r_v7["true_success"]))
-                matched_diffs.append(diff)
+                matched_diffs_v7.append(diff)
+        if matched_diffs_v7:
+            h3_v7_mean_delta = float(np.mean(matched_diffs_v7))
+            h3_v7_lcb95 = paired_difference_lcb(matched_diffs_v7, confidence=0.95)
+            h3_v7_passed = bool(h3_v7_lcb95 > -0.05 and nominal_tsr_hat >= 0.94)
+            h3_v7_status = "CONFIRMATORY_PASS" if h3_v7_passed else "FAIL_NONINFERIORITY_OR_NOMINAL"
 
-        if matched_diffs:
-            mean_delta_tsr = float(np.mean(matched_diffs))
-            h3_lcb95 = paired_difference_lcb(matched_diffs, confidence=0.95)
-            # Pass criterion: LCB95(Delta TSR) > -0.05 AND TSR_nominal >= 0.94
-            h3_passed = bool(h3_lcb95 > -0.05 and nominal_tsr_hat >= 0.94)
-            h3_status = "CONFIRMATORY_PASS" if h3_passed else "FAIL_NONINFERIORITY_OR_NOMINAL"
+    # Overall H_3 determination per Protocol Section 3.1.1:
+    if v8_records is not None and len(v8_records) > 0:
+        h3_overall_passed = h3_v8_passed
+        h3_overall_status = h3_v8_status
+    elif v7_records is not None and len(v7_records) > 0:
+        h3_overall_passed = h3_v7_passed
+        h3_overall_status = h3_v7_status
+    else:
+        h3_overall_passed = False
+        h3_overall_status = "NOT_EVALUATED_NO_BASELINE_DATA"
 
     # Hypothesis H_5: Worst-Case Scenario Safety via Berger IUT and Holm-Šidák
     holm_thresholds = holm_shidak_adjusted_thresholds(len(p_values_for_iut), alpha=0.05)
@@ -928,14 +960,32 @@ def evaluate_scenario_holdout(
         "n_episodes": len(records),
         "total_scenarios": len(breakdown_rows),
         "nominal_tsr_hat": round(nominal_tsr_hat, 6),
-        "h3_tsr_noninferiority_vs_v7": {
+        "h3_overall": {
             "hypothesis": "H_3",
+            "primary_baseline": "v8_martingale",
+            "co_evaluated_baseline": "v7_mpc",
+            "status": h3_overall_status,
+            "passed": h3_overall_passed,
+        },
+        "h3_tsr_noninferiority_vs_v8": {
+            "hypothesis": "H_3",
+            "baseline": "v8_martingale",
             "estimand": "LCB95(Delta TSR) > -0.05 on S_10 and TSR_nominal >= 0.94",
             "nominal_tsr": round(nominal_tsr_hat, 6),
-            "mean_delta_tsr": round(mean_delta_tsr, 6) if not math.isnan(mean_delta_tsr) else "N/A",
-            "lcb95_delta_tsr": round(h3_lcb95, 6) if not math.isnan(h3_lcb95) else "N/A",
-            "status": h3_status,
-            "passed": h3_passed,
+            "mean_delta_tsr": round(h3_v8_mean_delta, 6) if not math.isnan(h3_v8_mean_delta) else "N/A",
+            "lcb95_delta_tsr": round(h3_v8_lcb95, 6) if not math.isnan(h3_v8_lcb95) else "N/A",
+            "status": h3_v8_status,
+            "passed": h3_v8_passed,
+        },
+        "h3_tsr_noninferiority_vs_v7": {
+            "hypothesis": "H_3",
+            "baseline": "v7_mpc",
+            "estimand": "LCB95(Delta TSR) > -0.05 on S_10 and TSR_nominal >= 0.94",
+            "nominal_tsr": round(nominal_tsr_hat, 6),
+            "mean_delta_tsr": round(h3_v7_mean_delta, 6) if not math.isnan(h3_v7_mean_delta) else "N/A",
+            "lcb95_delta_tsr": round(h3_v7_lcb95, 6) if not math.isnan(h3_v7_lcb95) else "N/A",
+            "status": h3_v7_status,
+            "passed": h3_v7_passed,
         },
         "h5_worst_case_safety": {
             "hypothesis": "H_5",
@@ -1074,6 +1124,7 @@ def execute_holdout_workflow(
         eval_result = evaluate_scenario_holdout(
             records=synthetic_records,
             cand_params=cand_params,
+            v8_records=v8_synthetic_records,
             v7_records=v7_synthetic_records,
         )
     else:
@@ -1632,6 +1683,7 @@ def execute_production_holdout_pipeline(
         eval_result = evaluate_scenario_holdout(
             records=policy_records,
             cand_params=cand_params,
+            v8_records=v8_records if include_v8_baseline else None,
             v7_records=v7_records if include_v7_baseline else None,
             expected_seeds_per_scenario=seeds_per_scen,
         )

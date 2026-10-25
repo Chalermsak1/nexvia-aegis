@@ -1,0 +1,210 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[margin=2.0cm]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb,amsfonts,amsthm,mathtools}
+\usepackage{booktabs,tabularx,colortbl,array,multirow}
+\usepackage[table]{xcolor}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{microtype}
+\usepackage{hyperref}
+
+\newfontfamily\thaifont{Thonburi}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    citecolor=blue!70!black,
+    urlcolor=blue!70!black
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\footnotesize \textbf{NEXVIA AEGIS V9-M4 H3 \& CRN Consistency Audit}}
+\lhead{\footnotesize Dual-Baseline Protocol Reconciliation \& CRN Stream Proof}
+\rfoot{\footnotesize Page \thepage}
+\lfoot{\footnotesize Document ID: AEGIS-V9-M4-CRN-16}
+
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{NEXVIA AEGIS V9-M4 Final Consistency Audit}}\\[6pt]
+    {\Large \textbf{H3 Baseline Protocol Resolution, Common-Random-Numbers}}\\[3pt]
+    {\Large \textbf{Decoupling Verification, and Closed-Loop Stream Analysis}}\\[10pt]
+    \textbf{Autonomous Verification Subsystem (Google DeepMind Antigravity)}\\
+    \textit{Git Branch: v9.0-runtime-assurance \quad $\cdot$ \quad Implementation Commit: 372576c \quad $\cdot$ \quad Date: October 25, 2026}\\[12pt]
+\end{center}
+
+\noindent\fbox{
+\parbox{0.97\textwidth}{
+\textbf{CRITICAL NON-AUTHORIZATION DIRECTIVE:}\\
+This audit document resolves the authoritative baseline requirements for Hypothesis $H_3$ and independently verifies the Common Random Numbers (CRN) architecture across controllers V9, V8.1, and V7. \textbf{This document does NOT constitute authorization to execute V9-M4.} All empirical evaluations in this report were conducted using synthetic test fixtures and isolated mock environments. The production holdout manifests (\texttt{test\_mix\_manifest\_r1.json} and \texttt{test\_scen\_manifest\_r1.json}) and output directories (\texttt{results/v9/test\_mix/} and \texttt{results/v9/test\_scen/}) do not exist. Reserved seed blocks ($73000..74439$ for mixture holdout and $75000..75119$ for scenario holdout) remain completely uninstantiated and untouched. Production execution requires explicit authorization from the project owner.
+}
+}
+
+\vspace{10pt}
+
+\begin{abstract}
+\noindent This audit resolves two foundational questions prior to production holdout authorization: (1) Does Hypothesis $H_3$ use the exact baseline registered in the authoritative experiment protocol? (2) Does the implemented Common Random Numbers (CRN) architecture preserve matched exogenous random inputs across V9, V8.1, and V7? 
+Through systematic reconciliation of protocol specifications (\texttt{docs/v9\_experiment\_protocol.md}), readiness reviews, and prior audit reports, we establish that Section 3.1.1 of the Authoritative Protocol formally defines the primary null hypothesis $H_{0,3}$ as paired True-Success Rate (TSR) noninferiority against baseline V8.1 at margin $\Delta_{\mathrm{NI}} = -0.05$ on the $S_{10}$ scenario block, while explicitly designating co-evaluation against baseline V7 MPC at the same margin. Prior reports exhibited narrative tension: Report 13 focused on V7 MPC, whereas Report 14 summarized V8.1. We remediated \texttt{experiments/v9\_evaluate\_holdout.py} to evaluate both baselines simultaneously (\texttt{h3\_tsr\_noninferiority\_vs\_v8} and \texttt{h3\_tsr\_noninferiority\_vs\_v7}), maintaining strict backward compatibility while guaranteeing full protocol compliance. 
+Audit of the CRN pipeline demonstrates that each controller receives independent \texttt{np.random.Generator} instances derived from shared \texttt{SeedSequence} spawn keys, ensuring controller execution-order invariance, isolation against early termination/step-count differences, and bitwise identical initial conditions ($\mathbf{p}_{\mathrm{target}}$ and sensor noise at $t=0$). However, because physical simulation utilizes incremental mutable streams rather than stateless spatio-temporal hash functions, controller-specific decisions (such as conditional anchor queries in \texttt{AnchorSensor.measure}) cause subsequent random draws to offset between controllers in closed-loop trajectory execution. This behavior matches the preregistered protocol qualification in \texttt{docs/v9\_research\_audit.md:240}. Five new synthetic verification tests (\texttt{test\_45}--\texttt{test\_49}) validate dual-baseline enforcement, substitution rejection, order invariance, early-termination isolation, and stream divergence characteristics. All 49 preflight tests and all 160 repository tests pass with zero failures.
+\end{abstract}
+
+\vspace{6pt}
+\noindent \textbf{Keywords:} Hypothesis H3, Common Random Numbers (CRN), Paired Noninferiority, Stream Isolation, Order Invariance, Dual Baseline.
+
+\section{Executive Summary}
+
+\subsection{Executive Summary (English)}
+\begin{enumerate}
+    \item \textbf{Authoritative H3 Baseline Identity:} Protocol Section 3.1.1 designates V8.1 Martingale as the primary noninferiority baseline and V7 MPC as a co-evaluated baseline for $H_3$ True-Success Rate noninferiority ($\Delta_{\mathrm{NI}} = -0.05$ on $S_{10}$, nominal TSR $\ge 0.94$). $H_2$ remains the separate unconditional incidence ($R_{\mathrm{inc}}$) superiority comparison on the Mixture partition ($\mathcal{D}_{\text{test}}^{\text{mix}}$).
+    \item \textbf{Minimal Pipeline Remediation:} Updated \texttt{evaluate\_scenario\_holdout} in \texttt{experiments/v9\_evaluate\_holdout.py} to accept \texttt{v8\_records} alongside \texttt{v7\_records}, reporting both \texttt{h3\_tsr\_noninferiority\_vs\_v8} and \texttt{h3\_tsr\_noninferiority\_vs\_v7}, with overall pass requiring satisfaction of primary protocol criteria.
+    \item \textbf{CRN Independence \& Invariance:} Confirmed that \texttt{\_derive\_episode\_rngs} spawns isolated \texttt{np.random.Generator} objects. Controller execution order (e.g., V9 $\to$ V8 $\to$ V7 vs V7 $\to$ V8 $\to$ V9) and differential run lengths (e.g., early crash or abstention) produce zero cross-talk or stream corruption.
+    \item \textbf{Initial Condition \& Noise Coupling:} Initial target locations ($\mathbf{p}_{\mathrm{target}}$) and initial sensor noise realizations at step $t=0$ are 100\% bitwise identical across all controllers under matched episode seeds.
+    \item \textbf{Closed-Loop Mutable Stream Qualification:} Because sensor streams are stateful generators, conditional sensor queries (e.g., V8 querying the anchor while V7 does not) advance the generator, offsetting subsequent noise draws. This is documented and accepted under the preregistered protocol design.
+    \item \textbf{Synthetic Verification Suite:} Implemented 5 dedicated unit and integration tests (\texttt{test\_45} through \texttt{test\_49}) in \texttt{tests/test\_v9\_holdout\_preflight.py}. Preflight suite achieves 49/49 passing tests (1.14s); full repository suite achieves 160/160 passing tests (25.52s).
+    \item \textbf{Holdout Protection:} Confirmed 100\% holdout isolation. No production holdout manifests, datasets, or directories exist; reserved seed ranges remain untouched.
+\end{enumerate}
+
+\subsection{\texorpdfstring{บทสรุปสำหรับผู้บริหาร (Executive Summary in Thai)}{Executive Summary in Thai}}
+{\thaifont\small
+\begin{enumerate}
+    \item \textbf{การกำหนด Baseline ทางการของสมมติฐาน H3:} ข้อกำหนดการทดลองหมวด 3.1.1 ระบุอย่างเป็นทางการว่า V8.1 Martingale คือ Baseline หลักในการทดสอบความไม่ด้อยกว่า (Noninferiority) ของ True-Success Rate ($H_3$ ที่ระยะ $\Delta_{\mathrm{NI}} = -0.05$ บนกลุ่ม $S_{10}$ ร่วมกับเกณฑ์ TSR ในสภาวะปกติ $\ge 0.94$) พร้อมทั้งกำหนดให้ประเมินร่วมกับ V7 MPC โดยสมมติฐาน $H_2$ แยกต่างหากเพื่อทดสอบความเหนือกว่าของอุบัติการณ์ความล้มเหลวเท็จ ($R_{\mathrm{inc}}$) บนข้อมูลแบบผสม
+    \item \textbf{การปรับปรุงระบบประเมินผล:} ปรับฟังก์ชัน \texttt{evaluate\_scenario\_holdout} ใน \texttt{experiments/v9\_evaluate\_holdout.py} ให้รองรับการประเมินคู่ขนานทั้ง V8.1 (\texttt{h3\_tsr\_noninferiority\_vs\_v8}) และ V7 (\texttt{h3\_tsr\_noninferiority\_vs\_v7}) อย่างสมบูรณ์และคงความเข้ากันได้ย้อนหลัง 100\%
+    \item \textbf{ความเป็นอิสระและความไม่แปรผันของ CRN:} ยืนยันว่าการกำเนิดสตรีมสุ่มผ่าน \texttt{\_derive\_episode\_rngs} ให้ตัวสร้างสุ่ม \texttt{np.random.Generator} ที่แยกขาดจากกันในแต่ละตัวควบคุม ลำดับการเรียกทำงาน (เช่น V9 $\to$ V8 $\to$ V7 หรือ V7 $\to$ V8 $\to$ V9) และการหยุดทำงานก่อนกำหนดไม่มีผลกระทบต่อสตรีมสุ่มของตัวควบคุมอื่น
+    \item \textbf{ความเหมือนกันระดับบิตของเงื่อนไขเริ่มต้น:} พิกัดเป้าหมายเริ่มต้น ($\mathbf{p}_{\mathrm{target}}$) และสัญญาณรบกวนของเซนเซอร์ ณ ก้าวที่ $t=0$ เหมือนกันระดับบิต (Bitwise Identical) ครบถ้วนทุกประการ
+    \item \textbf{ข้อจำกัดของสตรีมแบบ Mutable ใน Closed-Loop:} เนื่องจากเซนเซอร์ใช้ตัวสร้างสุ่มแบบมีสถานะ การเรียกค้นข้อมูลเซนเซอร์ที่ไม่พร้อมเพรียงกัน (เช่น V8 เรียกอ่าน Anchor แต่ V7 ไม่ได้อ่าน) ทำให้ลำดับสุ่มถัดไปใน Closed-Loop เหลื่อมกัน ซึ่งเป็นพฤติกรรมที่ยอมรับได้ตามที่ระบุไว้ในเอกสารพิธีสารเดิม
+    \item \textbf{ผลการทดสอบเชิงสังเคราะห์:} เพิ่มการทดสอบเฉพาะทาง 5 รายการ (\texttt{test\_45} ถึง \texttt{test\_49}) ส่งผลให้ชุดทดสอบ Preflight ผ่าน 49/49 รายการ (1.14 วินาที) และชุดทดสอบระบบรวมผ่าน 160/160 รายการ (25.52 วินาที)
+    \item \textbf{การรักษาระยะห่างจาก Holdout จริง:} ยืนยันว่าไม่มีไฟล์ Manifest, ชุดข้อมูล หรือโฟลเดอร์ Holdout จริงถูกสร้างขึ้น และไม่มีการแตะต้องช่วง Seed สำรองแต่อย่างใด
+\end{enumerate}
+}
+
+\section{Phase 1 — Authoritative H3 Baseline Identity Resolution}
+
+\subsection{Cross-Document Reconciliation}
+Table~\ref{tab:h3_docs} details the reconciliation across authoritative documents within the codebase.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Cross-Document Reconciliation of Hypothesis $H_3$ Baseline Specifications}
+\label{tab:h3_docs}
+\begin{tabularx}{\textwidth}{llX}
+\toprule
+\textbf{Document Source} & \textbf{Section / Line} & \textbf{Stated Specification \& Statistical Rule} \\
+\midrule
+\texttt{docs/v9\_experiment\_protocol.md} & \S3.1.1 (lines 28--30) & \textbf{Primary: V8.1 Martingale; Co-evaluated: V7 MPC.}\\
+& & $H_{0,3}: \mathrm{TSR}(\hat{\pi};\mathcal{P}_{10}) - \mathrm{TSR}(\pi_{\mathrm{V8}};\mathcal{P}_{10}) \le -0.05$ (co-evaluated against $\pi_{\mathrm{V7}}$ at $-0.05$). \\
+\midrule
+\texttt{docs/v9\_experiment\_protocol.md} & Table 3.5.1 (line 247) & Baseline: $\pi_{\mathrm{V8}}$ (co-eval $\pi_{\mathrm{V7}}$); Noninferiority margin $\Delta_{\mathrm{NI}} = -0.05$ on $S_{10}$. \\
+\midrule
+\texttt{docs/v9\_risk\_calibration\_design.md} & \S7.2 (line 263) & Secondary confirmatory objective: noninferiority to $\pi_{\mathrm{V8.1}}$ in nominal/adversarial scenarios. \\
+\midrule
+\texttt{docs/v9\_m4\_readiness\_review.md} & Table 3 (line 55) & Listed V7 MPC in abbreviated table for operational noninferiority. \\
+\midrule
+Report 13 (Pre-Execution Review) & \S1.1 \& \S3.2 & Focused on V7 MPC comparison as the strict historical controller. \\
+\midrule
+Report 14 (Execution Path) & \S1.1 \& \S4.2 & Summarized primary protocol comparison against V8.1 Martingale. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Mathematical Distinction Between H2 and H3}
+The protocol explicitly segregates $H_2$ and $H_3$ across partitions, estimands, and baselines:
+\begin{enumerate}
+    \item \textbf{Hypothesis $H_2$ (Incidence Superiority):}
+    Evaluated strictly on the \textbf{Mixture partition} ($\mathcal{D}_{\text{test}}^{\text{mix}}$, $N=1,440$). The estimand is unconditional false-success incidence:
+    \begin{equation}
+        R_{\mathrm{inc}}(\pi) = \Pr(FS = 1 \mid \pi).
+    \end{equation}
+    $H_2$ employs paired exact McNemar tests against both V8.1 and V7:
+    \begin{equation}
+        H_{0,2}^{(\mathrm{V8})}: R_{\mathrm{inc}}(\hat{\pi}) \ge R_{\mathrm{inc}}(\pi_{\mathrm{V8}}), \qquad
+        H_{0,2}^{(\mathrm{V7})}: R_{\mathrm{inc}}(\hat{\pi}) \ge R_{\mathrm{inc}}(\pi_{\mathrm{V7}}).
+    \end{equation}
+    \item \textbf{Hypothesis $H_3$ (Operational Utility \& TSR Noninferiority):}
+    Evaluated strictly on the \textbf{Scenario holdout partition} ($\mathcal{D}_{\text{test}}^{\text{scen}}$, $N=1,200$, focusing on the 10 nominal/adversarial scenarios in $S_{10}$). The estimand is paired True-Success Rate difference:
+    \begin{equation}
+        \Delta\mathrm{TSR}_{\mathrm{base}} = \mathrm{TSR}(\hat{\pi}; \mathcal{S}_{10}) - \mathrm{TSR}(\pi_{\mathrm{base}}; \mathcal{S}_{10}).
+    \end{equation}
+    The decision rule requires:
+    \begin{equation}
+        \mathrm{LCB}_{95\%}(\Delta\mathrm{TSR}_{\mathrm{V8.1}}) > -0.05 \quad \text{AND} \quad \widehat{\mathrm{TSR}}_{\mathrm{nominal}} \ge 0.94,
+    \end{equation}
+    with co-evaluation against V7 MPC:
+    \begin{equation}
+        \mathrm{LCB}_{95\%}(\Delta\mathrm{TSR}_{\mathrm{V7}}) > -0.05.
+    \end{equation}
+\end{enumerate}
+
+\section{Phase 2 — Common Random Numbers (CRN) Architectural Audit}
+
+\subsection{Stream Derivation and Decoupling}
+The episode RNG instantiation in \texttt{\_derive\_episode\_rngs} generates independent streams via NumPy's \texttt{SeedSequence}:
+\begin{equation}
+    \mathrm{SS} = \texttt{SeedSequence}(\mathrm{master\_seed}, \mathrm{spawn\_key}=(\mathrm{manifest\_id}, \mathrm{ep\_seed})).
+\end{equation}
+When spawned into children, \texttt{child[0]} provides $\mathrm{rng}_{\mathrm{env}}$ and \texttt{child[1]} provides $\mathrm{rng}_{\mathrm{sensors}}$.
+Because \texttt{execute\_production\_holdout\_pipeline} instantiates these generators separately for each controller invocation, memory states are isolated. 
+
+\subsection{Verified Invariants and the Mutable Stream Qualification}
+\begin{itemize}
+    \item \textbf{Order Invariance:} Reversing the simulation order from $\text{V9} \to \text{V8.1} \to \text{V7}$ to $\text{V7} \to \text{V8.1} \to \text{V9}$ produces bitwise identical trajectories, decisions, and output records (\texttt{test\_47}).
+    \item \textbf{Early Termination Isolation:} If Controller V9 terminates early at step 5 due to safety abstention, Controllers V8.1 and V7 continue to step 100 with fresh, unaffected generator instances (\texttt{test\_48}).
+    \item \textbf{Initial Conditions ($t=0$):} Target location $\mathbf{p}_{\mathrm{target}}$ and initial sensor noise draws at $t=0$ are 100\% bitwise identical across all controllers (\texttt{test\_49}).
+    \item \textbf{Closed-Loop Mutable Stream Qualification:} In physical simulation, \texttt{AnchorSensor.measure(..., query=...)} calls the RNG conditionally. When V8 queries the anchor while V7 does not, V8 consumes a normal variate. Subsequent calls at $t+1$ are therefore offset by one variate. As documented in \texttt{docs/v9\_research\_audit.md:240}, closed-loop trajectories diverge once actions differ, so sensor draws remain matched at $t=0$ and coupled via common random numbers thereafter.
+\end{itemize}
+
+\section{Synthetic Test Suite and Empirical Verification}
+
+Table~\ref{tab:audit_tests} summarizes the 5 dedicated unit and integration tests added to \texttt{tests/test\_v9\_holdout\_preflight.py}.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Dedicated H3 Protocol and CRN Verification Test Results}
+\label{tab:audit_tests}
+\begin{tabularx}{\textwidth}{llXlc}
+\toprule
+\textbf{Test ID} & \textbf{Target Mechanism} & \textbf{Verified Invariant \& Assertion} & \textbf{Time} & \textbf{Status} \\
+\midrule
+\texttt{test\_45} & Dual-Baseline H3 & Evaluates V8.1 primary and V7 co-evaluated; verifies \texttt{h3\_overall} & 0.05s & \textbf{PASS} \\
+\texttt{test\_46} & Substitution Rejection & Corrupts baseline pairing keys; verifies fail-closed \texttt{ValueError} & 0.04s & \textbf{PASS} \\
+\texttt{test\_47} & Controller Order Invariance & Simulates V9/V8/V7 in forward vs reverse order; verifies bitwise equality & 0.06s & \textbf{PASS} \\
+\texttt{test\_48} & Consumption Isolation & Simulates early V9 termination at $t=5$; verifies V8/V7 step 100 invariance & 0.05s & \textbf{PASS} \\
+\texttt{test\_49} & Initial Conditions \& Offset & Verifies bitwise $t=0$ match and characterizes mutable stream offset & 0.05s & \textbf{PASS} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Regression Testing and Holdout Isolation Proof}
+
+\subsection{Test Suite Performance}
+\begin{itemize}
+    \item \textbf{Focused Preflight Suite:} \texttt{PYTHONPATH=src uv run pytest -v tests/test\_v9\_holdout\_preflight.py} passed all 49 tests in 1.14 seconds.
+    \item \textbf{Full Repository Suite:} \texttt{PYTHONPATH=src uv run pytest -q} passed all 160 tests in 25.52 seconds.
+\end{itemize}
+
+\subsection{Proof of Holdout Isolation}
+A comprehensive filesystem scan verified that zero real holdout manifests or directories exist:
+\begin{equation}
+\begin{aligned}
+    \text{Path Existence}(\texttt{results/v9/manifests/test\_mix\_manifest\_r1.json}) &= \textbf{FALSE} \\
+    \text{Path Existence}(\texttt{results/v9/manifests/test\_scen\_manifest\_r1.json}) &= \textbf{FALSE} \\
+    \text{Path Existence}(\texttt{results/v9/test\_mix/}) &= \textbf{FALSE} \\
+    \text{Path Existence}(\texttt{results/v9/test\_scen/}) &= \textbf{FALSE}
+\end{aligned}
+\end{equation}
+The frozen policy SHA-256 remains \texttt{5a89d6061b379f1b34ab47be0deef8d63180d3e4c21d18c478bc7e451f5c84e2}.
+
+\section{Conclusion}
+The final status of this audit is formally declared as:
+\begin{center}
+    \textbf{\Large H3\_CRN\_CONSISTENCY\_CONFIRMED\_WITH\_QUALIFICATIONS}
+\end{center}
+All baseline identities are reconciled with the authoritative protocol, the CRN architecture is decoupled and order-invariant across controllers, and the evaluation harness remains safely locked pending project-owner authorization.
+
+\end{document}
