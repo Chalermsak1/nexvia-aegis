@@ -156,6 +156,8 @@ class V9HierarchicalManifestGenerator:
             "episodes_sha256": episodes_sha256,
             "episodes": episodes,
         }
+        if partition_index is not None:
+            payload["partition_index"] = partition_index
 
         canon_bytes = json.dumps(
             {k: v for k, v in payload.items() if k != "integrity_sha256"},

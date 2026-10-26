@@ -25,6 +25,7 @@ Verifies all 12 preflight requirements:
 from __future__ import annotations
 
 import csv
+import hashlib
 import json
 import math
 from pathlib import Path
@@ -2377,6 +2378,104 @@ def test_62_h3_concordance_boundary_envelope_qualification():
     assert t_lcb_b > -0.05, f"Expected t_lcb > -0.05, got {t_lcb_b}"
     assert newc_lcb_b <= -0.05, f"Expected newc_lcb <= -0.05, got {newc_lcb_b}"
     assert (t_lcb_b > -0.05) != (newc_lcb_b > -0.05), "Expected boundary divergence"
+
+
+def test_63_manifest_generator_root_partition_index_regression(tmp_path: Path):
+    """
+    Gate A Remediation Regression Test:
+    Verifies that V9HierarchicalManifestGenerator.generate_manifest writes partition_index
+    to the root dictionary when partition_index is provided, and preserves episode-level metadata.
+    Also verifies that integrity_sha256 correctly binds the root-level metadata.
+    """
+    gen = V9HierarchicalManifestGenerator(master_entropy=20261025)
+    man = gen.generate_manifest(
+        partition_name="test_mix_r1",
+        manifest_id_start=73000,
+        count=10,
+        partition_index=PARTITION_BRANCH_TEST_MIXTURE,
+    )
+
+    # 1. Root-level partition_index is present and matches
+    assert "partition_index" in man
+    assert man["partition_index"] == PARTITION_BRANCH_TEST_MIXTURE == 4
+
+    # 2. Episode-level partition metadata
+    for ep in man["episodes"]:
+        assert ep["partition_index"] == 4
+        assert ep["spawn_key"] == [4, 1, ep["episode_index"]]
+        assert ep["env_spawn_key"] == [4, 1, ep["episode_index"], 0]
+        assert ep["sensor_spawn_key"] == [4, 1, ep["episode_index"], 1]
+
+    # 3. Integrity hash recomputation after serialization
+    filtered = {k: v for k, v in man.items() if k != "integrity_sha256"}
+    expected_hash = hashlib.sha256(json.dumps(filtered, sort_keys=True, indent=2).encode("utf-8")).hexdigest()
+    assert man["integrity_sha256"] == expected_hash
+
+    # 4. Backward compatibility: when partition_index is None, root partition_index is not added
+    unbranched_man = gen.generate_manifest(
+        partition_name="test_historical",
+        manifest_id_start=70000,
+        count=5,
+        partition_index=None,
+    )
+    assert "partition_index" not in unbranched_man
+    for ep in unbranched_man["episodes"]:
+        assert "partition_index" not in ep
+
+
+def test_64_production_manifest_loader_validation(tmp_path: Path):
+    """
+    Gate A Remediation Regression Test:
+    Verifies that the corrected Mixture manifest passes non-mock production loader validation,
+    that a manifest missing root-level partition_index is strictly rejected, and that
+    Scenario manifest generation continues to satisfy all metadata and allocation requirements.
+    """
+    gen = V9HierarchicalManifestGenerator(master_entropy=20261025)
+
+    # 1. Corrected mixture manifest passes production loader validation
+    mix_man = gen.generate_manifest(
+        partition_name="test_mix_r1",
+        manifest_id_start=73000,
+        count=1440,
+        partition_index=PARTITION_BRANCH_TEST_MIXTURE,
+    )
+    mix_path = tmp_path / "test_mix_manifest_r1.json"
+    mix_path.write_text(json.dumps(mix_man, indent=2) + "\n", encoding="utf-8")
+
+    loaded_mix, raw_sha_mix = verify_and_load_holdout_manifest(mix_path, "mixture", allow_synthetic=False)
+    assert loaded_mix["partition"] == "test_mix_r1"
+    assert loaded_mix["partition_index"] == 4
+    assert loaded_mix["planned_episodes"] == 1440
+    assert len(loaded_mix["episodes"]) == 1440
+
+    # 2. Defect regression: manifest missing root partition_index is rejected by non-mock path
+    bad_mix = dict(mix_man)
+    del bad_mix["partition_index"]
+    bad_filtered = {k: v for k, v in bad_mix.items() if k != "integrity_sha256"}
+    bad_mix["integrity_sha256"] = hashlib.sha256(json.dumps(bad_filtered, sort_keys=True, indent=2).encode("utf-8")).hexdigest()
+    bad_path = tmp_path / "bad_mix_manifest.json"
+    bad_path.write_text(json.dumps(bad_mix, indent=2) + "\n", encoding="utf-8")
+
+    with pytest.raises(ValueError, match=r"Expected partition_index=4, got None"):
+        verify_and_load_holdout_manifest(bad_path, "mixture", allow_synthetic=False)
+
+    # 3. Scenario manifest satisfies existing metadata and allocation requirements
+    scen_man = gen.generate_stratified_manifest(
+        partition_name="test_scen_r1",
+        seed_start=75000,
+        seeds_per_scenario=120,
+        partition_index=PARTITION_BRANCH_TEST_SCENARIO,
+    )
+    scen_path = tmp_path / "test_scen_manifest_r1.json"
+    scen_path.write_text(json.dumps(scen_man, indent=2) + "\n", encoding="utf-8")
+
+    loaded_scen, raw_sha_scen = verify_and_load_holdout_manifest(scen_path, "scenario", allow_synthetic=False)
+    assert loaded_scen["partition"] == "test_scen_r1"
+    assert loaded_scen["partition_index"] == 5
+    assert loaded_scen["planned_episodes"] == 1440
+    assert len(loaded_scen["realized_scenario_counts"]) == 12
+    assert all(cnt == 120 for cnt in loaded_scen["realized_scenario_counts"].values())
+
 
 
 
