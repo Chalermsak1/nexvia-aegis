@@ -1,0 +1,131 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[margin=2.0cm]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb,amsfonts,amsthm,mathtools}
+\usepackage{booktabs,tabularx,colortbl,array,multirow}
+\usepackage[table]{xcolor}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{microtype}
+\usepackage{hyperref}
+
+\newfontfamily\thaifont{Thonburi}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    citecolor=blue!70!black,
+    urlcolor=blue!70!black
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\footnotesize \textbf{NEXVIA AEGIS V9-M4 Owner Decision Record}}
+\lhead{\footnotesize Phase 22 Formal Owner Decision Gate}
+\rfoot{\footnotesize Page \thepage}
+\lfoot{\footnotesize Document ID: AEGIS-V9-M4-DEC-22}
+
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{NEXVIA AEGIS V9-M4 — Owner Decision Record}}\\[6pt]
+    {\Large \textbf{Phase 22: Formal Pre-Execution Owner Decision Gate}}\\[3pt]
+    {\large \textbf{Review of Report 21 Consistency Audit and Production Holdout Decision}}\\[10pt]
+    \textbf{Autonomous Verification Subsystem (Google DeepMind Antigravity)}\\
+    \textit{Git Branch: v9.0-runtime-assurance \quad $\cdot$ \quad Base Commit: c271d76 \quad $\cdot$ \quad Date: October 26, 2026}\\[12pt]
+\end{center}
+
+\noindent\fbox{
+\parbox{0.97\textwidth}{
+\textbf{CRITICAL NON-AUTHORIZATION INVARIANT:}\\
+This document records the formal owner decision regarding the statistical protocol corrections in Report 21 and the evaluation targets for Milestone V9-M4. \textbf{This document does NOT constitute authorization to execute Milestone V9-M4, nor does it provide or invoke any execution token.} Live execution of Milestone V9-M4 remains strictly \textbf{NOT AUTHORIZED}. All production holdout paths remain uninstantiated and locked.
+}
+}
+
+\vspace{10pt}
+
+\section{Formal Decision Summary}
+
+\begin{table}[h!]
+\centering
+\small
+\begin{tabularx}{\textwidth}{l c X}
+\toprule
+\textbf{Decision Field} & \textbf{Formal Determination} & \textbf{Operational Scope} \\
+\midrule
+1. Acceptance of Report 21 Corrections & \textbf{ACCEPT} & Accepts all 5 source-of-truth corrections in Report 21, formally superseding narrative transcription errors in Report 20. \\
+\addlinespace
+2. Confirmation of Registered Targets & \textbf{CONFIRMED} & Confirms governing $H_1$--$H_5$ thresholds, sampling allocations, baseline identities, and $H_3$ $S_{10}$ scope. \\
+\addlinespace
+3. Production Holdout Decision & \textbf{NOT AUTHORIZED} & Production confirmatory holdout execution remains strictly locked and unauthorized. \\
+\bottomrule
+\end{tabularx}
+\caption{Formal Owner Decision Determinations for Milestone V9-M4.}
+\end{table}
+
+\section{Executive Summary}
+
+\subsection{Executive Summary (English)}
+\begin{enumerate}
+    \item \textbf{Acceptance of Corrections (ACCEPT):} The project owner accepts the five source-of-truth reporting corrections documented in Report 21. Production code and preregistered protocol were verified to be in 100\% agreement; discrepancies in Report 20 were purely narrative transcription errors.
+    \item \textbf{Confirmation of Targets (CONFIRMED):} Confirms governing thresholds: $H_1$ ($U_{\mathrm{CP}, 1} \le 0.05$ on $M \ge 59$), $H_4$ ($\hat{C} \ge 0.35$), Scenario Holdout total ($N = 1,440$ episodes across 12 scenarios $\times$ 120 seeds), $H_5$ across all 12 scenarios ($N_s = 120$ each), and $H_3$ ($N = 1,200$ matched pairs strictly on $S_{10}$).
+    \item \textbf{Holdout Execution Status (NOT AUTHORIZED):} Confirmatory holdout evaluation remains safely locked. Acceptance of documentation corrections does not constitute execution authorization.
+    \item \textbf{Holdout Independence:} Confirmed that zero real holdout data was generated, loaded, or inspected. Reserved seed blocks ($73000..74439$ and $75000..75119$) remain 100\% untouched.
+\end{enumerate}
+
+\subsection{\thaifont บทสรุปสำหรับผู้บริหาร (Executive Summary in Thai)}
+\begin{enumerate}
+    \item \textbf{\thaifont การยอมรับข้อแก้ไขใน Report 21 (ACCEPT):} \thaifont ยอมรับข้อแก้ไขเชิงรายงานทั้ง 5 ข้อใน Report 21 อย่างเป็นทางการ รหัสต้นฉบับการประเมินผลและพิธีสารมีความสอดคล้องกันอย่างสมบูรณ์แบบ โดยข้อผิดพลาดใน Report 20 เป็นเพียงความคลาดเคลื่อนในการพิมพ์ข้อความบรรยาย
+    \item \textbf{\thaifont การยืนยันเป้าหมายและเกณฑ์ทางสถิติ (CONFIRMED):} \thaifont ยืนยันเกณฑ์การประเมินตามพิธีสารหลัก: $H_1$ ($\le 0.05$ บน $M \ge 59$), $H_4$ ($\ge 0.35$), Scenario Holdout รวม 1,440 ตอน (12 ฉากทัศน์ $\times$ 120 ตอน), และ $H_3$ ประเมินเฉพาะกลุ่ม $S_{10}$ จำนวน 1,200 คู่เทียบ
+    \item \textbf{\thaifont สถานะการอนุมัติการรันจริง (NOT AUTHORIZED):} \thaifont การประเมินผลชุดข้อมูลจริงใน Milestone V9-M4 ยังคงไม่อนุมัติให้ดำเนินการ การยืนยันความถูกต้องของระเบียบวิธีไม่ถือเป็นการอนุญาตให้รันจริง
+    \item \textbf{\thaifont ความบริสุทธิ์ของชุดข้อมูล Holdout:} \thaifont ยืนยัน 100\% ว่าไม่มีการสร้าง เข้าถึง หรือจำลองข้อมูลในชุด Holdout บล็อก seed สำรองยังคงไม่ถูกแตะต้อง
+\end{enumerate}
+
+\section{Governing Statistical Protocol and Decision Rules}
+
+\begin{table}[h!]
+\centering
+\small
+\begin{tabularx}{\textwidth}{l p{2.2cm} p{3.2cm} c p{4.2cm}}
+\toprule
+\textbf{Hypothesis} & \textbf{Target Partition} & \textbf{Estimand / Metric} & \textbf{Sample Size} & \textbf{Governing Pass Threshold} \\
+\midrule
+$H_1$ (Risk) & $\mathcal{D}_{\text{test}}^{\text{mix}}$ & Selective Risk $R_{\text{sel}} = K / M$ & $N = 1,440$ & Exact 1-sided 95\% Clopper--Pearson $U_{\mathrm{CP}, 1} \le \mathbf{0.05}$ on $M \ge 59$ \\
+\addlinespace
+$H_2$ (Incidence) & $\mathcal{D}_{\text{test}}^{\text{mix}}$ & FS Incidence Reduction vs Baselines & $1,440$ pairs & Paired McNemar $p < \mathbf{0.05}$ with $n_{10} < n_{01}$ (vs V8.1 \& V7) \\
+\addlinespace
+$H_3$ (Utility) & $\mathcal{D}_{\text{test}}^{\text{scen}} \cap \mathcal{S}_{10}$ & Paired TSR Difference vs Baselines & $1,200$ pairs & Student's $t$ Wald $\mathrm{LCB}_{95} > \mathbf{-0.05}$ on $S_{10}$ AND $\widehat{\mathrm{TSR}}_{\mathrm{nom}} \ge \mathbf{0.94}$ \\
+\addlinespace
+$H_4$ (Coverage) & $\mathcal{D}_{\text{test}}^{\text{mix}}$ & Task Coverage Floor $\hat{C} = M / N$ & $N = 1,440$ & Sample proportion point estimate $\hat{C} \ge \mathbf{0.35}$ ($M \ge 504$) \\
+\addlinespace
+$H_5$ (Safety) & $\mathcal{D}_{\text{test}}^{\text{scen}}$ & Worst-Case Scenario Safety & $1,440$ eps & Berger IUT $\max_{s \in \mathcal{S}_{12}}(p_{\mathrm{inc}, s}) \le \mathbf{0.05}$ ($N_s = 120$) \\
+\bottomrule
+\end{tabularx}
+\caption{Governing Confirmatory Decision Rules Confirmed for Milestone V9-M4.}
+\end{table}
+
+\section{Owner Rationale and Outstanding Conditions}
+\begin{itemize}
+    \item \textbf{Rationale for Accepting Report 21 Corrections:} The protocol consistency audit proved 100\% agreement between the implementation (\texttt{experiments/v9\_evaluate\_holdout.py}) and the preregistered protocol (\texttt{docs/v9\_experiment\_protocol.md}). Regression suites pass 62/62 (preflight) and 173/173 (full repository). The five discrepancies in Report 20 were clerical transcription errors.
+    \item \textbf{Rationale for NOT AUTHORIZED Status:} Protocol verification is a necessary quality prerequisite, but does not substitute for an independent owner authorization action outside the audit documentation workflow.
+    \item \textbf{Outstanding Conditions for Future Authorization:}
+    \begin{enumerate}
+        \item Owner executive review and sign-off on this Decision Record.
+        \item Explicit manual injection of the secret execution token into the runtime execution command.
+        \item Dedicated single-shot execution environment preventing collision with existing output directories.
+    \end{enumerate}
+\end{itemize}
+
+\section{Repository Identity and Holdout Verification}
+\begin{itemize}
+    \item \textbf{Git Branch:} \texttt{v9.0-runtime-assurance} $\cdot$ \textbf{Commit:} \texttt{c271d76}.
+    \item \textbf{Certified Frozen Policy:} \texttt{results/v9/cal\_r2/selected\_policy.json} (\texttt{V9\_CAND\_1\_TIER1\_STRICTEST}).
+    \item \textbf{Raw SHA-256:} \texttt{5a89d6061b379f1b34ab47be0deef8d63180d3e4c21d18c478bc7e451f5c84e2}.
+    \item \textbf{Canonical SHA-256:} \texttt{90dc5c0068bb62187415bba57fbf9cafc1f18e111ad5790b0214961490902034}.
+    \item \textbf{Holdout Isolation:} Confirmed 100\% absent. Reserved seed blocks ($73000..74439$ and $75000..75119$) untouched.
+\end{itemize}
+
+\end{document}
