@@ -1,0 +1,186 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[margin=2.0cm]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb,amsfonts,amsthm,mathtools}
+\usepackage{booktabs,tabularx,colortbl,array,multirow}
+\usepackage[table]{xcolor}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{microtype}
+\usepackage{hyperref}
+
+\newfontfamily\thaifont{Thonburi}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    citecolor=blue!70!black,
+    urlcolor=blue!70!black
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\footnotesize \textbf{NEXVIA AEGIS V9-M4 Owner Authorization Readiness Review}}
+\lhead{\footnotesize Final Evidence-Based Protocol, Parameter, and Guard Verification}
+\rfoot{\footnotesize Page \thepage}
+\lfoot{\footnotesize Document ID: AEGIS-V9-M4-RDY-20}
+
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{NEXVIA AEGIS V9-M4 Readiness Review}}\\[6pt]
+    {\Large \textbf{Final Owner Authorization Readiness Review:}}\\[3pt]
+    {\Large \textbf{Frozen-Policy Provenance, Hypothesis Verification, and Runtime Assurance}}\\[10pt]
+    \textbf{Autonomous Verification Subsystem (Google DeepMind Antigravity)}\\
+    \textit{Git Branch: v9.0-runtime-assurance \quad $\cdot$ \quad Starting Commit: 1c505af \quad $\cdot$ \quad Date: October 26, 2026}\\[12pt]
+\end{center}
+
+\noindent\fbox{
+\parbox{0.97\textwidth}{
+\textbf{CRITICAL NON-AUTHORIZATION DIRECTIVE:}\\
+This report evaluates technical, methodological, and provenance readiness for Milestone V9-M4 (Confirmatory Holdout Evaluation). \textbf{This document does NOT constitute authorization to execute Milestone V9-M4, nor does it provide or invoke any execution token.} All evaluations in this review were conducted strictly using synthetic test fixtures, in-memory models, and read-only inspection of existing calibration and validation artifacts. Production holdout manifests (\texttt{test\_mix\_manifest\_r1.json} and \texttt{test\_scen\_manifest\_r1.json}) and output directories (\texttt{results/v9/test\_mix/} and \texttt{results/v9/test\_scen/}) do not exist. Reserved holdout seed blocks ($73000..74439$ for mixture holdout and $75000..75119$ for scenario holdout) remain completely uninstantiated and untouched. Live execution requires an explicit, separate authorization decision and delivery of an authorization token by the project owner.
+}
+}
+
+\vspace{10pt}
+
+\begin{abstract}
+\noindent This comprehensive readiness review establishes whether Milestone V9-M4 (Confirmatory Holdout Evaluation) of the NEXVIA AEGIS runtime assurance subsystem is ready for a separate project-owner authorization decision. We audit the repository across ten dimensions: (1) actual Git working tree and commit state, (2) authoritative M2R2 frozen policy provenance and exact parameter-vector reconciliation, (3) Hypotheses $H_1$ through $H_5$ statistical formulation and implementation fidelity, (4) primary V8.1 and auxiliary V7 baseline comparison semantics, (5) $H_3$ confidence-bound decision rule governance and sensitivity reporting, (6) Common Random Numbers (CRN) architectural coupling and variance-reduction claim boundaries, (7) production pipeline execution guards and isolation mechanisms, (8) full repository synthetic regression suite performance, (9) physical holdout file-system isolation verification, and (10) artifact hashing and provenance preservation.
+
+The review confirms that: (a) the certified frozen policy artifact is uniquely identified at \texttt{results/v9/cal\_r2/selected\_policy.json} (Candidate \texttt{V9\_CAND\_1\_TIER1\_STRICTEST}, raw SHA-256 \texttt{5a89d606...}, canonical payload SHA-256 \texttt{90dc5c00...}); (b) all candidate parameter values are reconciled across the frozen candidate family, calibration run config, validation records, and source code: $\alpha_{\text{mon}}=0.010$, $h=6.0$, $\tau_{\text{diff}}=3.20$, $\tau_{\text{ar}}=3.80$, $\tau_{\text{val}}=0.10$, $\tau_{\text{stop}}=0.36$; (c) previous narrative mentions of $\tau_{\text{ar}}=4.0$ or $\tau_{\text{stop}}=0.35$ were informal conversational transcription errors; (d) the $H_3$ decision rule is strictly governed by the prespecified paired Student's $t$ Wald LCB ($\mathrm{LCB}_{95} > -0.05$ on $S_{10}$ and $\widehat{\mathrm{TSR}}_{\mathrm{nominal}} \ge 0.94$), reporting Newcombe Method 10 as a prespecified sensitivity analysis; (e) production execution guards and holdout isolation mechanisms are active; and (f) preflight tests pass 62/62 (1.32s) and repository tests pass 173/173 (32.35s). The subsystem is technically, methodologically, and procedurally ready for the project owner to consider authorization.
+\end{abstract}
+
+\vspace{6pt}
+\noindent \textbf{Keywords:} Milestone V9-M4, Owner Authorization Readiness, Frozen Policy Provenance, Parameter Reconciliation, Hypothesis Testing, Student's $t$ Wald LCB, Runtime Assurance, Holdout Isolation.
+
+\section{Executive Summary}
+
+\subsection{Executive Summary (English)}
+\begin{enumerate}
+    \item \textbf{Readiness Recommendation:} \texttt{M4\_READY\_FOR\_OWNER\_AUTHORIZATION}. All technical prerequisites, protocol checks, baseline pairing mechanisms, execution guards, and test suites are fully verified and pass without defects.
+    \item \textbf{Repository State:} Current branch \texttt{v9.0-runtime-assurance} at commit \texttt{1c505af}, cleanly aligned with \texttt{origin/v9.0-runtime-assurance}. Untracked historical artifacts in \texttt{results/v9/cal/}, \texttt{results/v9/cal\_r2/}, and \texttt{results/v9/val\_r1/} are preserved untouched.
+    \item \textbf{Policy Parameter Reconciliation:} Confirmed candidate parameters for \texttt{V9\_CAND\_1\_TIER1\_STRICTEST} are $\tau_{\text{ar}}=3.80$, $\tau_{\text{stop}}=0.36$, $\tau_{\text{diff}}=3.20$, $\tau_{\text{val}}=0.10$, $\alpha_{\text{mon}}=0.010$, $h=6.0$. Discrepant narrative mentions ($\tau_{\text{ar}}=4.0$, $\tau_{\text{stop}}=0.35$) were informal conversational transcription errors; the underlying JSON artifacts and source code are 100\% consistent.
+    \item \textbf{Authoritative $H_3$ Decision Rule:} Anchored strictly to Student's $t$ Wald paired LCB on $S_{10}$ with $\delta_0 = -0.05$ and nominal TSR requirement $\ge 0.94$. Newcombe Method 10 is reported as sensitivity analysis with recorded concurrence.
+    \item \textbf{Common Random Numbers (CRN):} Episode-level pairing, matched $t=0$ initial conditions, and independent stream derivations are verified. Theoretical and empirical distinction between historical correlation ($\rho \approx 0.593$, SE reduction 36.21\%) and prospective holdout variance reduction is rigorously maintained.
+    \item \textbf{Execution Guards \& Holdout Isolation:} Execution token gate, mock isolation guard, and single-shot file write protections are active. Production holdout manifests and directories are confirmed absent (\texttt{exists = False}).
+    \item \textbf{Regression Status:} 62/62 preflight tests pass (1.32s); 173/173 repository tests pass (32.35s). Zero test failures.
+\end{enumerate}
+
+\subsection{\thaifont บทสรุปสำหรับผู้บริหาร (Executive Summary in Thai)}
+\begin{enumerate}
+    \item \textbf{\thaifont ข้อเสนอแนะความพร้อมขั้นสุดท้าย:} \texttt{M4\_READY\_FOR\_OWNER\_AUTHORIZATION} {\thaifont ระบบย่อยมีความพร้อมอย่างสมบูรณ์ในทุกมิติ ทั้งด้านความสอดคล้องตามพิธีสาร การจับคู่ข้อมูลพื้นฐาน การแยกแยะกฎการตัดสินทางสถิติ และระบบป้องกันการรันโดยไม่ได้ตั้งใจ เพื่อให้เจ้าของโครงการพิจารณาตัดสินใจอนุมัติเป็นการเฉพาะ}
+    \item \textbf{\thaifont สถานะคลังรหัสต้นฉบับ (Repository State):} {\thaifont สาขา \texttt{v9.0-runtime-assurance} ที่คอมมิต \texttt{1c505af} ตรงกับต้นทาง \texttt{origin} ทุกประการ ไฟล์ประวัติศาสตร์การปรับเทียบและการตรวจสอบความถูกต้องใน \texttt{results/v9/} ได้รับการเก็บรักษาไว้โดยไม่มีการลบ ดัดแปลง หรือเขียนทับ}
+    \item \textbf{\thaifont การพิสูจน์เวกเตอร์พารามิเตอร์ของนโยบายคงที่:} {\thaifont ยืนยันพารามิเตอร์จริงของนโยบายรอบ M2R2 (\texttt{V9\_CAND\_1\_TIER1\_STRICTEST}) คือ $\tau_{\text{ar}}=3.80$, $\tau_{\text{stop}}=0.36$, $\tau_{\text{diff}}=3.20$, $\tau_{\text{val}}=0.10$, $\alpha_{\text{mon}}=0.010$, $h=6.0$ ซึ่งตรงกัน 100\% ระหว่างไฟล์โครงร่าง (\texttt{configs/}), ไฟล์ผลการรันปรับเทียบ (\texttt{cal\_r2/}), ไฟล์ผลการตรวจสอบ (\texttt{val\_r1/}) และรหัสต้นฉบับ (\texttt{src/aegis/v9/risk\_statistics.py}) ข้อความในบทสนทนาก่อนหน้าที่กล่าวถึง $\tau_{\text{ar}}=4.0$ หรือ $\tau_{\text{stop}}=0.35$ ได้รับการบันทึกว่าเป็นข้อผิดพลาดในการพิมพ์เชิงบรรยาย (Narrative Transcription Error)}
+    \item \textbf{\thaifont เกณฑ์การตัดสินสมมติฐาน $H_3$:} {\thaifont เกณฑ์การตัดสินชี้ขาดเป็นไปตามพิธีสารที่ลงทะเบียนไว้ล่วงหน้าอย่างเคร่งครัด โดยใช้ paired Student's $t$ Wald LCB ($> -0.05$ บน $S_{10}$ ร่วมกับ $\widehat{\mathrm{TSR}}_{\mathrm{nominal}} \ge 0.94$) และรายงาน Newcombe Method 10 เป็นการวิเคราะห์ความไว (Sensitivity Analysis) พร้อมตัวบ่งชี้ความสอดคล้อง}
+    \item \textbf{\thaifont ขอบเขตการลดความแปรปรวนของ CRN:} {\thaifont ยืนยันโครงสร้างการจับคู่ระดับเอพิโซด ($t=0$ Bitwise Match) แต่คงข้อจำกัดทางวิชาการว่า การลดความแปรปรวนจริงเป็นคุณสมบัติเชิงประจักษ์ที่ต้องรอการวัดผลหลังได้รับอนุมัติ}
+    \item \textbf{\thaifont การแยกส่วนชุดข้อมูล Holdout:} {\thaifont ยืนยันความไม่มีอยู่จริงของไฟล์ Manifest และไดเรกทอรี Holdout ทั้งหมด (\texttt{exists = False}) โดยบล็อก Seed สงวนทั้งสองช่วง ($73000..74439$ และ $75000..75119$) ยังคงไม่ถูกแตะต้อง 100\%}
+    \item \textbf{\thaifont ผลการทดสอบระบบ:} {\thaifont ชุดทดสอบ Preflight ผ่าน 62/62 รายการ (1.32 วินาที) และชุดทดสอบเต็มของทั้งคลังผ่าน 173/173 รายการ (32.35 วินาที)}
+\end{enumerate}
+
+\section{Actual Repository State and Git Provenance}
+Inspection conducted on October 26, 2026 confirms:
+\begin{itemize}
+    \item \textbf{Branch:} \texttt{v9.0-runtime-assurance}.
+    \item \textbf{Starting HEAD Commit:} \texttt{1c505af6408993ccc85c77573a2557279e216788} (Report 19).
+    \item \textbf{Remote Alignment:} Fully synchronized with \texttt{origin/v9.0-runtime-assurance}.
+    \item \textbf{Working Tree:} Clean except for minor editor trailing whitespace in \texttt{tests/test\_v9\_validation.py} and untracked historical experiment output directories under \texttt{results/v9/}.
+\end{itemize}
+
+\section{Final Policy Identity and Parameter Reconciliation}
+
+\subsection{Authoritative M2R2 Selected Policy}
+The certified frozen policy artifact is confirmed:
+\begin{itemize}
+    \item \textbf{Path:} \texttt{results/v9/cal\_r2/selected\_policy.json}.
+    \item \textbf{Candidate ID:} \texttt{V9\_CAND\_1\_TIER1\_STRICTEST}.
+    \item \textbf{Raw SHA-256:} \texttt{5a89d6061b379f1b34ab47be0deef8d63180d3e4c21d18c478bc7e451f5c84e2}.
+    \item \textbf{Canonical Payload SHA-256:} \texttt{90dc5c0068bb62187415bba57fbf9cafc1f18e111ad5790b0214961490902034}.
+    \item \textbf{Certification:} \texttt{certified: true}, stopping reason \texttt{ALL\_6\_CANDIDATES\_CERTIFIED\_NO\_EARLY\_STOP}.
+\end{itemize}
+
+\subsection{Parameter Vector Reconciliation}
+Table~\ref{tab:param_reconcile} presents the side-by-side verification of all parameters of Candidate \texttt{V9\_CAND\_1\_TIER1\_STRICTEST}.
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabularx}{\textwidth}{lccccc}
+\toprule
+\textbf{Parameter} & \textbf{Frozen Configs} & \textbf{Cal Run Config} & \textbf{Selected Policy} & \textbf{Validation Report} & \textbf{Status} \\
+\midrule
+\texttt{candidate\_id} & \texttt{V9\_CAND\_1...} & \texttt{V9\_CAND\_1...} & \texttt{V9\_CAND\_1...} & \texttt{V9\_CAND\_1...} & \textbf{MATCH} \\
+\texttt{alpha\_mon} & 0.010 & 0.010 & 0.010 & 0.010 & \textbf{MATCH} \\
+\texttt{h\_cusum} & 6.0 & 6.0 & 6.0 & 6.0 & \textbf{MATCH} \\
+\texttt{tau\_diff} & 3.20 & 3.20 & 3.20 & 3.20 & \textbf{MATCH} \\
+\textbf{\texttt{tau\_ar}} & \textbf{3.80} & \textbf{3.80} & \textbf{3.80} & \textbf{3.80} & \textbf{MATCH (3.80)} \\
+\texttt{tau\_val} & 0.10 & 0.10 & 0.10 & 0.10 & \textbf{MATCH} \\
+\textbf{\texttt{tau\_stop}} & \textbf{0.36} & \textbf{0.36} & \textbf{0.36} & \textbf{0.36} & \textbf{MATCH (0.36)} \\
+\texttt{gamma\_ville} & 1.0 & 1.0 & 1.0 & 1.0 & \textbf{MATCH} \\
+\texttt{probing\_steps} & 36 & 36 & 36 & 36 & \textbf{MATCH} \\
+\texttt{n\_fit\_min} & 10 & 10 & 10 & 10 & \textbf{MATCH} \\
+\texttt{n\_val\_min} & 6 & 6 & 6 & 6 & \textbf{MATCH} \\
+\texttt{lambda\_fim\_min} & 0.001 & 0.001 & 0.001 & 0.001 & \textbf{MATCH} \\
+\texttt{arrival\_tolerance\_m} & 0.22 & 0.22 & 0.22 & 0.22 & \textbf{MATCH} \\
+\texttt{chord\_min\_m} & 0.40 & 0.40 & 0.40 & 0.40 & \textbf{MATCH} \\
+\texttt{max\_anchor\_queries} & 4 & 4 & 4 & 4 & \textbf{MATCH} \\
+\bottomrule
+\end{tabularx}
+\caption{Reconciliation of selected policy parameters across artifacts and code.}
+\label{tab:param_reconcile}
+\end{table}
+
+The parameter vector is unanimous: $\tau_{\text{ar}} = 3.80$ and $\tau_{\text{stop}} = 0.36$. Any previous conversational mention of $\tau_{\text{ar}} = 4.0$ or $\tau_{\text{stop}} = 0.35$ was an informal narrative transcription error.
+
+\section{Hypotheses H1--H5 Protocol and Implementation Check}
+
+\begin{itemize}
+    \item \textbf{H1 (Selective Risk Certification):} Evaluated on mixture holdout $\mathcal{D}_{\text{test}}^{\text{mix}}$ ($N=1,440$). Computes $R_{\text{sel}} = K / M$. Evaluates $M \ge 59$ as eligibility precondition and tests 1-sided exact Clopper--Pearson 95\% UCB $U_{\text{CP}}(K, M; 0.05) \le 0.05$. When $M = 0$, $R_{\text{sel}}$ is evaluated as \texttt{"UNDEFINED"}, safely failing certification without runtime crashes.
+    \item \textbf{H2 (False-Success Reduction vs Baselines):} Strictly paired against V8.1 Martingale and V7 MPC using \texttt{align\_and\_pair\_records} over \texttt{(seed, scenario)}. Applies McNemar's exact test and Newcombe's paired-difference confidence interval. Mismatched records fail closed.
+    \item \textbf{H3 (TSR Noninferiority):} Evaluated on $S_{10}$ ($N=1,200$ matched pairs) against primary baseline V8.1 and auxiliary baseline V7 with margin $\delta_0 = -0.05$. The confirmatory pass/fail decision is governed strictly by the paired Student's $t$ Wald LCB ($> -0.05$) and nominal TSR $\ge 0.94$. Newcombe Method 10 is reported as a prespecified sensitivity analysis with boolean concurrence.
+    \item \textbf{H4 (Coverage Floor Precondition):} Point estimate $\widehat{C} = M / N \ge 0.35$ on $\mathcal{D}_{\text{test}}^{\text{mix}}$ ($M \ge 504$). Anti-gaming logic classifies policies with $\widehat{C} < 0.35$ as \texttt{"CONSERVATIVE\_RISK\_COVERAGE\_TRADEOFF"}, overriding $H_1$.
+    \item \textbf{H5 (Worst-Case Scenario Safety):} Evaluates unconditional false-success incidence $R_{\text{inc}, s} = \mathrm{FS}_s / N_s$ across all 12 scenarios in $\mathcal{D}_{\text{test}}^{\text{scen}}$ ($N_s = 100$). Tests global safety via Berger Intersection-Union Test ($\max_s(p_s) \le 0.05$) alongside step-down Holm--Šidák adjusted bounds. Selective risk is undefined under complete scenario abstention ($M_s = 0$).
+\end{itemize}
+
+\section{CRN Semantics and Paired Baseline Readiness}
+The Common Random Numbers (CRN) framework is verified:
+\begin{enumerate}
+    \item \textbf{Model A Coupling:} Matched pairs are instantiated from identical integer seeds via NumPy \texttt{SeedSequence} derivations, enforcing bit-identical initial conditions at $t=0$.
+    \item \textbf{Closed-Loop Independence:} Controllers maintain independent mutable PRNG streams. Closed-loop anchor queries induce intentional stream offsets, preserving controller-specific execution dynamics.
+    \item \textbf{Empirical Covariance:} Variance reduction requires positive covariance $\operatorname{Cov}(Y_\pi, Y_{\text{base}}) > 0$. Established on historical benchmark data ($\rho \approx 0.593$, SE reduction 36.21\%), holdout variance reduction remains an empirical property to be measured post-authorization.
+\end{enumerate}
+
+\section{Production Pipeline and Holdout Isolation}
+\begin{itemize}
+    \item \textbf{Authorization Token Gate:} Enforces \texttt{REQUIRED\_EXECUTION\_TOKEN}. Execution without the secret token aborts fail-closed.
+    \item \textbf{Simulator Isolation:} Requires explicit \texttt{allow\_mock\_simulation=True} for non-production simulators; production pipeline refuses mock simulation by default.
+    \item \textbf{Single-Shot Protection:} Output directory collisions trigger immediate execution refusal.
+    \item \textbf{Partial Failure Protection:} Mid-run failures write partial records to \texttt{\_PARTIAL.csv} and error descriptors to \texttt{INCOMPLETE\_INVALID.json}.
+    \item \textbf{Holdout Isolation:} All production holdout paths (\texttt{results/v9/manifests/test\_mix\_manifest\_r1.json}, \texttt{results/v9/manifests/test\_scen\_manifest\_r1.json}, \texttt{results/v9/test\_mix/}, and \texttt{results/v9/test\_scen/}) are confirmed absent (\texttt{exists = False}). Reserved seed blocks ($73000..74439$ and $75000..75119$) remain untouched.
+\end{itemize}
+
+\section{Regression Suite Performance}
+\begin{itemize}
+    \item Focused Preflight Tests: \textbf{62/62 passed} in 1.32s (Exit code: \texttt{0}).
+    \item Full Repository Suite: \textbf{173/173 passed} in 32.35s (Exit code: \texttt{0}).
+\end{itemize}
+
+\section{Final Readiness Recommendation}
+
+\begin{center}
+{\Large \textbf{M4\_READY\_FOR\_OWNER\_AUTHORIZATION}}
+\end{center}
+
+\noindent All technical, statistical, and operational prerequisites are satisfied. The project owner may proceed with an independent, separate authorization decision.
+
+\vspace{10pt}
+\noindent\fbox{
+\parbox{0.97\textwidth}{
+\textbf{EXPLICIT NON-AUTHORIZATION STATEMENT:}\\
+This report does NOT authorize execution of Milestone V9-M4. The production evaluator remains safely locked. Live execution may only proceed upon explicit, separate authorization by the project owner.
+}
+}
+
+\end{document}
