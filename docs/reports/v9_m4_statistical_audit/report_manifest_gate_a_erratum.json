@@ -1,0 +1,48 @@
+{
+  "schema_version": "nexvia-aegis-v9-m4-audit-manifest/1.0",
+  "milestone": "V9-M4 Gate A Report Erratum (Phase 23)",
+  "git_branch": "v9.0-runtime-assurance",
+  "base_commit": "7201f8cfff951af9b6de7177b4b1606fda31d7c3",
+  "created_utc": "2026-10-26T04:12:00.000000+00:00",
+  "erratum_status": "RECORDED",
+  "execution_status": "M4_EXECUTION_LOCKED_PENDING_OWNER_AUTHORIZATION",
+  "holdout_data_accessed": false,
+  "erratum_summary": {
+    "target_document": "Gate A Remediation and Manifest Integrity Freeze Report",
+    "target_section": "6.2",
+    "erroneous_notation": "[5, scen_idx, ep_idx, {0, 1}]",
+    "authoritative_notation": {
+      "episode_spawn_key": "[5, 1, i]",
+      "env_spawn_key": "[5, 1, i, 0]",
+      "sensor_spawn_key": "[5, 1, i, 1]",
+      "index_definition": "i = episode_index in 0..1439"
+    },
+    "manifest_census": {
+      "total_episodes": 1440,
+      "conforming_episodes": 1440,
+      "deviating_episodes": 0,
+      "distinct_scenarios": 12,
+      "episodes_per_scenario": 120
+    },
+    "manifest_cryptography": {
+      "path": "results/v9/manifests/test_scen_manifest_r1.json",
+      "raw_sha256": "55e04c450ab1bfa5e272003d3b8953b4b8ab65a1a764af97152e7b84e33f4b2d",
+      "canonical_integrity_sha256": "9c9ab7e0fb798570aa4968cd823c71f367cf17c69fca5951853d49cd6c567679"
+    },
+    "governance_status": "GATE_B_NOT_AUTHORIZED"
+  },
+  "reports": {
+    "phase_23": {
+      "title": "Gate A Report Erratum (Scenario PRNG Spawn-Key Hierarchy)",
+      "markdown_file": "docs/reports/v9_m4_statistical_audit/23_v9_m4_gate_a_report_erratum.md",
+      "markdown_sha256": "92b4ef996b13043bba00aacc6e25f4944643f92147d32a36dc0f46e370a16731",
+      "tex_file": "docs/reports/v9_m4_statistical_audit/23_v9_m4_gate_a_report_erratum.tex",
+      "tex_sha256": "1b4928d1d8613c7ba3b4df4147d2c2ba965b3cb07440d0ee1a3e5bffcd48f17e",
+      "pdf_file": "docs/reports/v9_m4_statistical_audit/23_v9_m4_gate_a_report_erratum.pdf",
+      "pdf_sha256": "139d836b2bc4f0732b85894f08c1e9103d98a4fc8462cbf2df081f24cfcb95d5",
+      "pdf_size_bytes": 90214,
+      "pdf_validation": "PASS",
+      "status": "FINAL"
+    }
+  }
+}

@@ -1,0 +1,113 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[margin=2.0cm]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb,amsfonts,amsthm,mathtools}
+\usepackage{booktabs,tabularx,colortbl,array,multirow}
+\usepackage[table]{xcolor}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{microtype}
+\usepackage{hyperref}
+
+\newfontfamily\thaifont{Thonburi}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    citecolor=blue!70!black,
+    urlcolor=blue!70!black
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\footnotesize \textbf{NEXVIA AEGIS V9-M4 Gate A Report Erratum}}
+\lhead{\footnotesize Phase 23 Erratum Record}
+\rfoot{\footnotesize Page \thepage}
+\lfoot{\footnotesize Document ID: AEGIS-V9-M4-ERR-23}
+
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{NEXVIA AEGIS V9-M4 — Gate A Report Erratum}}\\[6pt]
+    {\Large \textbf{Phase 23: Post-Freeze Verification \& Manifest Integrity Erratum}}\\[3pt]
+    {\large \textbf{Correction of Scenario Holdout PRNG Spawn-Key Notation}}\\[10pt]
+    \textbf{Autonomous Verification Subsystem (Google DeepMind Antigravity)}\\
+    \textit{Git Branch: v9.0-runtime-assurance \quad $\cdot$ \quad Base Commit: 7201f8c \quad $\cdot$ \quad Date: October 26, 2026}\\[12pt]
+\end{center}
+
+\noindent\fbox{
+\parbox{0.97\textwidth}{
+\textbf{CRITICAL NON-AUTHORIZATION INVARIANT:}\\
+This document records an editorial and technical erratum regarding the PRNG spawn-key notation in the conversational Gate A Remediation and Manifest Integrity Freeze Report. \textbf{This document does NOT constitute authorization to execute Milestone V9-M4, nor does it provide or invoke any execution token.} Live execution of Milestone V9-M4 remains strictly \textbf{NOT AUTHORIZED}. All production holdout paths remain uninstantiated and locked.
+}
+}
+
+\vspace{10pt}
+
+\section{Erratum Summary}
+
+\begin{table}[h!]
+\centering
+\small
+\begin{tabularx}{\textwidth}{l c X}
+\toprule
+\textbf{Erratum Field} & \textbf{Status / Record} & \textbf{Operational Scope} \\
+\midrule
+Target Document & Gate A Report (§6.2) & Gate A Remediation and Manifest Integrity Freeze Report. \\
+\addlinespace
+Erroneous Notation & $[5, \text{scen\_idx}, \text{ep\_idx}, \{0, 1\}]$ & Editorial transcription error in conversational narrative summary. \\
+\addlinespace
+Authoritative Notation & Episode: $[5, 1, i]$ & Strictly conforms to generator implementation, committed JSON artifact, and protocol amendment ($i \in \{0, \dots, 1439\}$). \\
+& Env: $[5, 1, i, 0]$, Sens: $[5, 1, i, 1]$ & \\
+\addlinespace
+Manifest Census & $1{,}440 / 1{,}440$ (100.0\%) & All 1,440 episodes verified; exactly 0 episodes deviate from $[5, 1, i]$. \\
+\addlinespace
+Manifest Cryptography & MATCH / VALIDATED & Raw SHA-256: \texttt{55e04c45...}, Integrity: \texttt{9c9ab7e0...}. \\
+\addlinespace
+Gate B Status & \textbf{NOT AUTHORIZED} & Strictly locked. No simulation, no evaluation, no token usage. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Executive Summary (English)}
+\begin{enumerate}
+    \item \textbf{Transcription Error in Gate A Report:} Section 6.2 of the conversational Gate A report mistakenly referenced $[5, \text{scen\_idx}, \text{ep\_idx}, \{0, 1\}]$ instead of $[5, 1, i, \{0, 1\}]$.
+    \item \textbf{Authoritative Architecture Confirmed:} The generator code, committed manifest, and protocol amendment strictly employ $[5, 1, i]$ for episode streams and decoupled $[5, 1, i, 0]$ and $[5, 1, i, 1]$ for environment and sensor streams.
+    \item \textbf{Artifact Integrity Intact:} The committed Scenario manifest \texttt{test\_scen\_manifest\_r1.json} has been verified across all 1,440 episodes with zero deviations. No file modification or regeneration was performed.
+    \item \textbf{Gate B Status:} Confirmatory holdout evaluation remains strictly \textbf{NOT AUTHORIZED}.
+\end{enumerate}
+
+\subsection{\thaifont บทสรุปสำหรับผู้บริหาร (Executive Summary in Thai)}
+\begin{enumerate}
+    \item \textbf{\thaifont การแก้ไขข้อความในรายงาน Gate A:} \thaifont ในรายงานสรุปการดำเนินงาน Gate A (หัวข้อ 6.2) มีการพิมพ์สัญลักษณ์ลำดับชั้น PRNG Spawn-Key ของชุด Scenario Holdout ผิดพลาดจากการสรุปความเชิงบรรยายเป็น $[5, \text{scen\_idx}, \text{ep\_idx}, \{0, 1\}]$
+    \item \textbf{\thaifont การตรวจสอบข้อเท็จจริงระดับรหัสและไฟล์จริง:} \thaifont การตรวจสอบรหัสต้นฉบับใน \texttt{src/aegis/v9/randomization.py} และข้อมูลทุกตอน (1,440 ตอน) ในไฟล์ \texttt{results/v9/manifests/test\_scen\_manifest\_r1.json} ยืนยันว่าค่า Spawn-Key ที่แท้จริงคือ Episode $[5, 1, i]$, Environment $[5, 1, i, 0]$, และ Sensor $[5, 1, i, 1]$ ตรงตามพิธีสารหลักอย่างสมบูรณ์ 100\%
+    \item \textbf{\thaifont ความสมบูรณ์ของ Artifact:} \thaifont ไฟล์ Manifest ที่ถูก Commit ไว้มีค่า Hash ตรงกับที่บันทึกไว้ทุกประการ ไม่มีการสร้างไฟล์ใหม่ ไม่มีการแก้ไขโค้ด และไม่มีการเปลี่ยนสถานะการกำกับดูแล
+    \item \textbf{\thaifont สถานะ Gate B:} \thaifont ยืนยันว่า Gate B ยังคง \textbf{NOT AUTHORIZED} อย่างเคร่งครัด ไม่มีการรันการประเมินผลจริง ไม่มีการจำลองตอนทดสอบ และไม่มีการใช้โทเค็นลับ
+\end{enumerate}
+
+\section{Technical Specification and Manifest Census}
+
+The authoritative generator in \texttt{src/aegis/v9/randomization.py} creates child streams via:
+\begin{align*}
+    \text{part\_ss} &= \text{SeedSequence}(\text{master\_entropy}, \text{spawn\_key}=(5,)) \\
+    \text{branch\_scen\_ss}, \text{branch\_eps\_ss} &= \text{part\_ss.spawn}(2) \implies \text{keys } (5, 0) \text{ and } (5, 1) \\
+    \text{ep\_sequences} &= \text{branch\_eps\_ss.spawn}(1440) \implies \text{key for episode } i \text{ is } (5, 1, i) \\
+    \text{env\_ss}, \text{sens\_ss} &= \text{ep\_ss.spawn}(2) \implies \text{keys } (5, 1, i, 0) \text{ and } (5, 1, i, 1)
+\end{align*}
+
+Across the 1,440 episodes of the committed \texttt{results/v9/manifests/test\_scen\_manifest\_r1.json}:
+\begin{itemize}
+    \item Exactly 12 registered scenarios are present with exactly 120 episodes per scenario ($12 \times 120 = 1,440$).
+    \item Zero episodes deviate from the $[5, 1, i]$ episode key or the decoupled $[5, 1, i, \{0, 1\}]$ child keys.
+    \item Raw SHA-256 is \texttt{55e04c450ab1bfa5e272003d3b8953b4b8ab65a1a764af97152e7b84e33f4b2d}.
+    \item Canonical integrity SHA-256 is \texttt{9c9ab7e0fb798570aa4968cd823c71f367cf17c69fca5951853d49cd6c567679}.
+\end{itemize}
+
+\section{Formal Erratum Declaration}
+
+The notation $[5, \text{scen\_idx}, \text{ep\_idx}, \{0, 1\}]$ in the Gate A narrative report was an editorial transcription error. The authoritative implementation and committed artifact strictly use $[5, 1, i]$, $[5, 1, i, 0]$, and $[5, 1, i, 1]$, in exact agreement with registered protocol amendments.
+
+\end{document}
