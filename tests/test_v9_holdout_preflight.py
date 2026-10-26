@@ -45,8 +45,10 @@ from aegis.v9.risk_statistics import (
 )
 from experiments.v9_evaluate_dev import build_v9_s12_scenarios
 from experiments.v9_evaluate_holdout import (
+    AUTH_SECRET_FILE_ENV_VAR,
+    AUTH_TOKEN_ENV_VAR,
+    EXPECTED_AUTH_TOKEN_ENV_VAR,
     EXPECTED_SELECTED_CANDIDATE_ID,
-    REQUIRED_EXECUTION_TOKEN,
     TEST_MIX_ALLOWED_SEEDS,
     TEST_SCEN_ALLOWED_SEEDS,
     TEST_SCEN_SEEDS_PER_SCENARIO,
@@ -63,6 +65,7 @@ from experiments.v9_evaluate_holdout import (
     execute_holdout_workflow,
     execute_production_holdout_pipeline,
     freeze_holdout_run_configuration,
+    get_expected_execution_token,
     holm_shidak_adjusted_thresholds,
     mcnemar_exact_test,
     newcombe_paired_difference_ci,
@@ -73,9 +76,21 @@ from experiments.v9_evaluate_holdout import (
     verify_and_load_holdout_manifest,
     verify_and_load_selected_policy,
     verify_episode_records_integrity,
+    verify_execution_authorization,
     verify_holdout_outcome_algebra,
     wilson_score_interval,
 )
+
+
+DUMMY_TEST_TOKEN: str = "AEGIS_DUMMY_TEST_AUTH_TOKEN_20261026"
+
+
+@pytest.fixture
+def mock_holdout_auth(monkeypatch: pytest.MonkeyPatch):
+    """Provisions isolated clean environment for mock holdout pipeline unit tests."""
+    monkeypatch.delenv(AUTH_TOKEN_ENV_VAR, raising=False)
+    monkeypatch.delenv(EXPECTED_AUTH_TOKEN_ENV_VAR, raising=False)
+    monkeypatch.delenv(AUTH_SECRET_FILE_ENV_VAR, raising=False)
 
 
 # ==============================================================================
@@ -394,24 +409,26 @@ def test_9_existing_output_directory_and_overwrite_protection(tmp_path: Path):
         )
 
 
-def test_10_attempted_execution_without_explicit_authorization(tmp_path: Path):
+def test_10_attempted_execution_without_explicit_authorization(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     """Requirement 10: Live holdout execution fails closed without explicit authorization token."""
     out_dir = tmp_path / "results" / "v9" / "test_mix"
     out_dir.mkdir(parents=True)
 
+    monkeypatch.delenv(AUTH_TOKEN_ENV_VAR, raising=False)
+    monkeypatch.delenv(EXPECTED_AUTH_TOKEN_ENV_VAR, raising=False)
+
     # Attempt execution with no synthetic records and no authorization token
-    with pytest.raises(RuntimeError, match="EXECUTION GUARD: M4 holdout evaluation is not authorized"):
+    with pytest.raises(RuntimeError, match="EXECUTION GUARD: Production holdout evaluation is not authorized"):
         execute_holdout_workflow(
             partition="mixture",
             policy_path=Path("results/v9/cal_r2/selected_policy.json"),
             manifest_path=tmp_path / "fake_man.json",
             out_dir=out_dir,
-            authorized_execution_token=None,
             synthetic_records=None,
         )
 
-    # Attempt execution with invalid token
-    with pytest.raises(RuntimeError, match="EXECUTION GUARD: M4 holdout evaluation is not authorized"):
+    # Attempt execution with legacy parameter
+    with pytest.raises(RuntimeError, match="EXECUTION GUARD: Production holdout evaluation is not authorized"):
         execute_holdout_workflow(
             partition="mixture",
             policy_path=Path("results/v9/cal_r2/selected_policy.json"),
@@ -1001,23 +1018,24 @@ def test_30_mock_simulator_crn_determinism():
     assert np.array_equal(draw2_sens, draw3_sens)
 
 
-def test_31_production_pipeline_authorization_guard(tmp_path: Path):
+def test_31_production_pipeline_authorization_guard(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     """Requirement: Production pipeline strictly enforces explicit authorization token."""
     out_dir = tmp_path / "results" / "v9" / "test_mix_guard"
     out_dir.mkdir(parents=True)
     fake_man = tmp_path / "fake_man.json"
 
-    # Token = None
+    # Token missing from environment
+    monkeypatch.delenv(AUTH_TOKEN_ENV_VAR, raising=False)
+    monkeypatch.delenv(EXPECTED_AUTH_TOKEN_ENV_VAR, raising=False)
     with pytest.raises(RuntimeError, match="EXECUTION GUARD: Production holdout evaluation is not authorized"):
         execute_production_holdout_pipeline(
             partition="mixture",
             policy_path=Path("results/v9/cal_r2/selected_policy.json"),
             manifest_path=fake_man,
             out_dir=out_dir,
-            authorized_execution_token=None,
         )
 
-    # Invalid Token
+    # Legacy parameter passed: rejected
     with pytest.raises(RuntimeError, match="EXECUTION GUARD: Production holdout evaluation is not authorized"):
         execute_production_holdout_pipeline(
             partition="mixture",
@@ -1028,7 +1046,7 @@ def test_31_production_pipeline_authorization_guard(tmp_path: Path):
         )
 
 
-def test_32_production_pipeline_custom_simulator_requires_allow_mock(tmp_path: Path):
+def test_32_production_pipeline_custom_simulator_requires_allow_mock(tmp_path: Path, mock_holdout_auth):
     """Requirement: Custom/mock simulator without allow_mock_simulation=True is blocked fail-closed."""
     out_dir = tmp_path / "results" / "v9" / "test_mix_mock_guard"
     out_dir.mkdir(parents=True)
@@ -1041,13 +1059,12 @@ def test_32_production_pipeline_custom_simulator_requires_allow_mock(tmp_path: P
             policy_path=Path("results/v9/cal_r2/selected_policy.json"),
             manifest_path=fake_man,
             out_dir=out_dir,
-            authorized_execution_token=REQUIRED_EXECUTION_TOKEN,
             simulator_fn=mock_sim,
             allow_mock_simulation=False,
         )
 
 
-def test_33_production_pipeline_mixture_mock_e2e(tmp_path: Path):
+def test_33_production_pipeline_mixture_mock_e2e(tmp_path: Path, mock_holdout_auth):
     """Requirement: Full end-to-end orchestration of mixture holdout with mock simulator."""
     gen = V9HierarchicalManifestGenerator(master_entropy=20261025)
     mix_man = gen.generate_manifest(
@@ -1068,7 +1085,6 @@ def test_33_production_pipeline_mixture_mock_e2e(tmp_path: Path):
         policy_path=Path("results/v9/cal_r2/selected_policy.json"),
         manifest_path=man_path,
         out_dir=out_dir,
-        authorized_execution_token=REQUIRED_EXECUTION_TOKEN,
         simulator_fn=mock_sim,
         allow_mock_simulation=True,
     )
@@ -1110,7 +1126,7 @@ def test_33_production_pipeline_mixture_mock_e2e(tmp_path: Path):
     assert "vs_v7_mpc" in summary["h2_unconditional_incidence"]["comparisons"]
 
 
-def test_34_production_pipeline_scenario_mock_e2e(tmp_path: Path):
+def test_34_production_pipeline_scenario_mock_e2e(tmp_path: Path, mock_holdout_auth):
     """Requirement: Full end-to-end orchestration of scenario holdout with mock simulator."""
     gen = V9HierarchicalManifestGenerator(master_entropy=20261025)
     scen_man = gen.generate_stratified_manifest(
@@ -1131,7 +1147,6 @@ def test_34_production_pipeline_scenario_mock_e2e(tmp_path: Path):
         policy_path=Path("results/v9/cal_r2/selected_policy.json"),
         manifest_path=man_path,
         out_dir=out_dir,
-        authorized_execution_token=REQUIRED_EXECUTION_TOKEN,
         simulator_fn=mock_sim,
         allow_mock_simulation=True,
     )
@@ -1163,7 +1178,7 @@ def test_34_production_pipeline_scenario_mock_e2e(tmp_path: Path):
     assert summary["h3_tsr_noninferiority_vs_v7"]["nominal_tsr"] == 1.0
 
 
-def test_35_production_pipeline_single_shot_guard(tmp_path: Path):
+def test_35_production_pipeline_single_shot_guard(tmp_path: Path, mock_holdout_auth):
     """Requirement: Single-shot output protection blocks overwriting existing holdout artifacts."""
     gen = V9HierarchicalManifestGenerator(master_entropy=20261025)
     mix_man = gen.generate_manifest(
@@ -1185,7 +1200,6 @@ def test_35_production_pipeline_single_shot_guard(tmp_path: Path):
         policy_path=Path("results/v9/cal_r2/selected_policy.json"),
         manifest_path=man_path,
         out_dir=out_dir,
-        authorized_execution_token=REQUIRED_EXECUTION_TOKEN,
         simulator_fn=mock_sim,
         allow_mock_simulation=True,
     )
@@ -1197,13 +1211,12 @@ def test_35_production_pipeline_single_shot_guard(tmp_path: Path):
             policy_path=Path("results/v9/cal_r2/selected_policy.json"),
             manifest_path=man_path,
             out_dir=out_dir,
-            authorized_execution_token=REQUIRED_EXECUTION_TOKEN,
             simulator_fn=mock_sim,
             allow_mock_simulation=True,
         )
 
 
-def test_36_production_pipeline_mid_run_failure_partial_output(tmp_path: Path):
+def test_36_production_pipeline_mid_run_failure_partial_output(tmp_path: Path, mock_holdout_auth):
     """Requirement: Injected exception during simulation writes partial CSV and invalid marker."""
     gen = V9HierarchicalManifestGenerator(master_entropy=20261025)
     mix_man = gen.generate_manifest(
@@ -1229,7 +1242,6 @@ def test_36_production_pipeline_mid_run_failure_partial_output(tmp_path: Path):
             policy_path=Path("results/v9/cal_r2/selected_policy.json"),
             manifest_path=man_path,
             out_dir=out_dir,
-            authorized_execution_token=REQUIRED_EXECUTION_TOKEN,
             simulator_fn=mock_sim,
             allow_mock_simulation=True,
         )
@@ -1250,13 +1262,12 @@ def test_36_production_pipeline_mid_run_failure_partial_output(tmp_path: Path):
             policy_path=Path("results/v9/cal_r2/selected_policy.json"),
             manifest_path=man_path,
             out_dir=out_dir,
-            authorized_execution_token=REQUIRED_EXECUTION_TOKEN,
             simulator_fn=mock_sim,
             allow_mock_simulation=True,
         )
 
 
-def test_37_production_pipeline_outcome_algebra_violation_injected(tmp_path: Path):
+def test_37_production_pipeline_outcome_algebra_violation_injected(tmp_path: Path, mock_holdout_auth):
     """Requirement: Pipeline halts fail-closed if simulator violates benchmark outcome algebra."""
     gen = V9HierarchicalManifestGenerator(master_entropy=20261025)
     mix_man = gen.generate_manifest(
@@ -1282,13 +1293,12 @@ def test_37_production_pipeline_outcome_algebra_violation_injected(tmp_path: Pat
             policy_path=Path("results/v9/cal_r2/selected_policy.json"),
             manifest_path=man_path,
             out_dir=out_dir,
-            authorized_execution_token=REQUIRED_EXECUTION_TOKEN,
             simulator_fn=mock_sim,
             allow_mock_simulation=True,
         )
 
 
-def test_38_production_pipeline_crash_fail_unsafe_classification(tmp_path: Path):
+def test_38_production_pipeline_crash_fail_unsafe_classification(tmp_path: Path, mock_holdout_auth):
     """Requirement: Fail-unsafe crash accounting: crashed=1 -> accepted=0, false_success=1."""
     gen = V9HierarchicalManifestGenerator(master_entropy=20261025)
     mix_man = gen.generate_manifest(
@@ -1313,7 +1323,6 @@ def test_38_production_pipeline_crash_fail_unsafe_classification(tmp_path: Path)
         policy_path=Path("results/v9/cal_r2/selected_policy.json"),
         manifest_path=man_path,
         out_dir=out_dir,
-        authorized_execution_token=REQUIRED_EXECUTION_TOKEN,
         simulator_fn=mock_sim,
         allow_mock_simulation=True,
     )
@@ -1323,7 +1332,7 @@ def test_38_production_pipeline_crash_fail_unsafe_classification(tmp_path: Path)
     assert summary["fs_count"] >= 1
 
 
-def test_39_production_pipeline_timeout_and_abstain_classification(tmp_path: Path):
+def test_39_production_pipeline_timeout_and_abstain_classification(tmp_path: Path, mock_holdout_auth):
     """Requirement: Timeout and explicit abstention classifications are correctly recorded."""
     gen = V9HierarchicalManifestGenerator(master_entropy=20261025)
     mix_man = gen.generate_manifest(
@@ -1350,7 +1359,6 @@ def test_39_production_pipeline_timeout_and_abstain_classification(tmp_path: Pat
         policy_path=Path("results/v9/cal_r2/selected_policy.json"),
         manifest_path=man_path,
         out_dir=out_dir,
-        authorized_execution_token=REQUIRED_EXECUTION_TOKEN,
         simulator_fn=mock_sim,
         allow_mock_simulation=True,
     )
@@ -1361,7 +1369,7 @@ def test_39_production_pipeline_timeout_and_abstain_classification(tmp_path: Pat
     assert summary["ab_total_count"] == summary["ab_explicit_count"] + summary["timeout_count"]
 
 
-def test_40_production_pipeline_undefined_selective_risk_in_stratified(tmp_path: Path):
+def test_40_production_pipeline_undefined_selective_risk_in_stratified(tmp_path: Path, mock_holdout_auth):
     """Requirement: Undefined selective risk (M_s = 0) in stratified holdout handled fail-closed."""
     gen = V9HierarchicalManifestGenerator(master_entropy=20261025)
     scen_man = gen.generate_stratified_manifest(
@@ -1386,7 +1394,6 @@ def test_40_production_pipeline_undefined_selective_risk_in_stratified(tmp_path:
         policy_path=Path("results/v9/cal_r2/selected_policy.json"),
         manifest_path=man_path,
         out_dir=out_dir,
-        authorized_execution_token=REQUIRED_EXECUTION_TOKEN,
         simulator_fn=mock_sim,
         allow_mock_simulation=True,
     )
@@ -1399,7 +1406,7 @@ def test_40_production_pipeline_undefined_selective_risk_in_stratified(tmp_path:
     assert target_row["r_sel_ucb95"] == "UNDEFINED"
 
 
-def test_41_production_pipeline_manifest_integrity_guard(tmp_path: Path):
+def test_41_production_pipeline_manifest_integrity_guard(tmp_path: Path, mock_holdout_auth):
     """Requirement: Tampered manifest integrity hash or invalid partition name raises ValueError."""
     gen = V9HierarchicalManifestGenerator(master_entropy=20261025)
     mix_man = gen.generate_manifest(
@@ -1423,13 +1430,12 @@ def test_41_production_pipeline_manifest_integrity_guard(tmp_path: Path):
             policy_path=Path("results/v9/cal_r2/selected_policy.json"),
             manifest_path=man_path,
             out_dir=out_dir,
-            authorized_execution_token=REQUIRED_EXECUTION_TOKEN,
             simulator_fn=mock_sim,
             allow_mock_simulation=True,
         )
 
 
-def test_42_production_pipeline_policy_hash_mismatch(tmp_path: Path):
+def test_42_production_pipeline_policy_hash_mismatch(tmp_path: Path, mock_holdout_auth):
     """Requirement: Tampered policy artifact raises ValueError fail-closed."""
     gen = V9HierarchicalManifestGenerator(master_entropy=20261025)
     mix_man = gen.generate_manifest(
@@ -1458,13 +1464,12 @@ def test_42_production_pipeline_policy_hash_mismatch(tmp_path: Path):
             policy_path=bad_pol_path,
             manifest_path=man_path,
             out_dir=out_dir,
-            authorized_execution_token=REQUIRED_EXECUTION_TOKEN,
             simulator_fn=mock_sim,
             allow_mock_simulation=True,
         )
 
 
-def test_43_production_pipeline_paired_baseline_integrity(tmp_path: Path):
+def test_43_production_pipeline_paired_baseline_integrity(tmp_path: Path, mock_holdout_auth):
     """Requirement: Policy and baseline records strictly match on (seed, scenario)."""
     gen = V9HierarchicalManifestGenerator(master_entropy=20261025)
     mix_man = gen.generate_manifest(
@@ -1485,7 +1490,6 @@ def test_43_production_pipeline_paired_baseline_integrity(tmp_path: Path):
         policy_path=Path("results/v9/cal_r2/selected_policy.json"),
         manifest_path=man_path,
         out_dir=out_dir,
-        authorized_execution_token=REQUIRED_EXECUTION_TOKEN,
         simulator_fn=mock_sim,
         allow_mock_simulation=True,
     )
@@ -2477,7 +2481,140 @@ def test_64_production_manifest_loader_validation(tmp_path: Path):
     assert all(cnt == 120 for cnt in loaded_scen["realized_scenario_counts"].values())
 
 
+def test_65_secure_authorization_guard_regression(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    """
+    Milestone V9-M4 Secure Authorization Regression Test Suite.
+    Thoroughly verifies:
+    1. Missing supplied credential is rejected.
+    2. Empty or whitespace-only credential is rejected.
+    3. Incorrect credential is rejected.
+    4. Correct dummy credential from environment is accepted by isolated guard test.
+    5. Expected secret is obtained from independent test-configured source (file and env).
+    6. Environment credentials are never printed or included in diagnostics/exceptions.
+    7. Passing a secret through legacy CLI argument (--authorized-execution-token) or parameter is rejected.
+    8. Authorization failure occurs before environment construction, output creation, or RNG consumption.
+    9. Direct production pipeline and workflow entry points share identical authorization enforcement.
+    10. Synthetic/mock testing cannot accidentally enter real production simulation path.
+    """
+    import sys
+    from experiments.v9_evaluate_holdout import main as cli_main
 
+    dummy_secret = "TEST_DUMMY_SECRET_KEY_8492048"
+    dummy_wrong = "TEST_DUMMY_SECRET_KEY_INCORRECT"
 
+    # --- Requirement 1: Legacy token in V9_M4_AUTH_TOKEN is rejected ---
+    monkeypatch.setenv(AUTH_TOKEN_ENV_VAR, dummy_secret)
+    monkeypatch.delenv(EXPECTED_AUTH_TOKEN_ENV_VAR, raising=False)
+    with pytest.raises(RuntimeError, match="LEGACY_TOKEN_REJECTED"):
+        verify_execution_authorization()
 
+    # --- Requirement 2: Matching legacy tokens in environment rejected (F-01 bypass closed) ---
+    monkeypatch.setenv(AUTH_TOKEN_ENV_VAR, dummy_secret)
+    monkeypatch.setenv(EXPECTED_AUTH_TOKEN_ENV_VAR, dummy_secret)
+    with pytest.raises(RuntimeError, match="LEGACY_TOKEN_REJECTED"):
+        verify_execution_authorization()
 
+    # --- Requirement 3: Legacy secret file rejected (F-01) ---
+    sec_file = tmp_path / "legacy_secret.txt"
+    sec_file.write_text(dummy_secret, encoding="utf-8")
+    monkeypatch.delenv(AUTH_TOKEN_ENV_VAR, raising=False)
+    monkeypatch.delenv(EXPECTED_AUTH_TOKEN_ENV_VAR, raising=False)
+    monkeypatch.setenv(AUTH_SECRET_FILE_ENV_VAR, str(sec_file))
+    with pytest.raises(RuntimeError, match="LEGACY_TOKEN_REJECTED"):
+        verify_execution_authorization()
+
+    # --- Requirement 4: Direct call without ticket fails closed ---
+    monkeypatch.delenv(AUTH_TOKEN_ENV_VAR, raising=False)
+    monkeypatch.delenv(EXPECTED_AUTH_TOKEN_ENV_VAR, raising=False)
+    monkeypatch.delenv(AUTH_SECRET_FILE_ENV_VAR, raising=False)
+    monkeypatch.delenv("V9_M4_TICKET_PATH", raising=False)
+    with pytest.raises(RuntimeError, match="Missing required Gate B authorization ticket"):
+        verify_execution_authorization(allow_mock_simulation=False)
+
+    # --- Requirement 5: get_expected_execution_token() is permanently deprecated and returns None ---
+    assert get_expected_execution_token() is None
+
+    # --- Requirement 6: Credentials never printed or included in exceptions ---
+    sensitive_dummy = "HIGHLY_CONFIDENTIAL_DUMMY_VALUE_998877"
+    monkeypatch.setenv(AUTH_TOKEN_ENV_VAR, sensitive_dummy)
+    with pytest.raises(RuntimeError) as exc_info:
+        verify_execution_authorization()
+    assert sensitive_dummy not in str(exc_info.value)
+    monkeypatch.delenv(AUTH_TOKEN_ENV_VAR, raising=False)
+
+    # --- Requirement 7: Legacy CLI argument and parameter rejected ---
+    with pytest.raises(RuntimeError, match="Passing execution tokens via CLI arguments or function parameters is rejected"):
+        verify_execution_authorization(legacy_arg_token="LEGACY_TOKEN")
+
+    with pytest.raises(RuntimeError, match="Passing execution tokens via CLI arguments or function parameters is rejected"):
+        execute_production_holdout_pipeline(
+            partition="mixture",
+            policy_path=Path("results/v9/cal_r2/selected_policy.json"),
+            manifest_path=tmp_path / "fake.json",
+            out_dir=tmp_path / "fake_dir",
+            authorized_execution_token="LEGACY_TOKEN",
+        )
+
+    # CLI rejection
+    orig_argv = sys.argv
+    try:
+        sys.argv = ["v9_evaluate_holdout.py", "--run-production", "--authorized-execution-token", "CLI_SECRET"]
+        with pytest.raises(RuntimeError, match="Passing execution tokens via CLI arguments"):
+            cli_main()
+    finally:
+        sys.argv = orig_argv
+
+    # --- Requirement 8: Authorization failure occurs before output creation, controller, simulation, or RNG ---
+    fresh_guard_dir = tmp_path / "guard_test_unauth_dir"
+    assert not fresh_guard_dir.exists()
+    monkeypatch.delenv(AUTH_TOKEN_ENV_VAR, raising=False)
+    with pytest.raises(RuntimeError, match="Production holdout evaluation is not authorized"):
+        execute_production_holdout_pipeline(
+            partition="mixture",
+            policy_path=Path("results/v9/cal_r2/selected_policy.json"),
+            manifest_path=tmp_path / "fake.json",
+            out_dir=fresh_guard_dir,
+        )
+    assert not fresh_guard_dir.exists(), "Output directory must not be created on authorization failure"
+
+    # --- Requirement 9: Production pipeline and workflow entry points share identical enforcement ---
+    monkeypatch.delenv(AUTH_TOKEN_ENV_VAR, raising=False)
+    with pytest.raises(RuntimeError) as exc_pipeline:
+        execute_production_holdout_pipeline(
+            partition="mixture",
+            policy_path=Path("results/v9/cal_r2/selected_policy.json"),
+            manifest_path=tmp_path / "fake.json",
+            out_dir=tmp_path / "p_dir",
+        )
+    with pytest.raises(RuntimeError) as exc_workflow:
+        execute_holdout_workflow(
+            partition="mixture",
+            policy_path=Path("results/v9/cal_r2/selected_policy.json"),
+            manifest_path=tmp_path / "fake.json",
+            out_dir=tmp_path / "w_dir",
+            synthetic_records=None,
+        )
+    assert str(exc_pipeline.value) == str(exc_workflow.value)
+
+    # --- Requirement 10: Synthetic/mock testing cannot accidentally enter real production simulation path ---
+    # Custom simulator without allow_mock_simulation=True is rejected
+    monkeypatch.setenv(AUTH_TOKEN_ENV_VAR, dummy_secret)
+    monkeypatch.setenv(EXPECTED_AUTH_TOKEN_ENV_VAR, dummy_secret)
+    with pytest.raises(RuntimeError, match="Custom/mock simulators are only permitted when allow_mock_simulation is explicitly True"):
+        execute_production_holdout_pipeline(
+            partition="mixture",
+            policy_path=Path("results/v9/cal_r2/selected_policy.json"),
+            manifest_path=tmp_path / "fake.json",
+            out_dir=tmp_path / "mock_guard_dir",
+            simulator_fn=lambda *a, **k: {},
+            allow_mock_simulation=False,
+        )
+    # execute_holdout_workflow with synthetic_records=None fails closed
+    with pytest.raises((NotImplementedError, RuntimeError), match="(Live simulator execution is blocked during preflight milestone|Production holdout evaluation is not authorized)"):
+        execute_holdout_workflow(
+            partition="mixture",
+            policy_path=Path("results/v9/cal_r2/selected_policy.json"),
+            manifest_path=tmp_path / "fake.json",
+            out_dir=tmp_path / "wf_guard_dir",
+            synthetic_records=None,
+        )

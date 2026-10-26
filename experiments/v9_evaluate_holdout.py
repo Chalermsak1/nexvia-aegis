@@ -37,9 +37,12 @@ import csv
 from dataclasses import asdict
 from datetime import datetime, timezone
 import hashlib
+import hmac
 import json
 import math
+import os
 from pathlib import Path
+import subprocess
 import sys
 import time
 from typing import Any
@@ -104,7 +107,309 @@ PROHIBITED_SEED_BLOCKS: tuple[tuple[str, range], ...] = (
     ("D_val", range(72000, 72040)),
 )
 
-REQUIRED_EXECUTION_TOKEN: str = "NEXVIA_AEGIS_V9_M4_AUTHORIZED_CONFIRMATORY_EXECUTION_20261025"
+# Authorization configuration
+# Production holdout execution requires credential delivery via the process environment.
+# Real execution tokens must never be embedded in source code, command-line arguments, or transcripts.
+AUTH_TOKEN_ENV_VAR: str = "V9_M4_AUTH_TOKEN"
+EXPECTED_AUTH_TOKEN_ENV_VAR: str = "V9_M4_EXPECTED_AUTH_TOKEN"
+AUTH_SECRET_FILE_ENV_VAR: str = "V9_M4_AUTH_SECRET_FILE"
+
+REQUIRED_EXECUTION_TOKEN: str | None = None  # Deprecated; legacy symmetric tokens are permanently disabled
+
+
+def get_expected_execution_token() -> str | None:
+    """[DEPRECATED] Legacy token retrieval. Legacy tokens are permanently removed."""
+    return None
+
+
+def verify_execution_authorization(
+    *,
+    partition: str = "mixture",
+    legacy_arg_token: str | None = None,
+    allow_mock_simulation: bool = False,
+    ticket_path: Path | str | None = None,
+    claim_secret: str | None = None,
+    security_dir: Path | str | None = None,
+    pubkey_anchor_path: Path | str | None = None,
+    expected_pubkey_sha256: str | None = None,
+    public_key_obj: Any = None,
+    policy_path: Path | str | None = None,
+    manifest_path: Path | str | None = None,
+    repo_dir: Path | str | None = None,
+    auth_record_out: dict[str, Any] | None = None,
+) -> bool:
+    """Unified fail-closed execution authorization guard for holdout evaluation.
+
+    Enforces:
+    - F-01: Rejection of legacy symmetric tokens (CLI arguments, V9_M4_AUTH_TOKEN,
+      V9_M4_EXPECTED_AUTH_TOKEN, V9_M4_AUTH_SECRET_FILE). Matching caller-controlled tokens
+      cannot authorize production simulation.
+    - F-03: Mandatory secondary in-worker verification:
+      * Valid Signed Ticket envelope signature and semantic payload schema.
+      * Pinned trust anchor verification against owner-controlled fingerprint.
+      * Exact authorized commit matching current git HEAD.
+      * Exact evaluator script SHA-256 matching ticket artifact hash.
+      * Runtime uv.lock digest matching lockfile_sha256 in ticket.
+      * Policy and manifest digests matching ticket payload hashes.
+      * Active claim in persistent ledger and atomic single-use claim_secret binding.
+      * Race prevention: rejects claim replay if already bound to another worker PID.
+    """
+    # 1. F-01: Reject legacy symmetric tokens unconditionally
+    legacy_env_token = os.environ.get(AUTH_TOKEN_ENV_VAR)
+    legacy_expected_env = os.environ.get(EXPECTED_AUTH_TOKEN_ENV_VAR)
+    legacy_secret_file = os.environ.get(AUTH_SECRET_FILE_ENV_VAR)
+
+    if legacy_arg_token is not None or legacy_env_token or legacy_expected_env or legacy_secret_file:
+        raise RuntimeError(
+            "EXECUTION GUARD: Production holdout evaluation is not authorized. "
+            "Passing execution tokens via CLI arguments or function parameters is rejected. "
+            "LEGACY_TOKEN_REJECTED: Legacy symmetric token authorization "
+            f"({AUTH_TOKEN_ENV_VAR}, {EXPECTED_AUTH_TOKEN_ENV_VAR}, {AUTH_SECRET_FILE_ENV_VAR}) "
+            "is permanently deprecated and removed. Production execution strictly requires a valid Signed Gate B Ticket "
+            "and an active Ledger Claim binding."
+        )
+
+    # 2. Allow non-production mock testing only if allow_mock_simulation is explicitly True
+    if allow_mock_simulation:
+        if auth_record_out is not None:
+            auth_record_out.update({
+                "schema_version": "nexvia-aegis-v9-authorization-record/1.0",
+                "created_utc": datetime.now(timezone.utc).isoformat(),
+                "ticket_nonce": "MOCK_NONCE_SYNTHETIC",
+                "authorized_partition": partition,
+                "approved_commit": "MOCK_COMMIT_TESTING",
+                "evaluator_artifact_sha256": "0" * 64,
+                "policy_sha256": "0" * 64,
+                "manifest_sha256": "0" * 64,
+                "lockfile_sha256": "0" * 64,
+                "claimed_at_utc": datetime.now(timezone.utc).isoformat(),
+                "claim_bound_at_utc": datetime.now(timezone.utc).isoformat(),
+                "worker_pid": os.getpid(),
+                "mode": "MOCK_SIMULATION",
+            })
+        return True
+
+    # 3. Production pathway: require Signed Ticket and active Ledger Claim
+    from nexvia_aegis.security.launcher import verify_trust_anchor
+    from nexvia_aegis.security.ledger import (
+        LEDGER_FILE_NAME,
+        PersistentLedgerLock,
+        _persist_ledger_crash_durable,
+        read_ledger,
+        resolve_security_dir,
+    )
+    from nexvia_aegis.security.verifier import (
+        SecurityError,
+        validate_semantic_payload,
+        verify_ticket_envelope,
+    )
+
+    t_path_str = ticket_path or os.environ.get("V9_M4_TICKET_PATH")
+    if not t_path_str:
+        raise RuntimeError(
+            "EXECUTION GUARD: Production holdout evaluation is not authorized. "
+            "Missing required Gate B authorization ticket. Direct invocation requires a valid Signed Ticket."
+        )
+
+    t_file = Path(t_path_str)
+    if not t_file.exists():
+        raise RuntimeError(
+            f"EXECUTION GUARD: Production holdout evaluation is not authorized. "
+            f"Ticket file '{t_file}' does not exist."
+        )
+
+    raw_ticket = t_file.read_bytes()
+
+    # Public key anchor resolution & verification (F-03)
+    sec_dir = resolve_security_dir(security_dir or os.environ.get("V9_M4_SECURITY_DIR"))
+    trusted_anchor_file = sec_dir / "gate_b_owner_pubkey.pem"
+
+    caller_pubkey_path = os.environ.get("V9_M4_PUBKEY_PATH")
+    if caller_pubkey_path and Path(caller_pubkey_path).resolve() != trusted_anchor_file.resolve():
+        raise RuntimeError(
+            "CALLER_PUBKEY_OVERRIDE_REJECTED: Caller-controlled public-key path cannot replace the trusted anchor."
+        )
+
+    if public_key_obj is not None:
+        pubkey = public_key_obj
+    else:
+        # Determine expected fingerprint
+        if (sec_dir / "gate_b_owner_pubkey.sha256").exists():
+            expected_fp = (sec_dir / "gate_b_owner_pubkey.sha256").read_text(encoding="utf-8").strip().lower()
+        elif expected_pubkey_sha256:
+            expected_fp = expected_pubkey_sha256.strip().lower()
+        else:
+            launcher_fp = os.environ.get("V9_M4_EXPECTED_PUBKEY_SHA256")
+            if launcher_fp:
+                expected_fp = launcher_fp.strip().lower()
+            else:
+                raise RuntimeError(
+                    "EXECUTION GUARD: Production holdout evaluation is not authorized. "
+                    "No trusted public key fingerprint configured."
+                )
+
+        target_pub_path = pubkey_anchor_path or os.environ.get("V9_M4_PUBKEY_ANCHOR") or trusted_anchor_file
+        try:
+            pubkey = verify_trust_anchor(target_pub_path, expected_pubkey_sha256=expected_fp)
+        except SecurityError as e:
+            raise RuntimeError(f"EXECUTION GUARD: Trust anchor verification failed: {e}") from e
+
+    # Cryptographic Envelope and Payload Verification
+    try:
+        verified_envelope = verify_ticket_envelope(raw_ticket, public_key_obj=pubkey)
+    except SecurityError as e:
+        raise RuntimeError(f"EXECUTION GUARD: Ticket cryptographic verification failed: {e}") from e
+
+    payload = verified_envelope["payload"]
+    nonce = payload["nonce"]
+
+    # Nonce and Partition checks
+    if partition not in payload.get("partitions", ["mixture", "scenario"]):
+        raise RuntimeError(
+            f"EXECUTION GUARD: Partition '{partition}' is not authorized in ticket payload."
+        )
+
+    env_nonce = os.environ.get("V9_M4_TICKET_NONCE")
+    if env_nonce and env_nonce != nonce:
+        raise RuntimeError(
+            f"EXECUTION GUARD: Environment ticket nonce '{env_nonce}' != ticket nonce '{nonce}'."
+        )
+
+    env_part = os.environ.get("V9_M4_PARTITION")
+    if env_part and env_part != partition:
+        raise RuntimeError(
+            f"EXECUTION GUARD: Environment partition '{env_part}' != requested partition '{partition}'."
+        )
+
+    # Commit verification
+    r_root = Path(repo_dir or os.environ.get("V9_M4_REPO_DIR") or _REPO_ROOT).resolve()
+    approved_commit = payload["approved_commit"]
+    try:
+        current_commit = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=r_root,
+            capture_output=True,
+            text=True,
+            check=True,
+        ).stdout.strip()
+    except Exception as e:
+        raise RuntimeError(f"EXECUTION GUARD: Could not determine current git commit: {e}") from e
+
+    if not hmac.compare_digest(current_commit, approved_commit):
+        raise RuntimeError(
+            f"EXECUTION GUARD: Current git commit {current_commit} does not match authorized commit {approved_commit}."
+        )
+
+    # Evaluator artifact SHA-256 verification
+    expected_eval_sha = payload["evaluator_artifact_sha256"]
+    eval_file = r_root / "experiments" / "v9_evaluate_holdout.py"
+    if not eval_file.exists():
+        eval_file = Path(__file__).resolve()
+    actual_eval_sha = hashlib.sha256(eval_file.read_bytes()).hexdigest().lower()
+    if not hmac.compare_digest(actual_eval_sha, expected_eval_sha):
+        raise RuntimeError(
+            f"EXECUTION GUARD: Evaluator script SHA-256 {actual_eval_sha} does not match authorized digest {expected_eval_sha}."
+        )
+
+    # Runtime lockfile verification
+    expected_lock_sha = payload["lockfile_sha256"]
+    lockfile_path = r_root / "uv.lock"
+    if not lockfile_path.exists():
+        raise RuntimeError("EXECUTION GUARD: uv.lock runtime lockfile not found.")
+    actual_lock_sha = hashlib.sha256(lockfile_path.read_bytes()).hexdigest().lower()
+    if not hmac.compare_digest(actual_lock_sha, expected_lock_sha):
+        raise RuntimeError(
+            f"EXECUTION GUARD: uv.lock SHA-256 {actual_lock_sha} does not match authorized digest {expected_lock_sha}."
+        )
+
+    # Policy and manifest verification if supplied
+    if policy_path:
+        p_cand = Path(policy_path)
+        if p_cand.exists():
+            actual_pol_sha = hashlib.sha256(p_cand.read_bytes()).hexdigest().lower()
+            if not hmac.compare_digest(actual_pol_sha, payload["policy_sha256"]):
+                raise RuntimeError(
+                    f"EXECUTION GUARD: Policy SHA-256 {actual_pol_sha} does not match authorized digest {payload['policy_sha256']}."
+                )
+
+    if manifest_path:
+        m_cand = Path(manifest_path)
+        if m_cand.exists():
+            exp_man = payload.get("mixture_manifest_sha256") if partition == "mixture" else payload.get("scenario_manifest_sha256")
+            if exp_man:
+                actual_man_sha = hashlib.sha256(m_cand.read_bytes()).hexdigest().lower()
+                if not hmac.compare_digest(actual_man_sha, exp_man):
+                    raise RuntimeError(
+                        f"EXECUTION GUARD: Manifest SHA-256 {actual_man_sha} does not match authorized digest {exp_man}."
+                    )
+
+    # Launch binding and Active Ledger Claim check (F-03)
+    secret = claim_secret or os.environ.get("V9_M4_CLAIM_SECRET")
+    if not secret or not secret.strip():
+        raise RuntimeError(
+            "EXECUTION GUARD: Production holdout evaluation is not authorized. "
+            "Missing launch claim authorization secret. Direct evaluator invocation without active Ledger Claim is rejected."
+        )
+
+    with PersistentLedgerLock(sec_dir):
+        ledger = read_ledger(sec_dir)
+        if nonce not in ledger.get("active_tickets", {}):
+            raise RuntimeError(
+                f"EXECUTION GUARD: Ticket nonce '{nonce}' is not registered or active in ledger."
+            )
+
+        t_entry = ledger["active_tickets"][nonce]
+        if t_entry.get("ticket_state") != "ACTIVE_PARTIAL":
+            raise RuntimeError(
+                f"EXECUTION GUARD: Ticket state is '{t_entry.get('ticket_state')}', expected 'ACTIVE_PARTIAL'."
+            )
+
+        p_entry = t_entry.get("partitions", {}).get(partition)
+        if not p_entry or p_entry.get("status") != "CLAIMED":
+            raise RuntimeError(
+                f"EXECUTION GUARD: Partition '{partition}' status is '{p_entry.get('status') if p_entry else None}', expected 'CLAIMED'."
+            )
+
+        # Race prevention: check if another worker has already bound this claim
+        existing_worker = p_entry.get("worker_pid")
+        current_pid = os.getpid()
+        if existing_worker is not None and existing_worker != current_pid:
+            raise RuntimeError(
+                f"CLAIM_REPLAY_REJECTED: Claim is already bound to worker PID {existing_worker}. Replay by second worker is rejected."
+            )
+
+        # Verify claim secret hash
+        computed_secret_hash = hashlib.sha256(secret.strip().encode("utf-8")).hexdigest().lower()
+        recorded_secret_hash = p_entry.get("claim_secret_hash", "")
+        if not hmac.compare_digest(computed_secret_hash, recorded_secret_hash):
+            raise RuntimeError(
+                "EXECUTION GUARD: Invalid launch claim secret for active ledger claim."
+            )
+
+        # Atomically bind claim to this worker PID and burn the claim secret
+        p_entry["worker_pid"] = current_pid
+        p_entry["claim_bound_at_utc"] = datetime.now(timezone.utc).isoformat()
+        p_entry["claim_secret_hash"] = f"CLAIM_BOUND_TO_PID_{current_pid}"
+        _persist_ledger_crash_durable(sec_dir / LEDGER_FILE_NAME, ledger)
+
+        if auth_record_out is not None:
+            auth_record_out.update({
+                "schema_version": "nexvia-aegis-v9-authorization-record/1.0",
+                "created_utc": datetime.now(timezone.utc).isoformat(),
+                "ticket_nonce": nonce,
+                "authorized_partition": partition,
+                "approved_commit": approved_commit,
+                "evaluator_artifact_sha256": expected_eval_sha,
+                "policy_sha256": payload["policy_sha256"],
+                "manifest_sha256": payload.get("mixture_manifest_sha256") if partition == "mixture" else payload.get("scenario_manifest_sha256"),
+                "lockfile_sha256": expected_lock_sha,
+                "claimed_at_utc": p_entry.get("claimed_at_utc"),
+                "claim_bound_at_utc": p_entry.get("claim_bound_at_utc"),
+                "worker_pid": current_pid,
+                "mode": "PRODUCTION",
+            })
+
+    return True
 
 
 # ==============================================================================
@@ -1133,22 +1438,24 @@ def execute_holdout_workflow(
     """
     Unified entry point for holdout evaluation:
     - In PREFLIGHT mode (synthetic_records provided): executes statistical pipeline without simulator.
-    - In PRODUCTION mode: strictly requires authorized_execution_token == REQUIRED_EXECUTION_TOKEN.
-      Without this token, fails closed and refuses to generate, load, or run holdout episodes.
+    - In PRODUCTION mode: strictly requires a valid Signed Gate B Ticket and an active Ledger Claim.
+      Without valid authorization, fails closed and refuses to generate, load, or run holdout episodes.
     - Enforces single-shot output guard against overwriting existing holdout artifacts.
     """
-    cand_params, pol_payload, pol_raw_sha = verify_and_load_selected_policy(policy_path)
-    enforced_out_dir = enforce_holdout_output_directory(out_dir, partition)
-
-    # Fail-closed execution authorization guard
+    # Fail-closed execution authorization guard (verified before policy loading or output directories)
     is_synthetic = synthetic_records is not None
     if not is_synthetic and not freeze_only:
-        if authorized_execution_token != REQUIRED_EXECUTION_TOKEN:
-            raise RuntimeError(
-                "EXECUTION GUARD: M4 holdout evaluation is not authorized for live execution during preflight. "
-                "Explicit authorized_execution_token is required. Holdout partitions remain strictly untouched."
-            )
+        verify_execution_authorization(
+            partition=partition,
+            legacy_arg_token=authorized_execution_token,
+            allow_mock_simulation=False,
+            policy_path=policy_path,
+            manifest_path=manifest_path,
+        )
         raise NotImplementedError("Live simulator execution is blocked during preflight milestone.")
+
+    cand_params, pol_payload, pol_raw_sha = verify_and_load_selected_policy(policy_path)
+    enforced_out_dir = enforce_holdout_output_directory(out_dir, partition)
 
     # Single-shot execution guard
     part_tag = "mix" if partition == "mixture" else ("scen" if partition == "scenario" else partition)
@@ -1580,26 +1887,30 @@ def execute_production_holdout_pipeline(
     3. Audited baseline V7: AegisV7MPCBaselineController (for H2 and H3 TSR noninferiority)
 
     Guards:
-    - Fails closed if authorized_execution_token != REQUIRED_EXECUTION_TOKEN.
+    - Fails closed if Signed Gate B Ticket or active Ledger Claim is missing or invalid.
     - Fails closed if simulator_fn is provided but allow_mock_simulation is False.
     - Single-shot output protection: refuses to overwrite existing output files or prior aborted runs.
     - Verifies policy artifact integrity and certification.
     - Verifies manifest SHA-256 integrity, partition branch, and seed block bounds.
     - Preserves Common Random Numbers (CRN) across policy and baseline evaluations.
     """
-    # 1. Authorization Gate
-    if authorized_execution_token != REQUIRED_EXECUTION_TOKEN:
-        raise RuntimeError(
-            "EXECUTION GUARD: Production holdout evaluation is not authorized. "
-            "Explicit authorized_execution_token is required. Holdout partitions remain strictly untouched."
-        )
-
-    # 2. Simulator mode gate
+    # 1. Simulator mode gate
     if simulator_fn is not None and not allow_mock_simulation:
         raise RuntimeError(
             "EXECUTION GUARD: simulator_fn is provided but allow_mock_simulation is False. "
             "Custom/mock simulators are only permitted when allow_mock_simulation is explicitly True."
         )
+
+    # 2. Authorization Gate (verified before policy loading, manifest parsing, or simulator setup)
+    auth_context: dict[str, Any] = {}
+    verify_execution_authorization(
+        partition=partition,
+        legacy_arg_token=authorized_execution_token,
+        allow_mock_simulation=allow_mock_simulation,
+        policy_path=policy_path,
+        manifest_path=manifest_path,
+        auth_record_out=auth_context,
+    )
 
     # 3. Policy verification
     cand_params, pol_payload, pol_raw_sha = verify_and_load_selected_policy(policy_path)
@@ -1827,6 +2138,22 @@ def execute_production_holdout_pipeline(
     if partition == "scenario" and scen_csv.exists():
         artifact_shas[str(scen_csv.relative_to(_REPO_ROOT) if scen_csv.is_relative_to(_REPO_ROOT) else scen_csv)] = sha256_file(scen_csv)
 
+    # 11. Phase 4 Audit Record Binding & Report Generation
+    auth_record_file = enforced_out_dir / "authorization_record.json"
+    stat_accepted = bool(eval_result.get("m_accepted") == 1 or eval_result.get("statistical_acceptance") is True)
+    auth_context["statuses"] = {
+        "execution_completion": "COMPLETED",
+        "output_integrity": "INTEGRITY_VERIFIED",
+        "execution_provenance": "PROVENANCE_VERIFIED",
+        "statistical_acceptance": "ACCEPTED" if stat_accepted else "REJECTED",
+    }
+    auth_context["integrity_sha256"] = compute_canonical_payload_sha256(auth_context)
+    auth_record_bytes = json.dumps(auth_context, indent=2).encode("utf-8")
+    auth_record_file.write_bytes(auth_record_bytes)
+
+    auth_rel_key = str(auth_record_file.relative_to(_REPO_ROOT) if auth_record_file.is_relative_to(_REPO_ROOT) else auth_record_file)
+    artifact_shas[auth_rel_key] = sha256_file(auth_record_file)
+
     status_label = "COMPLETE_MOCK_VERIFIED" if allow_mock_simulation else "COMPLETE_VALID"
     sim_mode_label = "MOCK_SYNTHETIC" if allow_mock_simulation else "PRODUCTION_PHYSICS"
     report_payload: dict[str, Any] = {
@@ -1838,11 +2165,13 @@ def execute_production_holdout_pipeline(
         "v81_baseline_commit": V81_BASELINE_COMMIT,
         "created_utc": datetime.now(timezone.utc).isoformat(),
         "partition": partition,
+        "ticket_nonce": auth_context.get("ticket_nonce", "MOCK_NONCE_SYNTHETIC"),
         "simulation_mode": sim_mode_label,
         "selected_policy_id": cand_params.candidate_id,
         "selected_candidate": asdict(cand_params),
         "run_config": run_cfg,
         "evaluation_summary": eval_result,
+        "authorization_record_sha256": artifact_shas[auth_rel_key],
         "artifact_sha256": artifact_shas,
     }
     report_payload["integrity_sha256"] = compute_canonical_payload_sha256(report_payload)
@@ -1905,10 +2234,19 @@ def main() -> None:
         "--authorized-execution-token",
         type=str,
         default=None,
-        help="Explicit user authorization token required for production holdout simulation.",
+        help="[REJECTED] Legacy CLI authorization parameter. Legacy symmetric tokens are permanently disabled.",
     )
 
     args = parser.parse_args()
+
+    # Reject legacy CLI secret input mechanism
+    if args.authorized_execution_token is not None:
+        raise RuntimeError(
+            "EXECUTION GUARD: Production holdout evaluation is not authorized. "
+            "Passing execution tokens via CLI arguments (--authorized-execution-token) is rejected. "
+            "Legacy symmetric token authorization is permanently disabled. "
+            "Production execution requires a valid Signed Gate B Ticket and an active Ledger Claim."
+        )
 
     if args.preflight_only and not args.freeze_only and not args.run_production:
         print("[M4-PREFLIGHT] Running read-only preflight checks...")
@@ -1938,7 +2276,6 @@ def main() -> None:
             policy_path=args.policy_path,
             manifest_path=args.manifest_path,
             out_dir=args.out_dir,
-            authorized_execution_token=args.authorized_execution_token,
         )
         print(json.dumps(res, indent=2))
         return
@@ -1948,7 +2285,6 @@ def main() -> None:
         policy_path=args.policy_path,
         manifest_path=args.manifest_path,
         out_dir=args.out_dir,
-        authorized_execution_token=args.authorized_execution_token,
         freeze_only=args.freeze_only,
     )
     print(json.dumps(res, indent=2))
