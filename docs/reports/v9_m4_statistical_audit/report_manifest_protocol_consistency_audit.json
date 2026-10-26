@@ -1,0 +1,259 @@
+{
+  "schema_version": "nexvia-aegis-v9-m4-audit-manifest/1.0",
+  "milestone": "V9-M4 Report 20 Statistical Protocol Consistency Audit (Report 21)",
+  "git_branch": "v9.0-runtime-assurance",
+  "starting_commit": "a8895a0",
+  "created_utc": "2026-10-26T02:39:15.633667+00:00",
+  "audit_recommendation": "M4_REPORTING_CORRECTIONS_REQUIRED",
+  "execution_status": "M4_EXECUTION_PATH_VERIFIED_AND_LOCKED_PENDING_OWNER_AUTHORIZATION",
+  "holdout_data_accessed": false,
+  "protocol_consistency_audit_summary": {
+    "status": "M4_REPORTING_CORRECTIONS_REQUIRED",
+    "h1_selective_risk_threshold": "0.05 on M >= 59 (U_CP <= 0.05); confirmed 0.01 in Report 20 was a transcription conflation with calibration tolerance alpha_mon = 0.010",
+    "h4_task_coverage_floor": "Sample proportion C_hat = M / N >= 0.35 (M >= 504 on N = 1,440); confirmed 0.95 in Report 20 was a transcription conflation with nominal confidence 1 - delta = 0.95 or conformal coverage",
+    "scenario_holdout_total_episodes": "12 scenarios x 120 episodes = 1,440 episodes; confirmed N = 1,200 is exclusively the S_10 subset size used for H3 baseline noninferiority",
+    "h5_scenario_allocation": "12 scenarios with N_s = 120 episodes each; confirmed 6 scenarios with N=200 and N_s=100 were spurious factorizations of 1,200",
+    "h3_sample_size_scope": "N = 1,200 matched pairs strictly on S_10 block; controlling decision rule is Student-t Wald LCB > -0.05 and nominal TSR >= 0.94; Newcombe Method 10 is sensitivity analysis",
+    "production_code_and_protocol_concordance": "100% CONCORDANT. Zero code or configuration defect. Corrections confined to reporting documentation.",
+    "holdout_isolation": "100% VERIFIED_ABSENT (zero production holdout manifests, datasets, or output directories exist; seed blocks 73000..74439 and 75000..75119 untouched)",
+    "focused_preflight_tests": {
+      "total_passed": 62,
+      "total_failed": 0,
+      "duration_seconds": 1.44,
+      "exit_code": 0
+    },
+    "full_regression_tests": {
+      "total_passed": 173,
+      "total_failed": 0,
+      "duration_seconds": 31.44,
+      "exit_code": 0
+    },
+    "explicit_non_authorization_statement": "This consistency audit does NOT authorize execution of Milestone V9-M4. Production holdout evaluation remains safely locked pending explicit owner authorization."
+  },
+  "reports": {
+    "phase_0": {
+      "title": "Executive Summary",
+      "markdown_file": "docs/reports/v9_m4_statistical_audit/00_executive_summary.md",
+      "markdown_sha256": "516d35f0fd45992e704034b2c2e9db43ba518549441f8b872a661c54f543883f",
+      "pdf_file": "docs/reports/v9_m4_statistical_audit/00_executive_summary.pdf",
+      "pdf_sha256": "03dc014dd6eb1957f4ce024011a85a7e626149580cdd764bdd8a9aa949d6943e",
+      "pdf_size_bytes": 92219,
+      "pdf_validation": "PASS",
+      "status": "FINAL"
+    },
+    "phase_1": {
+      "title": "Protocol and Hypothesis Review",
+      "markdown_file": "docs/reports/v9_m4_statistical_audit/01_protocol_and_hypothesis_review.md",
+      "markdown_sha256": "0990faca9b6146f29403c02f7d98435f7fa6fa903187044c62f93bbac1ddf14e",
+      "pdf_file": "docs/reports/v9_m4_statistical_audit/01_protocol_and_hypothesis_review.pdf",
+      "pdf_sha256": "1bde104978b458838bbe8675cde3148ec53eb75a5bbc6440599ec266e7d21197",
+      "pdf_size_bytes": 119304,
+      "pdf_validation": "PASS",
+      "status": "FINAL"
+    },
+    "phase_2": {
+      "title": "H1 Selective-Risk Audit",
+      "markdown_file": "docs/reports/v9_m4_statistical_audit/02_h1_selective_risk_audit.md",
+      "markdown_sha256": "5471f2c95d48ceec9387798fe872aebd584259746d5fd6106723218791d9a87f",
+      "pdf_file": "docs/reports/v9_m4_statistical_audit/02_h1_selective_risk_audit.pdf",
+      "pdf_sha256": "5710aab2a68a71bb902ee8a36134e81a4b2699b52d72d0c6bd9d456a7e96d33c",
+      "pdf_size_bytes": 97460,
+      "pdf_validation": "PASS",
+      "status": "FINAL"
+    },
+    "phase_3": {
+      "title": "H5 IUT and Multiplicity Audit",
+      "markdown_file": "docs/reports/v9_m4_statistical_audit/03_h5_iut_multiplicity_audit.md",
+      "markdown_sha256": "f0f1215b328f4ce67ba49c75ef8650982e7d75e461c182b6575069fc66af6a69",
+      "pdf_file": "docs/reports/v9_m4_statistical_audit/03_h5_iut_multiplicity_audit.pdf",
+      "pdf_sha256": "844c24a0ecbb91b9d655df481bd7d4811fa338c7407d509de27b281fe74835d3",
+      "pdf_size_bytes": 109586,
+      "pdf_validation": "PASS",
+      "status": "FINAL"
+    },
+    "phase_4": {
+      "title": "H2/H3 Paired Comparisons Audit",
+      "markdown_file": "docs/reports/v9_m4_statistical_audit/04_h2_h3_paired_comparison_audit.md",
+      "markdown_sha256": "8075a18c65e29e1c1e616431fc167be7438c52b34126afa078707b58ae73f54c",
+      "pdf_file": "docs/reports/v9_m4_statistical_audit/04_h2_h3_paired_comparison_audit.pdf",
+      "pdf_sha256": "c952b4bfcd60e77a52f75fc878f3577787900678b7c6fd4c6dccef83e2602ccf",
+      "pdf_size_bytes": 101634,
+      "pdf_validation": "PASS",
+      "status": "FINAL"
+    },
+    "phase_5": {
+      "title": "H4 Coverage Analysis Audit",
+      "markdown_file": "docs/reports/v9_m4_statistical_audit/05_h4_coverage_audit.md",
+      "markdown_sha256": "d8cb184ab1814142bd434eccc28dfa37280a8cf475e3d56a1c9437955f4317fb",
+      "pdf_file": "docs/reports/v9_m4_statistical_audit/05_h4_coverage_audit.pdf",
+      "pdf_sha256": "38f124efa60503f723f793adf7b7282c071b382a3c06261f91e9ac81c84423cc",
+      "pdf_size_bytes": 93683,
+      "pdf_validation": "PASS",
+      "status": "FINAL"
+    },
+    "phase_6": {
+      "title": "Execution Guard Audit",
+      "markdown_file": "docs/reports/v9_m4_statistical_audit/06_execution_guard_audit.md",
+      "markdown_sha256": "fae396a56d12b1044c1b179aaf03f837cba283f63ea5da177e12974ae19b652c",
+      "pdf_file": "docs/reports/v9_m4_statistical_audit/06_execution_guard_audit.pdf",
+      "pdf_sha256": "32ccb757e1ee681670cda1f8dbb35074a3d25fb50ab593be8c0a3e6fcec1f07d",
+      "pdf_size_bytes": 73784,
+      "pdf_validation": "PASS",
+      "status": "FINAL"
+    },
+    "phase_7": {
+      "title": "Regression and Findings",
+      "markdown_file": "docs/reports/v9_m4_statistical_audit/07_regression_and_findings.md",
+      "markdown_sha256": "ecf60cad83316e67ef99ac330a9696896231af4e6f0912cf9134923233360fc7",
+      "pdf_file": "docs/reports/v9_m4_statistical_audit/07_regression_and_findings.pdf",
+      "pdf_sha256": "dde901c6c25d2ccfb5a2b379df8544d33b01a60f9cc6315b7d4b10dc47c4caf4",
+      "pdf_size_bytes": 83699,
+      "pdf_validation": "PASS",
+      "status": "FINAL"
+    },
+    "phase_8": {
+      "title": "Final Integrated Audit",
+      "markdown_file": "docs/reports/v9_m4_statistical_audit/08_v9_m4_independent_statistical_audit.md",
+      "markdown_sha256": "b3ba2bf182d55bac675be982c49a3261d71bcb07a4b3f2f69724e409f2929c61",
+      "pdf_file": "docs/reports/v9_m4_statistical_audit/08_v9_m4_independent_statistical_audit.pdf",
+      "pdf_sha256": "d0aadbde4551b709e732544b34ae42fb683c64556d8170127594d8e1d63fa73d",
+      "pdf_size_bytes": 129955,
+      "pdf_validation": "PASS",
+      "status": "FINAL"
+    },
+    "phase_9": {
+      "title": "Statistical Remediation Report",
+      "markdown_file": "docs/reports/v9_m4_statistical_audit/09_m4_statistical_remediation.md",
+      "markdown_sha256": "9ef1517471f02e875974ad86df8edd3023aa7e3b72338cfbc00f0180238aedec",
+      "pdf_file": "docs/reports/v9_m4_statistical_audit/09_m4_statistical_remediation.pdf",
+      "pdf_sha256": "7a9cc224db1e56f7a7a20d458d9f2d1ff8143355d718ff25a0c34d7f8bb477c4",
+      "pdf_size_bytes": 109335,
+      "pdf_validation": "PASS",
+      "status": "FINAL"
+    },
+    "phase_10": {
+      "title": "Post-Remediation Readiness Review",
+      "markdown_file": "docs/reports/v9_m4_statistical_audit/10_v9_m4_post_remediation_readiness.md",
+      "markdown_sha256": "c28bdff342caffaaf7af3e82278f8a47d93f9966245e9083851d12989251c854",
+      "pdf_file": "docs/reports/v9_m4_statistical_audit/10_v9_m4_post_remediation_readiness.pdf",
+      "pdf_sha256": "85455b1e94d6bcb96f11ff37cc6dafa514533c71c17e074f2f54009f2491df67",
+      "pdf_size_bytes": 95349,
+      "pdf_validation": "PASS",
+      "status": "FINAL"
+    },
+    "phase_11": {
+      "title": "H5 IUT and Holm-\u0160id\u00e1k Consistency Audit",
+      "markdown_file": "docs/reports/v9_m4_statistical_audit/11_h5_iut_holm_shidak_consistency_audit.md",
+      "markdown_sha256": "8094bca57a4abd1a601f0daec824bad4fc63709849c958cf1b6ffb8377f4d879",
+      "pdf_file": "docs/reports/v9_m4_statistical_audit/11_h5_iut_holm_shidak_consistency_audit.pdf",
+      "pdf_sha256": "ed7cb02057bc8751d0936f07aea7784e351481559a40cebeef6a897e151b910b",
+      "pdf_size_bytes": 102174,
+      "pdf_validation": "PASS",
+      "status": "FINAL"
+    },
+    "phase_12": {
+      "title": "H5 Numerical Reconciliation Addendum",
+      "markdown_file": "docs/reports/v9_m4_statistical_audit/12_h5_numerical_reconciliation.md",
+      "markdown_sha256": "d913fa5c450b40f6d0402f34cb3ee6e7c7b5ffcf6409d2aa5c38a83ac9c14d5c",
+      "pdf_file": "docs/reports/v9_m4_statistical_audit/12_h5_numerical_reconciliation.pdf",
+      "pdf_sha256": "2c20f7b8da7a0a34ac06af53653a88e70ee2f888778f93b8a5c70340fc932be0",
+      "pdf_size_bytes": 92420,
+      "pdf_validation": "PASS",
+      "status": "FINAL"
+    },
+    "phase_13": {
+      "title": "Final Pre-Execution Review and Production Readiness Assessment",
+      "markdown_file": "docs/reports/v9_m4_statistical_audit/13_v9_m4_final_preexecution_review.md",
+      "markdown_sha256": "f31a303789f5d1d59374b393c2247e3a957adcbbbe3426a906b1528dfb862e85",
+      "pdf_file": "docs/reports/v9_m4_statistical_audit/13_v9_m4_final_preexecution_review.pdf",
+      "pdf_sha256": "c79147a60bd59a6658f0071a1bdfc48201f122c49a0fc77fb2576e1e2499d5e2",
+      "pdf_size_bytes": 144356,
+      "pdf_validation": "PASS",
+      "status": "FINAL"
+    },
+    "phase_14": {
+      "title": "Production Execution Path Implementation",
+      "markdown_file": "docs/reports/v9_m4_statistical_audit/14_v9_m4_execution_path_implementation.md",
+      "markdown_sha256": "00d181c3c575e504b3c2bc56a117eadcb3d72a0186a6202a01d685811b196a55",
+      "pdf_file": "docs/reports/v9_m4_statistical_audit/14_v9_m4_execution_path_implementation.pdf",
+      "pdf_sha256": "c50f6f86260a7247b487ad4b134b85f6f7d1ea4d3ae361896e29644b9ae40c9f",
+      "pdf_size_bytes": 116271,
+      "pdf_validation": "PASS",
+      "status": "FINAL"
+    },
+    "phase_15": {
+      "title": "Mock End-to-End Verification",
+      "markdown_file": "docs/reports/v9_m4_statistical_audit/15_v9_m4_mock_end_to_end_verification.md",
+      "markdown_sha256": "f9bb766ec9b7137fbd73e20edeca0a997dfcf1f44a97c1fb50104f9d6734427c",
+      "pdf_file": "docs/reports/v9_m4_statistical_audit/15_v9_m4_mock_end_to_end_verification.pdf",
+      "pdf_sha256": "b20ffacc148e63167d90fd9e91617c8f9a024b603db353a2b8fb9052ef0686d4",
+      "pdf_size_bytes": 120206,
+      "pdf_validation": "PASS",
+      "status": "FINAL"
+    },
+    "phase_16": {
+      "title": "Final H3 Protocol and Common-Random-Numbers Consistency Audit",
+      "markdown_file": "docs/reports/v9_m4_statistical_audit/16_h3_crn_consistency_audit.md",
+      "markdown_sha256": "a66ed3b630c742cca29f6d08036ffd23425c7f47b7d9e221edc11136fa00aec1",
+      "pdf_file": "docs/reports/v9_m4_statistical_audit/16_h3_crn_consistency_audit.pdf",
+      "pdf_sha256": "92a436bf53dc5bb029cf91a400b299706520f33916fe0aa396fd7833d0ad75a6",
+      "pdf_size_bytes": 133363,
+      "pdf_validation": "PASS",
+      "status": "FINAL"
+    },
+    "phase_17": {
+      "title": "Final CRN Semantics and H3 Decision-Rule Audit",
+      "markdown_file": "docs/reports/v9_m4_statistical_audit/17_final_crn_and_h3_protocol_decision.md",
+      "markdown_sha256": "d851a8ee4c9e42bbedfc6716b63030757357b16aeff74cb074ad1e8b787a6e86",
+      "pdf_file": "docs/reports/v9_m4_statistical_audit/17_final_crn_and_h3_protocol_decision.pdf",
+      "pdf_sha256": "366248f73a9094725487c36274f654cb303d63c33613463c9aa076d5f53955c7",
+      "pdf_size_bytes": 153034,
+      "pdf_validation": "PASS",
+      "status": "FINAL"
+    },
+    "phase_18": {
+      "title": "Final H3 Confidence-Bound and CRN Statistical Claim Audit",
+      "markdown_file": "docs/reports/v9_m4_statistical_audit/18_h3_confidence_bound_and_crn_claim_audit.md",
+      "markdown_sha256": "b072bd3c1a6bd749451cc023f251a856a83880fc5254cc6779ee298636bc1ecb",
+      "pdf_file": "docs/reports/v9_m4_statistical_audit/18_h3_confidence_bound_and_crn_claim_audit.pdf",
+      "pdf_sha256": "a1657af1960257bcc8ae442a858c55f44e50aead0e2f88061249a9add7e5c24a",
+      "pdf_size_bytes": 171204,
+      "pdf_validation": "PASS",
+      "status": "FINAL"
+    },
+    "phase_19": {
+      "title": "Final Frozen-Policy Provenance and H3 Decision-Method Audit",
+      "markdown_file": "docs/reports/v9_m4_statistical_audit/19_frozen_policy_and_h3_method_audit.md",
+      "markdown_sha256": "4303045f30be74ba0db1f9678f5c6fe2a2f11e0386c853088f6c73e57ce0560a",
+      "pdf_file": "docs/reports/v9_m4_statistical_audit/19_frozen_policy_and_h3_method_audit.pdf",
+      "pdf_sha256": "206263d3a1225bfbaa2774eb608708957892b59c0e32d876ad0e4d1a66d21c89",
+      "pdf_size_bytes": 148679,
+      "pdf_validation": "PASS",
+      "status": "FINAL"
+    },
+    "phase_20": {
+      "title": "Final Owner Authorization Readiness Review",
+      "markdown_file": "docs/reports/v9_m4_statistical_audit/20_v9_m4_owner_authorization_readiness.md",
+      "markdown_sha256": "36502a1207e316c3a5b843f92370400a150f1195f2709200456353eabdd5d9f0",
+      "tex_file": "docs/reports/v9_m4_statistical_audit/20_v9_m4_owner_authorization_readiness.tex",
+      "tex_sha256": "1d9a00c70e23c1c2acd9989c123ba8327c553850aefc94c614ee3535618430ae",
+      "pdf_file": "docs/reports/v9_m4_statistical_audit/20_v9_m4_owner_authorization_readiness.pdf",
+      "pdf_sha256": "6a38063c7cd4af5e33ad93ba0063abd630ff4b438d32dc327657543c9ce64443",
+      "pdf_size_bytes": 137037,
+      "pdf_validation": "PASS",
+      "status": "FINAL"
+    },
+    "phase_21": {
+      "title": "Source-of-Truth Protocol Consistency Audit of Report 20",
+      "markdown_file": "docs/reports/v9_m4_statistical_audit/21_v9_m4_statistical_protocol_consistency_audit.md",
+      "markdown_sha256": "d5adc1cbdca5610d24732f50a3236fd73679f0a9a15a315b59f15b3fbdf6075e",
+      "tex_file": "docs/reports/v9_m4_statistical_audit/21_v9_m4_statistical_protocol_consistency_audit.tex",
+      "tex_sha256": "b1bf40d09a5c5530aa0f4a53338034fc511cea84cc43f69f4390ab40f84cc9eb",
+      "pdf_file": "docs/reports/v9_m4_statistical_audit/21_v9_m4_statistical_protocol_consistency_audit.pdf",
+      "pdf_sha256": "69675b8a4f77196d664aa3b7a4b1ae2a2ca5f3b3b7d41a25c1862d579e5f6e37",
+      "pdf_size_bytes": 120339,
+      "pdf_validation": "PASS",
+      "status": "FINAL"
+    }
+  }
+}

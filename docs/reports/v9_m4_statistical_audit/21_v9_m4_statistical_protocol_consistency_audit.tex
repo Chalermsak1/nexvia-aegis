@@ -1,0 +1,179 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[margin=2.0cm]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb,amsfonts,amsthm,mathtools}
+\usepackage{booktabs,tabularx,colortbl,array,multirow}
+\usepackage[table]{xcolor}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{microtype}
+\usepackage{hyperref}
+
+\newfontfamily\thaifont{Thonburi}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    citecolor=blue!70!black,
+    urlcolor=blue!70!black
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\footnotesize \textbf{NEXVIA AEGIS V9-M4 Protocol Consistency Audit}}
+\lhead{\footnotesize Phase 21 Source-of-Truth Reconciliation of Report 20}
+\rfoot{\footnotesize Page \thepage}
+\lfoot{\footnotesize Document ID: AEGIS-V9-M4-AUD-21}
+
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{NEXVIA AEGIS V9-M4 Independent Statistical Audit}}\\[6pt]
+    {\Large \textbf{Phase 21 Report: Source-of-Truth Protocol Consistency Audit}}\\[3pt]
+    {\large \textbf{Reconciliation of Decision Rules, Estimands, and Holdout Allocations in Report 20}}\\[10pt]
+    \textbf{Autonomous Verification Subsystem (Google DeepMind Antigravity)}\\
+    \textit{Git Branch: v9.0-runtime-assurance \quad $\cdot$ \quad Starting Commit: a8895a0 \quad $\cdot$ \quad Date: October 26, 2026}\\[12pt]
+\end{center}
+
+\noindent\fbox{
+\parbox{0.97\textwidth}{
+\textbf{CRITICAL NON-AUTHORIZATION DIRECTIVE:}\\
+This audit resolves statistical decision thresholds, estimands, sample size partitions, and scenario allocations before the project owner makes an authorization decision for Milestone V9-M4 (Confirmatory Holdout Evaluation). \textbf{This document does NOT constitute authorization to execute Milestone V9-M4, nor does it provide or invoke any execution token.} All evaluations were conducted strictly using synthetic test fixtures, in-memory models, and read-only inspection of existing calibration and validation artifacts. Production holdout manifests (\texttt{test\_mix\_manifest\_r1.json} and \texttt{test\_scen\_manifest\_r1.json}) and output directories (\texttt{results/v9/test\_mix/} and \texttt{results/v9/test\_scen/}) do not exist. Reserved holdout seed blocks ($73000..74439$ for mixture holdout and $75000..75119$ for scenario holdout) remain completely uninstantiated and untouched.
+}
+}
+
+\vspace{10pt}
+
+\section*{Abstract}
+This audit report provides a rigorous source-of-truth reconciliation of Report 20 (\texttt{20\_v9\_m4\_owner\_authorization\_readiness}) against the governing preregistered protocol (\texttt{docs/v9\_experiment\_protocol.md}), the production holdout harness (\texttt{experiments/v9\_evaluate\_holdout.py}), and the synthetic regression test suite (\texttt{tests/test\_v9\_holdout\_preflight.py}). The review investigates potential discrepancies regarding Hypothesis $H_1$ selective risk thresholds, Hypothesis $H_4$ coverage floor preconditions, Scenario Holdout total episode counts, Hypothesis $H_5$ scenario allocations, and Hypothesis $H_3$ sample size scope. 
+
+The audit establishes that: (1) the production implementation and the authoritative preregistered protocol are in \textbf{100\% perfect agreement}; (2) all identified discrepancies in Report 20 are \textbf{purely narrative and transcription errors} in informal conversational summaries and descriptive text; (3) the authoritative threshold for $H_1$ is $U_{\mathrm{CP}, 1} \le 0.05$ on $M \ge 59$ (not $0.01$); (4) the authoritative threshold for $H_4$ is sample coverage $\hat{C} \ge 0.35$ (not $0.95$); (5) the Scenario Holdout partition strictly comprises 12 scenarios with 120 episodes each ($N = 1,440$, seeds $75000..75119$ under branch $p=5$); (6) Hypothesis $H_5$ evaluates across all 12 scenarios ($N_s = 120$ each); and (7) $N = 1,200$ is exclusively the matched-pair count of the $S_{10}$ subset evaluated under $H_3$. Zero code defects exist. All 62 preflight and 173 full regression tests pass. The formal status is declared as \textbf{M4\_REPORTING\_CORRECTIONS\_REQUIRED}.
+
+\section{Executive Summary}
+
+\subsection{Executive Summary (English)}
+\begin{enumerate}
+    \item \textbf{Status Determination: M4\_REPORTING\_CORRECTIONS\_REQUIRED.} The evaluation code and preregistered protocol are mathematically and algorithmically sound and match 100\%. However, formal reporting corrections are required to supersede clerical transcription errors in Report 20.
+    \item \textbf{Hypothesis $H_1$ Threshold ($0.05$ vs $0.01$):} The registered and implemented threshold is $U_{\mathrm{CP},1}(K, M; 0.05) \le 0.05$ on $M \ge 59$. The mention of $0.01$ in Report 20's summary table was an informal transcription conflation with the M2R2 calibration loss-to-tolerance parameter $\alpha_{\text{mon}} = 0.010$.
+    \item \textbf{Hypothesis $H_4$ Precondition ($0.35$ vs $0.95$):} The registered and implemented threshold is empirical sample coverage $\hat{C} = M / N \ge 0.35$ ($M \ge 504$ on $N = 1,440$). The mention of $0.95$ in Report 20's summary table conflated task decision coverage with statistical confidence level $1 - \delta = 0.95$ or conformal set coverage.
+    \item \textbf{Scenario Holdout Sampling Design ($1,440$ vs $1,200$):} The Scenario Holdout partition comprises 12 scenarios $\times$ 120 seeds/scenario = $1,440$ episodes. The number $1,200$ applies exclusively to the 10-scenario core block ($S_{10}$) evaluated for $H_3$ TSR noninferiority.
+    \item \textbf{Hypothesis $H_5$ Scenario Allocation:} Evaluates across all 12 scenarios with $N_s = 120$ episodes per scenario. Erroneous narrative mentions of ``6 scenarios with $N=200$'' or ``$N_s = 100$'' were spurious arithmetic factorizations of $1,200$.
+\end{enumerate}
+
+\subsection{\thaifont บทสรุปสำหรับผู้บริหาร (Executive Summary in Thai)}
+\begin{enumerate}
+    \item \textbf{\thaifont ผลการตรวจสอบความสอดคล้อง:} \texttt{M4\_REPORTING\_CORRECTIONS\_REQUIRED} \thaifont รหัสต้นฉบับการประเมินผลและพิธีสารที่จดทะเบียนไว้ล่วงหน้ามีความสอดคล้องกันอย่างสมบูรณ์แบบ ไม่พบข้อบกพร่องในโค้ดหรือการกำหนดค่าทางสถิติ แต่จำเป็นต้องบันทึกข้อแก้ไขเชิงรายงานเพื่อแก้ไขข้อความคลาดเคลื่อนใน Report 20
+    \item \textbf{\thaifont สมมติฐาน $H_1$ (Selective Risk):} \thaifont เกณฑ์ที่ถูกต้องคือ $U_{\mathrm{CP},1} \le 0.05$ บนจำนวนการตัดสินใจ $M \ge 59$ (การระบุ $0.01$ เกิดจากการสับสนกับค่าขอบเขตความคลาดเคลื่อนในการสอบเทียบ $\alpha_{\text{mon}} = 0.010$)
+    \item \textbf{\thaifont สมมติฐาน $H_4$ (Task Coverage):} \thaifont เกณฑ์สัดส่วนการตัดสินใจขั้นต่ำที่ถูกต้องคือ $\hat{C} \ge 0.35$ หรือ $35\%$ ($M \ge 504$) (การระบุ $0.95$ เกิดจากการสับสนกับระดับความเชื่อมั่น $1-\delta = 0.95$)
+    \item \textbf{\thaifont การจัดสรรตัวอย่าง Scenario Holdout และ $H_5$:} \thaifont การออกแบบที่แท้จริงคือ 12 ฉากทัศน์ $\times$ 120 ตอน = 1,440 ตอน สำหรับขนาด $N = 1,200$ นั้นเป็นขนาดตัวอย่างเฉพาะกลุ่มฉากทัศน์หลัก 10 ฉากทัศน์แรก ($S_{10}$) ที่ใช้ทดสอบความไม่ด้อยกว่า ($H_3$) เท่านั้น
+\end{enumerate}
+
+\section{Repository Identity and Evidence Inspected}
+\begin{itemize}
+    \item \textbf{Current HEAD Commit:} \texttt{a8895a0} on branch \texttt{v9.0-runtime-assurance}.
+    \item \textbf{Remote Sync Status:} Exactly synchronized with \texttt{origin/v9.0-runtime-assurance}.
+    \item \textbf{Report 20 Markdown SHA-256:} \texttt{36502a1207e316c3a5b843f92370400a150f1195f2709200456353eabdd5d9f0}.
+    \item \textbf{Report 20 PDF SHA-256:} \texttt{6a38063c7cd4af5e33ad93ba0063abd630ff4b438d32dc327657543c9ce64443}.
+    \item \textbf{Authoritative Protocol Document:} \texttt{docs/v9\_experiment\_protocol.md} (Step 3 of 3).
+    \item \textbf{Evaluator Implementation:} \texttt{experiments/v9\_evaluate\_holdout.py}.
+    \item \textbf{Synthetic Preflight Suite:} \texttt{tests/test\_v9\_holdout\_preflight.py}.
+\end{itemize}
+
+\section{Discrepancy-by-Discrepancy Source-of-Truth Reconciliation}
+
+\begin{table}[h!]
+\centering
+\small
+\begin{tabularx}{\textwidth}{l p{3.2cm} p{3.4cm} p{3.4cm} X}
+\toprule
+\textbf{Dimension} & \textbf{Report 20 Narrative} & \textbf{Registered Protocol} & \textbf{Production Code} & \textbf{Resolution Status} \\
+\midrule
+$H_1$ Bound & $\text{UCB} \le 0.01$ (summary) & $U_{\mathrm{CP},1} \le 0.05$ on $M \ge 59$ & $U_{\mathrm{CP},1} \le 0.05$ on $m \ge 59$ & Transcription Error in summary table. Authoritative: $0.05$. \\
+\addlinespace
+$H_4$ Coverage & $\hat{C} \ge 0.95$ (summary) & Point estimate $\hat{C} \ge 0.35$ & Point estimate $\hat{C} \ge 0.35$ & Transcription Error in summary table. Authoritative: $\ge 0.35$. \\
+\addlinespace
+Scenario Total & $N = 1,200$ (summary) & 12 scen $\times$ 120 seeds = $1,440$ & $N_{\text{scen}} = 1,440$ fail-closed & Conflation Error with $S_{10}$. Total is $1,440$. \\
+\addlinespace
+$H_5$ Allocation & ``6 scen $\times$ 200'' / ``$N_s = 100$'' & 12 scen $\times$ 120 eps ($N_s = 120$) & 12 scen, $n_s = 120$ checked & Spurious factorizations of $1,200$. True: $12 \times 120 = 1,440$. \\
+\addlinespace
+$H_3$ Scope & Conflated with total & $S_{10}$ block ($10 \times 120 = 1,200$) & Filtered to $S_{10}$ ($1,200$ pairs) & Reconciled: $N=1,200$ is exclusively $S_{10}$ subset. \\
+\bottomrule
+\end{tabularx}
+\caption{Comprehensive Source-of-Truth Reconciliation across Protocol, Code, and Reports.}
+\end{table}
+
+\section{Detailed Protocol and Code Alignment}
+
+\subsection{Hypothesis H1 (Selective Risk Certification)}
+\begin{itemize}
+    \item \textbf{Mathematical Formulation:} $\mathcal{H}_{0,1}: C = 0 \lor R_{\mathrm{sel}} > 0.05$ vs. $\mathcal{H}_{1,1}: C > 0 \land R_{\mathrm{sel}} \le 0.05$.
+    \item \textbf{Decision Rule:} Evaluated on $\mathcal{D}_{\text{test}}^{\text{mix}}$ ($N=1,440$). Requires $M \ge 59$ and exact one-sided 95\% Clopper--Pearson UCB $U_{\mathrm{CP}, 1}(K, M; 0.05) \le 0.05$.
+    \item \textbf{Boundary Behavior:} When $M=0$, $R_{\mathrm{sel}}$ evaluates as \texttt{"UNDEFINED"}, $U_{\mathrm{CP}, 1} = \mathrm{NaN}$, and $H_1$ evaluates to \texttt{passed = False} with status \texttt{"INSUFFICIENT\_COVERAGE"}.
+\end{itemize}
+
+\subsection{Hypothesis H4 (Task Coverage Floor Precondition)}
+\begin{itemize}
+    \item \textbf{Decision Rule:} $\hat{C} = M / N \ge 0.35$ ($M \ge 504$ on $N = 1,440$).
+    \item \textbf{Anti-Gaming Function:} Precludes trivial risk minimization via excessive abstention. When $\hat{C} < 0.35$, the evaluator classifies the policy as \texttt{"CONSERVATIVE\_RISK\_COVERAGE\_TRADEOFF"}.
+\end{itemize}
+
+\subsection{Scenario Holdout Sample Size and Allocation Table}
+
+\begin{table}[h!]
+\centering
+\small
+\begin{tabularx}{\textwidth}{l c c c c X}
+\toprule
+\textbf{Partition / Block} & \textbf{Scenarios} & \textbf{Seeds/Scen} & \textbf{Total Episodes} & \textbf{Matched Pairs} & \textbf{Evaluated Hypotheses} \\
+\midrule
+Mixture Holdout ($\mathcal{D}_{\text{test}}^{\text{mix}}$) & Uniform Mixture & N/A & 1,440 & 1,440 & $H_1$ (Risk), $H_2$ (Incidence), $H_4$ (Coverage) \\
+Scenario Holdout ($\mathcal{D}_{\text{test}}^{\text{scen}}$) & 12 ($S_{10} \cup S_{\text{ext}}$) & 120 & 1,440 & 1,440 & Full Stratified Grid Suite \\
+-- $S_{10}$ Core Subsample & 10 (Scenarios 1--10) & 120 & 1,200 & 1,200 & $H_3$ (TSR Noninferiority vs V8.1 \& V7) \\
+-- $S_{\text{ext}}$ Stress Subsample & 2 (Scenarios 11--12) & 120 & 240 & 240 & Stress Breakdown Diagnostic \\
+All 12 Scenarios & 12 (Full Grid) & 120 & 1,440 & N/A & $H_5$ (Berger IUT \& Holm--Šidák Step-Down) \\
+\bottomrule
+\end{tabularx}
+\caption{Reconciled Sampling Allocation and Hypothesis Mapping for Confirmatory Holdout.}
+\end{table}
+
+\subsection{Hypothesis H5 (Worst-Case Scenario Safety Envelope)}
+\begin{itemize}
+    \item \textbf{Global Conjunction (Berger IUT):} Unconditional false-success incidence null $H_{0,5,s}: R_{\mathrm{inc}, s} > 0.05$. Component $p$-value $p_{\mathrm{inc}, s} = \operatorname{binom.cdf}(\mathrm{FS}_s, N_s=120, 0.05)$. Rejection rule: $\max_{s \in \mathcal{S}_{12}} p_{\mathrm{inc}, s} \le 0.05$.
+    \item \textbf{Auxiliary Multiplicity Adjustment:} Holm--Šidák sequential step-down stopping rule $k^* = \min \{ j : p_{(j)} > \alpha_{(j)} \}$ controls FWER for individual scenario claims.
+    \item \textbf{Zero Observed False Successes:} At $\mathrm{FS}_s = 0$, $p = 0.95^{120} \approx 0.002055 \le 0.05$. Confirms safety without falsely claiming zero underlying physical risk.
+\end{itemize}
+
+\subsection{Hypothesis H3 (TSR Noninferiority Scope)}
+\begin{itemize}
+    \item \textbf{Domain:} Scenario block $S_{10}$ ($N = 1,200$ matched pairs).
+    \item \textbf{Controlling Rule:} Student's $t$ Wald LCB ($> -0.05$) and nominal TSR $\ge 0.94$.
+    \item \textbf{Sensitivity:} Newcombe Method 10 reported concurrently as sensitivity evidence.
+\end{itemize}
+
+\section{Regression Testing and Holdout Isolation}
+\begin{itemize}
+    \item Focused Preflight Suite: \textbf{62/62 passed} in 1.44s (Exit code: \texttt{0}).
+    \item Full Repository Suite: \textbf{173/173 passed} in 31.44s (Exit code: \texttt{0}).
+    \item Holdout Isolation: Production manifests (\texttt{test\_mix\_manifest\_r1.json}, \texttt{test\_scen\_manifest\_r1.json}) and directories (\texttt{results/v9/test\_mix/}, \texttt{results/v9/test\_scen/}) confirmed absent. Reserved seed blocks ($73000..74439$ and $75000..75119$) untouched.
+\end{itemize}
+
+\section{Final Determination}
+
+\begin{center}
+{\Large \textbf{M4\_REPORTING\_CORRECTIONS\_REQUIRED}}
+\end{center}
+
+\noindent All statistical implementation and test code agree with the preregistered protocol. Reporting errata in Report 20 are formally superseded by this Report 21.
+
+\vspace{10pt}
+\noindent\fbox{
+\parbox{0.97\textwidth}{
+\textbf{EXPLICIT NON-AUTHORIZATION STATEMENT:}\\
+This consistency audit does NOT authorize execution of Milestone V9-M4. The production evaluator remains locked pending explicit owner authorization.
+}
+}
+
+\end{document}
