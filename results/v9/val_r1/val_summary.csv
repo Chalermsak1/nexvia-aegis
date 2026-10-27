@@ -1,0 +1,2 @@
+policy_id,tier_label,n_episodes,m_accepted,fs_count,ts_count,ab_explicit_count,timeout_count,ab_total_count,crashed_count,coverage,tsr,r_inc,r_sel,r_sel_status,mean_steps,mean_step_ms,mean_distance_traveled,mean_anchor_queries,mean_anchor_cost,mean_max_overshoot
+V9_CAND_1_TIER1_STRICTEST,Tier 1 (Strictest),480,269,0,269,207,4,211,0,0.560417,0.560417,0.000000,0.000000,DEFINED,137.47,0.1263,2.0320,1.667,0.0833,0.0414
