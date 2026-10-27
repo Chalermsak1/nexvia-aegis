@@ -1116,6 +1116,8 @@ def test_33_production_pipeline_mixture_mock_e2e(tmp_path: Path, mock_holdout_au
     # 4. Report JSON integrity hash
     loaded_report = json.loads(report_json.read_text(encoding="utf-8"))
     assert loaded_report["integrity_sha256"] == compute_canonical_payload_sha256(loaded_report)
+    auth_record = json.loads((out_dir / "authorization_record.json").read_text(encoding="utf-8"))
+    assert auth_record["statuses"]["statistical_acceptance"] == "NOT_EVALUATED"
 
     # 5. Statistical evaluations
     summary = res["evaluation_summary"]
@@ -2394,7 +2396,7 @@ def test_63_manifest_generator_root_partition_index_regression(tmp_path: Path):
     gen = V9HierarchicalManifestGenerator(master_entropy=20261025)
     man = gen.generate_manifest(
         partition_name="test_mix_r1",
-        manifest_id_start=73000,
+        manifest_id_start=93000,
         count=10,
         partition_index=PARTITION_BRANCH_TEST_MIXTURE,
     )
@@ -2430,27 +2432,27 @@ def test_63_manifest_generator_root_partition_index_regression(tmp_path: Path):
 def test_64_production_manifest_loader_validation(tmp_path: Path):
     """
     Gate A Remediation Regression Test:
-    Verifies that the corrected Mixture manifest passes non-mock production loader validation,
-    that a manifest missing root-level partition_index is strictly rejected, and that
-    Scenario manifest generation continues to satisfy all metadata and allocation requirements.
+    Verifies synthetic metadata and production rejection without using reserved seeds.
     """
     gen = V9HierarchicalManifestGenerator(master_entropy=20261025)
 
-    # 1. Corrected mixture manifest passes production loader validation
+    # 1. Synthetic mixture manifest preserves the expected metadata.
     mix_man = gen.generate_manifest(
         partition_name="test_mix_r1",
-        manifest_id_start=73000,
+        manifest_id_start=93000,
         count=1440,
         partition_index=PARTITION_BRANCH_TEST_MIXTURE,
     )
     mix_path = tmp_path / "test_mix_manifest_r1.json"
     mix_path.write_text(json.dumps(mix_man, indent=2) + "\n", encoding="utf-8")
 
-    loaded_mix, raw_sha_mix = verify_and_load_holdout_manifest(mix_path, "mixture", allow_synthetic=False)
+    loaded_mix, raw_sha_mix = verify_and_load_holdout_manifest(mix_path, "mixture", allow_synthetic=True)
     assert loaded_mix["partition"] == "test_mix_r1"
     assert loaded_mix["partition_index"] == 4
     assert loaded_mix["planned_episodes"] == 1440
     assert len(loaded_mix["episodes"]) == 1440
+    with pytest.raises(ValueError, match="PROHIBITED SEED ACCESS BLOCKED"):
+        verify_and_load_holdout_manifest(mix_path, "mixture", allow_synthetic=False)
 
     # 2. Defect regression: manifest missing root partition_index is rejected by non-mock path
     bad_mix = dict(mix_man)
@@ -2466,19 +2468,21 @@ def test_64_production_manifest_loader_validation(tmp_path: Path):
     # 3. Scenario manifest satisfies existing metadata and allocation requirements
     scen_man = gen.generate_stratified_manifest(
         partition_name="test_scen_r1",
-        seed_start=75000,
+        seed_start=95000,
         seeds_per_scenario=120,
         partition_index=PARTITION_BRANCH_TEST_SCENARIO,
     )
     scen_path = tmp_path / "test_scen_manifest_r1.json"
     scen_path.write_text(json.dumps(scen_man, indent=2) + "\n", encoding="utf-8")
 
-    loaded_scen, raw_sha_scen = verify_and_load_holdout_manifest(scen_path, "scenario", allow_synthetic=False)
+    loaded_scen, raw_sha_scen = verify_and_load_holdout_manifest(scen_path, "scenario", allow_synthetic=True)
     assert loaded_scen["partition"] == "test_scen_r1"
     assert loaded_scen["partition_index"] == 5
     assert loaded_scen["planned_episodes"] == 1440
     assert len(loaded_scen["realized_scenario_counts"]) == 12
     assert all(cnt == 120 for cnt in loaded_scen["realized_scenario_counts"].values())
+    with pytest.raises(ValueError, match="PROHIBITED SEED ACCESS BLOCKED"):
+        verify_and_load_holdout_manifest(scen_path, "scenario", allow_synthetic=False)
 
 
 def test_65_secure_authorization_guard_regression(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):

@@ -135,7 +135,6 @@ def main() -> int:
             "m_accepted": 1,
             "coverage": 1.0,
             "tsr": 1.0,
-            "statistical_acceptance": True,
         },
         "artifact_sha256": {
             str(episodes_csv): sha256_bytes(episodes_data),
@@ -186,7 +185,7 @@ def main() -> int:
                 "execution_completion": "COMPLETED",
                 "output_integrity": "INTEGRITY_VERIFIED",
                 "execution_provenance": "PROVENANCE_VERIFIED",
-                "statistical_acceptance": "ACCEPTED",
+                "statistical_acceptance": "NOT_EVALUATED",
             },
         }
         auth_bytes = json.dumps(auth_record, indent=2).encode("utf-8")

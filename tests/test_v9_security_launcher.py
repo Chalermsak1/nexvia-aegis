@@ -62,7 +62,6 @@ from nexvia_aegis.security.ledger import (
     execute_claim_transaction,
     execute_outcome_transaction,
     read_ledger,
-    reconcile_stranded_claim,
     register_ticket,
 )
 from nexvia_aegis.security.verifier import (
@@ -108,7 +107,7 @@ def security_dir(tmp_path: Path):
 
 
 @pytest.fixture
-def synthetic_repo(tmp_path: Path):
+def synthetic_repo(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     """Creates a clean synthetic git repository matching all Contract hash requirements."""
     repo = tmp_path / "repo"
     repo.mkdir(parents=True, exist_ok=True)
@@ -141,23 +140,23 @@ def synthetic_repo(tmp_path: Path):
     real_pol = real_repo / "results" / "v9" / "cal_r2" / "selected_policy.json"
     pol_file.write_bytes(real_pol.read_bytes())
 
-    # 3. Frozen manifest files
-    real_mix = (
-        real_repo / "results" / "v9" / "manifests" / "test_mix_manifest_r1.json"
-    )
+    # 3. Deterministic synthetic manifests; never read reserved Holdout entries.
     mix_file = (
         repo / "results" / "v9" / "manifests" / "test_mix_manifest_r1.json"
     )
     mix_file.parent.mkdir(parents=True, exist_ok=True)
-    mix_file.write_bytes(real_mix.read_bytes())
-
-    real_scen = (
-        real_repo / "results" / "v9" / "manifests" / "test_scen_manifest_r1.json"
-    )
+    mix_file.write_bytes(b'{"partition":"synthetic_mix","episodes":[]}\n')
     scen_file = (
         repo / "results" / "v9" / "manifests" / "test_scen_manifest_r1.json"
     )
-    scen_file.write_bytes(real_scen.read_bytes())
+    scen_file.write_bytes(b'{"partition":"synthetic_scen","episodes":[]}\n')
+    mix_sha = hashlib.sha256(mix_file.read_bytes()).hexdigest().lower()
+    scen_sha = hashlib.sha256(scen_file.read_bytes()).hexdigest().lower()
+    # Patch only this test's signer constants; production locks remain untouched.
+    import importlib
+    signer_module = importlib.import_module("scripts.tools.sign_gate_b_ticket")
+    monkeypatch.setattr(signer_module, "LOCKED_MIXTURE_MANIFEST_SHA256", mix_sha)
+    monkeypatch.setattr(signer_module, "LOCKED_SCENARIO_MANIFEST_SHA256", scen_sha)
 
     # 4. Lockfile
     lock_file = repo / "uv.lock"
@@ -188,8 +187,8 @@ def synthetic_repo(tmp_path: Path):
         "commit": commit,
         "eval_sha256": hashlib.sha256(eval_file.read_bytes()).hexdigest().lower(),
         "pol_sha256": LOCKED_POLICY_SHA256,
-        "mix_sha256": LOCKED_MIXTURE_MANIFEST_SHA256,
-        "scen_sha256": LOCKED_SCENARIO_MANIFEST_SHA256,
+        "mix_sha256": mix_sha,
+        "scen_sha256": scen_sha,
         "lock_sha256": hashlib.sha256(lock_file.read_bytes()).hexdigest().lower(),
     }
 
@@ -541,32 +540,12 @@ def test_worker_timeout_and_process_group_termination(
     elapsed = time.time() - start_t
     assert elapsed < 8.0, "Worker should be killed without waiting full 10 seconds"
 
-    # Stranded claim cannot be retried
+    # A timeout is terminal immediately; the one-shot claim cannot be retried.
     ledger = read_ledger(security_dir)
     nonce = list(ledger["active_tickets"].keys())[0]
     ticket_data = ledger["active_tickets"][nonce]
-    assert ticket_data["partitions"]["mixture"]["status"] == "CLAIMED"
-
-    # Active process detection prevents reconciliation while launcher process is executing
-    with pytest.raises(SecurityError, match="ACTIVE_PROCESS_DETECTED"):
-        reconcile_stranded_claim(
-            security_dir=security_dir,
-            nonce=nonce,
-            owner_confirmation=True,
-            allow_active_worker=False,
-        )
-
-    # Owner-controlled reconciliation with terminated worker marks FAILED_TERMINAL
-    reconcile_stranded_claim(
-        security_dir=security_dir,
-        nonce=nonce,
-        owner_confirmation=True,
-        allow_active_worker=True,
-    )
-    ledger2 = read_ledger(security_dir)
-    ticket_data2 = list(ledger2["active_tickets"].values())[0]
-    assert ticket_data2["partitions"]["mixture"]["status"] == "FAILED"
-    assert ticket_data2["ticket_state"] == "FAILED_TERMINAL"
+    assert ticket_data["partitions"]["mixture"]["status"] == "FAILED"
+    assert ticket_data["ticket_state"] == "FAILED_TERMINAL"
 
 
 def test_sequential_workflow_both_partitions_happy_path(
@@ -614,7 +593,7 @@ def test_sequential_workflow_both_partitions_happy_path(
     assert res_mix["ticket_state"] == "ACTIVE_PARTIAL"
     assert res_mix["statuses"]["execution_completion"] == "COMPLETED"
     assert res_mix["statuses"]["output_integrity"] == "INTEGRITY_VERIFIED"
-    assert res_mix["statuses"]["statistical_acceptance"] == "ACCEPTED"
+    assert res_mix["statuses"]["statistical_acceptance"] == "NOT_EVALUATED"
 
     # 2. Execute Scenario Partition
     mock_scen_cmd = [
@@ -647,10 +626,10 @@ def test_sequential_workflow_both_partitions_happy_path(
     assert res_scen["ticket_state"] == "CLOSED"
     assert res_scen["statuses"]["execution_completion"] == "COMPLETED"
     assert res_scen["statuses"]["output_integrity"] == "INTEGRITY_VERIFIED"
-    assert res_scen["statuses"]["statistical_acceptance"] == "ACCEPTED"
+    assert res_scen["statuses"]["statistical_acceptance"] == "NOT_EVALUATED"
 
     # 3. Both partitions consumed: attempting a re-execution fails
-    with pytest.raises(SecurityError, match="TICKET_ALREADY_CLOSED"):
+    with pytest.raises(SecurityError, match="EVIDENCE_PARTITION_EXISTS"):
         launch_gate_b_partition(
             security_dir=security_dir,
             ticket_path=ticket_file,
@@ -664,6 +643,78 @@ def test_sequential_workflow_both_partitions_happy_path(
             check_git_cleanliness=False,
             public_key_obj=pub,
         )
+    assert read_ledger(security_dir)["active_tickets"][nonce]["ticket_state"] == "CLOSED"
+
+
+@pytest.mark.parametrize("mode", ["success", "failed", "timeout"])
+def test_external_evidence_survives_detached_cleanup(
+    keypair, synthetic_repo, security_dir, tmp_path, mode
+):
+    """Synthetic worker outputs and diagnostics survive disposable checkout cleanup."""
+    priv, pub, pub_pem, pub_sha = keypair
+    ticket_file = tmp_path / "synthetic_ticket.json"
+    envelope = sign_gate_b_ticket(priv, make_valid_manifesto(synthetic_repo), output_path=ticket_file)
+    nonce = envelope["payload"]["nonce"]
+    pub_file = tmp_path / "pubkey.pem"
+    pub_file.write_bytes(pub_pem)
+    evidence_root = tmp_path / "external_evidence"
+    evidence_root.mkdir()
+    worktree = tmp_path / "disposable_worktree"
+    output_root = evidence_root / nonce / "results" / "v9"
+    command = [
+        sys.executable, str(MOCK_WORKER_SCRIPT), "--partition", "mixture",
+        "--ticket-nonce", nonce, "--output-dir", str(output_root),
+    ]
+    if mode == "failed":
+        command += ["--exit-code", "7", "--missing-report"]
+    elif mode == "timeout":
+        command += ["--sleep-seconds", "10"]
+    else:
+        command += ["--synthetic-production-stub"]
+
+    launch_kwargs = dict(
+        security_dir=security_dir, ticket_path=ticket_file,
+        pubkey_anchor_path=pub_file, expected_pubkey_sha256=pub_sha,
+        repo_dir=synthetic_repo["repo_dir"], partition="mixture",
+        python_executable=sys.executable, worktree_dir=worktree,
+        custom_worker_cmd=command, public_key_obj=pub,
+        evidence_root=evidence_root, timeout_seconds=1 if mode == "timeout" else 30,
+    )
+    if mode == "timeout":
+        with pytest.raises(SecurityError, match="WORKER_TIMEOUT"):
+            launch_gate_b_partition(**launch_kwargs)
+        entry = read_ledger(security_dir)["active_tickets"][nonce]
+        assert entry["partitions"]["mixture"]["status"] == "FAILED"
+        assert entry["ticket_state"] == "FAILED_TERMINAL"
+        result = None
+    elif mode == "failed":
+        result = launch_gate_b_partition(**launch_kwargs)
+        assert result["partition_status"] == "FAILED"
+        assert result["ticket_state"] == "FAILED_TERMINAL"
+    else:
+        result = launch_gate_b_partition(**launch_kwargs)
+        assert result["partition_status"] == "CONSUMED"
+        assert result["statuses"]["statistical_acceptance"] == "NOT_EVALUATED"
+
+    part_dir = output_root / "test_mix"
+    inventory_file = part_dir / "sha256_inventory.json"
+    inventory_bytes = inventory_file.read_bytes()
+    inventory_hash = hashlib.sha256(inventory_bytes).hexdigest()
+    inventory = json.loads(inventory_bytes)
+    for name, digest in inventory["artifact_sha256"].items():
+        assert hashlib.sha256((part_dir / name).read_bytes()).hexdigest() == digest
+    if result is not None:
+        assert result["evidence_inventory_sha256"] == inventory_hash
+    assert not worktree.exists()
+    assert inventory_file.read_bytes() == inventory_bytes
+    assert (part_dir / "worker.stdout.log").exists()
+    assert (part_dir / "worker.stderr.log").exists()
+    if mode != "success":
+        assert (part_dir / "INCOMPLETE_INVALID.json").exists()
+        reason = json.loads((part_dir / "INCOMPLETE_INVALID.json").read_text())["reason_code"]
+        assert reason == ("WORKER_TIMEOUT" if mode == "timeout" else "WORKER_NONZERO_EXIT")
+    else:
+        assert (part_dir / "test_mix_report.json").exists()
 
 
 def test_tampered_ticket_signature_rejected(keypair, synthetic_repo, security_dir, tmp_path):
@@ -821,6 +872,35 @@ def test_detached_worktree_lifecycle(synthetic_repo, tmp_path):
     # Cleanup detached worktree
     cleanup_detached_worktree(repo, prepared)
     assert not prepared.exists()
+
+
+def test_default_evaluator_cli_failure_precedes_ticket_registration(
+    keypair, synthetic_repo, security_dir, tmp_path,
+):
+    """A synthetic evaluator without --out-dir cannot spend a one-shot claim."""
+    priv, pub, pub_pem, pub_sha = keypair
+    ticket_file = tmp_path / "synthetic_ticket.json"
+    sign_gate_b_ticket(priv, make_valid_manifesto(synthetic_repo), output_path=ticket_file)
+    pub_file = tmp_path / "synthetic_pubkey.pem"
+    pub_file.write_bytes(pub_pem)
+    evidence = tmp_path / "external_evidence"
+    evidence.mkdir()
+
+    with pytest.raises(SecurityError, match="EVALUATOR_CLI_PREFLIGHT_FAILED"):
+        launch_gate_b_partition(
+            security_dir=security_dir,
+            ticket_path=ticket_file,
+            pubkey_anchor_path=pub_file,
+            expected_pubkey_sha256=pub_sha,
+            repo_dir=synthetic_repo["repo_dir"],
+            partition="mixture",
+            python_executable=sys.executable,
+            use_detached_worktree=False,
+            public_key_obj=pub,
+            evidence_root=evidence,
+        )
+    assert read_ledger(security_dir)["active_tickets"] == {}
+    assert list(evidence.iterdir()) == []
 
 
 def test_no_production_execution_from_any_test():
@@ -1218,6 +1298,12 @@ def test_phase_4_audit_record_binding_and_non_circular_integrity(tmp_path):
     )
     assert statuses_rej["statistical_acceptance"] == "REJECTED"
     assert statuses_rej["output_integrity"] == "INTEGRITY_VERIFIED"  # Output is intact even when rejected
+    statuses_count_only = evaluate_execution_statuses(
+        exit_code=0,
+        report_valid=True,
+        report_payload={"evaluation_summary": {"m_accepted": 1}},
+    )
+    assert statuses_count_only["statistical_acceptance"] == "NOT_EVALUATED"
 
     # 2. Write authorization_record.json
     auth_file = out_dir / "authorization_record.json"

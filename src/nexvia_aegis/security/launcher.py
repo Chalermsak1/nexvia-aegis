@@ -19,6 +19,7 @@ import re
 import signal
 import subprocess
 import sys
+import threading
 from typing import Any
 
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
@@ -360,11 +361,139 @@ def cleanup_detached_worktree(
     if not wt_path.exists():
         return
 
-    cmd = ["git", "worktree", "remove", "--force", str(wt_path)]
+    # A dirty worktree may contain the only copy of partial evidence. Git refuses
+    # removal without --force, which is the desired fail-closed behavior here.
+    cmd = ["git", "worktree", "remove", str(wt_path)]
     try:
         subprocess.run(cmd, cwd=repo_root, capture_output=True, text=True, check=True)
-    except Exception as e:
-        print(f"[LAUNCHER WARNING] Could not remove detached worktree '{wt_path}': {e}", file=sys.stderr)
+    except subprocess.CalledProcessError as e:
+        print(f"[LAUNCHER WARNING] Retaining worktree '{wt_path}' for evidence review: {e.stderr}", file=sys.stderr)
+
+
+def build_default_worker_command(
+    python_executable: Path | str,
+    execution_root: Path | str,
+    partition: str,
+    out_dir: Path | str,
+) -> list[str]:
+    """Builds the evaluator's actual CLI without accessing a manifest or episode."""
+    if partition not in ALLOWED_PARTITIONS:
+        raise SecurityError(f"INVALID_PARTITION: Unknown partition '{partition}'.")
+    out_path = Path(out_dir).resolve()
+    expected_leaf = "test_mix" if partition == "mixture" else "test_scen"
+    if out_path.name != expected_leaf or out_path.parent.name != "v9":
+        raise SecurityError(f"INVALID_OUTPUT_DIRECTORY: Expected results/v9/{expected_leaf}, got '{out_path}'.")
+    return [
+        str(python_executable),
+        str(Path(execution_root) / "experiments" / "v9_evaluate_holdout.py"),
+        "--partition", partition,
+        "--out-dir", str(out_path),
+        "--run-production",
+    ]
+
+
+def resolve_evidence_output_root(
+    evidence_root: Path | str,
+    nonce: str,
+    repository_root: Path | str,
+    execution_root: Path | str,
+) -> Path:
+    """Selects a durable ticket-scoped output tree outside both Git worktrees."""
+    root_arg = Path(evidence_root)
+    if not root_arg.is_absolute() or not root_arg.is_dir() or root_arg.is_symlink():
+        raise SecurityError("INVALID_EVIDENCE_ROOT: Owner-approved evidence root must be an existing absolute directory, not a symlink.")
+    root = root_arg.resolve()
+    repo = Path(repository_root).resolve()
+    execution = Path(execution_root).resolve()
+    if (root.is_relative_to(repo) or root.is_relative_to(execution)
+            or repo.is_relative_to(root) or execution.is_relative_to(root)):
+        raise SecurityError("EVIDENCE_ROOT_NOT_ISOLATED: Evidence root must be outside the repository and execution worktree.")
+    if not os.access(root, os.W_OK | os.X_OK):
+        raise SecurityError(f"EVIDENCE_ROOT_NOT_WRITABLE: '{root}' is not writable.")
+    if not RE_HEX_64.fullmatch(nonce):
+        raise SecurityError("INVALID_NONCE: Ticket nonce must be 64 lowercase hexadecimal characters.")
+    probe = root / f".nexvia_write_probe_{nonce[:12]}_{os.getpid()}"
+    try:
+        with probe.open("xb") as out:
+            out.flush()
+            os.fsync(out.fileno())
+    except OSError as exc:
+        raise SecurityError(f"EVIDENCE_ROOT_NOT_WRITABLE: Cannot create a probe in '{root}'.") from exc
+    finally:
+        probe.unlink(missing_ok=True)
+    output_root = root / nonce / "results" / "v9"
+    for ancestor in (root / nonce, root / nonce / "results", output_root):
+        if ancestor.is_symlink() or (ancestor.exists() and not ancestor.is_dir()):
+            raise SecurityError(f"INVALID_EVIDENCE_PATH: '{ancestor}' must be a directory and not a symlink.")
+        if not ancestor.resolve().is_relative_to(root):
+            raise SecurityError(f"EVIDENCE_PATH_ESCAPE: '{ancestor}' resolves outside the evidence root.")
+    return output_root
+
+
+def write_evidence_inventory(partition_dir: Path | str) -> Path:
+    """Writes an exclusive, synced SHA-256 inventory of files retained so far."""
+    part_dir = Path(partition_dir)
+    inventory = part_dir / "sha256_inventory.json"
+    if inventory.exists():
+        raise SecurityError(f"EVIDENCE_INVENTORY_EXISTS: '{inventory}' already exists.")
+    hashes: dict[str, str] = {}
+    for candidate in sorted(part_dir.rglob("*")):
+        if candidate.is_symlink():
+            raise SecurityError(f"INVALID_EVIDENCE_PATH: '{candidate}' is a symbolic link.")
+        if candidate == inventory or candidate.is_dir():
+            continue
+        if not candidate.is_file():
+            raise SecurityError(f"INVALID_EVIDENCE_PATH: '{candidate}' is not a regular file.")
+        hashes[str(candidate.relative_to(part_dir))] = sha256_file(candidate)
+    payload = {"schema_version": "nexvia-aegis-evidence-inventory/1.0", "artifact_sha256": hashes}
+    with inventory.open("x", encoding="utf-8") as out:
+        json.dump(payload, out, indent=2, sort_keys=True)
+        out.write("\n")
+        out.flush()
+        os.fsync(out.fileno())
+    dir_fd = os.open(part_dir, os.O_RDONLY)
+    try:
+        os.fsync(dir_fd)
+    finally:
+        os.close(dir_fd)
+    return inventory
+
+
+def write_incomplete_marker(partition_dir: Path | str, reason: str) -> None:
+    """Leaves a durable, non-overwriting marker without serializing secrets."""
+    part_dir = Path(partition_dir)
+    part_dir.mkdir(parents=True, exist_ok=True)
+    marker = part_dir / "INCOMPLETE_INVALID.json"
+    if marker.is_symlink():
+        raise SecurityError(f"INVALID_EVIDENCE_PATH: '{marker}' is a symbolic link.")
+    if marker.exists():
+        return
+    with marker.open("x", encoding="utf-8") as out:
+        json.dump({"status": "INCOMPLETE_INVALID", "reason_code": reason, "created_utc": datetime.now(timezone.utc).isoformat()}, out)
+        out.write("\n")
+        out.flush()
+        os.fsync(out.fileno())
+    dir_fd = os.open(part_dir, os.O_RDONLY)
+    try:
+        os.fsync(dir_fd)
+    finally:
+        os.close(dir_fd)
+
+
+def verify_evaluator_cli(python_executable: Path | str, execution_root: Path | str) -> None:
+    """Checks the real evaluator parser via --help before any ledger claim."""
+    evaluator = Path(execution_root) / "experiments" / "v9_evaluate_holdout.py"
+    result = subprocess.run(
+        [str(python_executable), str(evaluator), "--help"],
+        cwd=execution_root,
+        env=sanitize_environment(),
+        capture_output=True,
+        text=True,
+        timeout=30,
+        check=False,
+    )
+    if result.returncode != 0 or "--out-dir" not in result.stdout or "--run-production" not in result.stdout:
+        raise SecurityError("EVALUATOR_CLI_PREFLIGHT_FAILED: Evaluator help/parser does not expose required production arguments.")
 
 
 def supervise_worker(
@@ -372,6 +501,9 @@ def supervise_worker(
     cwd: Path | str,
     env: dict[str, str],
     timeout_seconds: int = 7200,
+    log_dir: Path | str | None = None,
+    redacted_values: tuple[str, ...] = (),
+    max_log_bytes: int = 8 * 1024 * 1024,
 ) -> tuple[int, int]:
     """Spawns and supervises a worker subprocess inside a new process group.
 
@@ -387,7 +519,15 @@ def supervise_worker(
     Raises:
         SecurityError: On timeout, launch failure, or process error.
     """
-    # Start in a new session (process group) so child processes are cleanly monitored and killed
+    if max_log_bytes <= 0:
+        raise SecurityError("INVALID_LOG_BOUND: max_log_bytes must be positive.")
+    target = Path(log_dir) if log_dir is not None else None
+    if target is not None:
+        target.mkdir(parents=True, exist_ok=True)
+        if any((target / name).exists() or (target / name).is_symlink()
+               for name in ("worker.stdout.log", "worker.stderr.log")):
+            raise SecurityError(f"WORKER_LOG_EXISTS: Refusing to overwrite logs in '{target}'.")
+    # Start in a new process group; the launcher never prints the worker environment.
     try:
         proc = subprocess.Popen(
             worker_cmd,
@@ -401,33 +541,91 @@ def supervise_worker(
         raise SecurityError(f"WORKER_SPAWN_FAILED: Could not launch worker process: {e}") from e
 
     worker_pid = proc.pid
+    threads: list[threading.Thread] = []
+    log_errors: list[Exception] = []
+    if target is not None:
+        secrets = tuple(value.encode("utf-8") for value in redacted_values if value)
 
-    try:
-        stdout, stderr = proc.communicate(timeout=timeout_seconds)
-        return proc.returncode, worker_pid
-    except subprocess.TimeoutExpired:
-        # Graceful termination first (SIGTERM to process group)
+        def drain(stream: Any, path: Path) -> None:
+            try:
+                pending = b""
+                holdback = max((len(secret) for secret in secrets), default=1) - 1
+                written = 0
+                truncated = False
+                with path.open("xb") as out:
+                    while True:
+                        chunk = stream.read(4096)
+                        if not chunk:
+                            break
+                        pending += chunk
+                        for secret in secrets:
+                            pending = pending.replace(secret, b"*" * len(secret))
+                        ready_len = max(0, len(pending) - holdback)
+                        ready, pending = pending[:ready_len], pending[ready_len:]
+                        remaining = max_log_bytes - written
+                        if remaining > 0:
+                            block = ready[:remaining]
+                            out.write(block)
+                            written += len(block)
+                        if len(ready) > remaining:
+                            truncated = True
+                    for secret in secrets:
+                        pending = pending.replace(secret, b"*" * len(secret))
+                    remaining = max_log_bytes - written
+                    if remaining > 0:
+                        out.write(pending[:remaining])
+                    if len(pending) > remaining:
+                        truncated = True
+                    if truncated:
+                        out.write(b"\n[LOG_TRUNCATED_AT_BOUND]\n")
+                    out.flush()
+                    os.fsync(out.fileno())
+            except Exception as exc:
+                log_errors.append(exc)
+            finally:
+                stream.close()
+
+        for stream, filename in ((proc.stdout, "worker.stdout.log"), (proc.stderr, "worker.stderr.log")):
+            assert stream is not None
+            thread = threading.Thread(target=drain, args=(stream, target / filename), daemon=True)
+            thread.start()
+            threads.append(thread)
+
+    def terminate_group() -> None:
         try:
-            pgid = os.getpgid(worker_pid)
-            os.killpg(pgid, signal.SIGTERM)
+            os.killpg(os.getpgid(worker_pid), signal.SIGTERM)
         except ProcessLookupError:
             pass
-
-        # Wait grace period of 5 seconds
         try:
-            proc.communicate(timeout=5)
+            proc.wait(timeout=5)
         except subprocess.TimeoutExpired:
-            # Forceful termination (SIGKILL to process group)
             try:
-                pgid = os.getpgid(worker_pid)
-                os.killpg(pgid, signal.SIGKILL)
+                os.killpg(os.getpgid(worker_pid), signal.SIGKILL)
             except ProcessLookupError:
                 pass
-            proc.communicate()
+            proc.wait()
 
+    try:
+        if threads:
+            proc.wait(timeout=timeout_seconds)
+        else:
+            proc.communicate(timeout=timeout_seconds)
+        return proc.returncode, worker_pid
+    except subprocess.TimeoutExpired as exc:
+        terminate_group()
         raise SecurityError(
             f"WORKER_TIMEOUT: Worker exceeded maximum execution timeout of {timeout_seconds} seconds."
-        )
+        ) from exc
+    except BaseException:
+        terminate_group()
+        raise
+    finally:
+        for thread in threads:
+            thread.join(timeout=10)
+            if thread.is_alive():
+                raise SecurityError("WORKER_LOG_FAILURE: Log drain did not finish after worker exit.")
+        if log_errors:
+            raise SecurityError(f"WORKER_LOG_FAILURE: Could not persist worker logs: {log_errors[0]}") from log_errors[0]
 
 
 def validate_output_report(
@@ -623,11 +821,10 @@ def evaluate_execution_statuses(
     stat_status = "NOT_EVALUATED"
     if report_valid and report_payload:
         eval_summary = report_payload.get("evaluation_summary", {})
-        m_accepted = eval_summary.get("m_accepted")
-        stat_flag = eval_summary.get("statistical_acceptance", False)
-        if m_accepted == 1 or stat_flag is True:
+        stat_flag = eval_summary.get("statistical_acceptance") if isinstance(eval_summary, dict) else None
+        if stat_flag is True:
             stat_status = "ACCEPTED"
-        else:
+        elif stat_flag is False:
             stat_status = "REJECTED"
 
     return {
@@ -653,6 +850,7 @@ def launch_gate_b_partition(
     custom_worker_cmd: list[str] | None = None,
     check_git_cleanliness: bool = True,
     public_key_obj: Ed25519PublicKey | None = None,
+    evidence_root: Path | str | None = None,
 ) -> dict[str, Any]:
     """Supervisory entry point executing a single Gate B partition under strict authorization.
 
@@ -687,17 +885,8 @@ def launch_gate_b_partition(
     payload = verified_envelope["payload"]
     nonce = payload["nonce"]
 
-    # Step 4: Register ticket with replay ledger if not already active (burns nonce)
     sec_dir = resolve_security_dir(security_dir)
-    current_ledger = read_ledger(sec_dir)
-    if nonce not in current_ledger["active_tickets"]:
-        register_ticket(
-            ticket_data=raw_ticket,
-            security_dir=sec_dir,
-            public_key_obj=pubkey,
-        )
-
-    # Step 5: Reconcile Execution Tree (Commit and 5 Frozen Artifact Hashes)
+    # All safe read-only checks precede ticket registration and the one-shot claim.
     repo_root = Path(repo_dir).resolve()
     reconcile_execution_tree(
         repo_dir=repo_root,
@@ -706,7 +895,6 @@ def launch_gate_b_partition(
         check_git_cleanliness=check_git_cleanliness,
     )
 
-    # Step 6: Prepare Worktree
     created_worktree: Path | None = None
     if use_detached_worktree:
         wt_target = Path(worktree_dir) if worktree_dir else (repo_root.parent / f"nexvia_wt_{nonce[:12]}_{partition}")
@@ -716,20 +904,45 @@ def launch_gate_b_partition(
         execution_root = repo_root
 
     py_exe = Path(python_executable) if python_executable else (repo_root / ".venv" / "bin" / "python")
+    claim_committed = False
+    outcome_committed = False
+    part_dir: Path | None = None
+    worker_pid: int | None = None
+    report_path: Path | None = None
 
     try:
-        # Step 7: Verify Runtime Integrity
         verify_runtime_integrity(
             python_executable=py_exe,
             repo_or_worktree_dir=execution_root,
             expected_lockfile_sha256=payload["lockfile_sha256"],
         )
 
-        # Step 8: Atomic Under-Lock Claim Transaction
-        # Partition status becomes CLAIMED before worker is launched
-        claimed_entry = execute_claim_transaction(sec_dir, nonce, partition)
+        part_tag = "mix" if partition == "mixture" else "scen"
+        if evidence_root is not None:
+            output_root = resolve_evidence_output_root(evidence_root, nonce, repo_root, execution_root)
+        elif custom_worker_cmd is not None and not use_detached_worktree:
+            # Compatibility path for isolated synthetic tests only. The CLI never exposes it.
+            output_root = execution_root / payload["target_output_root"]
+        else:
+            raise SecurityError("EVIDENCE_ROOT_REQUIRED: Production execution requires an explicit durable evidence root.")
+        part_dir = output_root / f"test_{part_tag}"
+        report_path = part_dir / f"test_{part_tag}_report.json"
+        if part_dir.exists() or part_dir.is_symlink():
+            raise SecurityError(f"EVIDENCE_PARTITION_EXISTS: Refusing to overwrite '{part_dir}'.")
 
-        # Step 9: Prepare Sanitized Worker Environment
+        if custom_worker_cmd is not None:
+            worker_cmd = copy.deepcopy(custom_worker_cmd)
+        else:
+            worker_cmd = build_default_worker_command(py_exe, execution_root, partition, part_dir)
+            verify_evaluator_cli(py_exe, execution_root)
+
+        current_ledger = read_ledger(sec_dir)
+        if nonce not in current_ledger["active_tickets"]:
+            register_ticket(ticket_data=raw_ticket, security_dir=sec_dir, public_key_obj=pubkey)
+        claimed_entry = execute_claim_transaction(sec_dir, nonce, partition)
+        claim_committed = True
+        part_dir.mkdir(parents=True, exist_ok=False)
+
         extra_env = {
             "V9_M4_TICKET_PATH": str(ticket_file.resolve()),
             "V9_M4_CLAIM_SECRET": claimed_entry.get("claim_secret", ""),
@@ -741,59 +954,32 @@ def launch_gate_b_partition(
         }
         worker_env = sanitize_environment(extra_env=extra_env)
 
-        # Step 10: Determine Worker Command Line
-        output_root = execution_root / payload["target_output_root"]
-        part_tag = "mix" if partition == "mixture" else "scen"
-        report_path = output_root / f"test_{part_tag}" / f"test_{part_tag}_report.json"
-
-        if custom_worker_cmd:
-            worker_cmd = copy.deepcopy(custom_worker_cmd)
-        else:
-            worker_cmd = [
-                str(py_exe),
-                str(execution_root / "experiments" / "v9_evaluate_holdout.py"),
-                "--partition", partition,
-                "--output-dir", str(output_root),
-                "--run-production",
-            ]
-
-        # Step 11: Supervise Worker Subprocess
         exit_code, worker_pid = supervise_worker(
             worker_cmd=worker_cmd,
             cwd=execution_root,
             env=worker_env,
             timeout_seconds=timeout_seconds,
+            log_dir=part_dir if evidence_root is not None else None,
+            redacted_values=(str(claimed_entry.get("claim_secret", "")),),
         )
 
-        # Step 12: Validate Terminal Output Evidence
         report_sha256: str | None = None
         report_payload: dict[str, Any] | None = None
         report_valid = False
 
         if exit_code == 0:
-            try:
-                report_sha256, report_payload = validate_output_report(
-                    report_path=report_path,
-                    expected_partition=partition,
-                    expected_nonce=nonce,
-                    output_root=output_root,
-                    expected_hashes=payload,
-                )
-                report_valid = True
-            except SecurityError as e:
-                # Evidence validation failed; mark fail-closed
-                execute_outcome_transaction(
-                    security_dir=sec_dir,
-                    nonce=nonce,
-                    partition=partition,
-                    exit_code=1,  # treat as failed outcome
-                    report_sha256="00" * 32,
-                    worker_pid=worker_pid,
-                    output_report_path=report_path,
-                )
-                raise
+            report_sha256, report_payload = validate_output_report(
+                report_path=report_path,
+                expected_partition=partition,
+                expected_nonce=nonce,
+                output_root=output_root,
+                expected_hashes=payload,
+            )
+            report_valid = True
+        else:
+            write_incomplete_marker(part_dir, "WORKER_NONZERO_EXIT")
 
-        # Step 13: Under-Lock Outcome Transaction
+        inventory_path = write_evidence_inventory(part_dir) if evidence_root is not None else None
         updated_entry = execute_outcome_transaction(
             security_dir=sec_dir,
             nonce=nonce,
@@ -803,6 +989,7 @@ def launch_gate_b_partition(
             worker_pid=worker_pid,
             output_report_path=report_path,
         )
+        outcome_committed = True
 
         # Step 14: Distinguish Statuses
         status_triplet = evaluate_execution_statuses(
@@ -820,8 +1007,30 @@ def launch_gate_b_partition(
             "statuses": status_triplet,
             "ticket_state": updated_entry["ticket_state"],
             "partition_status": updated_entry["partitions"][partition]["status"],
+            "evidence_directory": str(part_dir),
+            "evidence_inventory_sha256": sha256_file(inventory_path) if inventory_path else None,
         }
 
+    except BaseException as exc:
+        if claim_committed and not outcome_committed:
+            assert part_dir is not None
+            try:
+                error_code = str(exc).split(":", 1)[0]
+                if not re.fullmatch(r"[A-Z][A-Z0-9_]{2,63}", error_code):
+                    error_code = type(exc).__name__
+                write_incomplete_marker(part_dir, error_code)
+                if evidence_root is not None and not (part_dir / "sha256_inventory.json").exists():
+                    write_evidence_inventory(part_dir)
+            except Exception as preservation_error:
+                print(f"[LAUNCHER WARNING] Evidence preservation needs owner review: {preservation_error}", file=sys.stderr)
+            try:
+                execute_outcome_transaction(
+                    security_dir=sec_dir, nonce=nonce, partition=partition,
+                    exit_code=1, worker_pid=worker_pid, output_report_path=report_path,
+                )
+            except SecurityError as ledger_error:
+                print(f"[LAUNCHER WARNING] Claim may require owner reconciliation: {ledger_error}", file=sys.stderr)
+        raise
     finally:
         if created_worktree:
             cleanup_detached_worktree(repo_root, created_worktree)
@@ -837,7 +1046,8 @@ def main() -> int:
     parser.add_argument("--repo-dir", type=Path, default=_REPO_ROOT, help="Path to repository root.")
     parser.add_argument("--partition", choices=["mixture", "scenario"], required=True, help="Partition to claim and run.")
     parser.add_argument("--security-dir", type=Path, default=None, help="Security directory (defaults to ~/.nexvia_security).")
-    parser.add_argument("--launcher-fingerprint", type=str, default=None, help="Optional expected SHA-256 of launcher.")
+    parser.add_argument("--launcher-fingerprint", type=str, required=True, help="Owner-pinned SHA-256 of launcher module.")
+    parser.add_argument("--evidence-root", type=Path, required=True, help="Existing owner-approved durable directory outside Git worktrees.")
     parser.add_argument("--timeout-seconds", type=int, default=7200, help="Worker execution timeout in seconds.")
     args = parser.parse_args()
 
@@ -850,6 +1060,7 @@ def main() -> int:
             repo_dir=args.repo_dir,
             partition=args.partition,
             expected_launcher_sha256=args.launcher_fingerprint,
+            evidence_root=args.evidence_root,
             timeout_seconds=args.timeout_seconds,
         )
         print(f"[LAUNCHER SUCCESS] Partition '{args.partition}' execution completed successfully.")
