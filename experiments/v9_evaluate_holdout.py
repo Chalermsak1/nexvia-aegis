@@ -50,6 +50,8 @@ from typing import Any
 _REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
+if str(_REPO_ROOT / "src") not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT / "src"))
 
 import numpy as np
 from scipy.stats import beta, binom, binomtest, norm, t
@@ -2140,12 +2142,20 @@ def execute_production_holdout_pipeline(
 
     # 11. Phase 4 Audit Record Binding & Report Generation
     auth_record_file = enforced_out_dir / "authorization_record.json"
-    stat_accepted = bool(eval_result.get("m_accepted") == 1 or eval_result.get("statistical_acceptance") is True)
+    # Counts are not decisions. Until an approved explicit result is available,
+    # keep statistical acceptance unevaluated without changing H1–H5 formulas.
+    explicit_acceptance = eval_result.get("statistical_acceptance")
+    if explicit_acceptance is True:
+        statistical_status = "ACCEPTED"
+    elif explicit_acceptance is False:
+        statistical_status = "REJECTED"
+    else:
+        statistical_status = "NOT_EVALUATED"
     auth_context["statuses"] = {
         "execution_completion": "COMPLETED",
         "output_integrity": "INTEGRITY_VERIFIED",
         "execution_provenance": "PROVENANCE_VERIFIED",
-        "statistical_acceptance": "ACCEPTED" if stat_accepted else "REJECTED",
+        "statistical_acceptance": statistical_status,
     }
     auth_context["integrity_sha256"] = compute_canonical_payload_sha256(auth_context)
     auth_record_bytes = json.dumps(auth_context, indent=2).encode("utf-8")

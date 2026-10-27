@@ -203,6 +203,17 @@ class TestLockAndLedgerIntegrity:
         with pytest.raises(SecurityError, match="CORRUPTED_OR_MISSING_LEDGER"):
             read_ledger(sec_dir)
 
+    def test_duplicate_nonce_history_fails_closed(self, tmp_path):
+        sec_dir = tmp_path / "sec"
+        bootstrap_security_directory(sec_dir)
+        from nexvia_aegis.security.ledger import _persist_ledger_crash_durable
+        with PersistentLedgerLock(sec_dir):
+            ledger = read_ledger(sec_dir)
+            ledger["historical_nonces"] = ["a" * 64, "a" * 64]
+            _persist_ledger_crash_durable(sec_dir / LEDGER_FILE_NAME, ledger)
+        with pytest.raises(SecurityError, match="Duplicate historical nonce"):
+            read_ledger(sec_dir)
+
     def test_lock_inode_stability_during_updates(self, tmp_path, sample_ticket_factory):
         sec_dir = tmp_path / "sec"
         bootstrap_security_directory(sec_dir)
@@ -215,6 +226,30 @@ class TestLockAndLedgerIntegrity:
 
         # Inode of stable lock must remain identical
         assert lock_path.stat().st_ino == initial_inode
+
+    def test_lock_path_replacement_while_held_fails_closed(self, tmp_path):
+        sec_dir = tmp_path / "sec"
+        bootstrap_security_directory(sec_dir)
+        lock_path = sec_dir / LOCK_FILE_NAME
+        with pytest.raises(SecurityError, match="LOCK_INODE_CHANGED"):
+            with PersistentLedgerLock(sec_dir):
+                os.replace(lock_path, sec_dir / "old_lock")
+                lock_path.write_bytes(b"synthetic replacement")
+                os.chmod(lock_path, 0o600)
+
+    def test_stale_ledger_temp_file_blocks_overwrite(self, tmp_path):
+        sec_dir = tmp_path / "sec"
+        bootstrap_security_directory(sec_dir)
+        from nexvia_aegis.security.ledger import _persist_ledger_crash_durable
+        ledger_path = sec_dir / LEDGER_FILE_NAME
+        original = ledger_path.read_bytes()
+        stale = ledger_path.with_name(f"{ledger_path.name}.{os.getpid()}.tmp")
+        stale.write_bytes(b"synthetic preexisting temporary evidence")
+        with PersistentLedgerLock(sec_dir):
+            with pytest.raises(SecurityError, match="LEDGER_PERSISTENCE_FAILED"):
+                _persist_ledger_crash_durable(ledger_path, read_ledger(sec_dir))
+        assert stale.read_bytes() == b"synthetic preexisting temporary evidence"
+        assert ledger_path.read_bytes() == original
 
 
 # ==============================================================================
@@ -374,6 +409,7 @@ class TestClaimTransaction:
                 },
             }
             ledger["active_tickets"]["3" * 64] = ticket_entry
+            ledger["historical_nonces"].append("3" * 64)
             from nexvia_aegis.security.ledger import _persist_ledger_crash_durable
             _persist_ledger_crash_durable(sec_dir / LEDGER_FILE_NAME, ledger)
 

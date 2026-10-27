@@ -36,6 +36,7 @@ def main() -> int:
     parser.add_argument("--mismatched-partition", action="store_true")
     parser.add_argument("--out-of-root-report", action="store_true")
     parser.add_argument("--synthetic-production-stub", action="store_true", help="Stub valid production report format for launcher testing.")
+    parser.add_argument("--fabricate-statistical-acceptance", action="store_true", help="Negative security fixture only.")
     args = parser.parse_args()
 
     # Sleep if requested (for timeout testing)
@@ -135,13 +136,14 @@ def main() -> int:
             "m_accepted": 1,
             "coverage": 1.0,
             "tsr": 1.0,
-            "statistical_acceptance": True,
         },
         "artifact_sha256": {
             str(episodes_csv): sha256_bytes(episodes_data),
             str(summary_csv): sha256_bytes(summary_data),
         },
     }
+    if args.fabricate_statistical_acceptance:
+        report_payload["evaluation_summary"]["statistical_acceptance"] = True
 
     if args.synthetic_production_stub:
         # Provenance metadata binding (F-04)
@@ -186,7 +188,7 @@ def main() -> int:
                 "execution_completion": "COMPLETED",
                 "output_integrity": "INTEGRITY_VERIFIED",
                 "execution_provenance": "PROVENANCE_VERIFIED",
-                "statistical_acceptance": "ACCEPTED",
+                "statistical_acceptance": "NOT_EVALUATED",
             },
         }
         auth_bytes = json.dumps(auth_record, indent=2).encode("utf-8")
