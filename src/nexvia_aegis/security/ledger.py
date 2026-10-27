@@ -219,6 +219,24 @@ def validate_ledger_structure(ledger: dict[str, Any]) -> None:
 
     if not isinstance(ledger["historical_nonces"], list):
         raise SecurityError("CORRUPTED_OR_MISSING_LEDGER: 'historical_nonces' must be a list.")
+    history = ledger["historical_nonces"]
+    if any(not isinstance(nonce, str) or not RE_HEX_64.fullmatch(nonce) for nonce in history):
+        raise SecurityError("CORRUPTED_OR_MISSING_LEDGER: Historical nonce format is invalid.")
+    if len(history) != len(set(history)):
+        raise SecurityError("CORRUPTED_OR_MISSING_LEDGER: Duplicate historical nonce.")
+    for nonce, entry in ledger["active_tickets"].items():
+        if nonce not in history or not isinstance(entry, dict):
+            raise SecurityError("CORRUPTED_OR_MISSING_LEDGER: Active ticket is absent from nonce history.")
+        parts = entry.get("partitions")
+        if not isinstance(parts, dict) or set(parts) != set(ALLOWED_PARTITIONS):
+            raise SecurityError("CORRUPTED_OR_MISSING_LEDGER: Ticket partition map is invalid.")
+        active = entry.get("active_partition")
+        claimed = [name for name, part in parts.items() if isinstance(part, dict) and part.get("status") == "CLAIMED"]
+        if any(not isinstance(part, dict) or part.get("status") not in {"UNCLAIMED", "CLAIMED", "CONSUMED", "FAILED"}
+               for part in parts.values()):
+            raise SecurityError("CORRUPTED_OR_MISSING_LEDGER: Partition status is invalid.")
+        if len(claimed) > 1 or (active is None and claimed) or (active is not None and (active not in parts or claimed != [active])):
+            raise SecurityError("CORRUPTED_OR_MISSING_LEDGER: Active partition and claimed status disagree.")
 
 
 def _persist_ledger_crash_durable(ledger_path: Path, ledger: dict[str, Any]) -> None:
@@ -235,7 +253,7 @@ def _persist_ledger_crash_durable(ledger_path: Path, ledger: dict[str, Any]) -> 
     tmp_path = ledger_path.with_name(f"{ledger_path.name}.{os.getpid()}.tmp")
     data_bytes = json.dumps(ledger, indent=2).encode("utf-8")
 
-    open_flags = os.O_CREAT | os.O_WRONLY | os.O_TRUNC | getattr(os, "O_NOFOLLOW", 0)
+    open_flags = os.O_CREAT | os.O_EXCL | os.O_WRONLY | getattr(os, "O_NOFOLLOW", 0)
     try:
         fd = os.open(str(tmp_path), open_flags, 0o600)
     except OSError as e:
@@ -244,7 +262,12 @@ def _persist_ledger_crash_durable(ledger_path: Path, ledger: dict[str, Any]) -> 
         ) from e
 
     try:
-        os.write(fd, data_bytes)
+        written = 0
+        while written < len(data_bytes):
+            count = os.write(fd, data_bytes[written:])
+            if count <= 0:
+                raise OSError("Short ledger write")
+            written += count
         _sync_fd_durable(fd)
     except Exception as e:
         try:
@@ -322,6 +345,13 @@ class PersistentLedgerLock:
             raise SecurityError("UNSAFE_LOCK_PERMISSIONS: Lock file permissions must be exactly 0600.")
 
         self.initial_inode = st.st_ino
+        try:
+            if os.stat(self.lock_path, follow_symlinks=False).st_ino != st.st_ino:
+                self._close()
+                raise SecurityError("LOCK_INODE_CHANGED: Lock pathname changed during acquisition.")
+        except FileNotFoundError as exc:
+            self._close()
+            raise SecurityError("LOCK_INODE_CHANGED: Lock pathname disappeared during acquisition.") from exc
         return self
 
     def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
@@ -329,14 +359,14 @@ class PersistentLedgerLock:
 
     def _close(self) -> None:
         if self.lock_fd is not None:
+            inode_changed = False
             try:
                 # Re-verify that the lock file inode was not swapped or unlinked
-                st_now = os.stat(self.lock_path)
+                st_now = os.stat(self.lock_path, follow_symlinks=False)
                 if st_now.st_ino != self.initial_inode:
-                    # Inode changed while holding lock — serious integrity violation
-                    pass
+                    inode_changed = True
             except OSError:
-                pass
+                inode_changed = True
             try:
                 fcntl.flock(self.lock_fd, fcntl.LOCK_UN)
             except OSError:
@@ -346,6 +376,8 @@ class PersistentLedgerLock:
             except OSError:
                 pass
             self.lock_fd = None
+            if inode_changed:
+                raise SecurityError("LOCK_INODE_CHANGED: Stable lock pathname changed while held.")
 
 
 def read_ledger(security_dir: Path) -> dict[str, Any]:
@@ -742,7 +774,6 @@ def reconcile_stranded_claim(
     security_dir: Path | str | None,
     nonce: str,
     owner_confirmation: bool = False,
-    allow_active_worker: bool = False,
 ) -> bool:
     """Owner-controlled procedure to reconcile stranded claims resulting from supervisor crashes or SIGKILL.
 
@@ -787,11 +818,10 @@ def reconcile_stranded_claim(
                         try:
                             os.kill(pid, 0)
                             # Process is still alive!
-                            if not allow_active_worker:
-                                raise SecurityError(
-                                    f"ACTIVE_PROCESS_DETECTED: {role} process (PID {pid}) is still active. "
-                                    "Cannot reconcile stranded claim while processes are executing."
-                                )
+                            raise SecurityError(
+                                f"ACTIVE_PROCESS_DETECTED: {role} process (PID {pid}) is still active. "
+                                "Cannot reconcile stranded claim while processes are executing."
+                            )
                         except OSError as e:
                             if e.errno == errno.ESRCH:
                                 # Process is dead

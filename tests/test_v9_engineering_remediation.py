@@ -20,6 +20,7 @@ from nexvia_aegis.security.launcher import (
     write_evidence_inventory,
 )
 from nexvia_aegis.security.ledger import SecurityError
+from nexvia_aegis.security.runtime_integrity import verify_runtime_integrity
 
 
 @pytest.mark.parametrize("partition,leaf", [("mixture", "test_mix"), ("scenario", "test_scen")])
@@ -28,12 +29,12 @@ def test_default_command_matches_real_evaluator_cli_without_running_it(tmp_path:
     out_dir = tmp_path / "evidence" / "results" / "v9" / leaf
     command = build_default_worker_command(sys.executable, repo, partition, out_dir)
     assert command == [
-        sys.executable, str(repo / "experiments" / "v9_evaluate_holdout.py"),
+        sys.executable, "-I", str(repo / "experiments" / "v9_evaluate_holdout.py"),
         "--partition", partition, "--out-dir", str(out_dir), "--run-production",
     ]
     assert enforce_holdout_output_directory(out_dir, partition) == out_dir.resolve()
     help_result = subprocess.run(
-        [sys.executable, str(repo / "experiments" / "v9_evaluate_holdout.py"), "--help"],
+        [sys.executable, "-I", str(repo / "experiments" / "v9_evaluate_holdout.py"), "--help"],
         cwd=repo, capture_output=True, text=True, check=True,
     )
     assert "--out-dir" in help_result.stdout
@@ -133,3 +134,41 @@ def test_worker_timeout_preserves_partial_log(tmp_path: Path):
             log_dir=tmp_path / "logs",
         )
     assert b"synthetic partial" in (tmp_path / "logs" / "worker.stdout.log").read_bytes()
+
+
+def test_isolated_runtime_matches_lock_and_records_import_origins(tmp_path: Path, monkeypatch):
+    repo = Path(__file__).resolve().parent.parent
+    venv = repo / ".venv"
+    rogue = tmp_path / "rogue"
+    rogue.mkdir()
+    (rogue / "numpy.py").write_text("raise RuntimeError('wrong checkout')\n", encoding="utf-8")
+    monkeypatch.setenv("PYTHONPATH", str(rogue))
+    lock_sha = hashlib.sha256((repo / "uv.lock").read_bytes()).hexdigest()
+    report = verify_runtime_integrity(
+        venv / "bin" / "python", repo, lock_sha, approved_venv_root=venv,
+    )
+    assert report["package_count"] >= 30
+    assert report["installed_packages"]["numpy"]["version"] == "2.5.3"
+    assert Path(report["import_origins"]["numpy"]).is_relative_to(venv)
+    assert not report["wheel_archive_sha256_verified"]
+    with pytest.raises(SecurityError, match="RUNTIME_INTERPRETER_LOCATION_MISMATCH"):
+        verify_runtime_integrity(venv / "bin" / "python3", repo, lock_sha, approved_venv_root=venv)
+    with pytest.raises(SecurityError, match="RUNTIME_INTEGRITY_MISMATCH"):
+        verify_runtime_integrity(venv / "bin" / "python", repo, "00" * 32, approved_venv_root=venv)
+
+
+def test_locked_dependency_version_mismatch_is_preclaim_error(monkeypatch):
+    repo = Path(__file__).resolve().parent.parent
+    venv = repo / ".venv"
+    lock_sha = hashlib.sha256((repo / "uv.lock").read_bytes()).hexdigest()
+    from nexvia_aegis.security import runtime_integrity as module
+    original = module._locked_packages
+
+    def changed_expectation(path, include_dev):
+        expected = original(path, include_dev)
+        expected["numpy"] = "0.0-synthetic-wrong-version"
+        return expected
+
+    monkeypatch.setattr(module, "_locked_packages", changed_expectation)
+    with pytest.raises(SecurityError, match="RUNTIME_DEPENDENCY_MISMATCH"):
+        verify_runtime_integrity(venv / "bin" / "python", repo, lock_sha, approved_venv_root=venv)

@@ -37,6 +37,7 @@ from nexvia_aegis.security.ledger import (
     register_ticket,
     resolve_security_dir,
 )
+from nexvia_aegis.security.runtime_integrity import verify_runtime_integrity
 from nexvia_aegis.security.verifier import (
     RE_HEX_40,
     RE_HEX_64,
@@ -180,70 +181,13 @@ def sanitize_environment(
     # Clean minimal defaults if missing
     clean["PYTHONUNBUFFERED"] = "1"
     clean["PYTHONDONTWRITEBYTECODE"] = "1"
+    clean["PYTHONNOUSERSITE"] = "1"
 
     if extra_env:
         for k, v in extra_env.items():
             clean[k] = str(v)
 
     return clean
-
-
-def verify_runtime_integrity(
-    python_executable: Path | str,
-    repo_or_worktree_dir: Path | str,
-    expected_lockfile_sha256: str,
-    expected_python_version: str | None = None,
-) -> None:
-    """Verifies that the Python runtime and dependency lockfile meet exact release standards.
-
-    Args:
-        python_executable: Path to python interpreter to be invoked.
-        repo_or_worktree_dir: Directory containing uv.lock.
-        expected_lockfile_sha256: 64-char hex expected SHA-256 of uv.lock.
-        expected_python_version: Expected Python version (defaults to active 3.12.14).
-
-    Raises:
-        SecurityError: If interpreter fails, version differs, or lockfile hash mismatches.
-    """
-    py_path = Path(python_executable).resolve()
-    if not py_path.exists():
-        raise SecurityError(
-            f"RUNTIME_INTEGRITY_MISMATCH: Python interpreter '{py_path}' does not exist."
-        )
-
-    # Check lockfile hash
-    lock_path = Path(repo_or_worktree_dir) / "uv.lock"
-    if not lock_path.exists():
-        raise SecurityError(
-            f"RUNTIME_INTEGRITY_MISMATCH: Lockfile uv.lock not found in '{repo_or_worktree_dir}'."
-        )
-
-    actual_lock_sha = sha256_file(lock_path)
-    expected_lock = expected_lockfile_sha256.strip().lower()
-    if not hmac.compare_digest(actual_lock_sha, expected_lock):
-        raise SecurityError(
-            f"RUNTIME_INTEGRITY_MISMATCH: uv.lock SHA-256 {actual_lock_sha} != expected {expected_lock}."
-        )
-
-    # Check python version
-    target_ver = expected_python_version or f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
-    try:
-        res = subprocess.run(
-            [str(py_path), "-c", "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}')"],
-            capture_output=True,
-            text=True,
-            check=True,
-        )
-        actual_ver = res.stdout.strip()
-    except Exception as e:
-        raise SecurityError(
-            f"RUNTIME_INTEGRITY_MISMATCH: Failed to query Python interpreter version from '{py_path}': {e}"
-        ) from e
-
-    if actual_ver != target_ver:
-        raise SecurityError(
-            f"RUNTIME_INTEGRITY_MISMATCH: Python interpreter version '{actual_ver}' != expected '{target_ver}'."
-        )
 
 
 def reconcile_execution_tree(
@@ -385,6 +329,7 @@ def build_default_worker_command(
         raise SecurityError(f"INVALID_OUTPUT_DIRECTORY: Expected results/v9/{expected_leaf}, got '{out_path}'.")
     return [
         str(python_executable),
+        "-I",
         str(Path(execution_root) / "experiments" / "v9_evaluate_holdout.py"),
         "--partition", partition,
         "--out-dir", str(out_path),
@@ -484,7 +429,7 @@ def verify_evaluator_cli(python_executable: Path | str, execution_root: Path | s
     """Checks the real evaluator parser via --help before any ledger claim."""
     evaluator = Path(execution_root) / "experiments" / "v9_evaluate_holdout.py"
     result = subprocess.run(
-        [str(python_executable), str(evaluator), "--help"],
+        [str(python_executable), "-I", str(evaluator), "--help"],
         cwd=execution_root,
         env=sanitize_environment(),
         capture_output=True,
@@ -911,10 +856,12 @@ def launch_gate_b_partition(
     report_path: Path | None = None
 
     try:
-        verify_runtime_integrity(
+        runtime_report = verify_runtime_integrity(
             python_executable=py_exe,
             repo_or_worktree_dir=execution_root,
             expected_lockfile_sha256=payload["lockfile_sha256"],
+            approved_venv_root=repo_root / ".venv" if custom_worker_cmd is None else None,
+            synthetic_legacy_check=custom_worker_cmd is not None,
         )
 
         part_tag = "mix" if partition == "mixture" else "scen"
@@ -935,6 +882,12 @@ def launch_gate_b_partition(
         else:
             worker_cmd = build_default_worker_command(py_exe, execution_root, partition, part_dir)
             verify_evaluator_cli(py_exe, execution_root)
+            # Ticket v1 signs only the relative literal "results/v9". It does not
+            # authorize an absolute durable root. Never spend a production claim
+            # under an operator-supplied, unsigned reinterpretation of that field.
+            raise SecurityError(
+                "EVIDENCE_ROOT_NOT_TICKET_BOUND: A dated contract amendment and signed root binding are required."
+            )
 
         current_ledger = read_ledger(sec_dir)
         if nonce not in current_ledger["active_tickets"]:
@@ -942,6 +895,38 @@ def launch_gate_b_partition(
         claimed_entry = execute_claim_transaction(sec_dir, nonce, partition)
         claim_committed = True
         part_dir.mkdir(parents=True, exist_ok=False)
+        if evidence_root is not None:
+            runtime_record = part_dir / "runtime_integrity.json"
+            with runtime_record.open("x", encoding="utf-8") as out:
+                json.dump(runtime_report, out, indent=2, sort_keys=True)
+                out.write("\n")
+                out.flush()
+                os.fsync(out.fileno())
+            provenance_record = part_dir / "launcher_execution_provenance.json"
+            provenance = {
+                "schema_version": "nexvia-aegis-launcher-provenance/1.0",
+                "ticket_nonce": nonce,
+                "ticket_sha256": hashlib.sha256(raw_ticket).hexdigest(),
+                "partition": partition,
+                "approved_commit": payload["approved_commit"],
+                "claimed_at_utc": claimed_entry["partitions"][partition]["claimed_at_utc"],
+                "execution_checkout": str(execution_root),
+                "durable_evidence_root": str(Path(evidence_root).resolve()),
+                "target_output_root_signed_literal": payload["target_output_root"],
+                "runtime_integrity_sha256": sha256_file(runtime_record),
+                "launcher_sha256": verify_launcher_integrity(expected_launcher_sha256=expected_launcher_sha256),
+                "evidence_root_bound_in_signed_ticket": False,
+            }
+            with provenance_record.open("x", encoding="utf-8") as out:
+                json.dump(provenance, out, indent=2, sort_keys=True)
+                out.write("\n")
+                out.flush()
+                os.fsync(out.fileno())
+            dir_fd = os.open(part_dir, os.O_RDONLY)
+            try:
+                os.fsync(dir_fd)
+            finally:
+                os.close(dir_fd)
 
         extra_env = {
             "V9_M4_TICKET_PATH": str(ticket_file.resolve()),
@@ -975,6 +960,10 @@ def launch_gate_b_partition(
                 output_root=output_root,
                 expected_hashes=payload,
             )
+            if custom_worker_cmd is not None:
+                summary = report_payload.get("evaluation_summary", {})
+                if isinstance(summary, dict) and "statistical_acceptance" in summary:
+                    raise SecurityError("SYNTHETIC_STATISTICAL_DECISION_REJECTED: Mock worker cannot establish a statistical result.")
             report_valid = True
         else:
             write_incomplete_marker(part_dir, "WORKER_NONZERO_EXIT")
@@ -997,6 +986,11 @@ def launch_gate_b_partition(
             report_valid=report_valid,
             report_payload=report_payload,
         )
+        if custom_worker_cmd is not None:
+            # Test injection cannot produce a confirmatory decision, even if its
+            # synthetic JSON claims an explicit acceptance Boolean.
+            status_triplet["execution_provenance"] = "SYNTHETIC_WORKER"
+            status_triplet["statistical_acceptance"] = "NOT_EVALUATED"
 
         return {
             "ticket_nonce": nonce,

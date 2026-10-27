@@ -646,9 +646,9 @@ def test_sequential_workflow_both_partitions_happy_path(
     assert read_ledger(security_dir)["active_tickets"][nonce]["ticket_state"] == "CLOSED"
 
 
-@pytest.mark.parametrize("mode", ["success", "failed", "timeout"])
+@pytest.mark.parametrize("mode", ["success", "failed", "timeout", "interrupt", "fabricated"])
 def test_external_evidence_survives_detached_cleanup(
-    keypair, synthetic_repo, security_dir, tmp_path, mode
+    keypair, synthetic_repo, security_dir, tmp_path, mode, monkeypatch
 ):
     """Synthetic worker outputs and diagnostics survive disposable checkout cleanup."""
     priv, pub, pub_pem, pub_sha = keypair
@@ -669,8 +669,15 @@ def test_external_evidence_survives_detached_cleanup(
         command += ["--exit-code", "7", "--missing-report"]
     elif mode == "timeout":
         command += ["--sleep-seconds", "10"]
+    elif mode == "fabricated":
+        command += ["--synthetic-production-stub", "--fabricate-statistical-acceptance"]
     else:
         command += ["--synthetic-production-stub"]
+    if mode == "interrupt":
+        def synthetic_interrupt(**kwargs):
+            (Path(kwargs["log_dir"]) / "synthetic_partial.csv").write_bytes(b"episode,seed\n1,1001\n")
+            raise KeyboardInterrupt()
+        monkeypatch.setattr("nexvia_aegis.security.launcher.supervise_worker", synthetic_interrupt)
 
     launch_kwargs = dict(
         security_dir=security_dir, ticket_path=ticket_file,
@@ -680,8 +687,10 @@ def test_external_evidence_survives_detached_cleanup(
         custom_worker_cmd=command, public_key_obj=pub,
         evidence_root=evidence_root, timeout_seconds=1 if mode == "timeout" else 30,
     )
-    if mode == "timeout":
-        with pytest.raises(SecurityError, match="WORKER_TIMEOUT"):
+    if mode in ("timeout", "interrupt", "fabricated"):
+        expected_exception = KeyboardInterrupt if mode == "interrupt" else SecurityError
+        expected_message = {"timeout": "WORKER_TIMEOUT", "fabricated": "SYNTHETIC_STATISTICAL_DECISION_REJECTED"}.get(mode)
+        with pytest.raises(expected_exception, match=expected_message):
             launch_gate_b_partition(**launch_kwargs)
         entry = read_ledger(security_dir)["active_tickets"][nonce]
         assert entry["partitions"]["mixture"]["status"] == "FAILED"
@@ -707,12 +716,21 @@ def test_external_evidence_survives_detached_cleanup(
         assert result["evidence_inventory_sha256"] == inventory_hash
     assert not worktree.exists()
     assert inventory_file.read_bytes() == inventory_bytes
-    assert (part_dir / "worker.stdout.log").exists()
-    assert (part_dir / "worker.stderr.log").exists()
+    if mode != "interrupt":
+        assert (part_dir / "worker.stdout.log").exists()
+        assert (part_dir / "worker.stderr.log").exists()
+    runtime_record = json.loads((part_dir / "runtime_integrity.json").read_text())
+    assert runtime_record["profile"] == "SYNTHETIC_LEGACY_CHECK"
+    provenance = json.loads((part_dir / "launcher_execution_provenance.json").read_text())
+    assert provenance["ticket_nonce"] == nonce
+    assert provenance["durable_evidence_root"] == str(evidence_root.resolve())
+    assert provenance["evidence_root_bound_in_signed_ticket"] is False
     if mode != "success":
         assert (part_dir / "INCOMPLETE_INVALID.json").exists()
         reason = json.loads((part_dir / "INCOMPLETE_INVALID.json").read_text())["reason_code"]
-        assert reason == ("WORKER_TIMEOUT" if mode == "timeout" else "WORKER_NONZERO_EXIT")
+        assert reason == ({"timeout": "WORKER_TIMEOUT", "interrupt": "KeyboardInterrupt", "fabricated": "SYNTHETIC_STATISTICAL_DECISION_REJECTED"}.get(mode, "WORKER_NONZERO_EXIT"))
+        if mode == "interrupt":
+            assert (part_dir / "synthetic_partial.csv").read_bytes() == b"episode,seed\n1,1001\n"
     else:
         assert (part_dir / "test_mix_report.json").exists()
 
@@ -875,7 +893,7 @@ def test_detached_worktree_lifecycle(synthetic_repo, tmp_path):
 
 
 def test_default_evaluator_cli_failure_precedes_ticket_registration(
-    keypair, synthetic_repo, security_dir, tmp_path,
+    keypair, synthetic_repo, security_dir, tmp_path, monkeypatch,
 ):
     """A synthetic evaluator without --out-dir cannot spend a one-shot claim."""
     priv, pub, pub_pem, pub_sha = keypair
@@ -885,6 +903,10 @@ def test_default_evaluator_cli_failure_precedes_ticket_registration(
     pub_file.write_bytes(pub_pem)
     evidence = tmp_path / "external_evidence"
     evidence.mkdir()
+    monkeypatch.setattr(
+        "nexvia_aegis.security.launcher.verify_runtime_integrity",
+        lambda **_kwargs: {"profile": "SYNTHETIC_TEST"},
+    )
 
     with pytest.raises(SecurityError, match="EVALUATOR_CLI_PREFLIGHT_FAILED"):
         launch_gate_b_partition(
@@ -898,6 +920,59 @@ def test_default_evaluator_cli_failure_precedes_ticket_registration(
             use_detached_worktree=False,
             public_key_obj=pub,
             evidence_root=evidence,
+        )
+    assert read_ledger(security_dir)["active_tickets"] == {}
+
+
+def test_runtime_integrity_failure_precedes_ticket_registration(
+    keypair, synthetic_repo, security_dir, tmp_path, monkeypatch,
+):
+    priv, pub, pub_pem, pub_sha = keypair
+    ticket_file = tmp_path / "synthetic_ticket.json"
+    sign_gate_b_ticket(priv, make_valid_manifesto(synthetic_repo), output_path=ticket_file)
+    pub_file = tmp_path / "synthetic_pubkey.pem"
+    pub_file.write_bytes(pub_pem)
+    evidence = tmp_path / "external_evidence"
+    evidence.mkdir()
+
+    def reject_runtime(**_kwargs):
+        raise SecurityError("RUNTIME_DEPENDENCY_MISMATCH: synthetic preclaim failure")
+
+    monkeypatch.setattr("nexvia_aegis.security.launcher.verify_runtime_integrity", reject_runtime)
+    with pytest.raises(SecurityError, match="RUNTIME_DEPENDENCY_MISMATCH"):
+        launch_gate_b_partition(
+            security_dir=security_dir, ticket_path=ticket_file,
+            pubkey_anchor_path=pub_file, expected_pubkey_sha256=pub_sha,
+            repo_dir=synthetic_repo["repo_dir"], partition="mixture",
+            python_executable=sys.executable, use_detached_worktree=False,
+            custom_worker_cmd=[sys.executable, "-c", "pass"],
+            public_key_obj=pub, evidence_root=evidence,
+        )
+    assert read_ledger(security_dir)["active_tickets"] == {}
+    assert list(evidence.iterdir()) == []
+
+
+def test_unsigned_external_root_is_blocked_before_production_claim(
+    keypair, synthetic_repo, security_dir, tmp_path, monkeypatch,
+):
+    priv, pub, pub_pem, pub_sha = keypair
+    ticket_file = tmp_path / "synthetic_ticket.json"
+    sign_gate_b_ticket(priv, make_valid_manifesto(synthetic_repo), output_path=ticket_file)
+    pub_file = tmp_path / "synthetic_pubkey.pem"
+    pub_file.write_bytes(pub_pem)
+    evidence = tmp_path / "external_evidence"
+    evidence.mkdir()
+    monkeypatch.setattr("nexvia_aegis.security.launcher.verify_runtime_integrity",
+                        lambda **_kwargs: {"profile": "SYNTHETIC_TEST"})
+    monkeypatch.setattr("nexvia_aegis.security.launcher.verify_evaluator_cli",
+                        lambda *_args: None)
+    with pytest.raises(SecurityError, match="EVIDENCE_ROOT_NOT_TICKET_BOUND"):
+        launch_gate_b_partition(
+            security_dir=security_dir, ticket_path=ticket_file,
+            pubkey_anchor_path=pub_file, expected_pubkey_sha256=pub_sha,
+            repo_dir=synthetic_repo["repo_dir"], partition="mixture",
+            python_executable=sys.executable, use_detached_worktree=False,
+            public_key_obj=pub, evidence_root=evidence,
         )
     assert read_ledger(security_dir)["active_tickets"] == {}
     assert list(evidence.iterdir()) == []
@@ -1304,6 +1379,14 @@ def test_phase_4_audit_record_binding_and_non_circular_integrity(tmp_path):
         report_payload={"evaluation_summary": {"m_accepted": 1}},
     )
     assert statuses_count_only["statistical_acceptance"] == "NOT_EVALUATED"
+    for malformed in ({"evaluation_summary": {"statistical_acceptance": 1}},
+                      {"evaluation_summary": "ACCEPTED"}, {}):
+        assert evaluate_execution_statuses(0, True, malformed)["statistical_acceptance"] == "NOT_EVALUATED"
+    contradictory_unverified = evaluate_execution_statuses(
+        0, False, {"evaluation_summary": {"statistical_acceptance": True}},
+    )
+    assert contradictory_unverified["statistical_acceptance"] == "NOT_EVALUATED"
+    assert contradictory_unverified["output_integrity"] == "INTEGRITY_FAILED"
 
     # 2. Write authorization_record.json
     auth_file = out_dir / "authorization_record.json"
