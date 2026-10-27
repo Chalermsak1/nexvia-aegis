@@ -203,7 +203,9 @@ def verify_runtime_integrity(
     site_dir = Path(observed["site_packages"])
     if not site_dir.is_relative_to(venv):
         raise SecurityError("RUNTIME_SITE_PATH_MISMATCH: site-packages is outside the approved venv.")
-    allowed = [venv, Path(observed["base_prefix"])]
+    # A locked editable install may add this checkout's src directory through
+    # a .pth file. Accept only the exact execution checkout, never another one.
+    allowed = [venv, Path(observed["base_prefix"]), execution, execution / "src"]
     for entry in observed["sys_path_before_project_insertion"]:
         path = Path(entry)
         if not any(path.is_relative_to(root) for root in allowed):
