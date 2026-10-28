@@ -2622,3 +2622,284 @@ def test_65_secure_authorization_guard_regression(tmp_path: Path, monkeypatch: p
             out_dir=tmp_path / "wf_guard_dir",
             synthetic_records=None,
         )
+
+
+def test_65_h1_conjunctive_option_a_and_h2_sequential_gate():
+    """
+    SCI-01 Remediation Verification:
+    Tests the three-part conjunctive criterion for H1 under Option A:
+    (M >= 59) AND (CP-UCB95 <= 0.05) AND (Coverage >= 0.35).
+    Verifies that low coverage fails H1 (preventing False-Pass at M=59 with N=1440),
+    and verifies that H2 is sequentially blocked when H1 fails.
+    """
+    cand_params, _, _ = verify_and_load_selected_policy(Path("results/v9/cal_r2/selected_policy.json"))
+
+    # Case A: N=1440, M=59, K=0 (Coverage = 59/1440 = 0.04097 < 0.35)
+    # Under old logic, this passed H1. Under Option A, this MUST fail H1 due to coverage floor.
+    records_m59 = [
+        make_synthetic_episode_record(episode_index=i, accepted=True, outcome="TERMINAL_SUCCESS")
+        for i in range(59)
+    ] + [
+        make_synthetic_episode_record(episode_index=i, accepted=False, outcome="ABSTAINED")
+        for i in range(59, 1440)
+    ]
+    res_m59 = evaluate_mixture_holdout(records=records_m59, cand_params=cand_params)
+    assert res_m59["m_accepted"] == 59
+    assert res_m59["h1_selective_risk_control"]["precondition_m_ge_59"] is True
+    assert res_m59["h1_selective_risk_control"]["coverage_floor_met"] is False
+    assert res_m59["h1_selective_risk_control"]["passed"] is False
+    assert res_m59["h1_selective_risk_control"]["status"] == "FAILED_COVERAGE_FLOOR"
+    # H2 is sequentially blocked by H1 failure
+    assert res_m59["h2_unconditional_incidence"]["passed"] is False
+    assert res_m59["h2_unconditional_incidence"]["status"] == "BLOCKED_BY_H1_GATE"
+
+    # Case B: N=1440, M=503, K=0 (Coverage = 503/1440 = 0.3493 < 0.35)
+    # Just below 35% boundary -> FAILED_COVERAGE_FLOOR
+    records_m503 = [
+        make_synthetic_episode_record(episode_index=i, accepted=True, outcome="TERMINAL_SUCCESS")
+        for i in range(503)
+    ] + [
+        make_synthetic_episode_record(episode_index=i, accepted=False, outcome="ABSTAINED")
+        for i in range(503, 1440)
+    ]
+    res_m503 = evaluate_mixture_holdout(records=records_m503, cand_params=cand_params)
+    assert res_m503["h1_selective_risk_control"]["coverage_floor_met"] is False
+    assert res_m503["h1_selective_risk_control"]["passed"] is False
+    assert res_m503["h1_selective_risk_control"]["status"] == "FAILED_COVERAGE_FLOOR"
+
+    # Case C: N=1440, M=504, K=0 (Coverage = 504/1440 = 0.35 >= 0.35)
+    # At 35% boundary and K=0 (UCB <= 0.05) -> CONFIRMATORY_PASS
+    records_m504 = [
+        make_synthetic_episode_record(episode_index=i, accepted=True, outcome="TERMINAL_SUCCESS")
+        for i in range(504)
+    ] + [
+        make_synthetic_episode_record(episode_index=i, accepted=False, outcome="ABSTAINED")
+        for i in range(504, 1440)
+    ]
+    res_m504 = evaluate_mixture_holdout(records=records_m504, cand_params=cand_params)
+    assert res_m504["h1_selective_risk_control"]["coverage_floor_met"] is True
+    assert res_m504["h1_selective_risk_control"]["passed"] is True
+    assert res_m504["h1_selective_risk_control"]["status"] == "CONFIRMATORY_PASS"
+    assert res_m504["h2_unconditional_incidence"]["passed"] is True
+    assert res_m504["h2_unconditional_incidence"]["status"] == "CONFIRMATORY_PASS"
+
+
+def test_66_h3_missing_v8_cannot_silently_pass_primary_with_v7():
+    """
+    SCI-03 Remediation Verification:
+    Verifies that when primary V8.1 baseline is missing, evaluate_scenario_holdout
+    does NOT silently substitute V7 to grant a primary H3 pass, but reports
+    h3_overall_passed=False and status='NOT_EVALUATED_NO_PRIMARY_V8_BASELINE'.
+    """
+    scenarios = build_v9_s12_scenarios()
+    seeds_per_scen = 10
+    pol_records = []
+    v7_records = []
+    ep_idx = 0
+
+    for sc_idx, scen in enumerate(scenarios):
+        for s_idx in range(seeds_per_scen):
+            seed = 98000 + sc_idx * 100 + s_idx
+            pol_records.append(make_synthetic_episode_record(
+                episode_index=ep_idx, seed=seed, scenario=scen.name,
+                scenario_index=sc_idx, accepted=True, outcome="TERMINAL_SUCCESS",
+            ))
+            v7_records.append(make_synthetic_episode_record(
+                episode_index=ep_idx, seed=seed, scenario=scen.name,
+                scenario_index=sc_idx, accepted=True, outcome="TERMINAL_SUCCESS",
+            ))
+            ep_idx += 1
+
+    res = evaluate_scenario_holdout(
+        records=pol_records,
+        v8_records=None,
+        v7_records=v7_records,
+        expected_seeds_per_scenario=seeds_per_scen,
+    )
+
+    h3 = res["h3_overall"]
+    assert h3["primary_passed"] is False
+    assert h3["passed"] is False
+    assert h3["status"] == "NOT_EVALUATED_NO_PRIMARY_V8_BASELINE"
+    # Auxiliary v7 still co-evaluated
+    assert h3["coeval_passed"] is True
+
+
+def test_67_evaluate_mixture_holdout_expected_n_mismatch():
+    """
+    SCI-06 Remediation Verification:
+    Verifies that passing an explicit expected_n to evaluate_mixture_holdout
+    strictly verifies the partition size against the expected count and fails closed
+    if a shortened or incomplete record list is supplied.
+    """
+    cand_params, _, _ = verify_and_load_selected_policy(Path("results/v9/cal_r2/selected_policy.json"))
+    records = make_synthetic_mixture_dataset(n=100)
+
+    # Correct expected_n succeeds
+    res = evaluate_mixture_holdout(records=records, cand_params=cand_params, expected_n=100)
+    assert res["n_episodes"] == 100
+
+    # Shortened record list fails closed with ValueError
+    with pytest.raises(ValueError, match="Episode record count mismatch: expected 100, got 99"):
+        evaluate_mixture_holdout(records=records[:99], cand_params=cand_params, expected_n=100)
+
+
+def test_68_h4_compound_fault_evaluation_and_v8_pairing():
+    """
+    SCI-04 Remediation Verification:
+    Verifies that evaluate_scenario_holdout implements the pre-registered H4
+    hypothesis: compound-fault false-success incidence reduction on the 4 compound scenarios
+    (INDEPENDENT_BIAS, COMPOUND_HOLDOUT_EXTREME, COMPOUND_DRIFT_DROPOUT, COMPOUND_ANTIPODAL_RANGE_SHIFT).
+    Tests:
+    1. Favorable significant reduction passes H4 (CONFIRMATORY_PASS).
+    2. Missing primary V8 baseline fails closed (NOT_EVALUATED_NO_PRIMARY_V8_BASELINE).
+    3. Unfavorable or insignificant direction fails H4.
+    """
+    scenarios = build_v9_s12_scenarios()
+    seeds_per_scen = 120
+    comp_names = {
+        "INDEPENDENT_BIAS",
+        "COMPOUND_HOLDOUT_EXTREME",
+        "COMPOUND_DRIFT_DROPOUT",
+        "COMPOUND_ANTIPODAL_RANGE_SHIFT",
+    }
+
+    pol_records: list[dict[str, Any]] = []
+    v8_records: list[dict[str, Any]] = []
+    v7_records: list[dict[str, Any]] = []
+
+    ep_idx = 0
+    for sc_idx, scen in enumerate(scenarios):
+        for s_idx in range(seeds_per_scen):
+            seed = 99000 + sc_idx * 200 + s_idx
+            # Candidate V9: TS everywhere, 0 false successes in compound scenarios
+            pol_records.append(make_synthetic_episode_record(
+                episode_index=ep_idx, seed=seed, scenario=scen.name,
+                scenario_index=sc_idx, accepted=True, outcome="TERMINAL_SUCCESS",
+            ))
+            # V8 baseline: In compound scenarios, inject 20 false successes (n01 = 20)
+            v8_outcome = "TERMINAL_SUCCESS"
+            if scen.name in comp_names and s_idx < 5:  # 5 per scenario = 20 total
+                v8_outcome = "FALSE_SUCCESS"
+            v8_records.append(make_synthetic_episode_record(
+                episode_index=ep_idx, seed=seed, scenario=scen.name,
+                scenario_index=sc_idx, accepted=True, outcome=v8_outcome,
+            ))
+            # V7 baseline: similar
+            v7_records.append(make_synthetic_episode_record(
+                episode_index=ep_idx, seed=seed, scenario=scen.name,
+                scenario_index=sc_idx, accepted=True, outcome=v8_outcome,
+            ))
+            ep_idx += 1
+
+    # Case 1: V8 provided with favorable reduction -> H4 passes
+    res = evaluate_scenario_holdout(
+        records=pol_records,
+        v8_records=v8_records,
+        v7_records=v7_records,
+        expected_seeds_per_scenario=seeds_per_scen,
+    )
+    assert "h4_compound_fault_safety" in res
+    h4 = res["h4_compound_fault_safety"]
+    assert h4["primary_passed"] is True
+    assert h4["status"] == "CONFIRMATORY_PASS"
+    assert h4["vs_v8"]["mcnemar_exact_p"] < 0.05
+    assert h4["vs_v8"]["table_n11_n10_n01_n00"][2] == 20  # n01 = 20
+    assert h4["vs_v8"]["table_n11_n10_n01_n00"][1] == 0   # n10 = 0
+
+    # Case 2: V8 missing -> H4 fails closed
+    res_no_v8 = evaluate_scenario_holdout(
+        records=pol_records,
+        v8_records=None,
+        v7_records=v7_records,
+        expected_seeds_per_scenario=seeds_per_scen,
+    )
+    h4_no_v8 = res_no_v8["h4_compound_fault_safety"]
+    assert h4_no_v8["passed"] is False
+    assert h4_no_v8["status"] == "NOT_EVALUATED_NO_PRIMARY_V8_BASELINE"
+
+    # Case 3: V9 has MORE false successes than V8 -> H4 fails
+    bad_pol_records = list(pol_records)
+    # Inject 30 false successes into V9 compound records (so n10 > n01)
+    bad_ep_idx = 0
+    for sc_idx, scen in enumerate(scenarios):
+        for s_idx in range(seeds_per_scen):
+            if scen.name in comp_names and s_idx < 10:  # 10 per scenario = 40 total
+                bad_pol_records[bad_ep_idx] = make_synthetic_episode_record(
+                    episode_index=bad_ep_idx, seed=99000 + sc_idx * 200 + s_idx,
+                    scenario=scen.name, scenario_index=sc_idx, accepted=True, outcome="FALSE_SUCCESS",
+                )
+            bad_ep_idx += 1
+
+    res_unfavorable = evaluate_scenario_holdout(
+        records=bad_pol_records,
+        v8_records=v8_records,
+        v7_records=v7_records,
+        expected_seeds_per_scenario=seeds_per_scen,
+    )
+    h4_unfav = res_unfavorable["h4_compound_fault_safety"]
+    assert h4_unfav["passed"] is False
+    assert h4_unfav["status"] == "FAIL_INCIDENCE_REDUCTION_OR_INSIGNIFICANT"
+
+
+def test_69_h5_undefined_selective_risk_reporting():
+    """
+    SCI-05 Remediation Verification:
+    Verifies that when a scenario has zero accepted decisions (M_s = 0),
+    evaluate_scenario_holdout:
+    1. Sets r_sel to UNDEFINED for that scenario row.
+    2. Explicitly lists the scenario in h5_worst_case_safety['undefined_selective_risk_scenarios'].
+    3. Sets all_selective_risk_defined to False.
+    4. Evaluates unconditional incidence via Berger IUT without asserting selective risk certification.
+    """
+    scenarios = build_v9_s12_scenarios()
+    seeds_per_scen = 120
+    records: list[dict[str, Any]] = []
+
+    ep_idx = 0
+    for sc_idx, scen in enumerate(scenarios):
+        for s_idx in range(seeds_per_scen):
+            seed = 99500 + sc_idx * 200 + s_idx
+            # For scenario index 5 (OUTLIER_BURSTS), make robot abstain on all 120 episodes (M_s = 0)
+            if scen.name == "OUTLIER_BURSTS":
+                rec = make_synthetic_episode_record(
+                    episode_index=ep_idx, seed=seed, scenario=scen.name,
+                    scenario_index=sc_idx, accepted=False, outcome="ABSTAINED",
+                )
+            else:
+                rec = make_synthetic_episode_record(
+                    episode_index=ep_idx, seed=seed, scenario=scen.name,
+                    scenario_index=sc_idx, accepted=True, outcome="TERMINAL_SUCCESS",
+                )
+            records.append(rec)
+            ep_idx += 1
+
+    res = evaluate_scenario_holdout(records=records, expected_seeds_per_scenario=seeds_per_scen)
+    h5 = res["h5_worst_case_safety"]
+    assert "OUTLIER_BURSTS" in h5["undefined_selective_risk_scenarios"]
+    assert h5["all_selective_risk_defined"] is False
+    # Berger IUT on unconditional incidence still passes because 0 false successes <= 0.05
+    assert h5["berger_iut_passed"] is True
+
+    # Check breakdown row for OUTLIER_BURSTS
+    outlier_row = [r for r in res["scenario_breakdown"] if r["scenario"] == "OUTLIER_BURSTS"][0]
+    assert outlier_row["m_accepted"] == 0
+    assert outlier_row["r_sel"] == "UNDEFINED"
+    assert outlier_row["r_sel_status"] == "UNDEFINED"
+
+
+def test_70_mixture_does_not_overclaim_system_operational_improvement():
+    """
+    SCI-07 Remediation Verification:
+    Verifies that evaluate_mixture_holdout outputs
+    'MIXTURE_CERTIFIED_OPERATIONAL_IMPROVEMENT' rather than an unqualified
+    system-wide certification, correctly scoping the claim to the mixture partition.
+    """
+    cand_params, _, _ = verify_and_load_selected_policy(Path("results/v9/cal_r2/selected_policy.json"))
+    records = make_synthetic_mixture_dataset(n=1440)
+    res = evaluate_mixture_holdout(records=records, cand_params=cand_params, expected_n=1440)
+
+    assert res["h1_selective_risk_control"]["passed"] is True
+    assert res["h4_coverage_floor"]["passed"] is True
+    assert res["overall_evaluation_classification"] == "MIXTURE_CERTIFIED_OPERATIONAL_IMPROVEMENT"
+

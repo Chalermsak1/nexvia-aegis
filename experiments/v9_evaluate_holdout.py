@@ -884,6 +884,45 @@ def berger_intersection_union_test(p_values: Sequence[float], alpha: float = 0.0
     return max(p_values) <= alpha
 
 
+def paired_bootstrap_selective_risk_difference_ci(
+    pairs: Sequence[tuple[Mapping[str, Any], Mapping[str, Any]]],
+    n_bootstraps: int = 2000,
+    seed: int = 42,
+    confidence: float = 0.95,
+) -> tuple[float, float]:
+    """
+    Computes design-consistent paired episode-level bootstrap confidence interval
+    for Delta R_sel = R_sel(cand) - R_sel(baseline) on matched (scenario, seed) pairs.
+    """
+    n = len(pairs)
+    if n == 0:
+        return (float("nan"), float("nan"))
+
+    rng = np.random.default_rng(seed)
+    cand_fs = np.array([int(r["false_success"]) for r, _ in pairs])
+    cand_acc = np.array([int(r["accepted"]) for r, _ in pairs])
+    base_fs = np.array([int(b["false_success"]) for _, b in pairs])
+    base_acc = np.array([int(b["accepted"]) for _, b in pairs])
+
+    diffs: list[float] = []
+    for _ in range(n_bootstraps):
+        idx = rng.integers(0, n, size=n)
+        m_c = int(np.sum(cand_acc[idx]))
+        m_b = int(np.sum(base_acc[idx]))
+        if m_c > 0 and m_b > 0:
+            r_c = float(np.sum(cand_fs[idx])) / m_c
+            r_b = float(np.sum(base_fs[idx])) / m_b
+            diffs.append(r_c - r_b)
+
+    if len(diffs) < n_bootstraps * 0.5:
+        return (float("nan"), float("nan"))
+
+    alpha = (1.0 - confidence) / 2.0
+    lower = float(np.percentile(diffs, alpha * 100))
+    upper = float(np.percentile(diffs, (1.0 - alpha) * 100))
+    return (lower, upper)
+
+
 # ==============================================================================
 # Run Configuration Freeze
 # ==============================================================================
@@ -948,6 +987,7 @@ def evaluate_mixture_holdout(
     cand_params: V9CandidateParams,
     v8_records: Sequence[Mapping[str, Any]] | None = None,
     v7_records: Sequence[Mapping[str, Any]] | None = None,
+    expected_n: int | None = None,
 ) -> dict[str, Any]:
     """
     Executes the confirmatory statistical analysis for the mixture holdout partition D_test^mix:
@@ -955,7 +995,8 @@ def evaluate_mixture_holdout(
     - Tests H_1: Selective False-Success Risk Control (1-sided 95% Clopper-Pearson UCB <= 0.05 on M >= 59).
     - Tests H_2: Unconditional False-Success Incidence Reduction vs V8.1 and V7 baselines via paired McNemar test.
     """
-    verify_episode_records_integrity(records, len(records))
+    target_n = expected_n if expected_n is not None else len(records)
+    verify_episode_records_integrity(records, target_n)
     n = len(records)
     m = sum(1 for r in records if int(r["accepted"]) == 1)
     ts = sum(1 for r in records if int(r["true_success"]) == 1)
@@ -970,17 +1011,30 @@ def evaluate_mixture_holdout(
     r_inc = fs / n if n > 0 else 0.0
     r_sel = fs / m if m > 0 else float("nan")
 
-    # Hypothesis H_1: Selective Risk Control
+    # Hypothesis H_1: Selective Risk Control (Conjunctive Criterion Option A)
     h1_precondition_met = m >= 59
     h1_ucb95 = clopper_pearson_one_sided_ucb(fs, m, delta=0.05) if m > 0 else float("nan")
-    h1_passed = bool(h1_precondition_met and not math.isnan(h1_ucb95) and h1_ucb95 <= 0.05)
-    h1_status = "CONFIRMATORY_PASS" if h1_passed else ("FAILED_UCB" if h1_precondition_met else "INSUFFICIENT_COVERAGE")
+    h1_coverage_met = bool(cov >= 0.35)
+    h1_passed = bool(
+        h1_precondition_met
+        and not math.isnan(h1_ucb95)
+        and h1_ucb95 <= 0.05
+        and h1_coverage_met
+    )
+    if h1_passed:
+        h1_status = "CONFIRMATORY_PASS"
+    elif not h1_precondition_met:
+        h1_status = "INSUFFICIENT_COVERAGE"
+    elif not h1_coverage_met:
+        h1_status = "FAILED_COVERAGE_FLOOR"
+    else:
+        h1_status = "FAILED_UCB"
 
     # Hypothesis H_4: Coverage Floor Precondition
     h4_passed = bool(cov >= 0.35)
     h4_status = "PASS_ADEQUATE_UTILITY" if h4_passed else "FAIL_COVERAGE_DEGENERATE"
 
-    # Hypothesis H_2: Unconditional FS Incidence Reduction vs Baselines
+    # Hypothesis H_2: Unconditional FS Incidence Reduction vs Baselines (Gated by H_1)
     h2_results: dict[str, Any] = {}
     h2_passed = False
     pooled_ucb95_fs = clopper_pearson_one_sided_ucb(fs, n, delta=0.05)
@@ -1024,17 +1078,22 @@ def evaluate_mixture_holdout(
     fs_comp = sum(1 for r in comp_records if int(r["false_success"]) == 1)
     r_inc_comp = fs_comp / n_comp if n_comp > 0 else 0.0
 
-    if pooled_ucb95_fs <= 0.05 and (not h2_results or any(v["significant_reduction"] for v in h2_results.values())):
+    if not h1_passed:
+        h2_passed = False
+        h2_status = "BLOCKED_BY_H1_GATE"
+    elif pooled_ucb95_fs <= 0.05 and (not h2_results or any(v["significant_reduction"] for v in h2_results.values())):
         h2_passed = True
         h2_status = "CONFIRMATORY_PASS"
     else:
+        h2_passed = False
         h2_status = "DESCRIPTIVE_ONLY"
 
-    # Anti-gaming rule evaluation
+    # Partition-level anti-gaming rule evaluation (SCI-07: aggregate system certification
+    # requires unified evaluation across both mixture and scenario holdout partitions)
     if (not h4_passed) or (h1_passed and not h4_passed):
         overall_classification = "CONSERVATIVE_RISK_COVERAGE_TRADEOFF"
     elif h1_passed and h4_passed:
-        overall_classification = "CERTIFIED_OPERATIONAL_IMPROVEMENT"
+        overall_classification = "MIXTURE_CERTIFIED_OPERATIONAL_IMPROVEMENT"
     else:
         overall_classification = "UNCERTIFIED_POLICY"
 
@@ -1054,9 +1113,10 @@ def evaluate_mixture_holdout(
         "r_sel": round(r_sel, 6) if not math.isnan(r_sel) else "UNDEFINED",
         "h1_selective_risk_control": {
             "hypothesis": "H_1",
-            "estimand": "R_sel <= 0.05 on accepted decisions",
+            "estimand": "R_sel <= 0.05 on accepted decisions (Conjunctive Option A with Coverage >= 0.35)",
             "m_accepted": m,
             "precondition_m_ge_59": h1_precondition_met,
+            "coverage_floor_met": h1_coverage_met,
             "cp_ucb95": round(h1_ucb95, 6) if not math.isnan(h1_ucb95) else "UNDEFINED",
             "status": h1_status,
             "passed": h1_passed,
@@ -1291,16 +1351,118 @@ def evaluate_scenario_holdout(
             h3_v7_status = "CONFIRMATORY_PASS" if h3_v7_passed else "FAIL_NONINFERIORITY_OR_NOMINAL"
             h3_v7_newcombe_concurs = bool(h3_v7_newcombe_lcb95 > -0.05) if not math.isnan(h3_v7_newcombe_lcb95) else False
 
-    # Overall H_3 determination per Protocol Section 3.1.1:
+    # Overall H_3 determination per Protocol Section 3.1.1 (V8.1 is mandatory primary comparator):
     if v8_records is not None and len(v8_records) > 0:
         h3_overall_passed = h3_v8_passed
         h3_overall_status = h3_v8_status
     elif v7_records is not None and len(v7_records) > 0:
-        h3_overall_passed = h3_v7_passed
-        h3_overall_status = h3_v7_status
+        h3_overall_passed = False
+        h3_overall_status = "NOT_EVALUATED_NO_PRIMARY_V8_BASELINE"
     else:
         h3_overall_passed = False
         h3_overall_status = "NOT_EVALUATED_NO_BASELINE_DATA"
+
+    # Hypothesis H_4: Compound-Fault False-Success Incidence Reduction (Protocol Section 3.1.2)
+    # Target Scenarios: S_comp = {"INDEPENDENT_BIAS", "COMPOUND_HOLDOUT_EXTREME", "COMPOUND_DRIFT_DROPOUT", "COMPOUND_ANTIPODAL_RANGE_SHIFT"}
+    # 4 scenarios x 120 seeds = 480 matched episodes
+    comp_target_scenarios = {
+        "INDEPENDENT_BIAS",
+        "COMPOUND_HOLDOUT_EXTREME",
+        "COMPOUND_DRIFT_DROPOUT",
+        "COMPOUND_ANTIPODAL_RANGE_SHIFT",
+    }
+
+    h4_v8_passed = False
+    h4_v8_status = "NOT_EVALUATED_NO_V8_DATA"
+    h4_v8_mcnemar_p = float("nan")
+    h4_v8_r_inc_pi = float("nan")
+    h4_v8_r_inc_v8 = float("nan")
+    h4_v8_bootstrap_ci95 = [float("nan"), float("nan")]
+    h4_v8_newcombe_ci95 = [float("nan"), float("nan")]
+    n11_comp_v8 = n10_comp_v8 = n01_comp_v8 = n00_comp_v8 = 0
+
+    if v8_records is not None and len(v8_records) > 0:
+        paired_v8_all = align_and_pair_records(records, v8_records, baseline_label="v8_martingale")
+        paired_v8_comp = [
+            (r_pi, r_v8)
+            for r_pi, r_v8 in paired_v8_all
+            if str(r_pi.get("scenario", "")).strip() in comp_target_scenarios
+        ]
+        n_comp_matched = len(paired_v8_comp)
+        for r_pi, r_v8 in paired_v8_comp:
+            y_pi = int(r_pi["false_success"])
+            y_v8 = int(r_v8["false_success"])
+            if y_pi == 1 and y_v8 == 1:
+                n11_comp_v8 += 1
+            elif y_pi == 1 and y_v8 == 0:
+                n10_comp_v8 += 1
+            elif y_pi == 0 and y_v8 == 1:
+                n01_comp_v8 += 1
+            else:
+                n00_comp_v8 += 1
+        if n_comp_matched > 0:
+            h4_v8_r_inc_pi = (n11_comp_v8 + n10_comp_v8) / n_comp_matched
+            h4_v8_r_inc_v8 = (n11_comp_v8 + n01_comp_v8) / n_comp_matched
+            h4_v8_mcnemar_p = mcnemar_exact_test(n10_comp_v8, n01_comp_v8)
+            newcombe_ci = newcombe_paired_difference_ci(n11_comp_v8, n10_comp_v8, n01_comp_v8, n00_comp_v8)
+            h4_v8_newcombe_ci95 = [float(newcombe_ci[0]), float(newcombe_ci[1])]
+            boot_ci = paired_bootstrap_selective_risk_difference_ci(paired_v8_comp)
+            h4_v8_bootstrap_ci95 = [float(boot_ci[0]), float(boot_ci[1])]
+
+            # Pass Criterion: Exact two-sided paired McNemar p < 0.05 AND favorable direction (n10 < n01)
+            h4_v8_passed = bool(n10_comp_v8 < n01_comp_v8 and h4_v8_mcnemar_p < 0.05)
+            h4_v8_status = "CONFIRMATORY_PASS" if h4_v8_passed else "FAIL_INCIDENCE_REDUCTION_OR_INSIGNIFICANT"
+
+    # Evaluation of H4 against V7 (co-evaluated baseline)
+    h4_v7_passed = False
+    h4_v7_status = "NOT_EVALUATED_NO_V7_DATA"
+    h4_v7_mcnemar_p = float("nan")
+    h4_v7_r_inc_pi = float("nan")
+    h4_v7_r_inc_v7 = float("nan")
+    h4_v7_bootstrap_ci95 = [float("nan"), float("nan")]
+    h4_v7_newcombe_ci95 = [float("nan"), float("nan")]
+    n11_comp_v7 = n10_comp_v7 = n01_comp_v7 = n00_comp_v7 = 0
+
+    if v7_records is not None and len(v7_records) > 0:
+        paired_v7_all = align_and_pair_records(records, v7_records, baseline_label="v7_mpc")
+        paired_v7_comp = [
+            (r_pi, r_v7)
+            for r_pi, r_v7 in paired_v7_all
+            if str(r_pi.get("scenario", "")).strip() in comp_target_scenarios
+        ]
+        n_comp_matched_v7 = len(paired_v7_comp)
+        for r_pi, r_v7 in paired_v7_comp:
+            y_pi = int(r_pi["false_success"])
+            y_v7 = int(r_v7["false_success"])
+            if y_pi == 1 and y_v7 == 1:
+                n11_comp_v7 += 1
+            elif y_pi == 1 and y_v7 == 0:
+                n10_comp_v7 += 1
+            elif y_pi == 0 and y_v7 == 1:
+                n01_comp_v7 += 1
+            else:
+                n00_comp_v7 += 1
+        if n_comp_matched_v7 > 0:
+            h4_v7_r_inc_pi = (n11_comp_v7 + n10_comp_v7) / n_comp_matched_v7
+            h4_v7_r_inc_v7 = (n11_comp_v7 + n01_comp_v7) / n_comp_matched_v7
+            h4_v7_mcnemar_p = mcnemar_exact_test(n10_comp_v7, n01_comp_v7)
+            newcombe_ci_7 = newcombe_paired_difference_ci(n11_comp_v7, n10_comp_v7, n01_comp_v7, n00_comp_v7)
+            h4_v7_newcombe_ci95 = [float(newcombe_ci_7[0]), float(newcombe_ci_7[1])]
+            boot_ci_7 = paired_bootstrap_selective_risk_difference_ci(paired_v7_comp)
+            h4_v7_bootstrap_ci95 = [float(boot_ci_7[0]), float(boot_ci_7[1])]
+            h4_v7_passed = bool(n10_comp_v7 < n01_comp_v7 and h4_v7_mcnemar_p < 0.05)
+            h4_v7_status = "CONFIRMATORY_PASS" if h4_v7_passed else "FAIL_INCIDENCE_REDUCTION_OR_INSIGNIFICANT"
+
+    # Overall H_4 determination per Protocol Section 3.1.2 (V8.1 is mandatory primary comparator):
+    if v8_records is not None and len(v8_records) > 0:
+        h4_overall_passed = h4_v8_passed
+        h4_overall_status = h4_v8_status
+    elif v7_records is not None and len(v7_records) > 0:
+        h4_overall_passed = False
+        h4_overall_status = "NOT_EVALUATED_NO_PRIMARY_V8_BASELINE"
+    else:
+        h4_overall_passed = False
+        h4_overall_status = "NOT_EVALUATED_NO_BASELINE_DATA"
 
     # Hypothesis H_5: Worst-Case Scenario Safety via Berger IUT and Holm-Šidák
     holm_thresholds = holm_shidak_adjusted_thresholds(len(p_values_for_iut), alpha=0.05)
@@ -1316,6 +1478,7 @@ def evaluate_scenario_holdout(
             holm_rejections.append(False)
     iut_passed = berger_intersection_union_test(p_values_for_iut, alpha=0.05)
     h5_status = "CONFIRMATORY_PASS_IUT" if iut_passed else "RETAIN_SAFETY_NULL"
+    undefined_sel_scenarios = [r["scenario"] for r in breakdown_rows if r["r_sel_status"] == "UNDEFINED"]
 
     summary: dict[str, Any] = {
         "partition": "scenario",
@@ -1366,12 +1529,48 @@ def evaluate_scenario_holdout(
             "status": h3_v7_status,
             "passed": h3_v7_passed,
         },
+        "h4_compound_fault_safety": {
+            "hypothesis": "H_4",
+            "target_scenarios": sorted(list(comp_target_scenarios)),
+            "decision_rule": "Exact two-sided paired McNemar test p < 0.05 and favorable direction on unconditional FS incidence vs V8.1 primary; co-evaluated vs V7; reported with paired bootstrap 95% CI for Delta R_sel",
+            "primary_baseline": "v8_martingale",
+            "primary_passed": h4_v8_passed,
+            "primary_status": h4_v8_status,
+            "co_evaluated_baseline": "v7_mpc",
+            "coeval_passed": h4_v7_passed,
+            "coeval_status": h4_v7_status,
+            "all_baselines_passed": bool(h4_v8_passed and h4_v7_passed) if (v8_records and v7_records) else h4_overall_passed,
+            "status": h4_overall_status,
+            "passed": h4_overall_passed,
+            "vs_v8": {
+                "mcnemar_exact_p": round(h4_v8_mcnemar_p, 6) if not math.isnan(h4_v8_mcnemar_p) else "N/A",
+                "r_inc_candidate": round(h4_v8_r_inc_pi, 6) if not math.isnan(h4_v8_r_inc_pi) else "N/A",
+                "r_inc_baseline": round(h4_v8_r_inc_v8, 6) if not math.isnan(h4_v8_r_inc_v8) else "N/A",
+                "newcombe_diff_ci95": h4_v8_newcombe_ci95,
+                "bootstrap_delta_r_sel_ci95": h4_v8_bootstrap_ci95,
+                "table_n11_n10_n01_n00": [n11_comp_v8, n10_comp_v8, n01_comp_v8, n00_comp_v8],
+                "status": h4_v8_status,
+                "passed": h4_v8_passed,
+            },
+            "vs_v7": {
+                "mcnemar_exact_p": round(h4_v7_mcnemar_p, 6) if not math.isnan(h4_v7_mcnemar_p) else "N/A",
+                "r_inc_candidate": round(h4_v7_r_inc_pi, 6) if not math.isnan(h4_v7_r_inc_pi) else "N/A",
+                "r_inc_baseline": round(h4_v7_r_inc_v7, 6) if not math.isnan(h4_v7_r_inc_v7) else "N/A",
+                "newcombe_diff_ci95": h4_v7_newcombe_ci95,
+                "bootstrap_delta_r_sel_ci95": h4_v7_bootstrap_ci95,
+                "table_n11_n10_n01_n00": [n11_comp_v7, n10_comp_v7, n01_comp_v7, n00_comp_v7],
+                "status": h4_v7_status,
+                "passed": h4_v7_passed,
+            },
+        },
         "h5_worst_case_safety": {
             "hypothesis": "H_5",
             "estimand": "Berger IUT max(p_inc_s) <= 0.05 on unconditional incidence R_inc,s across all 12 scenarios",
             "berger_iut_passed": iut_passed,
             "max_p_inc": round(max(p_values_for_iut), 6) if p_values_for_iut else float("nan"),
             "holm_shidak_rejections_count": sum(holm_rejections),
+            "undefined_selective_risk_scenarios": undefined_sel_scenarios,
+            "all_selective_risk_defined": bool(len(undefined_sel_scenarios) == 0),
             "status": h5_status,
             "passed": iut_passed,
         },

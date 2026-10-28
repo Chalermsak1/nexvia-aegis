@@ -2,7 +2,11 @@ from __future__ import annotations
 
 import csv
 import os
+import sys
 from dataclasses import dataclass
+
+# Ensure src in python path
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 import numpy as np
 
@@ -36,6 +40,7 @@ UNCERTAINTY_LEVELS = {
 POLICIES = [
     "always_act",
     "inspect_once",
+    "adaptive_inspection_loop",
 ]
 
 
@@ -85,6 +90,8 @@ def run_episode(
     terminated = False
     truncated = False
     info = {}
+    inspections_performed = 0
+    verifications_performed = 0
 
     # ---------------------------------------------------------
     # Optional initial inspection
@@ -101,23 +108,42 @@ def run_episode(
 
         total_reward += reward
         step_count += 1
+        inspections_performed += 1
 
-    elif policy != "always_act":
+    elif policy not in ("always_act", "adaptive_inspection_loop"):
         raise ValueError(
             f"Unknown policy: {policy}"
         )
 
     # ---------------------------------------------------------
-    # Main loop
+    # Main loop (Strict POMDP: Zero env state leakage)
     # ---------------------------------------------------------
 
     while not terminated and not truncated:
         distance = estimated_distance(observation)
 
-        if distance <= SUCCESS_DISTANCE:
-            action = 2  # STOP
+        if policy == "adaptive_inspection_loop":
+            # Pure POMDP: decisions based strictly on observed distance and local policy counters
+            if distance <= 0.22 and inspections_performed == 0:
+                action = 1  # INSPECT
+                inspections_performed += 1
+            elif distance <= 0.12 and verifications_performed == 0:
+                action = 4  # VERIFY
+                verifications_performed += 1
+            elif distance <= 0.07 and inspections_performed < 2:
+                action = 1  # INSPECT
+                inspections_performed += 1
+            elif distance <= 0.035:  # Deep precision centering within SUCCESS_DISTANCE=0.06 to eliminate boundary noise
+                action = 2  # STOP
+            elif distance <= 0.055 and step_count > 25:
+                action = 2  # STOP
+            else:
+                action = 0  # MOVE
         else:
-            action = 0  # MOVE
+            if distance <= SUCCESS_DISTANCE:
+                action = 2  # STOP
+            else:
+                action = 0  # MOVE
 
         (
             observation,

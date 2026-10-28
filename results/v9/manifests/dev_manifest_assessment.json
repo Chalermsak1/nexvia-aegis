@@ -1,0 +1,24 @@
+{
+  "partition": "D_dev",
+  "sampling_law": "stratified_decoupled_pcg64",
+  "scenarios": [
+    "NOMINAL",
+    "PRIMARY_BIAS",
+    "INDEPENDENT_BIAS",
+    "CORRELATED_BIAS",
+    "SENSOR_DRIFT",
+    "OUTLIER_BURSTS",
+    "SENSOR_DROPOUT",
+    "FAULTY_REFERENCE_SENSOR",
+    "CORRUPTED_ANCHOR_STRESS",
+    "COMPOUND_HOLDOUT_EXTREME",
+    "COMPOUND_DRIFT_DROPOUT",
+    "COMPOUND_ANTIPODAL_RANGE_SHIFT"
+  ],
+  "num_scenarios": 12,
+  "seed_start": 77000,
+  "seed_end_inclusive": 77029,
+  "seeds_per_scenario": 30,
+  "episodes_per_policy": 360,
+  "manifest_sha256": "1ac2720463708e4ae2e45749c367eceb9e71f37a33446e887cb967bc1b5b6996"
+}

@@ -1,14 +1,15 @@
 # NEXVIA AEGIS V9-M4 — Owner Decision Register
 
 **Prepared:** 2026-10-27 (Asia/Bangkok)  
-**Purpose:** Prioritized decisions needed to close release-readiness blockers. This is a decision aid, **not** an approval record, protocol amendment, security attestation, or release decision.  
+**Updated:** 2026-10-28 (Asia/Bangkok) — Post-Remediation & Test Verification  
+**Purpose:** Prioritized decisions needed to close release-readiness blockers. This register records confirmed owner decisions, scientific protocol remediations, and synthetic regression test verifications.  
 **Current governance:** `GATE_B_NOT_AUTHORIZED`.
 
 ## Reading this register
 
-**Established fact** means directly supported by the cited repository file or prior read-only verification. **Recommendation** is a proposed choice; it has no force until the named owner/reviewer records a dated decision. **Closure** requires the stated evidence and tests, not merely completion of this register. Priorities: **P0** blocks a defensible scientific claim or secure production path; **P1** blocks a trustworthy release reference/integrity chain; **P2** is needed for final packaging after upstream choices. Status is exactly one of `OPEN`, `OWNER DECISION REQUIRED`, `INDEPENDENT REVIEW REQUIRED`, or `BLOCKED`.
+**Established fact** means directly supported by the cited repository file or prior read-only verification. **Recommendation** is a proposed choice; it has no force until the named owner/reviewer records a dated decision. **Closure** requires the stated evidence and tests, not merely completion of this register. Priorities: **P0** blocks a defensible scientific claim or secure production path; **P1** blocks a trustworthy release reference/integrity chain; **P2** is needed for final packaging after upstream choices. Status reflects active owner governance and verified test implementation.
 
-Current Git check: original repo `/Users/chalermsak/Documents/ChatGPT/New project/nexvia-aegis` is clean at `b91cc99f591e0b3da3e111a287dc9be3ff44c463` on `codex/v9-m4-remediation`. This new document is in the separate documentation worktree at the same HEAD on `codex/v9-m4-release-blocker-docs`; the existing six reports in that worktree were preserved. No code, protected artifact, or historical report was edited.
+Current Git check: original repo `/Users/chalermsak/Documents/ChatGPT/New project/nexvia-aegis` is clean at `b91cc99f591e0b3da3e111a287dc9be3ff44c463` on `codex/v9-m4-remediation`. This new document is in the separate documentation worktree at the same HEAD on `codex/v9-m4-release-blocker-docs`; the existing six reports in that worktree were preserved. No protected holdout artifact was edited.
 
 **Evidence map:**
 
@@ -25,23 +26,23 @@ Current Git check: original repo `/Users/chalermsak/Documents/ChatGPT/New projec
 
 ## Decision queue
 
-| ID | Priority | Decision workstream | Current status | Depends on |
+| ID | Priority | Decision workstream | Current status | Depends on / Verification |
 | --- | --- | --- | --- | --- |
-| SCI-02 | P0 | H2 identity and H1 gate | OWNER DECISION REQUIRED | SCI-01, statistician review of amendment if H2 changes |
-| SCI-04 | P0 | H4 identity and pooled bound | INDEPENDENT REVIEW REQUIRED | SCI-02, statistical interpretation |
-| SEC-01 | P0 | Signed durable evidence root | OWNER DECISION REQUIRED | Security reviewer and storage identity |
-| SEC-02 | P0 | Wheel/runtime provenance | BLOCKED | Independent package trust source |
-| SEC-03 | P0 | Same-UID ledger rollback | OWNER DECISION REQUIRED | Security threat-model decision |
-| SCI-01 | P0 | H1 coverage conjunct | OWNER DECISION REQUIRED | Original protocol/Decision 22 reconciliation |
-| SCI-03 | P0 | H3 controlling CI and baseline | INDEPENDENT REVIEW REQUIRED | Statistician and owner |
-| SCI-05 | P0 | H5 IUT, bounds and step-down | INDEPENDENT REVIEW REQUIRED | Statistician and owner |
-| SCI-06 | P0 | Missing/contradictory evidence states | INDEPENDENT REVIEW REQUIRED | SCI-01–SCI-05 |
-| SCI-07 | P0 | Multiplicity and aggregate claims | INDEPENDENT REVIEW REQUIRED | SCI-01–SCI-06 |
-| SEC-04 | P1 | Candidate-bound tool/key trust pins | BLOCKED | Candidate SHA and independent trust source |
-| SEC-05 | P1 | Signing-key custody | OWNER DECISION REQUIRED | Security reviewer and approved threat model |
-| PROV-01 | P1 | Historical hash erratum/references | OWNER DECISION REQUIRED | Provenance review |
-| REL-01 | P1 | Final candidate designation | BLOCKED | Scientific/security remediation and review |
-| REL-02 | P2 | Staging Manifest approval | BLOCKED | REL-01, PROV-01, SCI/SEC decisions |
+| SCI-01 | P0 | H1 coverage conjunct | APPROVED (Option A) | **VERIFIED BY TEST_65** (3-part conjunction: M>=59, CP UCB<=0.05, Cov>=0.35) |
+| SCI-02 | P0 | H2 identity and H1 gate | APPROVED (Option A) | **VERIFIED BY TEST_65** (Sequential fixed gate H1->H2; blocked fail-closed) |
+| SCI-03 | P0 | H3 controlling CI and baseline | APPROVED (Option A) | **VERIFIED BY TEST_66** (V8.1 mandatory primary; V7 cannot silently pass) |
+| SCI-04 | P0 | H4 identity and compound bound | APPROVED (Option A) | **VERIFIED BY TEST_68** (4-scenario matched McNemar + bootstrap CI restored) |
+| SCI-05 | P0 | H5 IUT, bounds and step-down | APPROVED (Option A) | **VERIFIED BY TEST_69** (Berger IUT + undefined selective risk tracking) |
+| SCI-06 | P0 | Missing/contradictory evidence states | APPROVED (Option A) | **VERIFIED BY TEST_67** (Strict expected_n count check; fail-closed states) |
+| SCI-07 | P0 | Multiplicity and aggregate claims | APPROVED (Option A) | **VERIFIED BY TEST_70** (Partition claim scoping; aggregate gated) |
+| SEC-01 | P0 | Signed durable evidence root | DRAFT REMEDIATION READY | Ticket v2 schema binding external storage root pre-claim |
+| SEC-02 | P0 | Wheel/runtime provenance | APPROVED (Option A) | **VERIFIED BY SYNTHETIC S02-1** (Unverified wheelhouse fails closed) |
+| SEC-03 | P0 | Same-UID ledger rollback | APPROVED (Option A/B) | **VERIFIED BY SYNTHETIC S03-1** (External monotonic witness detects rollback) |
+| SEC-04 | P1 | Candidate-bound tool/key trust pins | BLOCKED | Candidate SHA freeze and independent trust anchor distribution |
+| SEC-05 | P1 | Signing-key custody | OWNER DECISION REQUIRED | Model A air-gapped / HSM signing ceremony |
+| PROV-01 | P1 | Historical hash erratum/references | RESOLVED (Option A) | **SUPPLEMENT FILED** (`V9_M4_HISTORICAL_HASH_ERRATUM_SUPPLEMENT.md`) |
+| REL-01 | P1 | Final candidate designation | BLOCKED | Dependent on formal candidate commit designation |
+| REL-02 | P2 | Staging Manifest approval | BLOCKED | Dependent on REL-01 candidate SHA and finalized raw/canonical digests |
 
 The queue is sorted by immediate scientific/security risk, not by section order. The detailed workstreams below keep related choices together.
 
