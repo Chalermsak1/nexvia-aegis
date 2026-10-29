@@ -158,11 +158,15 @@ def generate_plot():
     plt.suptitle("NEXVIA AEGIS — Full 6-DOF Underactuated Quadrotor Dynamics Benchmark in MuJoCo", fontsize=15, fontweight="bold", y=0.98)
     plt.tight_layout()
 
-    # Save to artifacts directory
+    # Save to results/plots directory and artifacts directory
+    results_path = Path("results/plots/quadrotor_6dof_benchmark.png")
+    results_path.parent.mkdir(parents=True, exist_ok=True)
+    plt.savefig(results_path, dpi=300)
+
     artifact_path = Path("/Users/chalermsak/.gemini/antigravity-ide/brain/bfa523f6-4b75-4654-8f2e-65c6b00df558/quadrotor_6dof_benchmark.png")
-    plt.savefig(artifact_path)
+    plt.savefig(artifact_path, dpi=300)
     plt.close()
-    print(f"Benchmark figure generated successfully: {artifact_path}")
+    print(f"Benchmark figure saved to:\n  1. {results_path.resolve()}\n  2. {artifact_path}")
 
 
 if __name__ == "__main__":

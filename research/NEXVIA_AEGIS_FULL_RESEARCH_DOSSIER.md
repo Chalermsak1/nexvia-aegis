@@ -146,6 +146,12 @@ The following 4 publication-grade figures have been generated and archived in `r
    - Subplot 3: $H_3$ Operational Utility & TSR Noninferiority ($\Delta \mathrm{TSR} = +11.33\%$, Wald LCB$_{95} = +9.26\% > -5\%$).
    - Subplot 4: $H_5$ Worst-Case Scenario Safety via Berger IUT across all 12 scenarios ($\max_s p_s = 0.002122 \le 0.05$).
 
+6. [`quadrotor_6dof_benchmark.png`](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/plots/quadrotor_6dof_benchmark.png):
+   - Subplot 1: 3D underactuated flight trajectory negotiating spherical obstacles in MuJoCo physics.
+   - Subplot 2: 4-rotor brushless motor thrust allocation under first-order actuator lag ($\tau_m = 35\,$ms).
+   - Subplot 3: Obstacle collision rates: Unshielded (100.0%) vs. Underactuated HOCBF (0.0%) vs. AEGIS (0.0%).
+   - Subplot 4: False success rates under 3D sensor corruption: Unshielded/CBF (100.0%) vs. AEGIS (0.0%).
+
 ---
 
 ## 6. Confirmatory Holdout Evaluation & Milestone V9-M4 Release Certification

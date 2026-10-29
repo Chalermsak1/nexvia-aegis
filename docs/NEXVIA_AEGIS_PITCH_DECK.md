@@ -294,6 +294,8 @@
 ### 📌 Visual Evidence (หลักฐานแผนภาพการจำลองฟิสิกส์)
 * **แผนภาพวิถีการบิน 3 มิติและการหลบหลีกสิ่งกีดขวาง (3D Trajectories):**
   [mujoco_3d_cbf_trajectories.png](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/plots/mujoco_3d_cbf_trajectories.png)
+* **แผนภาพเปรียบเทียบพลศาสตร์ 6-DOF โดรน 4 ใบพัดจริง (6-DOF Quadrotor Dynamics Benchmark):**
+  [quadrotor_6dof_benchmark.png](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/plots/quadrotor_6dof_benchmark.png)
 * **แผนภาพทดสอบสมรรถนะฝูงบิน 3 มิติ (Swarm Physics Benchmark):**
   [mujoco_swarm_3d_benchmark.png](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/plots/mujoco_swarm_3d_benchmark.png)
 * **แผนภาพสะสมความมั่งคั่งของ Martingale (BRMC Wealth Growth):**
