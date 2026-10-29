@@ -293,7 +293,12 @@ class AegisQuadrotor6DOFEnvironment:
     Continuous 6-DOF Quadrotor Dynamics Environment in MuJoCo Physics.
     """
 
-    def __init__(self, config: QuadrotorConfig | None = None) -> None:
+    def __init__(
+        self,
+        config: QuadrotorConfig | None = None,
+        obstacles: list[Obstacle3D] | None = None,
+        target_pos: np.ndarray | None = None,
+    ) -> None:
         self.cfg = config or QuadrotorConfig()
         self.geom_ctrl = SE3GeometricController(self.cfg)
         self.cbf = UnderactuatedCBF6DOF(self.cfg)
@@ -304,12 +309,20 @@ class AegisQuadrotor6DOFEnvironment:
             else None
         )
 
-        self.obstacles: list[Obstacle3D] = [
-            Obstacle3D(center=np.array([0.0, 0.0, 0.9], dtype=np.float64), radius=0.45),
-            Obstacle3D(center=np.array([1.2, -0.9, 0.8], dtype=np.float64), radius=0.35),
-            Obstacle3D(center=np.array([-0.9, 1.2, 0.8], dtype=np.float64), radius=0.35),
-        ]
-        self.target_pos = np.array([1.8, 1.8, 1.2], dtype=np.float64)
+        self.obstacles: list[Obstacle3D] = (
+            obstacles
+            if obstacles is not None
+            else [
+                Obstacle3D(center=np.array([0.0, 0.0, 0.9], dtype=np.float64), radius=0.45),
+                Obstacle3D(center=np.array([1.2, -0.9, 0.8], dtype=np.float64), radius=0.35),
+                Obstacle3D(center=np.array([-0.9, 1.2, 0.8], dtype=np.float64), radius=0.35),
+            ]
+        )
+        self.target_pos = (
+            np.array(target_pos, dtype=np.float64)
+            if target_pos is not None
+            else np.array([1.8, 1.8, 1.2], dtype=np.float64)
+        )
 
         self.model = self._build_mujoco_model()
         self.data = mujoco.MjData(self.model)

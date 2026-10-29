@@ -170,6 +170,12 @@ The following 4 publication-grade figures have been generated and archived in `r
    - Subplot 3: Generalization collision rates across 15 held-out dynamic obstacle test trials (0.0% collisions in AEGIS Safe RL vs. 100.0% failure in unshielded baseline).
    - Subplot 4: Continuous 3D spatial evasion trajectory navigating around moving spherical obstacles while maintaining full $SO(3)$ attitude stability.
 
+10. [`vision_occlusion_slam_benchmark.png`](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/plots/vision_occlusion_slam_benchmark.png):
+   - Subplot 1: Narrow-corridor collision rates across 15 dynamic occlusion trials: 100.0% Blind Baseline crashes (15/15) vs. 0.0% Passive Vision and 0.0% AEGIS Active Vision.
+   - Subplot 2: Minimum corridor obstacle clearance demonstrating $-0.061\,$m catastrophic crash (Blind), $+0.078\,$m dangerous grazing (Passive), and $+0.271\,$m certified safety buffer (AEGIS Active).
+   - Subplot 3: Active POMDP gaze saccades (35 active scans executed) and entropy reduction ($\sqrt{\lambda_{\max}(\mathbf{P})}$ dropping from $0.44\,$m to under $0.05\,$m before transit).
+   - Subplot 4: Continuous 3D physical flight trajectories demonstrating air-braking deceleration, active sensor alignment, and safe side-stepping evasion under severe line-of-sight occlusion.
+
 ---
 
 ## 6. Confirmatory Holdout Evaluation & Milestone V9-M4 Release Certification

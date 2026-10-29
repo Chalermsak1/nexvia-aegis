@@ -1,10 +1,10 @@
 # NEXVIA AEGIS — Master Project Status & Complete Inventory Report
 
 **Document ID:** `AEGIS-MASTER-STATUS-2026-10-29`  
-**Current Milestone:** Milestone V9-M6 (Phase 1 Decision-Making, Phase 2 3D Physical AI, Phase 3 Decentralized Swarm Resilience, Phase 4 6-DOF SE(3) Dynamics, Phase 5 Deep Aerodynamics, Phase 6 Safe Reinforcement Learning)  
-**Governance State:** **`PHASE_1_TO_6_CONFIRMATORY_VERIFIED — SAFE_RL_CERTIFIED`**  
+**Current Milestone:** Milestone V9-M7 (Phase 1 Decision-Making, Phase 2 3D Physical AI, Phase 3 Decentralized Swarm Resilience, Phase 4 6-DOF SE(3) Dynamics, Phase 5 Deep Aerodynamics, Phase 6 Safe Reinforcement Learning, Phase 7 Active Vision & LiDAR SLAM under Occlusion)  
+**Governance State:** **`PHASE_1_TO_7_CONFIRMATORY_VERIFIED — ACTIVE_VISION_SLAM_CERTIFIED`**  
 **Repository Remote:** [`https://github.com/Chalermsak1/nexvia-aegis.git`](https://github.com/Chalermsak1/nexvia-aegis.git)  
-**Automated Test Suite:** **362 / 362 passed (100% pass rate in ~36s)**  
+**Automated Test Suite:** **366 / 366 passed (100% pass rate in ~36s)**  
 **Certified Policy:** `V9_CAND_1_TIER1_STRICTEST` (SHA-256: `5a89d6061b379f1b34ab47be0deef8d63180d3e4c21d18c478bc7e451f5c84e2`)  
 **Timestamp:** October 29, 2026 (Bangkok / UTC)  
 
@@ -12,11 +12,11 @@
 
 ## 1. สถานะโครงการปัจจุบัน (Executive Project Status)
 
-โครงการ **NEXVIA AEGIS** ได้บรรลุเป้าหมายการวิจัยระดับแกนกลาง (AI Research Core) ครบทั้ง 5 เฟสอย่างสมบูรณ์ 100%:
+โครงการ **NEXVIA AEGIS** ได้บรรลุเป้าหมายการวิจัยระดับแกนกลาง (AI Research Core) ครบทั้ง 7 เฟสอย่างสมบูรณ์ 100%:
 
 ```
-[Phase 1: Decision-Making] -> [Phase 2: 3D AI] -> [Phase 3: Swarm BRMC] -> [Phase 4: 6-DOF SE(3)] -> [Phase 5: Deep Aero] -> [Phase 6: Safe RL]
-        (VERIFIED)                 (VERIFIED)           (VERIFIED)               (VERIFIED)                (VERIFIED)             (VERIFIED)
+[Phase 1: Decision-Making] -> [Phase 2: 3D AI] -> [Phase 3: Swarm BRMC] -> [Phase 4: 6-DOF SE(3)] -> [Phase 5: Deep Aero] -> [Phase 6: Safe RL] -> [Phase 7: Active Vision SLAM]
+        (VERIFIED)                 (VERIFIED)           (VERIFIED)               (VERIFIED)                (VERIFIED)             (VERIFIED)                  (VERIFIED)
 ```
 
 - **Phase 1 (Trustworthy Decision-Making):** ปิด Audit A3/A4 loopholes, รัน matched benchmark 1,800 episodes บน $D_{\text{dev}}$, พิสูจน์ Ville Martingale causality ($p = 8.52 \times 10^{-109}$) และ Active Probing gain (+39.17% TSR).
@@ -25,7 +25,8 @@
 - **Phase 4 (Full 6-DOF Quadrotor Dynamics on SE(3)):** ขจัดข้อจำกัด "Spherical Point-Mass" สู่โมเดล 6-DOF Quadrotor กายภาพจริงใน MuJoCo (20 Brushless Motors, Actuator Lag $\tau_m = 35\,$ms, Drag Reaction Torques, และ Reciprocal Underactuated HOCBF จำกัดมุมเอียง $\theta \le 35^\circ$).
 - **Phase 5 (Deep Aerodynamics & Electromechanics):** เพิ่มแบบจำลอง Cheeseman-Bennett Ground Effect ($T_{\text{IGE}}$), โมเมนต์ Gyroscopic Precession ($\boldsymbol{\tau}_{\text{gyro}} = -\boldsymbol{\Omega} \times \mathbf{H}_r$), และ 4S LiPo Internal Resistance Battery Voltage Sag ($V_{\text{term}} = V_{\text{ocv}} - I R_{\text{int}}$) พร้อม Dynamic Max Thrust Derating.
 - **Phase 6 (Safe Reinforcement Learning with HOCBF Shield):** พัฒนาโมเดล Safe RL (Actor-Critic / PPO) ร่วมกับ Underactuated HOCBF Action Shielding หลบหลีกสิ่งกีดขวางเคลื่อนที่แบบไดนามิก โดยขจัดการชนระหว่างเทรนเป็น 0 ครั้ง (0.0% vs 8 crashes ใน unshielded baseline) และ 0% collision บนชุดทดสอบ 15 episodes พร้อมการเรียนรู้ภายในของนโยบายที่ลดแรงแทรกแซงของ Barrier ลงจาก $11.324\,\text{N} \to 8.952\,\text{N}$ (-21.0%).
-- **สถานะการทำงานของโค้ด:** รันการทดสอบผ่าน 100% (362/362 tests) ไม่มี Failure, ไม่มี Broken Invariant.
+- **Phase 7 (Active Vision & LiDAR SLAM under Occlusion):** ปลดล็อกข้อจำกัด "รู้พิกัดสิ่งกีดขวางล่วงหน้า" สู่เซนเซอร์กายภาพจริง ด้วย Simulated Depth Camera (Frustum Raycast, Multi-Obstacle Line-of-Sight Occlusion Shadowing) และ 3D Multi-Layer LiDAR (360° Azimuth) ผสาน 7-state Unscented Kalman Filter (UKF) คาดการณ์ตำแหน่ง/ความเร็วและขยาย Covariance ตอนถูกบดบัง และ Active Probing POMDP วางแผนหันมุมกล้อง/สแกนจุดอับสายตา พร้อมเบรกชะลอความเร็ว (Air-Braking) และ Robust CBF ขจัดการชนสิ่งกีดขวางในช่องแคบ 100% (0.0% crash vs 100% crash ใน blind baseline) และรักษาระยะห่างปลอดภัยที่มั่นคง $+0.271\,$m เทียบกับ $+0.078\,$m ใน passive vision.
+- **สถานะการทำงานของโค้ด:** รันการทดสอบผ่าน 100% (366/366 tests) ไม่มี Failure, ไม่มี Broken Invariant.
 
 ---
 
@@ -145,6 +146,7 @@ mindmap
 - [results/plots/multiagent_brmc_wealth.png](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/plots/multiagent_brmc_wealth.png) (970 KB): กราฟ Martingale Wealth ข้ามเส้นเกณฑ์ Ville $1/\alpha$.
 - [results/plots/uncertainty_benchmark_curves.png](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/plots/uncertainty_benchmark_curves.png) (877 KB): เส้นโค้งประสิทธิภาพ Active Inspection ใน 4 ระดับสัญญาณรบกวน.
 - [results/plots/safe_rl_benchmark.png](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/plots/safe_rl_benchmark.png) (640 KB): แผนภาพ 4 แผงเปรียบเทียบ Safe RL กับ Unshielded PPO ในการหลบสิ่งกีดขวางแบบเคลื่อนที่.
+- [results/plots/vision_occlusion_slam_benchmark.png](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/plots/vision_occlusion_slam_benchmark.png) (712 KB): แผนภาพ 4 แผง Active Vision & LiDAR SLAM ภายใต้สภาวะสิ่งกีดขวางบดบัง (Occlusion) ในช่องทางแคบ.
 - [results/visualizer_swarm_3d.html](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/visualizer_swarm_3d.html) (282 KB): เว็บแอปพลิเคชัน 3D WebGL Three.js สำหรับเล่นซ้ำวิถีการบินของฝูงหุ่นยนต์ 5 ลำใน MuJoCo physics.
 
 ### 4.6 เอกสารรับรองและรายงานงานวิจัย (Documentation & Reports)

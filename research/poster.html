@@ -374,7 +374,7 @@
           <strong>NEXVIA Research Lab</strong> | Lead Researcher: <strong>Chalermsak</strong>
         </div>
         <div class="badges-row">
-          <span class="badge badge-green">● 362 Tests Passing</span>
+          <span class="badge badge-green">● 366 Tests Passing</span>
           <span class="badge badge-cyan">● Gate B Confirmed (V9-M4)</span>
           <span class="badge badge-blue">● 200 Hz Inner / 50 Hz Outer Loop</span>
           <span class="badge badge-green">● 0.00% False Arrivals</span>
@@ -522,6 +522,20 @@
           </div>
         </div>
 
+        <!-- CARD 5e: ACTIVE VISION & LIDAR SLAM UNDER OCCLUSION -->
+        <div class="card" style="border-color: rgba(245, 158, 11, 0.4);">
+          <div class="card-header">
+            <div class="card-icon" style="background: rgba(245, 158, 11, 0.25); color: #f59e0b;">👁️</div>
+            <h3 style="color: #fbbf24;">Active Vision & LiDAR SLAM under Occlusion (UKF + Active POMDP)</h3>
+          </div>
+          <div class="figure-container">
+            <img src="../results/plots/vision_occlusion_slam_benchmark.png" alt="Active Vision & LiDAR SLAM Benchmark">
+            <div class="figure-caption">
+              <strong>Figure 6:</strong> Active Vision & LiDAR SLAM under Corridor Occlusion. (Top-Left) Collision Rate: 100.0% Blind (15/15 crashes) vs. 0.0% Passive & AEGIS Active. (Top-Right) Certified Safety Clearance: -0.061m Blind vs. 0.078m Passive grazing vs. 0.271m AEGIS Active buffer. (Bottom-Left) 35 Active Gaze Saccades resolving blind-spot entropy before transit. (Bottom-Right) Narrow-corridor 3D evasion around dynamic creeping intruder.
+            </div>
+          </div>
+        </div>
+
       </section>
 
       <!-- COLUMN 3: RESULTS, HOLDOUT CERTIFICATION & IMPACT -->
@@ -592,6 +606,18 @@
                 <td>0.789 m</td>
                 <td class="highlight-cell">0.177 m</td>
               </tr>
+              <tr>
+                <td>Corridor Occlusion Crash Rate</td>
+                <td class="danger-cell">100.0% (Blind)</td>
+                <td>0.0% (Passive)</td>
+                <td class="highlight-cell">0.0% (Active)</td>
+              </tr>
+              <tr>
+                <td>Corridor Min Clearance</td>
+                <td class="danger-cell">-0.061 m</td>
+                <td>0.078 m (Grazing)</td>
+                <td class="highlight-cell">0.271 m (Certified)</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -635,7 +661,7 @@
         <strong>NEXVIA AEGIS</strong> — Provably Safe Autonomous AI Engine | Milestone: <code>V9-M4 CERTIFIED</code> | Ed25519 Cryptographically Signed
       </div>
       <div class="footer-right">
-        Artifact Hash: <code>5a89d6061b37...</code> | All 362 Automated Regression Tests Passing | October 2026
+        Artifact Hash: <code>5a89d6061b37...</code> | All 366 Automated Regression Tests Passing | October 2026
       </div>
     </footer>
 

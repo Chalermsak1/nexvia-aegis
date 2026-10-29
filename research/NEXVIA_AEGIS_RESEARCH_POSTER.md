@@ -119,6 +119,17 @@ $$\mathbf{a} = -\frac{2}{m}(\mathbf{p} - \mathbf{c}_{\text{obs}}), \quad b = 2\|
 
 ---
 
+### 🖼️ Figure 3e: Active Vision & LiDAR SLAM under Corridor Occlusion (UKF + Active POMDP Gaze)
+![Active Vision & LiDAR SLAM Benchmark](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/plots/vision_occlusion_slam_benchmark.png)
+
+> **Figure 3e Description:** Continuous 6-DOF Quadrotor Active Perception and Obstacle Tracking under Severe Corridor Occlusion.
+> - **Top-Left (Collision Rate):** Blind Baseline crashed in **15/15 trials (100.0% failure)** against dynamic intruders concealed in occluded blind spots. Both Passive Vision and AEGIS Active Vision achieved **0.0% collisions**.
+> - **Top-Right (Corridor Minimum Clearance):** Blind controller penetrated obstacles ($-0.061\,$m crash). Passive vision suffered dangerous near-miss grazing ($+0.078\,$m). AEGIS Active Vision maintained a certified safe clearance buffer of **$+0.271\,$m**.
+> - **Bottom-Left (Gaze Saccades & Uncertainty Entropy):** Active POMDP executed **35 active camera saccades** towards high-entropy blind spots behind occluding columns, dropping tracking uncertainty ($\sqrt{\lambda_{\max}(\mathbf{P})}$) from $0.44\,$m to under $0.05\,$m before corridor transit.
+> - **Bottom-Right (3D Corridors Trajectories):** AEGIS Active Vision quadrotor executes smooth deceleration ("air-braking") and side-stepping evasion around creeping dynamic intruders while remaining fully within the narrow flight envelope.
+
+---
+
 ### 🖼️ Figure 4: Milestone V9-M4 Single-Shot Confirmatory Holdout Proof ($N=2,880$)
 ![Milestone V9-M4 Single-Shot Confirmatory Holdout Proof](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/plots/holdout_h1_h5_certification.png)
 
@@ -132,6 +143,8 @@ $$\mathbf{a} = -\frac{2}{m}(\mathbf{p} - \mathbf{c}_{\text{obs}}), \quad b = 2\|
 | :--- | :---: | :---: | :---: | :---: |
 | **Obstacle Collision Rate (Single 6-DOF Drone)** | **100.0%** | **0.0%** | **0.0%** | **100% Physical Crash Elimination** |
 | **Dynamic Obstacle Crash Rate (Safe RL Policy)** | **100.0%** (15/15) | — | **0.0%** (0/15) | **100% Dynamic Crash Elimination** |
+| **Corridor Occlusion Crash Rate (Active Vision)** | **100.0%** (15/15 Blind) | 0.0% (Passive) | **0.0%** (0/15 Active) | **Zero Crash under Occlusion** |
+| **Occlusion Minimum Corridor Clearance** | $-0.061\,\text{m}$ (Crash) | $+0.078\,\text{m}$ (Grazing) | **$+0.271\,\text{m}$ (Certified)** | **+247% Safe Margin Expansion** |
 | **Swarm Inter-Drone Collision Rate (5 6-DOF Drones)** | **100.0%** | **0.0%** | **0.0%** | **Zero Mutual Mid-Air Collisions** |
 | **Swarm Obstacle Collision Rate (under Byzantine Attack)** | **100.0%** | **100.0%** (Dragged) | **0.0%** | **Immune to Adversarial Redirection** |
 | **Byzantine Isolation Rate ($F=2$ Colluding Attackers)** | 0.0% | 0.0% | **100.0%** | **Full Byzantine Quarantine** |
@@ -149,19 +162,22 @@ $$\mathbf{a} = -\frac{2}{m}(\mathbf{p} - \mathbf{c}_{\text{obs}}), \quad b = 2\|
 
 1. **Reality Gap Resolved:** Replacing the point-mass spherical particle with full $SE(3)$ quadrotor dynamics proves that AEGIS successfully operates under realistic roll/pitch attitude reorientation and motor lag ($\tau_m = 35\,$ms) without violating safety invariance.
 2. **Deep Aerodynamics Fidelity:** Incorporating Cheeseman-Bennett In-Ground-Effect ($T_{\mathrm{IGE}}$), rotor gyroscopic precession cross-moments ($\boldsymbol{\tau}_{\mathrm{gyro}}$), and 4S LiPo internal resistance voltage sag verifies flight resilience under harsh aerodynamic perturbations.
-3. **Dual Physical-Statistical Shielding:** 
+3. **Active Perception under Occlusion:** Unlocks real sensor autonomy by replacing god-mode omniscience with Depth Camera frustum and 3D LiDAR point clouds. 7-state Unscented Kalman Filtering (UKF) and Active POMDP information-seeking saccades eliminate blind spots, expanding minimum obstacle clearance from $0.078\,$m to a certified $0.271\,$m buffer.
+4. **Dual Physical-Statistical Shielding:** 
    - **HOCBF (Physical Shield):** Guarantees zero obstacle collisions and respects tilt constraints ($\theta \le 35^\circ$).
    - **Ville Martingales (Statistical Shield):** Guarantees cross-modal arrival certification, completely eliminating the $100\%$ False Success failure mode seen in naive and CBF-only controllers.
-4. **Reproducibility & Test Coverage:** All 362 unit and integration tests passing in ~36s with deterministic cryptographic auditability.
+5. **Reproducibility & Test Coverage:** All 366 unit and integration tests passing in ~36s with deterministic cryptographic auditability.
 
 ---
 
 **Artifact Reference Links:**
 - Interactive High-Definition Web Poster: [`research/poster.html`](file:///Users/chalermsak/Desktop/nexvia-aegis-main/research/poster.html)
+- Active Vision & LiDAR SLAM Benchmark Plot: [`results/plots/vision_occlusion_slam_benchmark.png`](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/plots/vision_occlusion_slam_benchmark.png)
 - Safe RL Benchmark Plot: [`results/plots/safe_rl_benchmark.png`](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/plots/safe_rl_benchmark.png)
 - Deep Aerodynamics Benchmark Plot: [`results/plots/deep_aerodynamics_benchmark.png`](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/plots/deep_aerodynamics_benchmark.png)
 - 6-DOF Benchmark Plot: [`results/plots/quadrotor_6dof_benchmark.png`](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/plots/quadrotor_6dof_benchmark.png)
 - Swarm 6-DOF Benchmark Plot: [`results/plots/swarm_6dof_benchmark.png`](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/plots/swarm_6dof_benchmark.png)
+- Active Vision & SLAM Implementation: [`src/aegis/vision/`](file:///Users/chalermsak/Desktop/nexvia-aegis-main/src/aegis/vision)
 - Safe RL Implementation: [`src/aegis/rl/`](file:///Users/chalermsak/Desktop/nexvia-aegis-main/src/aegis/rl)
 - Deep Aerodynamics Implementation: [`src/aegis/env/deep_aerodynamics.py`](file:///Users/chalermsak/Desktop/nexvia-aegis-main/src/aegis/env/deep_aerodynamics.py)
-- Unit Test Suite: [`tests/test_safe_rl.py`](file:///Users/chalermsak/Desktop/nexvia-aegis-main/tests/test_safe_rl.py)
+- Unit Test Suite: [`tests/test_vision_slam_occlusion.py`](file:///Users/chalermsak/Desktop/nexvia-aegis-main/tests/test_vision_slam_occlusion.py)
