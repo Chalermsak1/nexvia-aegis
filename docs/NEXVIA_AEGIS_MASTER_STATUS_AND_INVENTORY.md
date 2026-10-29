@@ -1,22 +1,22 @@
 # NEXVIA AEGIS — Master Project Status & Complete Inventory Report
 
-**Document ID:** `AEGIS-MASTER-STATUS-2026-10-29`  
-**Current Milestone:** Milestone V9-M8 (Phase 1 Decision-Making, Phase 2 3D Physical AI, Phase 3 Decentralized Swarm Resilience, Phase 4 6-DOF SE(3) Dynamics, Phase 5 Deep Aerodynamics, Phase 6 Safe Reinforcement Learning, Phase 7 Active Vision & LiDAR SLAM under Occlusion, Phase 8 Sim2Real Deployment & ROS 2 / PX4 Hardware Bridge)  
-**Governance State:** **`PHASE_1_TO_8_CONFIRMATORY_VERIFIED — SIM2REAL_ROS2_CERTIFIED`**  
+**Document ID:** `AEGIS-MASTER-STATUS-2026-10-30`  
+**Current Milestone:** Milestone V9-M9 (Phase 1 Decision-Making, Phase 2 3D Physical AI, Phase 3 Decentralized Swarm Resilience, Phase 4 6-DOF SE(3) Dynamics, Phase 5 Deep Aerodynamics, Phase 6 Safe Reinforcement Learning, Phase 7 Active Vision & LiDAR SLAM under Occlusion, Phase 8 Sim2Real Deployment & ROS 2 / PX4 Hardware Bridge, Phase 9 NMPC-CBF Receding Horizon Lookahead Trajectory Optimization)  
+**Governance State:** **`PHASE_1_TO_9_CONFIRMATORY_VERIFIED — NMPC_CBF_CERTIFIED`**  
 **Repository Remote:** [`https://github.com/Chalermsak1/nexvia-aegis.git`](https://github.com/Chalermsak1/nexvia-aegis.git)  
-**Automated Test Suite:** **370 / 370 passed (100% pass rate in ~36s)**  
+**Automated Test Suite:** **375 / 375 passed (100% pass rate in ~35s)**  
 **Certified Policy:** `V9_CAND_1_TIER1_STRICTEST` (SHA-256: `5a89d6061b379f1b34ab47be0deef8d63180d3e4c21d18c478bc7e451f5c84e2`)  
-**Timestamp:** October 29, 2026 (Bangkok / UTC)  
+**Timestamp:** October 30, 2026 (Bangkok / UTC)  
 
 ---
 
 ## 1. สถานะโครงการปัจจุบัน (Executive Project Status)
 
-โครงการ **NEXVIA AEGIS** ได้บรรลุเป้าหมายการวิจัยระดับแกนกลาง (AI Research Core) ครบทั้ง 8 เฟสอย่างสมบูรณ์ 100%:
+โครงการ **NEXVIA AEGIS** ได้บรรลุเป้าหมายการวิจัยระดับแกนกลาง (AI Research Core) ครบทั้ง 9 เฟสอย่างสมบูรณ์ 100%:
 
 ```
-[Phase 1: Decision-Making] -> [Phase 2: 3D AI] -> [Phase 3: Swarm BRMC] -> [Phase 4: 6-DOF SE(3)] -> [Phase 5: Deep Aero] -> [Phase 6: Safe RL] -> [Phase 7: Active Vision] -> [Phase 8: Sim2Real ROS 2]
-        (VERIFIED)                 (VERIFIED)           (VERIFIED)               (VERIFIED)                (VERIFIED)             (VERIFIED)              (VERIFIED)                   (VERIFIED)
+[Phase 1: Decision-Making] -> [Phase 2: 3D AI] -> [Phase 3: Swarm BRMC] -> [Phase 4: 6-DOF SE(3)] -> [Phase 5: Deep Aero] -> [Phase 6: Safe RL] -> [Phase 7: Active Vision] -> [Phase 8: Sim2Real ROS 2] -> [Phase 9: NMPC-CBF]
+        (VERIFIED)                 (VERIFIED)           (VERIFIED)               (VERIFIED)                (VERIFIED)             (VERIFIED)              (VERIFIED)                   (VERIFIED)                (VERIFIED)
 ```
 
 - **Phase 1 (Trustworthy Decision-Making):** ปิด Audit A3/A4 loopholes, รัน matched benchmark 1,800 episodes บน $D_{\text{dev}}$, พิสูจน์ Ville Martingale causality ($p = 8.52 \times 10^{-109}$) และ Active Probing gain (+39.17% TSR).
@@ -27,7 +27,8 @@
 - **Phase 6 (Safe Reinforcement Learning with HOCBF Shield):** พัฒนาโมเดล Safe RL (Actor-Critic / PPO) ร่วมกับ Underactuated HOCBF Action Shielding หลบหลีกสิ่งกีดขวางเคลื่อนที่แบบไดนามิก โดยขจัดการชนระหว่างเทรนเป็น 0 ครั้ง (0.0% vs 8 crashes ใน unshielded baseline) และ 0% collision บนชุดทดสอบ 15 episodes พร้อมการเรียนรู้ภายในของนโยบายที่ลดแรงแทรกแซงของ Barrier ลงจาก $11.324\,\text{N} \to 8.952\,\text{N}$ (-21.0%).
 - **Phase 7 (Active Vision & LiDAR SLAM under Occlusion):** ปลดล็อกข้อจำกัด "รู้พิกัดสิ่งกีดขวางล่วงหน้า" สู่เซนเซอร์กายภาพจริง ด้วย Simulated Depth Camera (Frustum Raycast, Multi-Obstacle Line-of-Sight Occlusion Shadowing) และ 3D Multi-Layer LiDAR (360° Azimuth) ผสาน 7-state Unscented Kalman Filter (UKF) คาดการณ์ตำแหน่ง/ความเร็วและขยาย Covariance ตอนถูกบดบัง และ Active Probing POMDP วางแผนหันมุมกล้อง/สแกนจุดอับสายตา พร้อมเบรกชะลอความเร็ว (Air-Braking) และ Robust CBF ขจัดการชนสิ่งกีดขวางในช่องแคบ 100% (0.0% crash vs 100% crash ใน blind baseline) และรักษาระยะห่างปลอดภัยที่มั่นคง $+0.271\,$m เทียบกับ $+0.078\,$m ใน passive vision.
 - **Phase 8 (Sim2Real Deployment & ROS 2 / PX4 Hardware Bridge):** พัฒนาระบบเชื่อมต่อฮาร์ดแวร์จริงระดับ Embedded Production รองรับ ROS 2 Humble/Iron (`aegis_drone_node`) และ MAVLink protocol (`SET_ATTITUDE_TARGET` 200 Hz) ร่วมกับ Latency Forward Extrapolation ($\mathbf{p} + \mathbf{v}\Delta t_{\text{comp}}$) และ Real-Time Safety Watchdog ป้องกันการเจาะทะลุ Barrier ภายใต้ Jitter ขนส่งข้อมูล 15ms และ Packet Drop 3% โดยขจัดการชนเหลือ 0.0% (เทียบกับ Naive PX4 ชน 100% และ Delayed MAVROS ชน 100%) พร้อม Failsafe Position-Hold Hover เมื่อสัญญาณขาดหาย 60ms.
-- **สถานะการทำงานของโค้ด:** รันการทดสอบผ่าน 100% (370/370 tests) ไม่มี Failure, ไม่มี Broken Invariant.
+- **Phase 9 (Nonlinear Model Predictive Control with Control Barrier Functions - NMPC-CBF Lookahead):** ขยายการตัดสินใจจาก Pointwise Myopic CBF สู่การพยากรณ์วิถีการบินล่วงหน้า 15 สเต็ป ($0.75\,$s lookahead) แบบ Receding Horizon พร้อม D-CBF Safety Constraints ตลอด Horizon, การลด Jerk อัตราการเปลี่ยนแปลงแรงขับเคลื่อน ($\|\Delta \mathbf{F}\|^2$), และการจำกัดมุมเอียงไม่เกิน $35^\circ$ แก้ปัญหาการเบรกกระตุกเฉียบพลันและการกระดอนขึ้นเพดาน (Altitude Ballooning) ของ Pointwise CBF โดยรัน Real-Time ในระดับ sub-50ms พร้อมระบบ Fallback Shield รับประกันความปลอดภัย 100%.
+- **สถานะการทำงานของโค้ด:** รันการทดสอบผ่าน 100% (375/375 tests) ไม่มี Failure, ไม่มี Broken Invariant.
 
 ---
 
@@ -102,6 +103,7 @@ mindmap
 - [src/aegis/sim2real/mavlink_protocol.py](file:///Users/chalermsak/Desktop/nexvia-aegis-main/src/aegis/sim2real/mavlink_protocol.py): โปรโตคอลแปลงเวกเตอร์แรงขับเคลื่อน $SO(3)$ สู่ MAVLink Attitude Quaternion และ Normalized Thrust 200 Hz.
 - [src/aegis/sim2real/safety_watchdog.py](file:///Users/chalermsak/Desktop/nexvia-aegis-main/src/aegis/sim2real/safety_watchdog.py): Real-Time Hardware Watchdog ประเมินหน่วงเวลา $\mathbf{p} + \mathbf{v}\Delta t$, ป้องกัน Packet Drop, และทริกเกอร์ Failsafe degradation.
 - [src/aegis/sim2real/aegis_ros2_node.py](file:///Users/chalermsak/Desktop/nexvia-aegis-main/src/aegis/sim2real/aegis_ros2_node.py): Production ROS 2 Humble/Iron Companion Autonomy Node รองรับทั้งฮาร์ดแวร์จริงและ Pure-Python SITL.
+- [src/aegis/nmpc/nmpc_cbf_optimizer.py](file:///Users/chalermsak/Desktop/nexvia-aegis-main/src/aegis/nmpc/nmpc_cbf_optimizer.py): ตัวควบคุม Receding Horizon NMPC-CBF พร้อม Condensed Dynamic Propagation, D-CBF Constraints, Jerk Minimization และ Altitude Stabilization.
 - [ros2_packages/aegis_drone/](file:///Users/chalermsak/Desktop/nexvia-aegis-main/ros2_packages/aegis_drone): ROS 2 Package (ament_python) พร้อม Launch file และ YAML parameters สำหรับ PX4 SITL / Live Flight.
 
 ### 4.2 สคริปต์การทดลองและการรันประเมินผล (Experiments & Benchmarks)
@@ -112,6 +114,8 @@ mindmap
 - [experiments/benchmark_physical_3d_cbf.py](file:///Users/chalermsak/Desktop/nexvia-aegis-main/experiments/benchmark_physical_3d_cbf.py): สคริปต์ทดสอบ HOCBF ป้องกันการชนสิ่งกีดขวางใน 3D Physics.
 - [experiments/benchmark_sim2real_hardware.py](file:///Users/chalermsak/Desktop/nexvia-aegis-main/experiments/benchmark_sim2real_hardware.py): สคริปต์ Hardware-in-the-Loop Benchmark จำลองหน่วงเวลา 15-35 ms, แพ็กเก็ตตกหล่น 3% และ EKF2 Freeze 60 ms.
 - [experiments/plot_sim2real_hardware_results.py](file:///Users/chalermsak/Desktop/nexvia-aegis-main/experiments/plot_sim2real_hardware_results.py): สคริปต์สร้างแผนภาพ 4 แผง Sim2Real Hardware Benchmark (300 DPI).
+- [experiments/benchmark_nmpc_vs_cbf.py](file:///Users/chalermsak/Desktop/nexvia-aegis-main/experiments/benchmark_nmpc_vs_cbf.py): สคริปต์ประเมินผล NMPC-CBF Lookahead เทียบกับ Pointwise HOCBF 30 ตอนในการหลบสิ่งกีดขวางเคลื่อนที่ความเร็วสูง.
+- [experiments/plot_nmpc_benchmark.py](file:///Users/chalermsak/Desktop/nexvia-aegis-main/experiments/plot_nmpc_benchmark.py): สคริปต์สร้างแผนภาพ 4 แผง NMPC-CBF Benchmark (300 DPI).
 - [experiments/plot_holdout_certification.py](file:///Users/chalermsak/Desktop/nexvia-aegis-main/experiments/plot_holdout_certification.py): สคริปต์สร้างแผนภาพรับรองผล Holdout ระดับตีพิมพ์ (300 DPI).
 - [experiments/plot_research_dossier.py](file:///Users/chalermsak/Desktop/nexvia-aegis-main/experiments/plot_research_dossier.py): สคริปต์สร้างแผนภาพ 4 ด้านของงานวิจัย.
 - [experiments/export_swarm_trajectories.py](file:///Users/chalermsak/Desktop/nexvia-aegis-main/experiments/export_swarm_trajectories.py): สคริปต์ส่งออกข้อมูลวิถีการบิน 3D ของฝูงหุ่นยนต์ (JSON).
@@ -142,12 +146,14 @@ mindmap
   - [results/v9/test_scen/authorization_record.json](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/v9/test_scen/authorization_record.json)
   - [results/v9/test_scen/test_scen_report.json](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/v9/test_scen/test_scen_report.json)
 - **Benchmarks อื่นๆ:**
+  - [results/data/nmpc_cbf_benchmark.json](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/data/nmpc_cbf_benchmark.json) (14.2 KB): ข้อมูล 30 ตอน NMPC-CBF vs Pointwise HOCBF Benchmark
   - [results/data/sim2real_hardware_benchmark.json](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/data/sim2real_hardware_benchmark.json) (15.8 KB): ข้อมูล 45 ตอน HIL Hardware Benchmark
   - [results/uncertainty_benchmark.csv](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/uncertainty_benchmark.csv): 12,000 แถวข้อมูล Active Inspection
   - [results/benchmark_mujoco_swarm_3d.csv](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/benchmark_mujoco_swarm_3d.csv): 150 แถวข้อมูล Swarm MuJoCo
   - [results/swarm_trajectories.json](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/swarm_trajectories.json): ข้อมูลวิถีการบิน 3 มิติ
 
 ### 4.5 แผนภาพงานวิจัยระดับตีพิมพ์และ Visualizer (Visual Artifacts, 300 DPI)
+- [results/plots/nmpc_cbf_highspeed_benchmark.png](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/plots/nmpc_cbf_highspeed_benchmark.png) (847 KB): แผนภาพ 4 แผง NMPC-CBF Lookahead Trajectory Optimization เปรียบเทียบกับ Pointwise Myopic CBF.
 - [results/plots/sim2real_hardware_benchmark.png](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/plots/sim2real_hardware_benchmark.png) (740 KB): แผนภาพ 4 แผง Sim2Real Hardware & ROS 2 / PX4 Bridge ภายใต้หน่วงเวลาและการสูญหายของสัญญาณ.
 - [results/plots/holdout_h1_h5_certification.png](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/plots/holdout_h1_h5_certification.png) (766 KB): แผนภาพสรุปการรับรองสมมติฐาน $H_1..H_5$.
 - [results/plots/mujoco_3d_cbf_trajectories.png](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/plots/mujoco_3d_cbf_trajectories.png) (1.3 MB): วิถีการบินและการหลบสิ่งกีดขวางแบบไปข้างหน้าไม่แปรเปลี่ยน.
@@ -169,20 +175,19 @@ mindmap
 
 ## 5. แผนการและทิศทางการดำเนินงานต่อไป (Roadmap & Next Steps)
 
-โครงการได้บรรลุครบทั้ง 8 ระยะทางวิทยาศาสตร์และวิศวกรรม (Phase 1 ถึง Phase 8 - Sim2Real Hardware Bridge บรรลุผลสำเร็จ 100%):
+โครงการได้บรรลุครบทั้ง 9 ระยะทางวิทยาศาสตร์และวิศวกรรม (Phase 1 ถึง Phase 9 - NMPC-CBF Lookahead Trajectory Optimization บรรลุผลสำเร็จ 100%):
 
-### Phase 8 (Completed): Sim2Real Hardware Bridge (ROS 2 / PX4 Autopilot)
-- สำเร็จการสร้าง Production ROS 2 Node (`aegis_drone_node`) และ MAVLink Bridge (`SET_ATTITUDE_TARGET` 200 Hz, Quaternion on $SO(3)$, Normalized Thrust).
-- ติดตั้ง Real-Time Hardware Watchdog ชดเชย Transport Delay 15-35 ms ด้วย Forward Latency Extrapolation และ Failsafe Degradation (Zero crashes / 0.0% Collision Rate).
+### Phase 9 (Completed): Nonlinear Model Predictive Control with CBF (NMPC-CBF)
+- วางแผนวิถีการบินล่วงหน้า 15 สเต็ป ($0.75\,$s) บินหลบสิ่งกีดขวางแบบ Anticipatory และลด Jerk การกระตุกของคำสั่งแรงขับเคลื่อน.
+- ติดตั้ง Dynamic Altitude Weighting รักษาเพดานบินระดับ $1.0\,$m และ D-CBF Constraints พร้อม Pointwise HOCBF Fallback Shield.
 
 ### Option A: การจัดเตรียมต้นฉบับเอกสารทางวิชาการ (Academic Paper & LaTeX Preprint)
-- รวบรวมสมการทางคณิตศาสตร์ (HOCBF, Ville Supermartingale, BRMC consensus, Active POMDP, Sim2Real Latency Extrapolation) และผลการทดสอบทั้งหมดเข้าสู่โครงสร้างบทความวิจัย IEEE / NeurIPS / ICRA.
-- จัดเตรียมฟิกเกอร์ทั้ง 7 ภาพความละเอียด 300 DPI สำหรับแนบบทความ.
+- รวบรวมสมการทางคณิตศาสตร์ (HOCBF, Ville Supermartingale, BRMC consensus, Active POMDP, Sim2Real Latency Extrapolation, NMPC-CBF) และผลการทดสอบทั้งหมดเข้าสู่โครงสร้างบทความวิจัย IEEE T-RO / Automatica / ICRA.
+- จัดเตรียมฟิกเกอร์ทั้ง 8 ภาพความละเอียด 300 DPI สำหรับแนบบทความ.
 
-### Option C: การพัฒนาฝูงหุ่นยนต์ต่างชนิด (Heterogeneous Air-Ground Swarm)
-- ขยายโมเดล BRMC รองรับหุ่นยนต์ภาคพื้นดิน (Ground Rovers) ทำงานร่วมกับโดรนทางอากาศ (Aerial UAVs).
-- ประเมินผลการหลบหลีกและการแบ่งปันพิกัดตำแหน่งในสภาพแวดล้อมสิ่งกีดขวางแบบไดนามิก.
+### Option B: Autonomous Vehicles & Ground Robotics (AV Frenet Barrier & Platooning)
+- ขยายโมเดล NMPC-CBF สู่ระบบรถยนต์ไร้คนขับ (Non-holonomic Bicycle Model + Kamm's Friction Circle) ในพิกัด Frenet ($s, d$).
 
 ---
 
-*เอกสารฉบับนี้รวบรวมสถานะและบัญชีรายการทั้งหมดของโครงการ ณ วันที่ 29 ตุลาคม 2026 อย่างสมบูรณ์และเป็นทางการ.*
+*เอกสารฉบับนี้รวบรวมสถานะและบัญชีรายการทั้งหมดของโครงการ ณ วันที่ 30 ตุลาคม 2026 อย่างสมบูรณ์และเป็นทางการ.*
