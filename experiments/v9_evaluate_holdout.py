@@ -1034,9 +1034,48 @@ def evaluate_mixture_holdout(
     h4_passed = bool(cov >= 0.35)
     h4_status = "PASS_ADEQUATE_UTILITY" if h4_passed else "FAIL_COVERAGE_DEGENERATE"
 
-    # Hypothesis H_2: Unconditional FS Incidence Reduction vs Baselines (Gated by H_1)
+    # Hypothesis H_2: Core-10 Mixture Selective-Risk Certification on S_10 (Preregistered Protocol Section 2.5)
+    s10_suite = {
+        "NOMINAL", "PRIMARY_BIAS", "INDEPENDENT_BIAS", "CORRELATED_BIAS", "SENSOR_DRIFT",
+        "OUTLIER_BURSTS", "SENSOR_DROPOUT", "FAULTY_REFERENCE_SENSOR", "CORRUPTED_ANCHOR_STRESS",
+        "COMPOUND_HOLDOUT_EXTREME"
+    }
+    s10_records = [
+        r for r in records
+        if str(r.get("scenario", "")) in s10_suite or (r.get("scenario_index") is not None and int(r.get("scenario_index", 0)) <= 10)
+    ]
+    if not s10_records:
+        s10_records = list(records)
+    n_10 = len(s10_records)
+    m_10 = sum(1 for r in s10_records if int(r.get("accepted", 0)) == 1)
+    fs_10 = sum(1 for r in s10_records if int(r.get("accepted", 0)) == 1 and int(r.get("false_success", 0)) == 1)
+    r_sel_10 = fs_10 / m_10 if m_10 > 0 else float("nan")
+    h2_core10_precondition_met = bool(m_10 >= 59)
+    h2_core10_ucb95 = clopper_pearson_one_sided_ucb(fs_10, m_10, delta=0.05) if m_10 > 0 else float("nan")
+
+    if not h1_passed:
+        h2_core10_passed = False
+        h2_core10_status = "BLOCKED_BY_H1_GATE"
+        h2_passed = False
+        h2_status = "BLOCKED_BY_H1_GATE"
+    elif not h2_core10_precondition_met:
+        h2_core10_passed = False
+        h2_core10_status = "INSUFFICIENT_ACCEPTED_SAMPLE_M_LT_59"
+        h2_passed = False
+        h2_status = "INSUFFICIENT_ACCEPTED_SAMPLE_M_LT_59"
+    elif h2_core10_ucb95 <= 0.05:
+        h2_core10_passed = True
+        h2_core10_status = "CONFIRMATORY_PASS"
+        h2_passed = True
+        h2_status = "CONFIRMATORY_PASS"
+    else:
+        h2_core10_passed = False
+        h2_core10_status = "FAILED_UCB"
+        h2_passed = False
+        h2_status = "FAILED_UCB"
+
+    # Secondary Paired Incidence Baseline Comparisons (Gated by H_1)
     h2_results: dict[str, Any] = {}
-    h2_passed = False
     pooled_ucb95_fs = clopper_pearson_one_sided_ucb(fs, n, delta=0.05)
 
     if v8_records is not None:
@@ -1071,25 +1110,26 @@ def evaluate_mixture_holdout(
             "significant_reduction": bool(n10_7 < n01_7 and mcnemar_p_v7 < 0.05),
         }
 
-    # Compound scenarios subset check for H_2
+    # Compound scenarios subset check
     comp_scenarios = {"COMPOUND_DRIFT_DROPOUT", "COMPOUND_HOLDOUT_EXTREME", "COMPOUND_ANTIPODAL_RANGE_SHIFT"}
     comp_records = [r for r in records if str(r.get("scenario", "")) in comp_scenarios]
     n_comp = len(comp_records)
     fs_comp = sum(1 for r in comp_records if int(r["false_success"]) == 1)
     r_inc_comp = fs_comp / n_comp if n_comp > 0 else 0.0
 
-    if not h1_passed:
-        h2_passed = False
-        h2_status = "BLOCKED_BY_H1_GATE"
-    elif pooled_ucb95_fs <= 0.05 and (not h2_results or any(v["significant_reduction"] for v in h2_results.values())):
-        h2_passed = True
-        h2_status = "CONFIRMATORY_PASS"
+    # Strict baseline contrast status (Audit finding A4 closure)
+    has_baselines = bool(h2_results)
+    if not has_baselines:
+        baseline_contrast_status = "NOT_EVALUATED_NO_BASELINE_DATA"
+        baseline_contrast_passed = False
+    elif any(v.get("significant_reduction", False) for v in h2_results.values()):
+        baseline_contrast_status = "CONFIRMATORY_PASS"
+        baseline_contrast_passed = True
     else:
-        h2_passed = False
-        h2_status = "DESCRIPTIVE_ONLY"
+        baseline_contrast_status = "FAIL_NO_SIGNIFICANT_REDUCTION"
+        baseline_contrast_passed = False
 
-    # Partition-level anti-gaming rule evaluation (SCI-07: aggregate system certification
-    # requires unified evaluation across both mixture and scenario holdout partitions)
+    # Partition-level anti-gaming rule evaluation (SCI-07)
     if (not h4_passed) or (h1_passed and not h4_passed):
         overall_classification = "CONSERVATIVE_RISK_COVERAGE_TRADEOFF"
     elif h1_passed and h4_passed:
@@ -1128,9 +1168,30 @@ def evaluate_mixture_holdout(
             "status": h4_status,
             "passed": h4_passed,
         },
+        "h2_core10_selective_risk": {
+            "hypothesis": "H_2",
+            "estimand": "Core-10 S_10 Selective Risk R_sel <= 0.05 on accepted decisions (Gated by H_1)",
+            "n_core10": n_10,
+            "m_accepted": m_10,
+            "fs_count": fs_10,
+            "precondition_m_ge_59": h2_core10_precondition_met,
+            "cp_ucb95": round(h2_core10_ucb95, 6) if not math.isnan(h2_core10_ucb95) else "UNDEFINED",
+            "status": h2_core10_status,
+            "passed": h2_core10_passed,
+        },
+        "h2_paired_incidence_contrast": {
+            "contrast": "Secondary contrast: Unconditional FS reduction vs baselines",
+            "pooled_ucb95_fs": round(pooled_ucb95_fs, 6),
+            "compound_fs_count": fs_comp,
+            "compound_n": n_comp,
+            "compound_r_inc": round(r_inc_comp, 6),
+            "comparisons": h2_results,
+            "status": baseline_contrast_status,
+            "passed": baseline_contrast_passed,
+        },
         "h2_unconditional_incidence": {
             "hypothesis": "H_2",
-            "estimand": "Unconditional FS reduction vs baselines",
+            "estimand": "Core-10 S_10 selective risk & unconditional FS reduction vs baselines",
             "pooled_ucb95_fs": round(pooled_ucb95_fs, 6),
             "compound_fs_count": fs_comp,
             "compound_n": n_comp,

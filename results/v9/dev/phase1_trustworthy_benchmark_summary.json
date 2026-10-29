@@ -1,0 +1,295 @@
+{
+  "benchmark": "NEXVIA_AEGIS_PHASE_1_TRUSTWORTHY_DECISION_BENCHMARK",
+  "timestamp_utc": "2026-10-29T12:07:14.602216+00:00",
+  "total_wall_clock_seconds": 53.83,
+  "grid": {
+    "seed_start": 77000,
+    "seed_stop": 77030,
+    "n_seeds_per_scen": 30,
+    "n_scenarios": 12,
+    "total_episodes_per_policy": 360
+  },
+  "policy_summaries": {
+    "V9_AEGIS": {
+      "n_episodes": 360,
+      "m_accepted": 204,
+      "true_successes": 204,
+      "false_successes": 0,
+      "abstain_explicit": 147,
+      "timeouts": 9,
+      "crashes": 0,
+      "coverage": 0.5667,
+      "tsr": 0.5667,
+      "r_inc": 0.0,
+      "r_sel": 0.0,
+      "cp_r_sel_ucb95": 0.0146,
+      "cp_r_inc_ucb95": 0.0083,
+      "reconciled_exhaustiveness": true,
+      "wall_clock_seconds": 6.18
+    },
+    "V9_NO_MARTINGALE": {
+      "n_episodes": 360,
+      "m_accepted": 0,
+      "true_successes": 0,
+      "false_successes": 360,
+      "abstain_explicit": 0,
+      "timeouts": 0,
+      "crashes": 360,
+      "coverage": 0.0,
+      "tsr": 0.0,
+      "r_inc": 1.0,
+      "r_sel": "UNDEFINED",
+      "cp_r_sel_ucb95": "UNDEFINED",
+      "cp_r_inc_ucb95": 1.0,
+      "reconciled_exhaustiveness": true,
+      "wall_clock_seconds": 0.14
+    },
+    "V9_NO_ACTIVE_PROBE": {
+      "n_episodes": 360,
+      "m_accepted": 63,
+      "true_successes": 63,
+      "false_successes": 0,
+      "abstain_explicit": 297,
+      "timeouts": 0,
+      "crashes": 0,
+      "coverage": 0.175,
+      "tsr": 0.175,
+      "r_inc": 0.0,
+      "r_sel": 0.0,
+      "cp_r_sel_ucb95": 0.0464,
+      "cp_r_inc_ucb95": 0.0083,
+      "reconciled_exhaustiveness": true,
+      "wall_clock_seconds": 2.37
+    },
+    "V8_MARTINGALE": {
+      "n_episodes": 360,
+      "m_accepted": 160,
+      "true_successes": 156,
+      "false_successes": 4,
+      "abstain_explicit": 176,
+      "timeouts": 24,
+      "crashes": 0,
+      "coverage": 0.4444,
+      "tsr": 0.4333,
+      "r_inc": 0.0111,
+      "r_sel": 0.025,
+      "cp_r_sel_ucb95": 0.0563,
+      "cp_r_inc_ucb95": 0.0252,
+      "reconciled_exhaustiveness": true,
+      "wall_clock_seconds": 18.07
+    },
+    "V7_MPC": {
+      "n_episodes": 360,
+      "m_accepted": 150,
+      "true_successes": 140,
+      "false_successes": 10,
+      "abstain_explicit": 102,
+      "timeouts": 108,
+      "crashes": 0,
+      "coverage": 0.4167,
+      "tsr": 0.3889,
+      "r_inc": 0.0278,
+      "r_sel": 0.0667,
+      "cp_r_sel_ucb95": 0.1105,
+      "cp_r_inc_ucb95": 0.0467,
+      "reconciled_exhaustiveness": true,
+      "wall_clock_seconds": 27.08
+    }
+  },
+  "statistical_contrasts": {
+    "V9_vs_V8_MARTINGALE": {
+      "n_matched": 360,
+      "false_success_mcnemar": {
+        "n11": 0,
+        "n10_v9_only_fs": 0,
+        "n01_comp_only_fs": 4,
+        "n00": 356,
+        "p_value": 0.125,
+        "v9_significantly_fewer_fs": false
+      },
+      "tsr_paired_difference": {
+        "delta_tsr": 0.1333,
+        "ci95": [
+          0.0837,
+          0.1816
+        ]
+      }
+    },
+    "V9_vs_V7_MPC": {
+      "n_matched": 360,
+      "false_success_mcnemar": {
+        "n11": 0,
+        "n10_v9_only_fs": 0,
+        "n01_comp_only_fs": 10,
+        "n00": 350,
+        "p_value": 0.001953125,
+        "v9_significantly_fewer_fs": true
+      },
+      "tsr_paired_difference": {
+        "delta_tsr": 0.1778,
+        "ci95": [
+          0.1282,
+          0.2255
+        ]
+      }
+    },
+    "V9_vs_V9_NO_MARTINGALE": {
+      "n_matched": 360,
+      "false_success_mcnemar": {
+        "n11": 0,
+        "n10_v9_only_fs": 0,
+        "n01_comp_only_fs": 360,
+        "n00": 0,
+        "p_value": 8.515919680016301e-109,
+        "v9_significantly_fewer_fs": true
+      },
+      "tsr_paired_difference": {
+        "delta_tsr": 0.5667,
+        "ci95": [
+          0.514,
+          0.6169
+        ]
+      }
+    },
+    "V9_vs_V9_NO_ACTIVE_PROBE": {
+      "n_matched": 360,
+      "false_success_mcnemar": {
+        "n11": 0,
+        "n10_v9_only_fs": 0,
+        "n01_comp_only_fs": 0,
+        "n00": 360,
+        "p_value": 1.0,
+        "v9_significantly_fewer_fs": false
+      },
+      "tsr_paired_difference": {
+        "delta_tsr": 0.3917,
+        "ci95": [
+          0.3396,
+          0.4402
+        ]
+      }
+    }
+  },
+  "v9_scenario_breakdown": {
+    "NOMINAL": {
+      "n": 30,
+      "m": 30,
+      "ts": 30,
+      "fs": 0,
+      "timeout": 0,
+      "tsr": 1.0,
+      "coverage": 1.0,
+      "r_sel": 0.0
+    },
+    "PRIMARY_BIAS": {
+      "n": 30,
+      "m": 29,
+      "ts": 29,
+      "fs": 0,
+      "timeout": 0,
+      "tsr": 0.9667,
+      "coverage": 0.9667,
+      "r_sel": 0.0
+    },
+    "INDEPENDENT_BIAS": {
+      "n": 30,
+      "m": 29,
+      "ts": 29,
+      "fs": 0,
+      "timeout": 0,
+      "tsr": 0.9667,
+      "coverage": 0.9667,
+      "r_sel": 0.0
+    },
+    "CORRELATED_BIAS": {
+      "n": 30,
+      "m": 28,
+      "ts": 28,
+      "fs": 0,
+      "timeout": 1,
+      "tsr": 0.9333,
+      "coverage": 0.9333,
+      "r_sel": 0.0
+    },
+    "SENSOR_DRIFT": {
+      "n": 30,
+      "m": 24,
+      "ts": 24,
+      "fs": 0,
+      "timeout": 0,
+      "tsr": 0.8,
+      "coverage": 0.8,
+      "r_sel": 0.0
+    },
+    "OUTLIER_BURSTS": {
+      "n": 30,
+      "m": 23,
+      "ts": 23,
+      "fs": 0,
+      "timeout": 6,
+      "tsr": 0.7667,
+      "coverage": 0.7667,
+      "r_sel": 0.0
+    },
+    "SENSOR_DROPOUT": {
+      "n": 30,
+      "m": 30,
+      "ts": 30,
+      "fs": 0,
+      "timeout": 0,
+      "tsr": 1.0,
+      "coverage": 1.0,
+      "r_sel": 0.0
+    },
+    "FAULTY_REFERENCE_SENSOR": {
+      "n": 30,
+      "m": 0,
+      "ts": 0,
+      "fs": 0,
+      "timeout": 2,
+      "tsr": 0.0,
+      "coverage": 0.0,
+      "r_sel": "UNDEFINED"
+    },
+    "CORRUPTED_ANCHOR_STRESS": {
+      "n": 30,
+      "m": 0,
+      "ts": 0,
+      "fs": 0,
+      "timeout": 0,
+      "tsr": 0.0,
+      "coverage": 0.0,
+      "r_sel": "UNDEFINED"
+    },
+    "COMPOUND_HOLDOUT_EXTREME": {
+      "n": 30,
+      "m": 0,
+      "ts": 0,
+      "fs": 0,
+      "timeout": 0,
+      "tsr": 0.0,
+      "coverage": 0.0,
+      "r_sel": "UNDEFINED"
+    },
+    "COMPOUND_DRIFT_DROPOUT": {
+      "n": 30,
+      "m": 11,
+      "ts": 11,
+      "fs": 0,
+      "timeout": 0,
+      "tsr": 0.3667,
+      "coverage": 0.3667,
+      "r_sel": 0.0
+    },
+    "COMPOUND_ANTIPODAL_RANGE_SHIFT": {
+      "n": 30,
+      "m": 0,
+      "ts": 0,
+      "fs": 0,
+      "timeout": 0,
+      "tsr": 0.0,
+      "coverage": 0.0,
+      "r_sel": "UNDEFINED"
+    }
+  }
+}
