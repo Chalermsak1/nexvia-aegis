@@ -1,0 +1,3896 @@
+{
+  "schema_version": "v9-m5-3d-development-benchmark/1.2",
+  "classification": "EXPLORATORY_SIMULATION",
+  "source_sha256": {
+    "benchmark": "0ced4fb07591c299464e88e5810529081632363e91e82b4bf2e6b18498d683e9",
+    "world": "b386ffb38cf733b6539c2835d833c083204c7c7354211eecd0dc7bd5be863f17"
+  },
+  "runtime": {
+    "python": "3.12.14",
+    "numpy": "2.5.3",
+    "mujoco": "3.14.0"
+  },
+  "seed_start": 99000,
+  "n_seeds_per_bias": 20,
+  "max_steps": 300,
+  "summary": {
+    "UNSHIELDED": {
+      "episodes": 60,
+      "true_success": 8,
+      "false_arrival": 24,
+      "collision": 41,
+      "abstained": 0,
+      "timeout": 28,
+      "accepted": 32
+    },
+    "CBF_ONLY": {
+      "episodes": 60,
+      "true_success": 7,
+      "false_arrival": 29,
+      "collision": 0,
+      "abstained": 0,
+      "timeout": 24,
+      "accepted": 36
+    },
+    "AEGIS_V9_CBF": {
+      "episodes": 60,
+      "true_success": 12,
+      "false_arrival": 12,
+      "collision": 0,
+      "abstained": 19,
+      "timeout": 17,
+      "accepted": 24
+    },
+    "AEGIS_V9_CBF_RANGE_GUARD": {
+      "episodes": 60,
+      "true_success": 6,
+      "false_arrival": 0,
+      "collision": 0,
+      "abstained": 37,
+      "timeout": 17,
+      "accepted": 6
+    }
+  },
+  "episodes": [
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99000,
+      "steps": 76,
+      "final_distance": 0.1943,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99001,
+      "steps": 300,
+      "final_distance": 0.4319,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99002,
+      "steps": 244,
+      "final_distance": 0.2878,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99003,
+      "steps": 66,
+      "final_distance": 0.1982,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99004,
+      "steps": 254,
+      "final_distance": 0.3667,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99005,
+      "steps": 300,
+      "final_distance": 0.5785,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99006,
+      "steps": 261,
+      "final_distance": 0.2023,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99007,
+      "steps": 300,
+      "final_distance": 0.4783,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99008,
+      "steps": 300,
+      "final_distance": 2.5981,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99009,
+      "steps": 300,
+      "final_distance": 0.6831,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99010,
+      "steps": 104,
+      "final_distance": 0.1672,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99011,
+      "steps": 300,
+      "final_distance": 0.4023,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99012,
+      "steps": 74,
+      "final_distance": 0.2048,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99013,
+      "steps": 267,
+      "final_distance": 0.2726,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99014,
+      "steps": 300,
+      "final_distance": 0.9693,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99015,
+      "steps": 84,
+      "final_distance": 0.177,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99016,
+      "steps": 80,
+      "final_distance": 0.158,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99017,
+      "steps": 107,
+      "final_distance": 0.29,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99018,
+      "steps": 78,
+      "final_distance": 0.1998,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99019,
+      "steps": 82,
+      "final_distance": 0.2446,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99000,
+      "steps": 74,
+      "final_distance": 0.7341,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99001,
+      "steps": 300,
+      "final_distance": 0.6132,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99002,
+      "steps": 300,
+      "final_distance": 1.0011,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99003,
+      "steps": 73,
+      "final_distance": 0.4486,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99004,
+      "steps": 300,
+      "final_distance": 1.043,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99005,
+      "steps": 300,
+      "final_distance": 0.8123,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99006,
+      "steps": 247,
+      "final_distance": 0.4457,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99007,
+      "steps": 248,
+      "final_distance": 0.7001,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99008,
+      "steps": 300,
+      "final_distance": 1.0182,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99009,
+      "steps": 286,
+      "final_distance": 0.4859,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99010,
+      "steps": 97,
+      "final_distance": 0.9561,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99011,
+      "steps": 300,
+      "final_distance": 0.7331,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99012,
+      "steps": 77,
+      "final_distance": 0.544,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99013,
+      "steps": 300,
+      "final_distance": 0.9582,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99014,
+      "steps": 300,
+      "final_distance": 0.842,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99015,
+      "steps": 91,
+      "final_distance": 0.5299,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99016,
+      "steps": 80,
+      "final_distance": 0.6449,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99017,
+      "steps": 242,
+      "final_distance": 0.5016,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99018,
+      "steps": 78,
+      "final_distance": 0.6275,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99019,
+      "steps": 91,
+      "final_distance": 0.6398,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99000,
+      "steps": 87,
+      "final_distance": 1.0656,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99001,
+      "steps": 300,
+      "final_distance": 2.0366,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99002,
+      "steps": 300,
+      "final_distance": 1.0157,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99003,
+      "steps": 73,
+      "final_distance": 0.9773,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99004,
+      "steps": 300,
+      "final_distance": 1.2557,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99005,
+      "steps": 300,
+      "final_distance": 1.7137,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99006,
+      "steps": 300,
+      "final_distance": 0.6844,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99007,
+      "steps": 300,
+      "final_distance": 1.389,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99008,
+      "steps": 300,
+      "final_distance": 3.7167,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99009,
+      "steps": 300,
+      "final_distance": 1.9012,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99010,
+      "steps": 300,
+      "final_distance": 1.1261,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99011,
+      "steps": 300,
+      "final_distance": 3.1159,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99012,
+      "steps": 83,
+      "final_distance": 1.1078,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99013,
+      "steps": 171,
+      "final_distance": 0.9974,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99014,
+      "steps": 300,
+      "final_distance": 0.9732,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99015,
+      "steps": 129,
+      "final_distance": 0.9477,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99016,
+      "steps": 300,
+      "final_distance": 1.4313,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99017,
+      "steps": 300,
+      "final_distance": 0.6527,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99018,
+      "steps": 230,
+      "final_distance": 1.4231,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 99019,
+      "steps": 99,
+      "final_distance": 0.9673,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99000,
+      "steps": 76,
+      "final_distance": 0.1943,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99001,
+      "steps": 300,
+      "final_distance": 0.3382,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99002,
+      "steps": 300,
+      "final_distance": 0.5586,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99003,
+      "steps": 66,
+      "final_distance": 0.1982,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99004,
+      "steps": 300,
+      "final_distance": 0.4904,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99005,
+      "steps": 293,
+      "final_distance": 0.2926,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99006,
+      "steps": 233,
+      "final_distance": 0.2611,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99007,
+      "steps": 294,
+      "final_distance": 0.2775,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99008,
+      "steps": 300,
+      "final_distance": 3.9175,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99009,
+      "steps": 300,
+      "final_distance": 0.9214,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99010,
+      "steps": 266,
+      "final_distance": 0.2422,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99011,
+      "steps": 300,
+      "final_distance": 0.4164,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99012,
+      "steps": 74,
+      "final_distance": 0.2048,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99013,
+      "steps": 300,
+      "final_distance": 0.5243,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99014,
+      "steps": 252,
+      "final_distance": 0.2921,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99015,
+      "steps": 111,
+      "final_distance": 0.2314,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99016,
+      "steps": 89,
+      "final_distance": 0.1978,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99017,
+      "steps": 242,
+      "final_distance": 0.259,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99018,
+      "steps": 80,
+      "final_distance": 0.1818,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99019,
+      "steps": 82,
+      "final_distance": 0.2446,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99000,
+      "steps": 74,
+      "final_distance": 0.7341,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99001,
+      "steps": 300,
+      "final_distance": 0.7305,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99002,
+      "steps": 248,
+      "final_distance": 0.7178,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99003,
+      "steps": 78,
+      "final_distance": 0.5072,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99004,
+      "steps": 248,
+      "final_distance": 0.5559,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99005,
+      "steps": 300,
+      "final_distance": 0.6188,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99006,
+      "steps": 236,
+      "final_distance": 0.5917,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99007,
+      "steps": 279,
+      "final_distance": 0.6652,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99008,
+      "steps": 300,
+      "final_distance": 0.6174,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99009,
+      "steps": 300,
+      "final_distance": 0.5805,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99010,
+      "steps": 298,
+      "final_distance": 0.5582,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99011,
+      "steps": 300,
+      "final_distance": 0.693,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99012,
+      "steps": 77,
+      "final_distance": 0.544,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99013,
+      "steps": 228,
+      "final_distance": 0.664,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99014,
+      "steps": 234,
+      "final_distance": 0.7227,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99015,
+      "steps": 285,
+      "final_distance": 0.8625,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99016,
+      "steps": 89,
+      "final_distance": 0.7379,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99017,
+      "steps": 242,
+      "final_distance": 0.5683,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99018,
+      "steps": 80,
+      "final_distance": 0.6376,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99019,
+      "steps": 91,
+      "final_distance": 0.5381,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99000,
+      "steps": 113,
+      "final_distance": 0.9967,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99001,
+      "steps": 300,
+      "final_distance": 1.8109,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99002,
+      "steps": 300,
+      "final_distance": 1.2227,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99003,
+      "steps": 73,
+      "final_distance": 0.9773,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99004,
+      "steps": 300,
+      "final_distance": 1.109,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99005,
+      "steps": 300,
+      "final_distance": 1.3756,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99006,
+      "steps": 300,
+      "final_distance": 1.0317,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99007,
+      "steps": 300,
+      "final_distance": 1.7228,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99008,
+      "steps": 300,
+      "final_distance": 3.9175,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99009,
+      "steps": 300,
+      "final_distance": 2.0283,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99010,
+      "steps": 286,
+      "final_distance": 0.9611,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99011,
+      "steps": 300,
+      "final_distance": 0.7202,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99012,
+      "steps": 129,
+      "final_distance": 1.2007,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99013,
+      "steps": 300,
+      "final_distance": 1.4547,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99014,
+      "steps": 300,
+      "final_distance": 1.1501,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99015,
+      "steps": 206,
+      "final_distance": 1.0152,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99016,
+      "steps": 296,
+      "final_distance": 1.3992,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99017,
+      "steps": 221,
+      "final_distance": 1.361,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99018,
+      "steps": 292,
+      "final_distance": 1.4178,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 99019,
+      "steps": 300,
+      "final_distance": 1.2921,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99000,
+      "steps": 100,
+      "final_distance": 0.1755,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99001,
+      "steps": 300,
+      "final_distance": 1.8024,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99002,
+      "steps": 215,
+      "final_distance": 1.013,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99003,
+      "steps": 86,
+      "final_distance": 0.1992,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99004,
+      "steps": 228,
+      "final_distance": 0.9742,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99005,
+      "steps": 300,
+      "final_distance": 1.2275,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99006,
+      "steps": 209,
+      "final_distance": 0.5038,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99007,
+      "steps": 300,
+      "final_distance": 2.047,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99008,
+      "steps": 300,
+      "final_distance": 2.5607,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99009,
+      "steps": 300,
+      "final_distance": 0.7854,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99010,
+      "steps": 189,
+      "final_distance": 0.3175,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99011,
+      "steps": 265,
+      "final_distance": 0.2547,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99012,
+      "steps": 91,
+      "final_distance": 0.1865,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99013,
+      "steps": 300,
+      "final_distance": 0.3948,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99014,
+      "steps": 208,
+      "final_distance": 0.8889,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99015,
+      "steps": 152,
+      "final_distance": 0.2053,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99016,
+      "steps": 125,
+      "final_distance": 0.2938,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99017,
+      "steps": 201,
+      "final_distance": 0.6251,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99018,
+      "steps": 146,
+      "final_distance": 0.3402,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99019,
+      "steps": 128,
+      "final_distance": 0.1693,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99000,
+      "steps": 134,
+      "final_distance": 0.3346,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99001,
+      "steps": 203,
+      "final_distance": 1.0349,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99002,
+      "steps": 190,
+      "final_distance": 1.3208,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99003,
+      "steps": 90,
+      "final_distance": 0.1568,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99004,
+      "steps": 147,
+      "final_distance": 3.3434,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99005,
+      "steps": 115,
+      "final_distance": 3.9279,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99006,
+      "steps": 179,
+      "final_distance": 1.3505,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99007,
+      "steps": 187,
+      "final_distance": 0.8775,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99008,
+      "steps": 300,
+      "final_distance": 1.3234,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99009,
+      "steps": 224,
+      "final_distance": 1.5511,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99010,
+      "steps": 199,
+      "final_distance": 0.6968,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99011,
+      "steps": 300,
+      "final_distance": 0.8241,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99012,
+      "steps": 131,
+      "final_distance": 0.3413,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99013,
+      "steps": 257,
+      "final_distance": 0.7166,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99014,
+      "steps": 196,
+      "final_distance": 1.0011,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99015,
+      "steps": 175,
+      "final_distance": 0.4158,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99016,
+      "steps": 150,
+      "final_distance": 0.9905,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99017,
+      "steps": 182,
+      "final_distance": 0.9379,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99018,
+      "steps": 300,
+      "final_distance": 0.7566,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99019,
+      "steps": 160,
+      "final_distance": 0.4693,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99000,
+      "steps": 130,
+      "final_distance": 0.251,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99001,
+      "steps": 300,
+      "final_distance": 0.8509,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99002,
+      "steps": 221,
+      "final_distance": 0.15,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99003,
+      "steps": 96,
+      "final_distance": 0.3526,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99004,
+      "steps": 237,
+      "final_distance": 0.2549,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99005,
+      "steps": 300,
+      "final_distance": 0.5801,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99006,
+      "steps": 210,
+      "final_distance": 0.1535,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99007,
+      "steps": 300,
+      "final_distance": 1.3007,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99008,
+      "steps": 300,
+      "final_distance": 3.1766,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99009,
+      "steps": 300,
+      "final_distance": 1.8343,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99010,
+      "steps": 300,
+      "final_distance": 0.6896,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99011,
+      "steps": 300,
+      "final_distance": 2.1521,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99012,
+      "steps": 131,
+      "final_distance": 0.2805,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99013,
+      "steps": 300,
+      "final_distance": 0.5118,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99014,
+      "steps": 215,
+      "final_distance": 0.1897,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99015,
+      "steps": 180,
+      "final_distance": 0.2545,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99016,
+      "steps": 171,
+      "final_distance": 0.1798,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99017,
+      "steps": 202,
+      "final_distance": 0.1473,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99018,
+      "steps": 150,
+      "final_distance": 0.1177,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 99019,
+      "steps": 161,
+      "final_distance": 0.3778,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99000,
+      "steps": 100,
+      "final_distance": 0.1502,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99001,
+      "steps": 300,
+      "final_distance": 1.8024,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99002,
+      "steps": 215,
+      "final_distance": 1.013,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99003,
+      "steps": 86,
+      "final_distance": 0.186,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99004,
+      "steps": 228,
+      "final_distance": 0.9742,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99005,
+      "steps": 300,
+      "final_distance": 1.2275,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99006,
+      "steps": 209,
+      "final_distance": 0.5038,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99007,
+      "steps": 300,
+      "final_distance": 2.047,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99008,
+      "steps": 300,
+      "final_distance": 2.5607,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99009,
+      "steps": 300,
+      "final_distance": 0.7854,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99010,
+      "steps": 189,
+      "final_distance": 0.3076,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99011,
+      "steps": 265,
+      "final_distance": 0.2266,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99012,
+      "steps": 91,
+      "final_distance": 0.164,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99013,
+      "steps": 300,
+      "final_distance": 0.3948,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99014,
+      "steps": 208,
+      "final_distance": 0.8889,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99015,
+      "steps": 152,
+      "final_distance": 0.1924,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99016,
+      "steps": 125,
+      "final_distance": 0.2754,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99017,
+      "steps": 201,
+      "final_distance": 0.6251,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99018,
+      "steps": 146,
+      "final_distance": 0.3364,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99019,
+      "steps": 128,
+      "final_distance": 0.1438,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99000,
+      "steps": 134,
+      "final_distance": 0.32,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99001,
+      "steps": 203,
+      "final_distance": 1.0349,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99002,
+      "steps": 190,
+      "final_distance": 1.3208,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99003,
+      "steps": 90,
+      "final_distance": 0.1568,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99004,
+      "steps": 147,
+      "final_distance": 3.3434,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99005,
+      "steps": 115,
+      "final_distance": 3.9279,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99006,
+      "steps": 179,
+      "final_distance": 1.3505,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99007,
+      "steps": 187,
+      "final_distance": 0.8775,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99008,
+      "steps": 300,
+      "final_distance": 1.3234,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99009,
+      "steps": 224,
+      "final_distance": 1.5511,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99010,
+      "steps": 199,
+      "final_distance": 0.6968,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99011,
+      "steps": 300,
+      "final_distance": 0.8241,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99012,
+      "steps": 131,
+      "final_distance": 0.331,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99013,
+      "steps": 257,
+      "final_distance": 0.7166,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99014,
+      "steps": 196,
+      "final_distance": 1.0011,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99015,
+      "steps": 175,
+      "final_distance": 0.4158,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99016,
+      "steps": 150,
+      "final_distance": 0.9905,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99017,
+      "steps": 182,
+      "final_distance": 0.9379,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99018,
+      "steps": 300,
+      "final_distance": 0.7566,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99019,
+      "steps": 160,
+      "final_distance": 0.4693,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99000,
+      "steps": 130,
+      "final_distance": 0.2293,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99001,
+      "steps": 300,
+      "final_distance": 0.8509,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99002,
+      "steps": 221,
+      "final_distance": 0.15,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99003,
+      "steps": 96,
+      "final_distance": 0.3461,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99004,
+      "steps": 237,
+      "final_distance": 0.2309,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99005,
+      "steps": 300,
+      "final_distance": 0.5801,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99006,
+      "steps": 210,
+      "final_distance": 0.1333,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99007,
+      "steps": 300,
+      "final_distance": 1.3007,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99008,
+      "steps": 300,
+      "final_distance": 3.1766,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99009,
+      "steps": 300,
+      "final_distance": 1.8343,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99010,
+      "steps": 300,
+      "final_distance": 0.6896,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99011,
+      "steps": 300,
+      "final_distance": 2.1521,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99012,
+      "steps": 131,
+      "final_distance": 0.2646,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99013,
+      "steps": 300,
+      "final_distance": 0.5118,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99014,
+      "steps": 215,
+      "final_distance": 0.1897,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99015,
+      "steps": 180,
+      "final_distance": 0.2418,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99016,
+      "steps": 171,
+      "final_distance": 0.1798,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99017,
+      "steps": 202,
+      "final_distance": 0.1473,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99018,
+      "steps": 150,
+      "final_distance": 0.1177,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 99019,
+      "steps": 161,
+      "final_distance": 0.3607,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    }
+  ]
+}
