@@ -28,6 +28,7 @@ from aegis.v3.sensors.cross_modal import RangeReading
 from aegis.v3.sensors.sensors import SensorReading
 from aegis.v7.anchor_sensor import AnchorReading
 from aegis.v9.controller import AegisV9Controller
+from aegis.v9.controller_3d import Aegis3DAwareController
 
 
 def corroborate_3d_stop(
@@ -74,7 +75,7 @@ def run_3d_episode(
     if controller_type not in {
         "UNSHIELDED", "CBF_ONLY", "AEGIS_V9_CBF",
         "AEGIS_V9_CBF_RANGE_GUARD", "AEGIS_V9_CBF_RANGE_WINDOW",
-        "AEGIS_V9_CBF_RANGE_3D_VETO",
+        "AEGIS_V9_CBF_RANGE_3D_VETO", "AEGIS_3D_AWARE_CBF",
     }:
         raise ValueError(f"Unknown 3D controller type: {controller_type}")
     if not 0.0 <= range_dropout_probability <= 1.0 or range_latency_steps < 0:
@@ -90,6 +91,9 @@ def run_3d_episode(
     v9_ctrl = AegisV9Controller() if controller_type.startswith("AEGIS_V9_CBF") else None
     if v9_ctrl:
         v9_ctrl.reset()
+    ctrl_3d = Aegis3DAwareController(success_radius=env.config.success_radius) if controller_type == "AEGIS_3D_AWARE_CBF" else None
+    if ctrl_3d:
+        ctrl_3d.reset()
 
     collision_occurred = False
     cbf_constraint_violation_occurred = False
@@ -296,6 +300,64 @@ def run_3d_episode(
                 state = env.step(u_des_3d, force_braking=force_brake)
                 observe_step(state)
 
+        elif controller_type == "AEGIS_3D_AWARE_CBF":
+            assert ctrl_3d is not None
+            rd_a = SensorReading(
+                estimate=meas_a_3d,
+                sigma=0.05,
+                valid=True,
+                anomaly=False,
+                dropped=False,
+                bias=np.zeros(3),
+                drift=np.zeros(3),
+            )
+            rd_b = SensorReading(
+                estimate=meas_b_3d,
+                sigma=0.05,
+                valid=True,
+                anomaly=False,
+                dropped=False,
+                bias=np.zeros(3),
+                drift=np.zeros(3),
+            )
+            rd_r = RangeReading(
+                distance=range_meas if range_valid else 0.0,
+                sigma=0.05,
+                valid=range_valid,
+                dropped=not range_valid,
+            )
+            anc_reading = None
+            if next_query_anchor:
+                anc_noise = rng_sensors.normal(0.0, 0.04, size=3)
+                anc_reading = AnchorReading(
+                    estimate=true_delta_3d + anc_noise,
+                    sigma=0.04,
+                    valid=True,
+                    queried=True,
+                    cost_accrued=0.05,
+                )
+
+            action_3d, dec_type, _, next_query_anchor = ctrl_3d.update(
+                rd_a, rd_b, rd_r, anchor_reading=anc_reading, step=step
+            )
+
+            if dec_type == "ABSTAIN":
+                state = env.step(np.zeros(3), force_braking=True)
+                observe_step(state)
+                abstained = True
+                break
+            elif dec_type == "STOP":
+                if true_dist <= env.config.success_radius:
+                    true_success = True
+                else:
+                    false_arrival = True
+                break
+            else:
+                u_des_3d = action_3d - 0.5 * vel
+                force_brake = (dec_type == "VERIFY")
+                state = env.step(u_des_3d, force_braking=force_brake)
+                observe_step(state)
+
     else:
         timeout = True
 
@@ -330,6 +392,7 @@ def main(argv: list[str] | None = None):
     parser.add_argument("--sensor-bias-xyz", type=float, nargs=3,
                         metavar=("X", "Y", "Z"),
                         help="Run one explicit 3D vector-sensor bias instead of the default suite")
+    parser.add_argument("--include-3d-aware", action="store_true", help="Include AEGIS_3D_AWARE_CBF in evaluation suite")
     parser.add_argument("--output", type=Path, help="New JSON evidence file; existing files are never overwritten")
     args = parser.parse_args(argv)
     if args.n_seeds <= 0 or args.max_steps <= 0:
@@ -355,13 +418,17 @@ def main(argv: list[str] | None = None):
     print("NEXVIA AEGIS — CONTINUOUS 3D MUJOCO & CONTROL BARRIER FUNCTION BENCHMARK")
     print("=" * 80)
 
-    all_results = {}
-    episode_records = []
-    for c_type in [
+    controllers = [
         "UNSHIELDED", "CBF_ONLY", "AEGIS_V9_CBF",
         "AEGIS_V9_CBF_RANGE_GUARD", "AEGIS_V9_CBF_RANGE_WINDOW",
         "AEGIS_V9_CBF_RANGE_3D_VETO",
-    ]:
+    ]
+    if args.include_3d_aware:
+        controllers.append("AEGIS_3D_AWARE_CBF")
+
+    all_results = {}
+    episode_records = []
+    for c_type in controllers:
         n_total = 0
         n_ts = 0
         n_fa = 0
@@ -423,10 +490,13 @@ def main(argv: list[str] | None = None):
             print(f"  CBF Infeasible:    {n_cbf_infeasible} steps")
 
     print("\n" + "=" * 80)
-    for label in (
+    labels_to_print = [
         "AEGIS_V9_CBF", "AEGIS_V9_CBF_RANGE_GUARD",
         "AEGIS_V9_CBF_RANGE_WINDOW", "AEGIS_V9_CBF_RANGE_3D_VETO",
-    ):
+    ]
+    if "AEGIS_3D_AWARE_CBF" in all_results:
+        labels_to_print.append("AEGIS_3D_AWARE_CBF")
+    for label in labels_to_print:
         candidate = all_results[label]
         print(f"Observed {label}: {candidate['collision']}/{candidate['episodes']} "
               f"collision episodes; {candidate['false_arrival']}/{candidate['episodes']} "

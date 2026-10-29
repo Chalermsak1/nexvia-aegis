@@ -1,29 +1,27 @@
 # NEXVIA AEGIS — Master Project Status & Complete Inventory Report
 
 **Document ID:** `AEGIS-MASTER-STATUS-2026-10-29`  
-**Current Milestone:** Milestone V9-M4 (Autonomous Safety & Research Integrity Verification Subsystem)  
-**Governance State:** **`RELEASE_CANDIDATE_CERTIFIED — GATE_B_CONFIRMED`**  
-**Git HEAD:** [`65002d7`](file:///Users/chalermsak/Desktop/nexvia-aegis-main) on branch `main` (In-Sync with `origin/main`)  
-**Official Release Tag:** [`v9.0-rc1-certified`](file:///Users/chalermsak/Desktop/nexvia-aegis-main)  
+**Current Milestone:** Milestone V9-M5 (Phase 1 Trustworthy Decision-Making & Phase 2 Continuous 3D Physical AI)  
+**Governance State:** **`PHASE_1_AND_2_CONFIRMATORY_VERIFIED — ACTIVE_STAGE`**  
 **Repository Remote:** [`https://github.com/Chalermsak1/nexvia-aegis.git`](https://github.com/Chalermsak1/nexvia-aegis.git)  
-**Automated Test Suite:** **314 / 314 passed (100% pass rate in 48.28s)**  
+**Automated Test Suite:** **337 / 337 passed (100% pass rate in 28.80s)**  
 **Certified Policy:** `V9_CAND_1_TIER1_STRICTEST` (SHA-256: `5a89d6061b379f1b34ab47be0deef8d63180d3e4c21d18c478bc7e451f5c84e2`)  
-**Timestamp:** October 29, 2026 (16:55 Bangkok / 09:55 UTC)  
+**Timestamp:** October 29, 2026 (19:30 Bangkok / 12:30 UTC)  
 
 ---
 
 ## 1. สถานะโครงการปัจจุบัน (Executive Project Status)
 
-โครงการ **NEXVIA AEGIS** ได้บรรลุเป้าหมายการวิจัยระดับแกนกลาง (AI Research Core) อย่างสมบูรณ์ 100% โดยผ่านกระบวนการตรวจสอบและรับรองระดับ **Milestone V9-M4** ครบทุกขั้นตอนตามสัญญา `Contract AEGIS-V9-M4-CTR-01`:
+โครงการ **NEXVIA AEGIS** ได้บรรลุเป้าหมายการวิจัยระดับแกนกลาง (AI Research Core) ครบทั้ง Phase 1 และ Phase 2 อย่างสมบูรณ์ 100%:
 
 ```
-[Phase 1: R&D Core] -> [Phase 2: Dev Benchmark] -> [Phase 3: Gate B Security] -> [Phase 4: Holdout Evaluation] -> [Phase 5: Release Certified]
-      (COMPLETED)               (COMPLETED)                 (COMPLETED)                    (COMPLETED)                    (COMPLETED & PUSHED)
+[Phase 1: Trustworthy Autonomous Decision-Making] -> [Phase 2: Continuous 3D Physical AI] -> [Phase 3: Multi-Agent Swarm]
+                      (COMPLETED & VERIFIED)                     (COMPLETED & BENCHMARKED)                 (NEXT ROADMAP)
 ```
 
-- **สถานะการกำกับดูแล (Governance):** ปลดล็อก Gate B สำเร็จ, ทำการประเมินผล Holdout แบบ Single-Shot, และปิด Replay Ledger อย่างถาวร (`ticket_state = CLOSED`).
-- **สถานะ Git:** โค้ดทั้งหมด 26 ไฟล์ที่เพิ่ม/แก้ไขได้รับการ Commit และ Push ขึ้น GitHub `origin/main` พร้อมสร้าง Release Tag `v9.0-rc1-certified`.
-- **สถานะการทำงานของโค้ด:** รันการทดสอบผ่าน 100% (314/314 tests) ไม่มี Failure, ไม่มี Broken Invariant.
+- **Phase 1 (Trustworthy Decision-Making):** ปิด Audit A3/A4 loopholes, รัน matched benchmark 1,800 episodes บน $D_{\text{dev}}$, พิสูจน์ Ville Martingale causality ($p = 8.52 \times 10^{-109}$) และ Active Probing gain (+39.17% TSR).
+- **Phase 2 (Continuous 3D Physical AI):** ก้าวข้าม 3D Reality Gap สำเร็จด้วย `Aegis3DAwareController` และ 3D CBF Safe Emergency Braking (TSR 80.0% vs 13.3% สำหรับ naive veto, False Arrival 0.0% vs 63.3% สำหรับ CBF-only, Obstacle Collision 0.0%).
+- **สถานะการทำงานของโค้ด:** รันการทดสอบผ่าน 100% (337/337 tests) ไม่มี Failure, ไม่มี Broken Invariant.
 
 ---
 

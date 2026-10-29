@@ -10,6 +10,7 @@ from aegis.v9.anchor_range_gate import (
     SymmetricAnchorRangeGate,
 )
 from aegis.v9.controller import AegisV9Controller, AegisV9Telemetry
+from aegis.v9.controller_3d import Aegis3DAwareController
 from aegis.v9.cusum_monitor import (
     CusumChannelSpec,
     CusumStepResult,
@@ -56,6 +57,7 @@ from aegis.v9.ville_monitor import (
 )
 
 __all__ = [
+    "Aegis3DAwareController",
     "AegisV9Controller",
     "AegisV9Telemetry",
     "AnchorRangeGateResult",

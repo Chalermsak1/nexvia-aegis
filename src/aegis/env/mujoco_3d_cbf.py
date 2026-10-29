@@ -75,6 +75,7 @@ class ControlBarrierFilter3D:
         self.last_constraint_residual: float | None = None
         self.last_qp_feasible: bool | None = None
         self.last_projection_method: str = "NOT_RUN"
+        self.last_fallback_engaged: str = "NONE"
 
     def _exact_feasible_projection(
         self,
@@ -258,6 +259,22 @@ class ControlBarrierFilter3D:
             if exact is None:
                 self.last_qp_feasible = False
                 self.last_projection_method = "INFEASIBLE_WITHIN_ACTUATOR_BOX"
+                self.last_fallback_engaged = "EMERGENCY_SAFE_BRAKING"
+                barrier_active = True
+                speed = float(np.linalg.norm(vel))
+                brake_u = -vel / speed * self.force_limit if speed > 1e-4 else np.zeros(3, dtype=np.float64)
+                candidates = [brake_u, np.zeros(3, dtype=np.float64), u_final]
+                for scale in (0.25, 0.5, 0.75):
+                    candidates.append(brake_u * scale)
+
+                def residual_sum(cand: np.ndarray) -> float:
+                    return sum(max(0.0, float(np.dot(a_v, cand) - b_v)) for a_v, b_v in constraints)
+
+                u_final = min(candidates, key=residual_sum)
+                self.last_constraint_residual = max(
+                    (max(0.0, float(np.dot(a_vec, u_final) - b_val)) for a_vec, b_val in constraints),
+                    default=0.0,
+                )
             else:
                 u_final = exact
                 self.last_constraint_residual = max(
