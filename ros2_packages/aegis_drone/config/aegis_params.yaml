@@ -1,0 +1,34 @@
+# NEXVIA AEGIS Autonomous Flight Configuration for PX4 Autopilot Companion Computer
+aegis_drone_node:
+  ros__parameters:
+    # Timing & Rates
+    control_rate_hz: 200.0          # Inner loop attitude target publication rate (Hz)
+    perception_rate_hz: 20.0        # Vision / LiDAR tracking update rate (Hz)
+    watchdog_heartbeat_timeout_s: 0.050 # 50 ms loop timeout
+    odometry_timeout_s: 0.040       # 40 ms EKF2 loss threshold
+
+    # Vehicle Physics & Constraints
+    drone_mass_kg: 1.5              # Total flying mass including companion computer
+    max_thrust_n: 25.0              # Max quadrotor thrust (4x 6.25N brushless motors)
+    max_tilt_deg: 35.0              # Maximum allowed tilt boundary (deg)
+    nominal_speed_m_s: 1.2          # Target corridor transit speed (m/s)
+
+    # Active Vision & POMDP Gaze Control
+    camera_horizontal_fov_deg: 86.0 # RealSense D435i / Oak-D FOV
+    camera_vertical_fov_deg: 57.0
+    camera_max_range_m: 8.0
+    active_saccade_threshold_sigma: 0.15 # Entropy threshold triggering blind-spot scan
+
+    # Statistical Certification & Safety Barrier
+    ville_alpha: 0.05               # Martingale false alarm bound (1/alpha = 20.0)
+    drone_radius_m: 0.20            # Physical frame radius (m)
+    base_safety_margin_m: 0.08      # Certified safety margin (m)
+    uncertainty_multiplier_kappa: 2.0 # Uncertainty padding kappa * sigma_max
+    max_uncertainty_expansion_m: 0.22 # Capped expansion to prevent far-field false blocking
+
+    # Topics
+    odom_topic: "/mavros/local_position/pose"
+    vel_topic: "/mavros/local_position/velocity_local"
+    attitude_target_topic: "/mavros/setpoint_raw/attitude"
+    gimbal_topic: "/camera/gimbal_setpoint"
+    battery_topic: "/mavros/battery"

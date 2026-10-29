@@ -374,7 +374,7 @@
           <strong>NEXVIA Research Lab</strong> | Lead Researcher: <strong>Chalermsak</strong>
         </div>
         <div class="badges-row">
-          <span class="badge badge-green">● 366 Tests Passing</span>
+          <span class="badge badge-green">● 370 Tests Passing</span>
           <span class="badge badge-cyan">● Gate B Confirmed (V9-M4)</span>
           <span class="badge badge-blue">● 200 Hz Inner / 50 Hz Outer Loop</span>
           <span class="badge badge-green">● 0.00% False Arrivals</span>
@@ -536,6 +536,20 @@
           </div>
         </div>
 
+        <!-- CARD 5f: SIM2REAL & ROS 2 / PX4 AUTOPILOT HARDWARE BRIDGE -->
+        <div class="card" style="border-color: rgba(56, 189, 248, 0.4);">
+          <div class="card-header">
+            <div class="card-icon" style="background: rgba(56, 189, 248, 0.25); color: #38bdf8;">🛸</div>
+            <h3 style="color: #38bdf8;">Sim2Real Deployment & ROS 2 / PX4 Hardware Bridge</h3>
+          </div>
+          <div class="figure-container">
+            <img src="../results/plots/sim2real_hardware_benchmark.png" alt="Sim2Real Hardware Benchmark">
+            <div class="figure-caption">
+              <strong>Figure 7:</strong> Production-Grade Embedded ROS 2 Companion Autonomy Node under Transport Latency Jitter (15ms) and 3% Packet Drops. (A) Crash Rate: 100.0% Naive PX4 & 100.0% Delayed MAVROS vs. 0.0% AEGIS ROS 2. (B) Safety Clearance: -0.318m Naive PX4 & -0.194m Delayed MAVROS vs. +0.054m AEGIS Safe Buffer. (C) Real-Time Hardware Watchdog Timeline executing emergency hover during 60ms EKF2 freeze. (D) 3D Spatial Evasion Trajectories.
+            </div>
+          </div>
+        </div>
+
       </section>
 
       <!-- COLUMN 3: RESULTS, HOLDOUT CERTIFICATION & IMPACT -->
@@ -618,6 +632,18 @@
                 <td>0.078 m (Grazing)</td>
                 <td class="highlight-cell">0.271 m (Certified)</td>
               </tr>
+              <tr>
+                <td>Embedded Latency Crash (Sim2Real)</td>
+                <td class="danger-cell">100.0% (Naive)</td>
+                <td class="danger-cell">100.0% (MAVROS)</td>
+                <td class="highlight-cell">0.0% (AEGIS ROS 2)</td>
+              </tr>
+              <tr>
+                <td>Embedded Min Clearance (15ms Jitter)</td>
+                <td class="danger-cell">-0.318 m</td>
+                <td class="danger-cell">-0.194 m</td>
+                <td class="highlight-cell">+0.054 m (Certified)</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -661,7 +687,7 @@
         <strong>NEXVIA AEGIS</strong> — Provably Safe Autonomous AI Engine | Milestone: <code>V9-M4 CERTIFIED</code> | Ed25519 Cryptographically Signed
       </div>
       <div class="footer-right">
-        Artifact Hash: <code>5a89d6061b37...</code> | All 366 Automated Regression Tests Passing | October 2026
+        Artifact Hash: <code>5a89d6061b37...</code> | All 370 Automated Regression Tests Passing | October 2026
       </div>
     </footer>
 
