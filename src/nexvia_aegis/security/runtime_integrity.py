@@ -31,6 +31,11 @@ def _normalize(name: str) -> str:
 def _marker_true(marker: str | None) -> bool:
     if marker is None:
         return True
+    try:
+        from packaging.markers import Marker, InvalidMarker
+        return bool(Marker(marker).evaluate())
+    except (ImportError, InvalidMarker):
+        pass
     match = _MARKER.fullmatch(marker)
     if match is None:
         raise SecurityError(f"UNSUPPORTED_LOCK_MARKER: Cannot safely resolve '{marker}'.")

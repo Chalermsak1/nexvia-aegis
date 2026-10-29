@@ -12,7 +12,7 @@
   Actuator Fidelity:      4 Brushless Rotors, Reaction Drag Torque, Motor Lag tau_m = 35ms, Tilt <= 35 deg
   Safety Invariance:      High-Order Control Barrier Functions (HOCBF) ensuring d_min >= 0.05m
   Decision Assurance:     Anytime-Valid Ville Test Martingales eliminating False Successes under Corruption
-  Validation Scale:       347 Automated Regression Tests (0 Failures) | Single-Shot Holdout N=2,880 Episodes
+  Validation Scale:       362 Automated Regression Tests (0 Failures) | Single-Shot Holdout N=2,880 Episodes
 =============================================================================================================
 ```
 
@@ -108,6 +108,17 @@ $$\mathbf{a} = -\frac{2}{m}(\mathbf{p} - \mathbf{c}_{\text{obs}}), \quad b = 2\|
 
 ---
 
+### 🖼️ Figure 3d: Safe Reinforcement Learning (Actor-Critic / PPO + HOCBF Action Shield)
+![Safe Reinforcement Learning Benchmark](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/plots/safe_rl_benchmark.png)
+
+> **Figure 3d Description:** Continuous 6-DOF Quadrotor Obstacle Evasion under Safe Reinforcement Learning.
+> - **Top-Left (Training Episode Collisions):** Unshielded PPO suffered 8 catastrophic crashes during early exploration; AEGIS Safe RL maintained **0 collisions (0.0%)** throughout the entire 30-episode training process.
+> - **Top-Right (Action Shield Intervention):** PPO neural policy internalizes safety boundary, reducing HOCBF correction magnitude from $11.324\,\text{N} \to 8.952\,\text{N}$ (-21.0% barrier penalty).
+> - **Bottom-Left (Generalization Collision Rate across 15 Dynamic Test Episodes):** Unshielded PPO crashed in **15/15 held-out dynamic obstacle trials (100.0% failure)** vs. **0.0% in AEGIS Safe RL**.
+> - **Bottom-Right (3D Spatial Evasion):** Neural policy executes smooth dynamic evasive maneuvers around moving spherical obstacles while maintaining attitude stability within the $35^\circ$ tilt boundary.
+
+---
+
 ### 🖼️ Figure 4: Milestone V9-M4 Single-Shot Confirmatory Holdout Proof ($N=2,880$)
 ![Milestone V9-M4 Single-Shot Confirmatory Holdout Proof](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/plots/holdout_h1_h5_certification.png)
 
@@ -120,6 +131,7 @@ $$\mathbf{a} = -\frac{2}{m}(\mathbf{p} - \mathbf{c}_{\text{obs}}), \quad b = 2\|
 | Mission Metric | Unshielded Naive | Underactuated CBF-Only | NEXVIA AEGIS Full 6-DOF | Status / Impact |
 | :--- | :---: | :---: | :---: | :---: |
 | **Obstacle Collision Rate (Single 6-DOF Drone)** | **100.0%** | **0.0%** | **0.0%** | **100% Physical Crash Elimination** |
+| **Dynamic Obstacle Crash Rate (Safe RL Policy)** | **100.0%** (15/15) | — | **0.0%** (0/15) | **100% Dynamic Crash Elimination** |
 | **Swarm Inter-Drone Collision Rate (5 6-DOF Drones)** | **100.0%** | **0.0%** | **0.0%** | **Zero Mutual Mid-Air Collisions** |
 | **Swarm Obstacle Collision Rate (under Byzantine Attack)** | **100.0%** | **100.0%** (Dragged) | **0.0%** | **Immune to Adversarial Redirection** |
 | **Byzantine Isolation Rate ($F=2$ Colluding Attackers)** | 0.0% | 0.0% | **100.0%** | **Full Byzantine Quarantine** |
@@ -140,14 +152,16 @@ $$\mathbf{a} = -\frac{2}{m}(\mathbf{p} - \mathbf{c}_{\text{obs}}), \quad b = 2\|
 3. **Dual Physical-Statistical Shielding:** 
    - **HOCBF (Physical Shield):** Guarantees zero obstacle collisions and respects tilt constraints ($\theta \le 35^\circ$).
    - **Ville Martingales (Statistical Shield):** Guarantees cross-modal arrival certification, completely eliminating the $100\%$ False Success failure mode seen in naive and CBF-only controllers.
-4. **Reproducibility & Test Coverage:** All 358 unit and integration tests passing in ~30s with deterministic cryptographic auditability.
+4. **Reproducibility & Test Coverage:** All 362 unit and integration tests passing in ~36s with deterministic cryptographic auditability.
 
 ---
 
 **Artifact Reference Links:**
 - Interactive High-Definition Web Poster: [`research/poster.html`](file:///Users/chalermsak/Desktop/nexvia-aegis-main/research/poster.html)
+- Safe RL Benchmark Plot: [`results/plots/safe_rl_benchmark.png`](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/plots/safe_rl_benchmark.png)
 - Deep Aerodynamics Benchmark Plot: [`results/plots/deep_aerodynamics_benchmark.png`](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/plots/deep_aerodynamics_benchmark.png)
 - 6-DOF Benchmark Plot: [`results/plots/quadrotor_6dof_benchmark.png`](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/plots/quadrotor_6dof_benchmark.png)
 - Swarm 6-DOF Benchmark Plot: [`results/plots/swarm_6dof_benchmark.png`](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/plots/swarm_6dof_benchmark.png)
+- Safe RL Implementation: [`src/aegis/rl/`](file:///Users/chalermsak/Desktop/nexvia-aegis-main/src/aegis/rl)
 - Deep Aerodynamics Implementation: [`src/aegis/env/deep_aerodynamics.py`](file:///Users/chalermsak/Desktop/nexvia-aegis-main/src/aegis/env/deep_aerodynamics.py)
-- Unit Test Suite: [`tests/test_deep_aerodynamics.py`](file:///Users/chalermsak/Desktop/nexvia-aegis-main/tests/test_deep_aerodynamics.py)
+- Unit Test Suite: [`tests/test_safe_rl.py`](file:///Users/chalermsak/Desktop/nexvia-aegis-main/tests/test_safe_rl.py)

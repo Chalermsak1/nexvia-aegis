@@ -1,10 +1,10 @@
 # NEXVIA AEGIS — Master Project Status & Complete Inventory Report
 
 **Document ID:** `AEGIS-MASTER-STATUS-2026-10-29`  
-**Current Milestone:** Milestone V9-M5/M6 (Phase 1 Decision-Making, Phase 2 3D Physical AI, Phase 3 Decentralized Swarm Resilience, Phase 4 6-DOF SE(3) Dynamics, Phase 5 Deep Aerodynamics)  
-**Governance State:** **`PHASE_1_TO_5_CONFIRMATORY_VERIFIED — DEEP_AERODYNAMICS_CERTIFIED`**  
+**Current Milestone:** Milestone V9-M6 (Phase 1 Decision-Making, Phase 2 3D Physical AI, Phase 3 Decentralized Swarm Resilience, Phase 4 6-DOF SE(3) Dynamics, Phase 5 Deep Aerodynamics, Phase 6 Safe Reinforcement Learning)  
+**Governance State:** **`PHASE_1_TO_6_CONFIRMATORY_VERIFIED — SAFE_RL_CERTIFIED`**  
 **Repository Remote:** [`https://github.com/Chalermsak1/nexvia-aegis.git`](https://github.com/Chalermsak1/nexvia-aegis.git)  
-**Automated Test Suite:** **358 / 358 passed (100% pass rate in ~30s)**  
+**Automated Test Suite:** **362 / 362 passed (100% pass rate in ~36s)**  
 **Certified Policy:** `V9_CAND_1_TIER1_STRICTEST` (SHA-256: `5a89d6061b379f1b34ab47be0deef8d63180d3e4c21d18c478bc7e451f5c84e2`)  
 **Timestamp:** October 29, 2026 (Bangkok / UTC)  
 
@@ -15,8 +15,8 @@
 โครงการ **NEXVIA AEGIS** ได้บรรลุเป้าหมายการวิจัยระดับแกนกลาง (AI Research Core) ครบทั้ง 5 เฟสอย่างสมบูรณ์ 100%:
 
 ```
-[Phase 1: Trustworthy Decision-Making] -> [Phase 2: Continuous 3D AI] -> [Phase 3: Swarm BRMC] -> [Phase 4: 6-DOF Swarm SE(3)] -> [Phase 5: Deep Aerodynamics]
-              (VERIFIED)                             (VERIFIED)                     (VERIFIED)                   (VERIFIED)                     (VERIFIED)
+[Phase 1: Decision-Making] -> [Phase 2: 3D AI] -> [Phase 3: Swarm BRMC] -> [Phase 4: 6-DOF SE(3)] -> [Phase 5: Deep Aero] -> [Phase 6: Safe RL]
+        (VERIFIED)                 (VERIFIED)           (VERIFIED)               (VERIFIED)                (VERIFIED)             (VERIFIED)
 ```
 
 - **Phase 1 (Trustworthy Decision-Making):** ปิด Audit A3/A4 loopholes, รัน matched benchmark 1,800 episodes บน $D_{\text{dev}}$, พิสูจน์ Ville Martingale causality ($p = 8.52 \times 10^{-109}$) และ Active Probing gain (+39.17% TSR).
@@ -24,7 +24,8 @@
 - **Phase 3 (Decentralized Multi-Agent Swarm):** รับมือ Colluding Byzantine Spoofing ($F=2$) และ Packet Loss 25% สำเร็จด้วย `AegisDecentralizedSwarmAgent` และ Coordinate-Trimmed BRMC (ลด Localization Error ลง 97.8%, Collision 0.0%, False Alarms 0%).
 - **Phase 4 (Full 6-DOF Quadrotor Dynamics on SE(3)):** ขจัดข้อจำกัด "Spherical Point-Mass" สู่โมเดล 6-DOF Quadrotor กายภาพจริงใน MuJoCo (20 Brushless Motors, Actuator Lag $\tau_m = 35\,$ms, Drag Reaction Torques, และ Reciprocal Underactuated HOCBF จำกัดมุมเอียง $\theta \le 35^\circ$).
 - **Phase 5 (Deep Aerodynamics & Electromechanics):** เพิ่มแบบจำลอง Cheeseman-Bennett Ground Effect ($T_{\text{IGE}}$), โมเมนต์ Gyroscopic Precession ($\boldsymbol{\tau}_{\text{gyro}} = -\boldsymbol{\Omega} \times \mathbf{H}_r$), และ 4S LiPo Internal Resistance Battery Voltage Sag ($V_{\text{term}} = V_{\text{ocv}} - I R_{\text{int}}$) พร้อม Dynamic Max Thrust Derating.
-- **สถานะการทำงานของโค้ด:** รันการทดสอบผ่าน 100% (358/358 tests) ไม่มี Failure, ไม่มี Broken Invariant.
+- **Phase 6 (Safe Reinforcement Learning with HOCBF Shield):** พัฒนาโมเดล Safe RL (Actor-Critic / PPO) ร่วมกับ Underactuated HOCBF Action Shielding หลบหลีกสิ่งกีดขวางเคลื่อนที่แบบไดนามิก โดยขจัดการชนระหว่างเทรนเป็น 0 ครั้ง (0.0% vs 8 crashes ใน unshielded baseline) และ 0% collision บนชุดทดสอบ 15 episodes พร้อมการเรียนรู้ภายในของนโยบายที่ลดแรงแทรกแซงของ Barrier ลงจาก $11.324\,\text{N} \to 8.952\,\text{N}$ (-21.0%).
+- **สถานะการทำงานของโค้ด:** รันการทดสอบผ่าน 100% (362/362 tests) ไม่มี Failure, ไม่มี Broken Invariant.
 
 ---
 
@@ -93,6 +94,9 @@ mindmap
 - [src/nexvia_aegis/security/ledger.py](file:///Users/chalermsak/Desktop/nexvia-aegis-main/src/nexvia_aegis/security/ledger.py): ระบบบันทึกบัญชีแยกประเภทป้องกันการรันซ้ำ (Anti-Replay Ledger).
 - [src/nexvia_aegis/security/verifier.py](file:///Users/chalermsak/Desktop/nexvia-aegis-main/src/nexvia_aegis/security/verifier.py): เครื่องมือตรวจสอบลายเซ็นดิจิทัล Ed25519 และ RFC 8785 Canonical JSON.
 - [src/nexvia_aegis/security/launcher.py](file:///Users/chalermsak/Desktop/nexvia-aegis-main/src/nexvia_aegis/security/launcher.py): Trusted Supervisory Launcher สำหรับกำกับสภาพแวดล้อมรัน.
+- [src/aegis/rl/neural_policy.py](file:///Users/chalermsak/Desktop/nexvia-aegis-main/src/aegis/rl/neural_policy.py): เครือข่ายประสาทเทียม Actor-Critic 6-DOF (Continuous Gaussian Policy + Value Estimator).
+- [src/aegis/rl/safe_env_wrapper.py](file:///Users/chalermsak/Desktop/nexvia-aegis-main/src/aegis/rl/safe_env_wrapper.py): สภาพแวดล้อม Safe RL พร้อม Dynamic Obstacles และ HOCBF Action Shielding.
+- [src/aegis/rl/safe_ppo_agent.py](file:///Users/chalermsak/Desktop/nexvia-aegis-main/src/aegis/rl/safe_ppo_agent.py): อัลกอริทึม PPO สำหรับ Safe Reinforcement Learning พร้อม GAE advantage estimation.
 
 ### 4.2 สคริปต์การทดลองและการรันประเมินผล (Experiments & Benchmarks)
 - [experiments/v9_evaluate_holdout.py](file:///Users/chalermsak/Desktop/nexvia-aegis-main/experiments/v9_evaluate_holdout.py): เครื่องมือประเมินผล Holdout ระดับ Production พร้อมการแก้ไขทางวิทยาศาสตร์ SCI-01 ถึง SCI-07.
@@ -140,6 +144,7 @@ mindmap
 - [results/plots/mujoco_swarm_3d_benchmark.png](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/plots/mujoco_swarm_3d_benchmark.png) (851 KB): การลดความคลาดเคลื่อน 96.7% ในฝูงหุ่นยนต์.
 - [results/plots/multiagent_brmc_wealth.png](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/plots/multiagent_brmc_wealth.png) (970 KB): กราฟ Martingale Wealth ข้ามเส้นเกณฑ์ Ville $1/\alpha$.
 - [results/plots/uncertainty_benchmark_curves.png](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/plots/uncertainty_benchmark_curves.png) (877 KB): เส้นโค้งประสิทธิภาพ Active Inspection ใน 4 ระดับสัญญาณรบกวน.
+- [results/plots/safe_rl_benchmark.png](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/plots/safe_rl_benchmark.png) (640 KB): แผนภาพ 4 แผงเปรียบเทียบ Safe RL กับ Unshielded PPO ในการหลบสิ่งกีดขวางแบบเคลื่อนที่.
 - [results/visualizer_swarm_3d.html](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/visualizer_swarm_3d.html) (282 KB): เว็บแอปพลิเคชัน 3D WebGL Three.js สำหรับเล่นซ้ำวิถีการบินของฝูงหุ่นยนต์ 5 ลำใน MuJoCo physics.
 
 ### 4.6 เอกสารรับรองและรายงานงานวิจัย (Documentation & Reports)

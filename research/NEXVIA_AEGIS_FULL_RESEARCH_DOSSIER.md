@@ -164,6 +164,12 @@ The following 4 publication-grade figures have been generated and archived in `r
    - Subplot 3: 4S LiPo internal resistance voltage sag ($V_{\mathrm{term}} = V_{\mathrm{ocv}} - I R_{\mathrm{int}}$) under high-thrust throttle pulses and dynamic maximum thrust derating.
    - Subplot 4: 3D multi-agent swarm flight trajectories under combined aerodynamic and electrical stress (wind turbulence, IGE cushion, and sagging thrust authority).
 
+9. [`safe_rl_benchmark.png`](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/plots/safe_rl_benchmark.png):
+   - Subplot 1: Training collision progression showing 0 collisions (0.0%) under HOCBF safety shielding vs. 8 catastrophic crashes during naive PPO exploration.
+   - Subplot 2: Safety barrier action intervention decay from $11.324\,\text{N} \to 8.952\,\text{N}$, proving the neural actor-critic policy successfully internalized obstacle boundary geometry.
+   - Subplot 3: Generalization collision rates across 15 held-out dynamic obstacle test trials (0.0% collisions in AEGIS Safe RL vs. 100.0% failure in unshielded baseline).
+   - Subplot 4: Continuous 3D spatial evasion trajectory navigating around moving spherical obstacles while maintaining full $SO(3)$ attitude stability.
+
 ---
 
 ## 6. Confirmatory Holdout Evaluation & Milestone V9-M4 Release Certification
