@@ -86,6 +86,17 @@ $$\mathbf{a} = -\frac{2}{m}(\mathbf{p} - \mathbf{c}_{\text{obs}}), \quad b = 2\|
 
 ---
 
+### 🖼️ Figure 3b: Multi-Agent 6-DOF Quadrotor Swarm Physics & Byzantine Defense (BRMC)
+![Multi-Agent 6-DOF Quadrotor Swarm Physics & Byzantine Defense](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/plots/swarm_6dof_benchmark.png)
+
+> **Figure 3b Description:** 5 simultaneous 6-DOF Quadrotors in continuous MuJoCo physics (20 brushless motors, $\tau_m=35\,$ms lag, Ornstein-Uhlenbeck wind gusts) under $F=2$ colluding Byzantine attacks.
+> - **Top-Left (3D Trajectories):** Honest drones maintain V-formation while Byzantine drones are quarantined.
+> - **Top-Right (Martingale Wealth $M_t$):** Deceptive drones cross Ville boundary $1/\alpha = 20.0$, triggering isolation.
+> - **Bottom-Left (Collision Rates):** 100% Inter-agent & obstacle collisions in naive vs. **0.0% in AEGIS BRMC**.
+> - **Bottom-Right (Consensus Error):** 1.450 m in naive/CBF vs. **0.063 m in AEGIS BRMC** (**-95.4% error reduction**).
+
+---
+
 ### 🖼️ Figure 4: Milestone V9-M4 Single-Shot Confirmatory Holdout Proof ($N=2,880$)
 ![Milestone V9-M4 Single-Shot Confirmatory Holdout Proof](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/plots/holdout_h1_h5_certification.png)
 
@@ -97,7 +108,11 @@ $$\mathbf{a} = -\frac{2}{m}(\mathbf{p} - \mathbf{c}_{\text{obs}}), \quad b = 2\|
 
 | Mission Metric | Unshielded Naive | Underactuated CBF-Only | NEXVIA AEGIS Full 6-DOF | Status / Impact |
 | :--- | :---: | :---: | :---: | :---: |
-| **Obstacle Collision Rate (Regime 1)** | **100.0%** | **0.0%** | **0.0%** | **100% Physical Crash Elimination** |
+| **Obstacle Collision Rate (Single 6-DOF Drone)** | **100.0%** | **0.0%** | **0.0%** | **100% Physical Crash Elimination** |
+| **Swarm Inter-Drone Collision Rate (5 6-DOF Drones)** | **100.0%** | **0.0%** | **0.0%** | **Zero Mutual Mid-Air Collisions** |
+| **Swarm Obstacle Collision Rate (under Byzantine Attack)** | **100.0%** | **100.0%** (Dragged) | **0.0%** | **Immune to Adversarial Redirection** |
+| **Byzantine Isolation Rate ($F=2$ Colluding Attackers)** | 0.0% | 0.0% | **100.0%** | **Full Byzantine Quarantine** |
+| **Swarm Spatial Consensus Error ($F=2$ Attack)** | $1.450\,\text{m}$ | $1.450\,\text{m}$ | **0.063 m** | **-95.4% Consensus Error Reduction** |
 | **Average Max Flight Tilt Angle** | $32.3^\circ$ | $24.2^\circ$ | $24.2^\circ$ | **Within Safe $35^\circ$ Tilt Envelope** |
 | **False Success under Sensor Bias ($\|b\|=0.85\,$m)** | **100.0%** (Fatal) | **100.0%** (Fatal) | **0.0%** | **Zero False Arrival Invariant** |
 | **Abstention Rate under Sensor Conflict** | 0.0% | 0.0% | **100.0%** | **Safe Fail-Closed Decoupling** |

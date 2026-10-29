@@ -74,8 +74,9 @@ class ByzantineResilientMartingaleConsensus:
         n_active = len(active_msgs)
 
         if n_active <= 2 * self.max_byzantine_faults:
-            # Fallback when too many quarantined: fail-closed safety stop
-            mean_pos = np.mean([m.pos_estimate for m in messages], axis=0)
+            # Fallback when too many quarantined: fuse remaining active un-quarantined peers
+            pool = active_msgs if active_msgs else messages
+            mean_pos = np.mean([m.pos_estimate for m in pool], axis=0)
             return SwarmConsensusState(
                 step=step,
                 consensus_position=mean_pos,

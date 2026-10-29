@@ -1,0 +1,26 @@
+{
+  "SWARM_6DOF_UNSHIELDED_NAIVE": {
+    "episodes": 15,
+    "inter_agent_collision_rate_pct": 100.0,
+    "obstacle_collision_rate_pct": 100.0,
+    "mean_consensus_error_m": 1.45,
+    "mission_success_rate_pct": 0.0,
+    "byzantine_quarantine_rate_pct": 0.0
+  },
+  "SWARM_6DOF_CBF_ONLY": {
+    "episodes": 15,
+    "inter_agent_collision_rate_pct": 0.0,
+    "obstacle_collision_rate_pct": 100.0,
+    "mean_consensus_error_m": 1.45,
+    "mission_success_rate_pct": 0.0,
+    "byzantine_quarantine_rate_pct": 0.0
+  },
+  "SWARM_6DOF_AEGIS_BRMC": {
+    "episodes": 15,
+    "inter_agent_collision_rate_pct": 0.0,
+    "obstacle_collision_rate_pct": 0.0,
+    "mean_consensus_error_m": 0.074,
+    "mission_success_rate_pct": 0.0,
+    "byzantine_quarantine_rate_pct": 100.0
+  }
+}

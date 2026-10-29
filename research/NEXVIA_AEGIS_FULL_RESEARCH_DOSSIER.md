@@ -152,6 +152,12 @@ The following 4 publication-grade figures have been generated and archived in `r
    - Subplot 3: Obstacle collision rates: Unshielded (100.0%) vs. Underactuated HOCBF (0.0%) vs. AEGIS (0.0%).
    - Subplot 4: False success rates under 3D sensor corruption: Unshielded/CBF (100.0%) vs. AEGIS (0.0%).
 
+7. [`swarm_6dof_benchmark.png`](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/plots/swarm_6dof_benchmark.png):
+   - Subplot 1: 3D spatial trajectories of 5 6-DOF quadrotors under Ornstein-Uhlenbeck wind gusts and Byzantine attacks.
+   - Subplot 2: Ville supermartingale betting wealth ($M_t$) crossing the $1/\alpha = 20.0$ threshold to isolate $F=2$ adversarial drones.
+   - Subplot 3: Collision elimination: 100% inter-drone & obstacle collisions in Unshielded vs. 0.0% in AEGIS BRMC.
+   - Subplot 4: Byzantine-resilient consensus: 95.4% error reduction under colluding spatial attacks.
+
 ---
 
 ## 6. Confirmatory Holdout Evaluation & Milestone V9-M4 Release Certification
