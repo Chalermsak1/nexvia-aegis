@@ -29,6 +29,7 @@ from typing import Any
 import mujoco
 import numpy as np
 
+from aegis.env.deep_aerodynamics import DeepAerodynamicsConfig, DeepAerodynamicsEngine
 from aegis.env.mujoco_3d_cbf import Obstacle3D
 
 
@@ -64,6 +65,9 @@ class QuadrotorConfig:
     cbf_gamma: float = 2.2                    # CBF class-K gain
     inner_dt: float = 0.005                   # 200 Hz inner attitude loop
     outer_dt: float = 0.02                    # 50 Hz outer navigation & safety loop
+    # Deep Aerodynamics & Electromechanics
+    enable_deep_aerodynamics: bool = False
+    deep_aero_config: DeepAerodynamicsConfig | None = None
 
 
 class SE3GeometricController:
@@ -112,12 +116,14 @@ class SE3GeometricController:
         current_omega_body: np.ndarray,
         desired_yaw: float = 0.0,
         dt: float = 0.005,
+        max_thrust_per_motor: float | None = None,
     ) -> tuple[np.ndarray, np.ndarray, float]:
         """
         Converts desired 3D force vector into individual motor thrust commands,
         updates actual thrusts via motor lag, and returns:
         (actual_motor_thrusts, actual_world_force, current_tilt_rad)
         """
+        eff_max_thrust = self.cfg.max_thrust_per_motor if max_thrust_per_motor is None else max_thrust_per_motor
         R = quaternion_to_rotation_matrix(current_quat)
         z_B = R[:, 2]
 
@@ -145,7 +151,7 @@ class SE3GeometricController:
 
         # Desired total thrust
         T_cmd = float(np.dot(desired_force_world, z_B))
-        T_cmd = np.clip(T_cmd, 4.0 * self.cfg.min_thrust_per_motor, 4.0 * self.cfg.max_thrust_per_motor)
+        T_cmd = np.clip(T_cmd, 4.0 * self.cfg.min_thrust_per_motor, 4.0 * eff_max_thrust)
 
         # 2. Desired Orientation Matrix R_des in SO(3)
         x_C = np.array([math.cos(desired_yaw), math.sin(desired_yaw), 0.0], dtype=np.float64)
@@ -170,7 +176,7 @@ class SE3GeometricController:
         # 5. Mixer Allocation: [T, tau_x, tau_y, tau_z] -> [T1, T2, T3, T4]
         wrench_cmd = np.array([T_cmd, tau_cmd[0], tau_cmd[1], tau_cmd[2]], dtype=np.float64)
         motor_thrust_cmds = self.inv_mixer @ wrench_cmd
-        motor_thrust_cmds = np.clip(motor_thrust_cmds, self.cfg.min_thrust_per_motor, self.cfg.max_thrust_per_motor)
+        motor_thrust_cmds = np.clip(motor_thrust_cmds, self.cfg.min_thrust_per_motor, eff_max_thrust)
 
         # 6. Motor Lag Update: d(T)/dt = (T_cmd - T) / tau_m
         alpha_m = dt / max(1e-4, self.cfg.motor_tau)
@@ -292,6 +298,12 @@ class AegisQuadrotor6DOFEnvironment:
         self.geom_ctrl = SE3GeometricController(self.cfg)
         self.cbf = UnderactuatedCBF6DOF(self.cfg)
 
+        self.deep_aero: DeepAerodynamicsEngine | None = (
+            DeepAerodynamicsEngine(self.cfg.deep_aero_config)
+            if self.cfg.enable_deep_aerodynamics
+            else None
+        )
+
         self.obstacles: list[Obstacle3D] = [
             Obstacle3D(center=np.array([0.0, 0.0, 0.9], dtype=np.float64), radius=0.45),
             Obstacle3D(center=np.array([1.2, -0.9, 0.8], dtype=np.float64), radius=0.35),
@@ -344,10 +356,12 @@ class AegisQuadrotor6DOFEnvironment:
         """
         return mujoco.MjModel.from_xml_string(xml)
 
-    def reset(self, rng: np.random.Generator | None = None) -> dict[str, Any]:
+    def reset(self, rng: np.random.Generator | None = None, initial_soc: float = 1.0) -> dict[str, Any]:
         mujoco.mj_resetData(self.model, self.data)
         self.step_count = 0
         self.geom_ctrl.reset()
+        if self.deep_aero is not None:
+            self.deep_aero.reset(initial_soc=initial_soc)
 
         px = -1.8 + (rng.normal(0, 0.02) if rng else 0.0)
         py = -1.8 + (rng.normal(0, 0.02) if rng else 0.0)
@@ -381,6 +395,20 @@ class AegisQuadrotor6DOFEnvironment:
 
         dist_to_target = float(np.linalg.norm(pos - self.target_pos))
 
+        deep_aero_info = None
+        if self.deep_aero is not None:
+            deep_aero_info = {
+                "soc": self.deep_aero.state.soc,
+                "v_terminal": self.deep_aero.state.v_terminal,
+                "v_ocv": self.deep_aero.state.v_ocv,
+                "load_current": self.deep_aero.state.load_current,
+                "thrust_derate_factor": self.deep_aero.state.thrust_derate_factor,
+                "effective_max_thrust": self.deep_aero.state.effective_max_thrust,
+                "ige_ratios": self.deep_aero.state.ige_ratios.copy(),
+                "tau_gyro": self.deep_aero.state.tau_gyro_body.copy(),
+                "energy_consumed_wh": self.deep_aero.state.energy_consumed_wh,
+            }
+
         return {
             "pos": pos,
             "quat": quat,
@@ -391,6 +419,7 @@ class AegisQuadrotor6DOFEnvironment:
             "collision": collision,
             "distance": dist_to_target,
             "rotor_thrusts": self.geom_ctrl.actual_motor_thrusts.copy(),
+            "deep_aero": deep_aero_info,
         }
 
     def step_outer(
@@ -431,6 +460,17 @@ class AegisQuadrotor6DOFEnvironment:
             q_current = self.data.qpos[3:7].copy()
             w_current = self.data.qvel[3:6].copy()
             v_current = self.data.qvel[:3].copy()
+            p_current = self.data.qpos[:3].copy()
+            R = quaternion_to_rotation_matrix(q_current)
+
+            # Check dynamic max thrust if battery model is active
+            eff_max_thrust = self.cfg.max_thrust_per_motor
+            if self.deep_aero is not None:
+                _, _, eff_max_thrust = self.deep_aero.step_battery_dynamics(
+                    actual_thrusts=self.geom_ctrl.actual_motor_thrusts,
+                    dt=self.cfg.inner_dt,
+                    nominal_max_thrust=self.cfg.max_thrust_per_motor,
+                )
 
             # Geometric controller computes motor thrusts and resultant body force
             rotors, f_world, _ = self.geom_ctrl.compute_motor_commands(
@@ -439,13 +479,34 @@ class AegisQuadrotor6DOFEnvironment:
                 current_omega_body=w_current,
                 desired_yaw=desired_yaw,
                 dt=self.cfg.inner_dt,
+                max_thrust_per_motor=eff_max_thrust,
             )
 
-            # Aerodynamic damping
+            # Deep aerodynamics: Ground Effect (IGE) and Gyroscopic Precession Moments
+            if self.deep_aero is not None:
+                # 1. Cheeseman-Bennett In-Ground Effect on each rotor
+                ige_thrusts, _ = self.deep_aero.compute_ige_thrust(
+                    base_motor_thrusts=rotors,
+                    pos_world=p_current,
+                    rotation_matrix=R,
+                    arm_length=self.cfg.arm_length,
+                    floor_z=0.0,
+                )
+                wrench_actual = self.geom_ctrl.mixer @ ige_thrusts
+                f_world = R @ np.array([0.0, 0.0, wrench_actual[0]], dtype=np.float64)
+
+                # 2. Gyroscopic precession cross-axis torque
+                tau_gyro = self.deep_aero.compute_gyroscopic_moments(
+                    actual_thrusts=ige_thrusts,
+                    omega_body=w_current,
+                )
+            else:
+                wrench_actual = self.geom_ctrl.mixer @ rotors
+                tau_gyro = np.zeros(3, dtype=np.float64)
+
+            # Aerodynamic damping + gyroscopic moments
             f_world += -drag_coeff_trans * v_current
-            R = quaternion_to_rotation_matrix(q_current)
-            wrench_actual = self.geom_ctrl.mixer @ rotors
-            tau_body = np.array([wrench_actual[1], wrench_actual[2], wrench_actual[3]]) - drag_coeff_rot * w_current
+            tau_body = np.array([wrench_actual[1], wrench_actual[2], wrench_actual[3]]) + tau_gyro - drag_coeff_rot * w_current
             tau_world = R @ tau_body
 
             # Apply forces directly to freejoint quadrotor body
@@ -455,3 +516,4 @@ class AegisQuadrotor6DOFEnvironment:
             mujoco.mj_step(self.model, self.data)
 
         return self.get_state(), barrier_active
+

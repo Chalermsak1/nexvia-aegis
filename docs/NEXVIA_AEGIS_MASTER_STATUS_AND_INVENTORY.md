@@ -1,28 +1,30 @@
 # NEXVIA AEGIS — Master Project Status & Complete Inventory Report
 
 **Document ID:** `AEGIS-MASTER-STATUS-2026-10-29`  
-**Current Milestone:** Milestone V9-M5/M6 (Phase 1 Decision-Making, Phase 2 3D Physical AI, Phase 3 Decentralized Swarm Resilience)  
-**Governance State:** **`PHASE_1_2_3_CONFIRMATORY_VERIFIED — ADVANCED_RESEARCH_COMPLETE`**  
+**Current Milestone:** Milestone V9-M5/M6 (Phase 1 Decision-Making, Phase 2 3D Physical AI, Phase 3 Decentralized Swarm Resilience, Phase 4 6-DOF SE(3) Dynamics, Phase 5 Deep Aerodynamics)  
+**Governance State:** **`PHASE_1_TO_5_CONFIRMATORY_VERIFIED — DEEP_AERODYNAMICS_CERTIFIED`**  
 **Repository Remote:** [`https://github.com/Chalermsak1/nexvia-aegis.git`](https://github.com/Chalermsak1/nexvia-aegis.git)  
-**Automated Test Suite:** **341 / 341 passed (100% pass rate in 29.66s)**  
+**Automated Test Suite:** **358 / 358 passed (100% pass rate in ~30s)**  
 **Certified Policy:** `V9_CAND_1_TIER1_STRICTEST` (SHA-256: `5a89d6061b379f1b34ab47be0deef8d63180d3e4c21d18c478bc7e451f5c84e2`)  
-**Timestamp:** October 29, 2026 (19:45 Bangkok / 12:45 UTC)  
+**Timestamp:** October 29, 2026 (Bangkok / UTC)  
 
 ---
 
 ## 1. สถานะโครงการปัจจุบัน (Executive Project Status)
 
-โครงการ **NEXVIA AEGIS** ได้บรรลุเป้าหมายการวิจัยระดับแกนกลาง (AI Research Core) ครบทั้ง 3 เฟสอย่างสมบูรณ์ 100%:
+โครงการ **NEXVIA AEGIS** ได้บรรลุเป้าหมายการวิจัยระดับแกนกลาง (AI Research Core) ครบทั้ง 5 เฟสอย่างสมบูรณ์ 100%:
 
 ```
-[Phase 1: Trustworthy Autonomous Decision-Making] -> [Phase 2: Continuous 3D Physical AI] -> [Phase 3: Decentralized Multi-Agent Swarm]
-                      (COMPLETED & VERIFIED)                     (COMPLETED & BENCHMARKED)                 (COMPLETED & BENCHMARKED)
+[Phase 1: Trustworthy Decision-Making] -> [Phase 2: Continuous 3D AI] -> [Phase 3: Swarm BRMC] -> [Phase 4: 6-DOF Swarm SE(3)] -> [Phase 5: Deep Aerodynamics]
+              (VERIFIED)                             (VERIFIED)                     (VERIFIED)                   (VERIFIED)                     (VERIFIED)
 ```
 
 - **Phase 1 (Trustworthy Decision-Making):** ปิด Audit A3/A4 loopholes, รัน matched benchmark 1,800 episodes บน $D_{\text{dev}}$, พิสูจน์ Ville Martingale causality ($p = 8.52 \times 10^{-109}$) และ Active Probing gain (+39.17% TSR).
 - **Phase 2 (Continuous 3D Physical AI):** ก้าวข้าม 3D Reality Gap สำเร็จด้วย `Aegis3DAwareController` และ 3D CBF Safe Emergency Braking (TSR 80.0% vs 13.3% สำหรับ naive veto, False Arrival 0.0% vs 63.3% สำหรับ CBF-only, Obstacle Collision 0.0%).
 - **Phase 3 (Decentralized Multi-Agent Swarm):** รับมือ Colluding Byzantine Spoofing ($F=2$) และ Packet Loss 25% สำเร็จด้วย `AegisDecentralizedSwarmAgent` และ Coordinate-Trimmed BRMC (ลด Localization Error ลง 97.8%, Collision 0.0%, False Alarms 0%).
-- **สถานะการทำงานของโค้ด:** รันการทดสอบผ่าน 100% (341/341 tests) ไม่มี Failure, ไม่มี Broken Invariant.
+- **Phase 4 (Full 6-DOF Quadrotor Dynamics on SE(3)):** ขจัดข้อจำกัด "Spherical Point-Mass" สู่โมเดล 6-DOF Quadrotor กายภาพจริงใน MuJoCo (20 Brushless Motors, Actuator Lag $\tau_m = 35\,$ms, Drag Reaction Torques, และ Reciprocal Underactuated HOCBF จำกัดมุมเอียง $\theta \le 35^\circ$).
+- **Phase 5 (Deep Aerodynamics & Electromechanics):** เพิ่มแบบจำลอง Cheeseman-Bennett Ground Effect ($T_{\text{IGE}}$), โมเมนต์ Gyroscopic Precession ($\boldsymbol{\tau}_{\text{gyro}} = -\boldsymbol{\Omega} \times \mathbf{H}_r$), และ 4S LiPo Internal Resistance Battery Voltage Sag ($V_{\text{term}} = V_{\text{ocv}} - I R_{\text{int}}$) พร้อม Dynamic Max Thrust Derating.
+- **สถานะการทำงานของโค้ด:** รันการทดสอบผ่าน 100% (358/358 tests) ไม่มี Failure, ไม่มี Broken Invariant.
 
 ---
 

@@ -22,6 +22,7 @@ from typing import Any, List, Tuple
 import mujoco
 import numpy as np
 
+from aegis.env.deep_aerodynamics import DeepAerodynamicsConfig, DeepAerodynamicsEngine
 from aegis.env.mujoco_3d_cbf import Obstacle3D
 from aegis.env.quadrotor_6dof import (
     QuadrotorConfig,
@@ -62,6 +63,9 @@ class Swarm6DOFConfig:
     wind_theta: float = 0.4
     wind_sigma: float = 0.12
     wind_mean: tuple[float, float, float] = (0.3, -0.2, 0.0)
+    # Deep Aerodynamics & Electromechanics
+    enable_deep_aerodynamics: bool = False
+    deep_aero_config: DeepAerodynamicsConfig | None = None
 
 
 class ReciprocalUnderactuatedCBF6DOF:
@@ -221,6 +225,12 @@ class AegisMuJoCoSwarm6DOFEnvironment:
         self.controllers = [SE3GeometricController(self.quad_cfg) for _ in range(self.cfg.num_robots)]
         self.cbf_filter = ReciprocalUnderactuatedCBF6DOF(self.cfg)
 
+        self.deep_aero_engines: list[DeepAerodynamicsEngine] | None = (
+            [DeepAerodynamicsEngine(self.cfg.deep_aero_config) for _ in range(self.cfg.num_robots)]
+            if self.cfg.enable_deep_aerodynamics
+            else None
+        )
+
         self.obstacles: list[Obstacle3D] = [
             Obstacle3D(center=np.array([0.0, 0.0, 0.8], dtype=np.float64), radius=0.45),
             Obstacle3D(center=np.array([1.2, -0.9, 0.7], dtype=np.float64), radius=0.35),
@@ -297,6 +307,7 @@ class AegisMuJoCoSwarm6DOFEnvironment:
         self,
         rng: np.random.Generator | None = None,
         start_origin: tuple[float, float, float] | None = None,
+        initial_soc: float = 1.0,
     ) -> dict[str, Any]:
         mujoco.mj_resetData(self.model, self.data)
         self.step_count = 0
@@ -304,6 +315,10 @@ class AegisMuJoCoSwarm6DOFEnvironment:
 
         for ctrl in self.controllers:
             ctrl.reset()
+
+        if self.deep_aero_engines is not None:
+            for eng in self.deep_aero_engines:
+                eng.reset(initial_soc=initial_soc)
 
         origin = start_origin or self.cfg.start_origin
 
@@ -367,6 +382,23 @@ class AegisMuJoCoSwarm6DOFEnvironment:
 
         distances_to_target = [float(np.linalg.norm(p - self.target_pos)) for p in positions]
 
+        deep_aero_states = None
+        if self.deep_aero_engines is not None:
+            deep_aero_states = [
+                {
+                    "soc": eng.state.soc,
+                    "v_terminal": eng.state.v_terminal,
+                    "v_ocv": eng.state.v_ocv,
+                    "load_current": eng.state.load_current,
+                    "thrust_derate_factor": eng.state.thrust_derate_factor,
+                    "effective_max_thrust": eng.state.effective_max_thrust,
+                    "ige_ratios": eng.state.ige_ratios.copy(),
+                    "tau_gyro": eng.state.tau_gyro_body.copy(),
+                    "energy_consumed_wh": eng.state.energy_consumed_wh,
+                }
+                for eng in self.deep_aero_engines
+            ]
+
         return {
             "positions": positions,
             "velocities": velocities,
@@ -377,6 +409,7 @@ class AegisMuJoCoSwarm6DOFEnvironment:
             "inter_agent_collisions": inter_agent_collision_count,
             "distances": distances_to_target,
             "wind": self.wind_velocity.copy(),
+            "deep_aero": deep_aero_states,
         }
 
     def step_outer(
@@ -430,6 +463,16 @@ class AegisMuJoCoSwarm6DOFEnvironment:
                 q_curr = self.data.qpos[qpos_idx + 3 : qpos_idx + 7].copy()
                 w_curr = self.data.qvel[qvel_idx + 3 : qvel_idx + 6].copy()
                 v_curr = self.data.qvel[qvel_idx : qvel_idx + 3].copy()
+                p_curr = self.data.qpos[qpos_idx : qpos_idx + 3].copy()
+                R = quaternion_to_rotation_matrix(q_curr)
+
+                eff_max_thrust = self.cfg.max_thrust_per_motor
+                if self.deep_aero_engines is not None:
+                    _, _, eff_max_thrust = self.deep_aero_engines[i].step_battery_dynamics(
+                        actual_thrusts=self.controllers[i].actual_motor_thrusts,
+                        dt=self.cfg.inner_dt,
+                        nominal_max_thrust=self.cfg.max_thrust_per_motor,
+                    )
 
                 # Geometric attitude controller computes individual rotor thrusts
                 rotors, f_world, _ = self.controllers[i].compute_motor_commands(
@@ -438,15 +481,33 @@ class AegisMuJoCoSwarm6DOFEnvironment:
                     current_omega_body=w_curr,
                     desired_yaw=0.0,
                     dt=self.cfg.inner_dt,
+                    max_thrust_per_motor=eff_max_thrust,
                 )
+
+                # Deep aerodynamics: IGE and Gyroscopic Precession Moments
+                if self.deep_aero_engines is not None:
+                    ige_thrusts, _ = self.deep_aero_engines[i].compute_ige_thrust(
+                        base_motor_thrusts=rotors,
+                        pos_world=p_curr,
+                        rotation_matrix=R,
+                        arm_length=self.cfg.arm_length,
+                        floor_z=0.0,
+                    )
+                    wrench_actual = self.controllers[i].mixer @ ige_thrusts
+                    f_world = R @ np.array([0.0, 0.0, wrench_actual[0]], dtype=np.float64)
+                    tau_gyro = self.deep_aero_engines[i].compute_gyroscopic_moments(
+                        actual_thrusts=ige_thrusts,
+                        omega_body=w_curr,
+                    )
+                else:
+                    wrench_actual = self.controllers[i].mixer @ rotors
+                    tau_gyro = np.zeros(3, dtype=np.float64)
 
                 # Aerodynamic relative wind damping
                 v_rel = v_curr - self.wind_velocity
                 f_world += -drag_trans * v_rel
 
-                R = quaternion_to_rotation_matrix(q_curr)
-                wrench_actual = self.controllers[i].mixer @ rotors
-                tau_body = np.array([wrench_actual[1], wrench_actual[2], wrench_actual[3]]) - drag_rot * w_curr
+                tau_body = np.array([wrench_actual[1], wrench_actual[2], wrench_actual[3]]) + tau_gyro - drag_rot * w_curr
                 tau_world = R @ tau_body
 
                 bid = self.quad_body_ids[i]

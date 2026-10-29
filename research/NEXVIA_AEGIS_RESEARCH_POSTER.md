@@ -97,6 +97,17 @@ $$\mathbf{a} = -\frac{2}{m}(\mathbf{p} - \mathbf{c}_{\text{obs}}), \quad b = 2\|
 
 ---
 
+### 🖼️ Figure 3c: Deep Aerodynamics & Electromechanics (IGE, Gyro Precession & Battery Sag)
+![Deep Aerodynamics Benchmark](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/plots/deep_aerodynamics_benchmark.png)
+
+> **Figure 3c Description:** High-fidelity aerodynamic and power system dynamics in MuJoCo.
+> - **Panel A (Ground Effect):** Cheeseman-Bennett In-Ground-Effect (IGE) thrust amplification matches analytical curve $T / (1 - (R/4z)^2)$ up to $1.164\times$ ground cushion boost before smoothly transitioning to OGE at $z=4R$.
+> - **Panel B (Gyroscopic Precession):** High-speed rotor blade spinning generates cross-axis gyroscopic reaction moments $\boldsymbol{\tau}_{\mathrm{gyro}} = -\boldsymbol{\Omega} \times \mathbf{H}_r$ (coupling pitch rate $\Omega_y$ to roll torque $\tau_x$, and roll rate $\Omega_x$ to pitch torque $\tau_y$) during aggressive slalom maneuvers.
+> - **Panel C (4S LiPo Voltage Sag):** Dynamic load current ($I_{\mathrm{load}} \le 20.0\,$A) causes terminal voltage to sag via internal resistance ($V_{\mathrm{term}} = V_{\mathrm{ocv}} - I R_{\mathrm{int}}$), leading to dynamic maximum thrust derating.
+> - **Panel D (3D Swarm 6-DOF Flight):** 5-quadrotor swarm successfully navigates obstacle fields under simultaneous wind turbulence, IGE ground cushion, and battery voltage sag.
+
+---
+
 ### 🖼️ Figure 4: Milestone V9-M4 Single-Shot Confirmatory Holdout Proof ($N=2,880$)
 ![Milestone V9-M4 Single-Shot Confirmatory Holdout Proof](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/plots/holdout_h1_h5_certification.png)
 
@@ -125,15 +136,18 @@ $$\mathbf{a} = -\frac{2}{m}(\mathbf{p} - \mathbf{c}_{\text{obs}}), \quad b = 2\|
 ## 🏆 Section 5: Key Takeaways & Impact
 
 1. **Reality Gap Resolved:** Replacing the point-mass spherical particle with full $SE(3)$ quadrotor dynamics proves that AEGIS successfully operates under realistic roll/pitch attitude reorientation and motor lag ($\tau_m = 35\,$ms) without violating safety invariance.
-2. **Dual Physical-Statistical Shielding:** 
+2. **Deep Aerodynamics Fidelity:** Incorporating Cheeseman-Bennett In-Ground-Effect ($T_{\mathrm{IGE}}$), rotor gyroscopic precession cross-moments ($\boldsymbol{\tau}_{\mathrm{gyro}}$), and 4S LiPo internal resistance voltage sag verifies flight resilience under harsh aerodynamic perturbations.
+3. **Dual Physical-Statistical Shielding:** 
    - **HOCBF (Physical Shield):** Guarantees zero obstacle collisions and respects tilt constraints ($\theta \le 35^\circ$).
    - **Ville Martingales (Statistical Shield):** Guarantees cross-modal arrival certification, completely eliminating the $100\%$ False Success failure mode seen in naive and CBF-only controllers.
-3. **Reproducibility & Test Coverage:** All 347 unit and integration tests passing in 29.39s with deterministic cryptographic auditability.
+4. **Reproducibility & Test Coverage:** All 358 unit and integration tests passing in ~30s with deterministic cryptographic auditability.
 
 ---
 
 **Artifact Reference Links:**
 - Interactive High-Definition Web Poster: [`research/poster.html`](file:///Users/chalermsak/Desktop/nexvia-aegis-main/research/poster.html)
+- Deep Aerodynamics Benchmark Plot: [`results/plots/deep_aerodynamics_benchmark.png`](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/plots/deep_aerodynamics_benchmark.png)
 - 6-DOF Benchmark Plot: [`results/plots/quadrotor_6dof_benchmark.png`](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/plots/quadrotor_6dof_benchmark.png)
-- 6-DOF Environment Implementation: [`src/aegis/env/quadrotor_6dof.py`](file:///Users/chalermsak/Desktop/nexvia-aegis-main/src/aegis/env/quadrotor_6dof.py)
-- Unit Test Suite: [`tests/test_quadrotor_6dof.py`](file:///Users/chalermsak/Desktop/nexvia-aegis-main/tests/test_quadrotor_6dof.py)
+- Swarm 6-DOF Benchmark Plot: [`results/plots/swarm_6dof_benchmark.png`](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/plots/swarm_6dof_benchmark.png)
+- Deep Aerodynamics Implementation: [`src/aegis/env/deep_aerodynamics.py`](file:///Users/chalermsak/Desktop/nexvia-aegis-main/src/aegis/env/deep_aerodynamics.py)
+- Unit Test Suite: [`tests/test_deep_aerodynamics.py`](file:///Users/chalermsak/Desktop/nexvia-aegis-main/tests/test_deep_aerodynamics.py)

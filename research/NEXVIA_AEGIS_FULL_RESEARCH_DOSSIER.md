@@ -158,6 +158,12 @@ The following 4 publication-grade figures have been generated and archived in `r
    - Subplot 3: Collision elimination: 100% inter-drone & obstacle collisions in Unshielded vs. 0.0% in AEGIS BRMC.
    - Subplot 4: Byzantine-resilient consensus: 95.4% error reduction under colluding spatial attacks.
 
+8. [`deep_aerodynamics_benchmark.png`](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/plots/deep_aerodynamics_benchmark.png):
+   - Subplot 1: In-Ground-Effect (IGE) thrust amplification curve matching Cheeseman-Bennett theoretical model $T / (1 - (R/4z)^2)$ up to $1.164\times$ lift boost near floor.
+   - Subplot 2: Gyroscopic precession cross-moments ($\boldsymbol{\tau}_{\mathrm{gyro}} = -\boldsymbol{\Omega} \times \mathbf{H}_r$) coupling body roll/pitch rates during aggressive slalom banking maneuvers.
+   - Subplot 3: 4S LiPo internal resistance voltage sag ($V_{\mathrm{term}} = V_{\mathrm{ocv}} - I R_{\mathrm{int}}$) under high-thrust throttle pulses and dynamic maximum thrust derating.
+   - Subplot 4: 3D multi-agent swarm flight trajectories under combined aerodynamic and electrical stress (wind turbulence, IGE cushion, and sagging thrust authority).
+
 ---
 
 ## 6. Confirmatory Holdout Evaluation & Milestone V9-M4 Release Certification
