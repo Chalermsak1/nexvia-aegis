@@ -14,3 +14,12 @@ wheels/
 # Test caches and OS metadata
 .pytest_cache/
 .DS_Store
+
+# LaTeX build artifacts
+*.aux
+*.log
+*.out
+*.bbl
+*.blg
+*.synctex.gz
+*.toc

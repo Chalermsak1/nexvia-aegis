@@ -174,6 +174,9 @@ mindmap
 - [results/visualizer_swarm_3d.html](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/visualizer_swarm_3d.html) (282 KB): เว็บแอปพลิเคชัน 3D WebGL Three.js สำหรับเล่นซ้ำวิถีการบินของฝูงหุ่นยนต์ 5 ลำใน MuJoCo physics.
 
 ### 4.6 เอกสารรับรองและรายงานงานวิจัย (Documentation & Reports)
+- [paper/aegis_ieee_preprint.pdf](file:///Users/chalermsak/Desktop/nexvia-aegis-main/paper/aegis_ieee_preprint.pdf) (4.04 MB): **ต้นฉบับบทความวิจัยระดับนานาชาติฉบับสมบูรณ์ (IEEE Transactions Preprint, 6 หน้า)** รวบรวมทฤษฎี HOCBF, Ville Supermartingale, NMPC-CBF, Dynamic Bicycle Model, และการทดสอบ 380 รายการ.
+- [paper/main.tex](file:///Users/chalermsak/Desktop/nexvia-aegis-main/paper/main.tex): ซอร์สโค้ด LaTeX สำหรับคอมไพล์เปเปอร์วิจัย (IEEEtran journal class).
+- [paper/references.bib](file:///Users/chalermsak/Desktop/nexvia-aegis-main/paper/references.bib): ฐานข้อมูลรายการอ้างอิงทางวิชาการ (BibTeX) มาตรฐานสากล.
 - [V9_M4_GATE_B_CONFIRMATORY_REPORT.md](file:///Users/chalermsak/Desktop/nexvia-aegis-main/V9_M4_GATE_B_CONFIRMATORY_REPORT.md): เอกสารลงนามรับรองผลอย่างเป็นทางการ (Official Sign-Off Record).
 - [V9_M4_GATE_B_AUTHORIZATION_DOSSIER.md](file:///Users/chalermsak/Desktop/nexvia-aegis-main/V9_M4_GATE_B_AUTHORIZATION_DOSSIER.md): แฟ้มข้อกำหนดและขั้นตอนการปลดล็อก Gate B.
 - [research/NEXVIA_AEGIS_FULL_RESEARCH_DOSSIER.md](file:///Users/chalermsak/Desktop/nexvia-aegis-main/research/NEXVIA_AEGIS_FULL_RESEARCH_DOSSIER.md): รายงานการวิจัยฉบับสมบูรณ์ครอบคลุม V1 ถึง V9.
@@ -184,15 +187,15 @@ mindmap
 
 ## 5. แผนการและทิศทางการดำเนินงานต่อไป (Roadmap & Next Steps)
 
-โครงการได้บรรลุครบทั้ง 9 ระยะทางวิทยาศาสตร์และวิศวกรรม (Phase 1 ถึง Phase 9 - NMPC-CBF Lookahead Trajectory Optimization บรรลุผลสำเร็จ 100%):
+โครงการได้บรรลุครบทั้ง 10 ระยะทางวิทยาศาสตร์และวิศวกรรม พร้อมเอกสารทางวิชาการฉบับสมบูรณ์:
 
-### Phase 9 (Completed): Nonlinear Model Predictive Control with CBF (NMPC-CBF)
-- วางแผนวิถีการบินล่วงหน้า 15 สเต็ป ($0.75\,$s) บินหลบสิ่งกีดขวางแบบ Anticipatory และลด Jerk การกระตุกของคำสั่งแรงขับเคลื่อน.
-- ติดตั้ง Dynamic Altitude Weighting รักษาเพดานบินระดับ $1.0\,$m และ D-CBF Constraints พร้อม Pointwise HOCBF Fallback Shield.
+### สถานะความพร้อมล่าสุด (Completed Deliverables):
+1. **Academic Paper Manuscript (COMPLETED):** จัดทำต้นฉบับบทความวิจัย IEEE Transactions (`paper/main.tex`, `paper/references.bib`) และคอมไพล์สำเร็จเป็น `paper/aegis_ieee_preprint.pdf` (6 หน้า, 4.04 MB) พร้อมส่งตรวจทานหรือเผยแพร่บน arXiv / ยื่นตีพิมพ์.
+2. **Autonomous Vehicles & Cyber-Resilient Platooning Stack (COMPLETED):** พัฒนาระบบรถยนต์ไร้คนขับและขบวนรถอัจฉริยะ (Pacejka, Frenet HOCBF, Kamm's Circle, Ville Supermartingale) ผ่านการทดสอบ 100% (380 tests).
 
-### Option A: การจัดเตรียมต้นฉบับเอกสารทางวิชาการ (Academic Paper & LaTeX Preprint)
-- รวบรวมสมการทางคณิตศาสตร์ (HOCBF, Ville Supermartingale, BRMC consensus, Active POMDP, Sim2Real Latency Extrapolation, NMPC-CBF) และผลการทดสอบทั้งหมดเข้าสู่โครงสร้างบทความวิจัย IEEE T-RO / Automatica / ICRA.
-- จัดเตรียมฟิกเกอร์ทั้ง 8 ภาพความละเอียด 300 DPI สำหรับแนบบทความ.
+### ทิศทางการต่อยอดในอนาคต:
+- **Air-Ground Heterogeneous Teaming:** บูรณาการโดรน 6-DOF (Eye-in-the-Sky) ทำงานร่วมกับขบวนรถยนต์อัตโนมัติภาคพื้นดิน ผ่านโครงข่ายความปลอดภัยรวมข้ามโดเมน.
+- **CARLA Photo-Realistic Co-Simulation:** เชื่อมต่อระบบ Autoware Bridge เข้ากับแผนที่เมือง/ทางหลวงใน CARLA Simulator.
 
 ### Option B: Autonomous Vehicles & Ground Robotics (AV Frenet Barrier & Platooning)
 - ขยายโมเดล NMPC-CBF สู่ระบบรถยนต์ไร้คนขับ (Non-holonomic Bicycle Model + Kamm's Friction Circle) ในพิกัด Frenet ($s, d$).
