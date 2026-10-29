@@ -1,0 +1,6937 @@
+{
+  "schema_version": "v9-m5-3d-development-benchmark/1.5",
+  "classification": "EXPLORATORY_SIMULATION",
+  "random_streams": "SeedSequence(seed).spawn(3): environment, sensors, faults",
+  "source_sha256": {
+    "benchmark": "bae8f6905c1e6f82d3caaebeb5640257612e2d5a266d0ee63adec50f37c8b3b3",
+    "world": "b386ffb38cf733b6539c2835d833c083204c7c7354211eecd0dc7bd5be863f17"
+  },
+  "runtime": {
+    "python": "3.12.14",
+    "numpy": "2.5.3",
+    "mujoco": "3.14.0"
+  },
+  "seed_start": 120000,
+  "n_seeds_per_bias": 20,
+  "bias_vectors_xyz": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.5,
+      -0.4,
+      0.2
+    ],
+    [
+      0.8,
+      0.8,
+      -0.3
+    ]
+  ],
+  "max_steps": 300,
+  "range_fault": {
+    "bias_m": -0.2,
+    "dropout_probability": 0.0,
+    "latency_steps": 0
+  },
+  "summary": {
+    "UNSHIELDED": {
+      "episodes": 60,
+      "true_success": 13,
+      "false_arrival": 32,
+      "collision": 30,
+      "abstained": 0,
+      "timeout": 15,
+      "accepted": 45
+    },
+    "CBF_ONLY": {
+      "episodes": 60,
+      "true_success": 9,
+      "false_arrival": 31,
+      "collision": 0,
+      "abstained": 0,
+      "timeout": 20,
+      "accepted": 40
+    },
+    "AEGIS_V9_CBF": {
+      "episodes": 60,
+      "true_success": 0,
+      "false_arrival": 21,
+      "collision": 0,
+      "abstained": 35,
+      "timeout": 4,
+      "accepted": 21
+    },
+    "AEGIS_V9_CBF_RANGE_GUARD": {
+      "episodes": 60,
+      "true_success": 0,
+      "false_arrival": 8,
+      "collision": 0,
+      "abstained": 48,
+      "timeout": 4,
+      "accepted": 8
+    },
+    "AEGIS_V9_CBF_RANGE_WINDOW": {
+      "episodes": 60,
+      "true_success": 6,
+      "false_arrival": 6,
+      "collision": 0,
+      "abstained": 44,
+      "timeout": 4,
+      "accepted": 12
+    },
+    "AEGIS_V9_CBF_RANGE_3D_VETO": {
+      "episodes": 60,
+      "true_success": 2,
+      "false_arrival": 0,
+      "collision": 0,
+      "abstained": 54,
+      "timeout": 4,
+      "accepted": 2
+    }
+  },
+  "episodes": [
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120000,
+      "steps": 96,
+      "final_distance": 0.1697,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120001,
+      "steps": 85,
+      "final_distance": 0.1758,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120002,
+      "steps": 78,
+      "final_distance": 0.2002,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120003,
+      "steps": 258,
+      "final_distance": 0.1624,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120004,
+      "steps": 77,
+      "final_distance": 0.2062,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120005,
+      "steps": 300,
+      "final_distance": 0.6134,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120006,
+      "steps": 89,
+      "final_distance": 0.1366,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120007,
+      "steps": 72,
+      "final_distance": 0.1931,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120008,
+      "steps": 82,
+      "final_distance": 0.0875,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120009,
+      "steps": 180,
+      "final_distance": 0.2585,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120010,
+      "steps": 300,
+      "final_distance": 0.4955,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120011,
+      "steps": 76,
+      "final_distance": 0.2041,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120012,
+      "steps": 95,
+      "final_distance": 0.1833,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120013,
+      "steps": 280,
+      "final_distance": 0.273,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120014,
+      "steps": 268,
+      "final_distance": 0.2761,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120015,
+      "steps": 95,
+      "final_distance": 0.2189,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120016,
+      "steps": 1,
+      "final_distance": 0.1885,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120017,
+      "steps": 300,
+      "final_distance": 1.1781,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120018,
+      "steps": 76,
+      "final_distance": 0.1665,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120019,
+      "steps": 86,
+      "final_distance": 0.1735,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120000,
+      "steps": 89,
+      "final_distance": 0.8689,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120001,
+      "steps": 80,
+      "final_distance": 0.7465,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120002,
+      "steps": 78,
+      "final_distance": 0.7001,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120003,
+      "steps": 99,
+      "final_distance": 0.8793,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120004,
+      "steps": 84,
+      "final_distance": 0.5795,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120005,
+      "steps": 300,
+      "final_distance": 1.0836,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120006,
+      "steps": 97,
+      "final_distance": 0.7535,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120007,
+      "steps": 65,
+      "final_distance": 0.6995,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120008,
+      "steps": 86,
+      "final_distance": 0.6125,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120009,
+      "steps": 300,
+      "final_distance": 1.0108,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120010,
+      "steps": 300,
+      "final_distance": 0.524,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120011,
+      "steps": 76,
+      "final_distance": 0.5887,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120012,
+      "steps": 105,
+      "final_distance": 0.8378,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120013,
+      "steps": 300,
+      "final_distance": 0.9574,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120014,
+      "steps": 284,
+      "final_distance": 0.7686,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120015,
+      "steps": 92,
+      "final_distance": 0.7492,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120016,
+      "steps": 63,
+      "final_distance": 0.4583,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120017,
+      "steps": 300,
+      "final_distance": 0.6771,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120018,
+      "steps": 75,
+      "final_distance": 0.6849,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120019,
+      "steps": 81,
+      "final_distance": 0.7503,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120000,
+      "steps": 262,
+      "final_distance": 1.1878,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120001,
+      "steps": 234,
+      "final_distance": 1.3462,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120002,
+      "steps": 87,
+      "final_distance": 1.0879,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120003,
+      "steps": 116,
+      "final_distance": 1.2248,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120004,
+      "steps": 86,
+      "final_distance": 1.0811,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120005,
+      "steps": 300,
+      "final_distance": 1.4444,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120006,
+      "steps": 233,
+      "final_distance": 1.4049,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120007,
+      "steps": 78,
+      "final_distance": 1.0544,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120008,
+      "steps": 239,
+      "final_distance": 1.3945,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120009,
+      "steps": 300,
+      "final_distance": 2.2362,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120010,
+      "steps": 193,
+      "final_distance": 1.2585,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120011,
+      "steps": 300,
+      "final_distance": 0.6823,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120012,
+      "steps": 252,
+      "final_distance": 1.3471,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120013,
+      "steps": 300,
+      "final_distance": 1.8663,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120014,
+      "steps": 300,
+      "final_distance": 1.8683,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120015,
+      "steps": 300,
+      "final_distance": 0.9239,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120016,
+      "steps": 73,
+      "final_distance": 0.9208,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120017,
+      "steps": 300,
+      "final_distance": 2.9306,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120018,
+      "steps": 90,
+      "final_distance": 1.0938,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "UNSHIELDED",
+      "seed": 120019,
+      "steps": 177,
+      "final_distance": 0.9566,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 1,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120000,
+      "steps": 240,
+      "final_distance": 0.2334,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120001,
+      "steps": 103,
+      "final_distance": 0.2486,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120002,
+      "steps": 78,
+      "final_distance": 0.2002,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120003,
+      "steps": 222,
+      "final_distance": 0.2514,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120004,
+      "steps": 77,
+      "final_distance": 0.2062,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120005,
+      "steps": 300,
+      "final_distance": 0.4422,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120006,
+      "steps": 89,
+      "final_distance": 0.1907,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120007,
+      "steps": 72,
+      "final_distance": 0.1931,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120008,
+      "steps": 87,
+      "final_distance": 0.2507,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120009,
+      "steps": 264,
+      "final_distance": 0.1898,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120010,
+      "steps": 300,
+      "final_distance": 0.4841,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120011,
+      "steps": 76,
+      "final_distance": 0.2389,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120012,
+      "steps": 98,
+      "final_distance": 0.2201,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120013,
+      "steps": 300,
+      "final_distance": 0.3782,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120014,
+      "steps": 210,
+      "final_distance": 0.3442,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120015,
+      "steps": 98,
+      "final_distance": 0.1857,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120016,
+      "steps": 1,
+      "final_distance": 0.1885,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120017,
+      "steps": 300,
+      "final_distance": 1.1123,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120018,
+      "steps": 76,
+      "final_distance": 0.167,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120019,
+      "steps": 112,
+      "final_distance": 0.3127,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120000,
+      "steps": 102,
+      "final_distance": 0.845,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120001,
+      "steps": 92,
+      "final_distance": 0.6522,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120002,
+      "steps": 78,
+      "final_distance": 0.7001,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120003,
+      "steps": 231,
+      "final_distance": 0.5873,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120004,
+      "steps": 84,
+      "final_distance": 0.5795,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120005,
+      "steps": 300,
+      "final_distance": 0.8242,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120006,
+      "steps": 97,
+      "final_distance": 0.7454,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120007,
+      "steps": 65,
+      "final_distance": 0.6995,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120008,
+      "steps": 87,
+      "final_distance": 0.6472,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120009,
+      "steps": 300,
+      "final_distance": 1.2917,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120010,
+      "steps": 196,
+      "final_distance": 0.8702,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120011,
+      "steps": 76,
+      "final_distance": 0.5887,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120012,
+      "steps": 104,
+      "final_distance": 0.5231,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120013,
+      "steps": 300,
+      "final_distance": 0.7119,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120014,
+      "steps": 300,
+      "final_distance": 0.4787,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120015,
+      "steps": 106,
+      "final_distance": 0.5415,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120016,
+      "steps": 63,
+      "final_distance": 0.4583,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120017,
+      "steps": 300,
+      "final_distance": 0.7667,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120018,
+      "steps": 75,
+      "final_distance": 0.6849,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120019,
+      "steps": 272,
+      "final_distance": 0.5915,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120000,
+      "steps": 300,
+      "final_distance": 1.2585,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120001,
+      "steps": 232,
+      "final_distance": 1.3532,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120002,
+      "steps": 107,
+      "final_distance": 1.1849,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120003,
+      "steps": 213,
+      "final_distance": 1.0464,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120004,
+      "steps": 125,
+      "final_distance": 0.9639,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120005,
+      "steps": 300,
+      "final_distance": 1.4784,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120006,
+      "steps": 300,
+      "final_distance": 1.4338,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120007,
+      "steps": 78,
+      "final_distance": 1.0541,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120008,
+      "steps": 270,
+      "final_distance": 1.4329,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120009,
+      "steps": 300,
+      "final_distance": 2.511,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120010,
+      "steps": 300,
+      "final_distance": 1.3748,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120011,
+      "steps": 300,
+      "final_distance": 0.5321,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120012,
+      "steps": 266,
+      "final_distance": 1.4751,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120013,
+      "steps": 300,
+      "final_distance": 1.408,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120014,
+      "steps": 300,
+      "final_distance": 1.1568,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120015,
+      "steps": 300,
+      "final_distance": 1.2327,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120016,
+      "steps": 300,
+      "final_distance": 0.8755,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120017,
+      "steps": 300,
+      "final_distance": 3.1511,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120018,
+      "steps": 250,
+      "final_distance": 1.184,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "CBF_ONLY",
+      "seed": 120019,
+      "steps": 209,
+      "final_distance": 1.0578,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120000,
+      "steps": 180,
+      "final_distance": 0.4674,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120001,
+      "steps": 42,
+      "final_distance": 2.4868,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120002,
+      "steps": 112,
+      "final_distance": 0.2683,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120003,
+      "steps": 200,
+      "final_distance": 0.4943,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120004,
+      "steps": 46,
+      "final_distance": 1.683,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120005,
+      "steps": 51,
+      "final_distance": 4.5235,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120006,
+      "steps": 165,
+      "final_distance": 0.4401,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120007,
+      "steps": 74,
+      "final_distance": 0.2383,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120008,
+      "steps": 106,
+      "final_distance": 1.1503,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120009,
+      "steps": 300,
+      "final_distance": 1.4786,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120010,
+      "steps": 279,
+      "final_distance": 0.8083,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120011,
+      "steps": 44,
+      "final_distance": 1.4944,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120012,
+      "steps": 176,
+      "final_distance": 0.3857,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120013,
+      "steps": 300,
+      "final_distance": 0.7868,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120014,
+      "steps": 43,
+      "final_distance": 4.5474,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120015,
+      "steps": 183,
+      "final_distance": 0.3398,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120016,
+      "steps": 2,
+      "final_distance": 0.1885,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120017,
+      "steps": 44,
+      "final_distance": 5.0708,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120018,
+      "steps": 41,
+      "final_distance": 1.2985,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120019,
+      "steps": 42,
+      "final_distance": 2.6632,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120000,
+      "steps": 177,
+      "final_distance": 0.7359,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120001,
+      "steps": 228,
+      "final_distance": 1.0481,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120002,
+      "steps": 63,
+      "final_distance": 1.654,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120003,
+      "steps": 203,
+      "final_distance": 0.7004,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120004,
+      "steps": 141,
+      "final_distance": 0.5223,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120005,
+      "steps": 215,
+      "final_distance": 0.6487,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120006,
+      "steps": 162,
+      "final_distance": 0.6947,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120007,
+      "steps": 100,
+      "final_distance": 0.3295,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120008,
+      "steps": 76,
+      "final_distance": 2.0804,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120009,
+      "steps": 40,
+      "final_distance": 4.4704,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120010,
+      "steps": 38,
+      "final_distance": 4.049,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120011,
+      "steps": 124,
+      "final_distance": 0.4628,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120012,
+      "steps": 176,
+      "final_distance": 0.5246,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120013,
+      "steps": 300,
+      "final_distance": 0.8758,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120014,
+      "steps": 38,
+      "final_distance": 4.6033,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120015,
+      "steps": 182,
+      "final_distance": 0.4376,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120016,
+      "steps": 2,
+      "final_distance": 0.1885,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120017,
+      "steps": 296,
+      "final_distance": 0.512,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120018,
+      "steps": 136,
+      "final_distance": 0.7664,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120019,
+      "steps": 173,
+      "final_distance": 0.7482,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120000,
+      "steps": 180,
+      "final_distance": 0.3205,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120001,
+      "steps": 38,
+      "final_distance": 2.5229,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120002,
+      "steps": 109,
+      "final_distance": 0.9769,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120003,
+      "steps": 203,
+      "final_distance": 0.3169,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120004,
+      "steps": 141,
+      "final_distance": 0.4458,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120005,
+      "steps": 266,
+      "final_distance": 0.2607,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120006,
+      "steps": 167,
+      "final_distance": 0.365,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120007,
+      "steps": 96,
+      "final_distance": 0.4573,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120008,
+      "steps": 131,
+      "final_distance": 1.1104,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120009,
+      "steps": 300,
+      "final_distance": 0.7839,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120010,
+      "steps": 38,
+      "final_distance": 4.0667,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120011,
+      "steps": 125,
+      "final_distance": 0.4589,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120012,
+      "steps": 176,
+      "final_distance": 0.4858,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120013,
+      "steps": 38,
+      "final_distance": 4.5364,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120014,
+      "steps": 38,
+      "final_distance": 4.6247,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120015,
+      "steps": 38,
+      "final_distance": 3.3243,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120016,
+      "steps": 2,
+      "final_distance": 0.1886,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120017,
+      "steps": 38,
+      "final_distance": 5.1387,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120018,
+      "steps": 38,
+      "final_distance": 1.3066,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "seed": 120019,
+      "steps": 38,
+      "final_distance": 2.7119,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120000,
+      "steps": 180,
+      "final_distance": 0.4416,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120001,
+      "steps": 42,
+      "final_distance": 2.4868,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120002,
+      "steps": 112,
+      "final_distance": 0.2683,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120003,
+      "steps": 200,
+      "final_distance": 0.4717,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120004,
+      "steps": 46,
+      "final_distance": 1.683,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120005,
+      "steps": 51,
+      "final_distance": 4.5235,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120006,
+      "steps": 165,
+      "final_distance": 0.4163,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120007,
+      "steps": 74,
+      "final_distance": 0.2383,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120008,
+      "steps": 106,
+      "final_distance": 1.1503,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120009,
+      "steps": 300,
+      "final_distance": 1.4786,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120010,
+      "steps": 279,
+      "final_distance": 0.8083,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120011,
+      "steps": 44,
+      "final_distance": 1.4944,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120012,
+      "steps": 176,
+      "final_distance": 0.3857,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120013,
+      "steps": 300,
+      "final_distance": 0.7868,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120014,
+      "steps": 43,
+      "final_distance": 4.5474,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120015,
+      "steps": 183,
+      "final_distance": 0.3398,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120016,
+      "steps": 2,
+      "final_distance": 0.1885,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120017,
+      "steps": 44,
+      "final_distance": 5.0708,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120018,
+      "steps": 41,
+      "final_distance": 1.2985,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120019,
+      "steps": 42,
+      "final_distance": 2.6632,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120000,
+      "steps": 177,
+      "final_distance": 0.7359,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120001,
+      "steps": 228,
+      "final_distance": 1.0481,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120002,
+      "steps": 63,
+      "final_distance": 1.654,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120003,
+      "steps": 203,
+      "final_distance": 0.7004,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120004,
+      "steps": 141,
+      "final_distance": 0.5108,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120005,
+      "steps": 215,
+      "final_distance": 0.6244,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120006,
+      "steps": 162,
+      "final_distance": 0.6947,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120007,
+      "steps": 100,
+      "final_distance": 0.3295,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120008,
+      "steps": 76,
+      "final_distance": 2.0804,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120009,
+      "steps": 40,
+      "final_distance": 4.4704,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120010,
+      "steps": 38,
+      "final_distance": 4.049,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120011,
+      "steps": 124,
+      "final_distance": 0.4498,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120012,
+      "steps": 176,
+      "final_distance": 0.5009,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120013,
+      "steps": 300,
+      "final_distance": 0.8758,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120014,
+      "steps": 38,
+      "final_distance": 4.6033,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120015,
+      "steps": 182,
+      "final_distance": 0.4081,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120016,
+      "steps": 2,
+      "final_distance": 0.1885,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120017,
+      "steps": 296,
+      "final_distance": 0.4984,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120018,
+      "steps": 136,
+      "final_distance": 0.7664,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120019,
+      "steps": 173,
+      "final_distance": 0.7482,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120000,
+      "steps": 180,
+      "final_distance": 0.3205,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120001,
+      "steps": 38,
+      "final_distance": 2.5229,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120002,
+      "steps": 109,
+      "final_distance": 0.9769,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120003,
+      "steps": 203,
+      "final_distance": 0.3169,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120004,
+      "steps": 141,
+      "final_distance": 0.4252,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120005,
+      "steps": 266,
+      "final_distance": 0.2607,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120006,
+      "steps": 167,
+      "final_distance": 0.365,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120007,
+      "steps": 96,
+      "final_distance": 0.4435,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120008,
+      "steps": 131,
+      "final_distance": 1.1104,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120009,
+      "steps": 300,
+      "final_distance": 0.7839,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120010,
+      "steps": 38,
+      "final_distance": 4.0667,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120011,
+      "steps": 125,
+      "final_distance": 0.4436,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120012,
+      "steps": 176,
+      "final_distance": 0.4576,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120013,
+      "steps": 38,
+      "final_distance": 4.5364,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120014,
+      "steps": 38,
+      "final_distance": 4.6247,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120015,
+      "steps": 38,
+      "final_distance": 3.3243,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120016,
+      "steps": 2,
+      "final_distance": 0.1886,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120017,
+      "steps": 38,
+      "final_distance": 5.1387,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120018,
+      "steps": 38,
+      "final_distance": 1.3066,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "seed": 120019,
+      "steps": 38,
+      "final_distance": 2.7119,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120000,
+      "steps": 183,
+      "final_distance": 0.3775,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120001,
+      "steps": 42,
+      "final_distance": 2.4868,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120002,
+      "steps": 115,
+      "final_distance": 0.2194,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120003,
+      "steps": 203,
+      "final_distance": 0.4131,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120004,
+      "steps": 46,
+      "final_distance": 1.683,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120005,
+      "steps": 51,
+      "final_distance": 4.5235,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120006,
+      "steps": 168,
+      "final_distance": 0.3555,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120007,
+      "steps": 74,
+      "final_distance": 0.2383,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120008,
+      "steps": 106,
+      "final_distance": 1.1503,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120009,
+      "steps": 300,
+      "final_distance": 1.4786,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120010,
+      "steps": 279,
+      "final_distance": 0.8083,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120011,
+      "steps": 44,
+      "final_distance": 1.4944,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120012,
+      "steps": 179,
+      "final_distance": 0.2492,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120013,
+      "steps": 300,
+      "final_distance": 0.7868,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120014,
+      "steps": 43,
+      "final_distance": 4.5474,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120015,
+      "steps": 186,
+      "final_distance": 0.2033,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120016,
+      "steps": 2,
+      "final_distance": 0.1885,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120017,
+      "steps": 44,
+      "final_distance": 5.0708,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120018,
+      "steps": 41,
+      "final_distance": 1.2985,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120019,
+      "steps": 42,
+      "final_distance": 2.6632,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120000,
+      "steps": 177,
+      "final_distance": 0.7359,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120001,
+      "steps": 228,
+      "final_distance": 1.0481,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120002,
+      "steps": 63,
+      "final_distance": 1.654,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120003,
+      "steps": 203,
+      "final_distance": 0.7004,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120004,
+      "steps": 144,
+      "final_distance": 0.484,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120005,
+      "steps": 218,
+      "final_distance": 0.5668,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120006,
+      "steps": 162,
+      "final_distance": 0.6947,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120007,
+      "steps": 103,
+      "final_distance": 0.3,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120008,
+      "steps": 76,
+      "final_distance": 2.0804,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120009,
+      "steps": 40,
+      "final_distance": 4.4704,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120010,
+      "steps": 38,
+      "final_distance": 4.049,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120011,
+      "steps": 127,
+      "final_distance": 0.4186,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120012,
+      "steps": 179,
+      "final_distance": 0.443,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120013,
+      "steps": 300,
+      "final_distance": 0.8758,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120014,
+      "steps": 38,
+      "final_distance": 4.6033,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120015,
+      "steps": 185,
+      "final_distance": 0.3314,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120016,
+      "steps": 2,
+      "final_distance": 0.1885,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120017,
+      "steps": 299,
+      "final_distance": 0.4717,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120018,
+      "steps": 136,
+      "final_distance": 0.7664,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120019,
+      "steps": 173,
+      "final_distance": 0.7482,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120000,
+      "steps": 183,
+      "final_distance": 0.2126,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120001,
+      "steps": 38,
+      "final_distance": 2.5229,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120002,
+      "steps": 109,
+      "final_distance": 0.9769,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120003,
+      "steps": 206,
+      "final_distance": 0.217,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120004,
+      "steps": 144,
+      "final_distance": 0.3709,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120005,
+      "steps": 269,
+      "final_distance": 0.2181,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120006,
+      "steps": 170,
+      "final_distance": 0.2589,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120007,
+      "steps": 99,
+      "final_distance": 0.4066,
+      "true_success": 0,
+      "false_arrival": 1,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120008,
+      "steps": 131,
+      "final_distance": 1.1104,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120009,
+      "steps": 300,
+      "final_distance": 0.7839,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120010,
+      "steps": 38,
+      "final_distance": 4.0667,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120011,
+      "steps": 128,
+      "final_distance": 0.4032,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120012,
+      "steps": 179,
+      "final_distance": 0.3852,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120013,
+      "steps": 38,
+      "final_distance": 4.5364,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120014,
+      "steps": 38,
+      "final_distance": 4.6247,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120015,
+      "steps": 38,
+      "final_distance": 3.3243,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120016,
+      "steps": 2,
+      "final_distance": 0.1886,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120017,
+      "steps": 38,
+      "final_distance": 5.1387,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120018,
+      "steps": 38,
+      "final_distance": 1.3066,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "seed": 120019,
+      "steps": 38,
+      "final_distance": 2.7119,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120000,
+      "steps": 183,
+      "final_distance": 0.3775,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120001,
+      "steps": 42,
+      "final_distance": 2.4868,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120002,
+      "steps": 115,
+      "final_distance": 0.2194,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120003,
+      "steps": 203,
+      "final_distance": 0.4131,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120004,
+      "steps": 46,
+      "final_distance": 1.683,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120005,
+      "steps": 51,
+      "final_distance": 4.5235,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120006,
+      "steps": 168,
+      "final_distance": 0.3555,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120007,
+      "steps": 74,
+      "final_distance": 0.2383,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120008,
+      "steps": 106,
+      "final_distance": 1.1503,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120009,
+      "steps": 300,
+      "final_distance": 1.4786,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120010,
+      "steps": 279,
+      "final_distance": 0.8083,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120011,
+      "steps": 44,
+      "final_distance": 1.4944,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120012,
+      "steps": 179,
+      "final_distance": 0.2492,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120013,
+      "steps": 300,
+      "final_distance": 0.7868,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120014,
+      "steps": 43,
+      "final_distance": 4.5474,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120015,
+      "steps": 186,
+      "final_distance": 0.2033,
+      "true_success": 1,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120016,
+      "steps": 2,
+      "final_distance": 0.1885,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120017,
+      "steps": 44,
+      "final_distance": 5.0708,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120018,
+      "steps": 41,
+      "final_distance": 1.2985,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120019,
+      "steps": 42,
+      "final_distance": 2.6632,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120000,
+      "steps": 177,
+      "final_distance": 0.7359,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120001,
+      "steps": 228,
+      "final_distance": 1.0481,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120002,
+      "steps": 63,
+      "final_distance": 1.654,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120003,
+      "steps": 203,
+      "final_distance": 0.7004,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120004,
+      "steps": 144,
+      "final_distance": 0.484,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120005,
+      "steps": 218,
+      "final_distance": 0.5668,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120006,
+      "steps": 162,
+      "final_distance": 0.6947,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120007,
+      "steps": 103,
+      "final_distance": 0.3,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120008,
+      "steps": 76,
+      "final_distance": 2.0804,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120009,
+      "steps": 40,
+      "final_distance": 4.4704,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120010,
+      "steps": 38,
+      "final_distance": 4.049,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120011,
+      "steps": 127,
+      "final_distance": 0.4186,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120012,
+      "steps": 179,
+      "final_distance": 0.443,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120013,
+      "steps": 300,
+      "final_distance": 0.8758,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120014,
+      "steps": 38,
+      "final_distance": 4.6033,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120015,
+      "steps": 185,
+      "final_distance": 0.3314,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120016,
+      "steps": 2,
+      "final_distance": 0.1885,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120017,
+      "steps": 299,
+      "final_distance": 0.4717,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120018,
+      "steps": 136,
+      "final_distance": 0.7664,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120019,
+      "steps": 173,
+      "final_distance": 0.7482,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120000,
+      "steps": 183,
+      "final_distance": 0.2126,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120001,
+      "steps": 38,
+      "final_distance": 2.5229,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120002,
+      "steps": 109,
+      "final_distance": 0.9769,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120003,
+      "steps": 206,
+      "final_distance": 0.217,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120004,
+      "steps": 144,
+      "final_distance": 0.3709,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120005,
+      "steps": 269,
+      "final_distance": 0.2181,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120006,
+      "steps": 170,
+      "final_distance": 0.2589,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120007,
+      "steps": 99,
+      "final_distance": 0.4066,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120008,
+      "steps": 131,
+      "final_distance": 1.1104,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120009,
+      "steps": 300,
+      "final_distance": 0.7839,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 0,
+      "timeout": 1,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120010,
+      "steps": 38,
+      "final_distance": 4.0667,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120011,
+      "steps": 128,
+      "final_distance": 0.4032,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120012,
+      "steps": 179,
+      "final_distance": 0.3852,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120013,
+      "steps": 38,
+      "final_distance": 4.5364,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120014,
+      "steps": 38,
+      "final_distance": 4.6247,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120015,
+      "steps": 38,
+      "final_distance": 3.3243,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120016,
+      "steps": 2,
+      "final_distance": 0.1886,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120017,
+      "steps": 38,
+      "final_distance": 5.1387,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120018,
+      "steps": 38,
+      "final_distance": 1.3066,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "seed": 120019,
+      "steps": 38,
+      "final_distance": 2.7119,
+      "true_success": 0,
+      "false_arrival": 0,
+      "collision_occurred": 0,
+      "abstained": 1,
+      "timeout": 0,
+      "range_bias_m": -0.2,
+      "range_dropout_probability": 0.0,
+      "range_latency_steps": 0,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    }
+  ]
+}
