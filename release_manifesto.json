@@ -1,0 +1,8 @@
+{
+  "approved_commit": "a6d5addd869aae1dcddf06c0fee04dbd25892f06",
+  "evaluator_artifact_sha256": "fc459dbe9afc2f683804edde114e070d6413056a4ff9de4be27a52f7d2609a21",
+  "policy_sha256": "5a89d6061b379f1b34ab47be0deef8d63180d3e4c21d18c478bc7e451f5c84e2",
+  "mixture_manifest_sha256": "70fe9d539a7fca7f44e8a1aea2d7193002e520c2d3b4980f461a06a73906f1db",
+  "scenario_manifest_sha256": "55e04c450ab1bfa5e272003d3b8953b4b8ab65a1a764af97152e7b84e33f4b2d",
+  "lockfile_sha256": "f90654ab95d7b7c543179fc64fe666a912e10f5c9b2e3d72bb9223f2a7e3c2aa"
+}

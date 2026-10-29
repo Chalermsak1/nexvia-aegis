@@ -1,0 +1,25 @@
+{
+  "ticket_version": "1.0",
+  "payload": {
+    "milestone": "V9-M4",
+    "gate": "GATE_B",
+    "scope": "CONFIRMATORY_HOLDOUT_EVALUATION",
+    "approved_commit": "a6d5addd869aae1dcddf06c0fee04dbd25892f06",
+    "evaluator_artifact_sha256": "fc459dbe9afc2f683804edde114e070d6413056a4ff9de4be27a52f7d2609a21",
+    "policy_sha256": "5a89d6061b379f1b34ab47be0deef8d63180d3e4c21d18c478bc7e451f5c84e2",
+    "mixture_manifest_sha256": "70fe9d539a7fca7f44e8a1aea2d7193002e520c2d3b4980f461a06a73906f1db",
+    "scenario_manifest_sha256": "55e04c450ab1bfa5e272003d3b8953b4b8ab65a1a764af97152e7b84e33f4b2d",
+    "lockfile_sha256": "f90654ab95d7b7c543179fc64fe666a912e10f5c9b2e3d72bb9223f2a7e3c2aa",
+    "authorized_partitions": [
+      "mixture",
+      "scenario"
+    ],
+    "issued_at_utc": "2026-10-28T19:51:43Z",
+    "expires_at_utc": "2026-10-28T21:51:43Z",
+    "nonce": "47520a76e79783664bc007c45284d1d6dd3fe9e425b2e75478315fb2a9a57626",
+    "operator_identity": "chalermsak@project-owner",
+    "target_output_root": "results/v9"
+  },
+  "signature_algorithm": "Ed25519",
+  "signature_hex": "d87859b03e2fb52273ee5f43446faa0ef9cd98c1885fe2d9d23a605f90f3e67cc5866842d6c7291942acb565bebe00ef9abc22a25adc246e6675852af4f0e80c"
+}

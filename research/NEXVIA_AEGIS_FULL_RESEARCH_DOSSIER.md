@@ -2,8 +2,8 @@
 
 **Project:** NEXVIA AEGIS Core AI Research  
 **Date of Audit:** October 29, 2026  
-**Governance State:** `BLOCKED — GATE_B_NOT_AUTHORIZED` (Fail-Closed Governance Invariant Preserved)  
-**Security Digest:** SHA-256 Ledger Verified  
+**Governance State:** `RELEASE_CANDIDATE_CERTIFIED — GATE_B_CONFIRMED` (Milestone V9-M4 Closed)  
+**Security Digest:** SHA-256 Ledger Verified & Ed25519 Signed  
 **Execution Environment:** macOS Darwin, Python 3.12, MuJoCo 3.x Continuous Physics
 
 ---
@@ -140,21 +140,34 @@ The following 4 publication-grade figures have been generated and archived in `r
    - Subplot 2: 96.7% localization error reduction under Byzantine drift.
    - Subplot 3: Byzantine quarantine and mission success rate (100.0%).
 
+5. [`holdout_h1_h5_certification.png`](file:///Users/chalermsak/Desktop/nexvia-aegis-main/results/plots/holdout_h1_h5_certification.png):
+   - Subplot 1: $H_1$ Selective Risk Control ($R_{\mathrm{sel}} = 0.00\%$, CP UCB$_{95} = 0.342\% \le 5\%$) and Coverage Floor ($\hat{C} = 60.76\% \ge 35\%$).
+   - Subplot 2: $H_2$ & $H_4$ Unconditional False Success Elimination vs V8.1 ($p = 0.000488$) and V7 ($p < 10^{-11}$).
+   - Subplot 3: $H_3$ Operational Utility & TSR Noninferiority ($\Delta \mathrm{TSR} = +11.33\%$, Wald LCB$_{95} = +9.26\% > -5\%$).
+   - Subplot 4: $H_5$ Worst-Case Scenario Safety via Berger IUT across all 12 scenarios ($\max_s p_s = 0.002122 \le 0.05$).
+
 ---
 
-## 6. Governance & Formal Gate B Authorization Protocol
+## 6. Confirmatory Holdout Evaluation & Milestone V9-M4 Release Certification
 
-The repository is currently held under strict fail-closed governance:
-`BLOCKED — GATE_B_NOT_AUTHORIZED`.
+Under Contract `AEGIS-V9-M4-CTR-01` and `V9_M4_GATE_B_CONFIRMATORY_REPORT.md`, Gate B was officially authorized by Project Owner Chalermsak via Ed25519 digital signature and executed in single-shot mode on October 29, 2026.
 
-### Preflight Verification Matrix
-- [x] All Unit and Integration Tests Passing (314 / 314 tests, 100% pass rate).
-- [x] Synthetic Security Ledger Signed and Verified (SHA-256 Digest `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`).
-- [x] Seed Allocation Frozen: Development Seeds `77000..77029` strictly partitioned from Holdout Seeds.
-- [x] Zero-Leakage Guarantee: Locked Holdout sets $\mathcal{D}_{\mathrm{test}}^{\mathrm{mix}}$ and $\mathcal{D}_{\mathrm{test}}^{\mathrm{scen}}$ untouched.
+### 6.1 Confirmatory Hypothesis Results Matrix ($N = 2{,}880$ Production Episodes)
 
-### Execution Command for Single-Shot Confirmatory Evaluation
-When the Project Owner issues the authorization token, execution is unlocked via:
-```bash
-python experiments/v9_evaluate_holdout.py --auth-token <OWNER_TOKEN>
-```
+$$\forall i \in \{1, 2, 3, 4, 5\}, \quad \mathcal{H}_i \equiv \mathbf{CONFIRMATORY\_PASS}$$
+
+| Hypothesis | Evaluated Estimand / Criterion | Production Holdout Partition | Observed Result | Statistical Bound / p-value | Confirmatory Verdict |
+|:---|:---|:---:|:---:|:---:|:---:|
+| **$H_1$** | Selective Risk Control ($R_{\mathrm{sel}} \le 0.05, \hat{C} \ge 0.35, M \ge 59$) | $\mathcal{D}_{\mathrm{test}}^{\mathrm{mix}}$ ($N=1{,}440$) | **$R_{\mathrm{sel}} = 0.00\%$** ($875 / 875$) | CP UCB$_{95} = \mathbf{0.342\%} \le 5.0\%$ | **`CONFIRMATORY_PASS`** |
+| **$H_2$** | Unconditional Incidence Reduction vs V8.1 Primary | $\mathcal{D}_{\mathrm{test}}^{\mathrm{mix}}$ ($N=1{,}440$) | **$0$ FS vs $12$ FS** | McNemar exact **$p = 4.88 \times 10^{-4}$** | **`CONFIRMATORY_PASS`** |
+| **$H_3$** | TSR Noninferiority vs V8.1 Primary ($\text{TSR}_{\text{nom}} \ge 0.94$) | $\mathcal{D}_{\mathrm{test}}^{\mathrm{scen}}$ ($N=1{,}440$) | **$\Delta \mathrm{TSR} = +11.33\%$** | Student-t Wald $\mathrm{LCB}_{95} = \mathbf{+9.26\%} > -5\%$ | **`CONFIRMATORY_PASS`** |
+| **$H_4$** | Compound Fault False-Success Reduction vs V8.1 | $\mathcal{D}_{\mathrm{test}}^{\mathrm{scen}}$ (4 Scenarios, $N=480$) | **$0$ FS vs $12$ FS** | McNemar exact **$p = 4.88 \times 10^{-4}$** | **`CONFIRMATORY_PASS`** |
+| **$H_5$** | Worst-Case Scenario Safety via Berger IUT | $\mathcal{D}_{\mathrm{test}}^{\mathrm{scen}}$ (12 Scenarios, $N=1{,}440$) | **$FS = 0$ in all 12** | Berger IUT $\max_s(p_s) = \mathbf{0.002122} \le 0.05$ | **`CONFIRMATORY_PASS_IUT`** |
+
+### 6.2 Milestone V9-M4 Official Release Sign-Off
+- **Governance State:** **`RELEASE_CANDIDATE_CERTIFIED — GATE_B_CONFIRMED`**
+- **Replay Ledger State:** `CLOSED` (Both `mixture` and `scenario` partitions committed to `CONSUMED`).
+- **Certified Candidate Policy:** `V9_CAND_1_TIER1_STRICTEST` (SHA-256: `5a89d6061b379f1b34ab47be0deef8d63180d3e4c21d18c478bc7e451f5c84e2`).
+- **Approved Release Commit:** `a6d5addd869aae1dcddf06c0fee04dbd25892f06`.
+- **Zero-Failure Invariant:** 0 false arrivals, 0 physical collisions, 0 numerical crashes across all 2,880 production episodes.
+- **Reference Document:** [V9_M4_GATE_B_CONFIRMATORY_REPORT.md](file:///Users/chalermsak/Desktop/nexvia-aegis-main/V9_M4_GATE_B_CONFIRMATORY_REPORT.md).

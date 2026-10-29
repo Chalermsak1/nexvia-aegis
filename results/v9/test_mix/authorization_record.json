@@ -1,0 +1,22 @@
+{
+  "schema_version": "nexvia-aegis-v9-authorization-record/1.0",
+  "created_utc": "2026-10-28T19:55:54.822599+00:00",
+  "ticket_nonce": "47520a76e79783664bc007c45284d1d6dd3fe9e425b2e75478315fb2a9a57626",
+  "authorized_partition": "mixture",
+  "approved_commit": "a6d5addd869aae1dcddf06c0fee04dbd25892f06",
+  "evaluator_artifact_sha256": "fc459dbe9afc2f683804edde114e070d6413056a4ff9de4be27a52f7d2609a21",
+  "policy_sha256": "5a89d6061b379f1b34ab47be0deef8d63180d3e4c21d18c478bc7e451f5c84e2",
+  "manifest_sha256": "70fe9d539a7fca7f44e8a1aea2d7193002e520c2d3b4980f461a06a73906f1db",
+  "lockfile_sha256": "f90654ab95d7b7c543179fc64fe666a912e10f5c9b2e3d72bb9223f2a7e3c2aa",
+  "claimed_at_utc": "2026-10-28T19:55:54Z",
+  "claim_bound_at_utc": "2026-10-28T19:55:54.813807+00:00",
+  "worker_pid": 87808,
+  "mode": "PRODUCTION",
+  "statuses": {
+    "execution_completion": "COMPLETED",
+    "output_integrity": "INTEGRITY_VERIFIED",
+    "execution_provenance": "PROVENANCE_VERIFIED",
+    "statistical_acceptance": "NOT_EVALUATED"
+  },
+  "integrity_sha256": "529de91b1ef5fc0930647bb2f1f8f1cb72a8c75a6122bc95e80a1463f6fcbd1c"
+}

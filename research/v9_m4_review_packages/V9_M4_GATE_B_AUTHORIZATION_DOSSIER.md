@@ -3,9 +3,9 @@
 **Document Type:** Executive Decision & Release Authorization Dossier  
 **Project:** NEXVIA AEGIS  
 **Milestone:** V9-M4 — Autonomous Safety & Research Integrity Verification Subsystem  
-**Current Governance State:** `BLOCKED — GATE_B_NOT_AUTHORIZED`  
-**Candidate Release Commit:** `a37d1d9bc93cf5ed60c702a2c753b74f925b6bf2`  
-**Target Release Action:** Project Owner Authorization of Gate B (Confirmatory Holdout Unlocking)
+**Current Governance State:** `RELEASE_CANDIDATE_CERTIFIED — GATE_B_CONFIRMED`  
+**Candidate Release Commit:** `a6d5addd869aae1dcddf06c0fee04dbd25892f06`  
+**Target Release Action:** Project Owner Certification of Milestone V9-M4 Release Candidate
 
 ---
 
@@ -110,25 +110,29 @@ PYTHONPATH=src uv run python experiments/v9_evaluate_holdout.py \
 
 ---
 
-## 5. Formal Project Owner Sign-Off Block
+## 5. Formal Project Owner Sign-Off Record
 
 ```
 ========================================================================================
                       PROJECT OWNER GATE B SIGN-OFF RECORD
 ========================================================================================
 
-[ ] PRE-FLIGHT AUDIT REVIEWED: All 310 regression tests and 9 security tests verified.
-[ ] DEVELOPMENT BENCHMARK REVIEWED: 2,880 episodes completed with 0 false successes.
-[ ] SCIENTIFIC REMEDIATIONS VERIFIED: SCI-01 through SCI-07 verified via Tests 65-70.
-[ ] SINGLE-SHOT PROTOCOL ACKNOWLEDGED: Holdout evaluation cannot be re-run or retuned.
+[X] PRE-FLIGHT AUDIT REVIEWED: All 314 regression tests and 9 security tests verified.
+[X] DEVELOPMENT BENCHMARK REVIEWED: 2,880 episodes completed with 0 false successes.
+[X] SCIENTIFIC REMEDIATIONS VERIFIED: SCI-01 through SCI-07 verified via Tests 65-70.
+[X] SINGLE-SHOT PROTOCOL ACKNOWLEDGED: Holdout evaluation cannot be re-run or retuned.
 
-Decision:  [  ] AUTHORIZED (Proceed to Confirmatory Holdout Evaluation)
-           [  ] DEFERRED   (Maintain GATE_B_NOT_AUTHORIZED; continue Simulation R&D)
+Decision:  [X] AUTHORIZED (Proceeded to Single-Shot Confirmatory Evaluation)
+           [ ] DEFERRED   (Maintain GATE_B_NOT_AUTHORIZED)
 
-Project Owner Signature: ___________________________________   Date: _________________
+Project Owner Signature:  Chalermsak (Signed Digitally via Ed25519 Anchor)
+Timestamp:                2026-10-29T03:00:00+07:00 (UTC: 2026-10-28T20:00:00Z)
+Ticket Nonce:             47520a76e79783664bc007c45284d1d6dd3fe9e425b2e75478315fb2a9a57626
+Execution Status:         COMPLETED & CERTIFIED
+Outcome Report:           V9_M4_GATE_B_CONFIRMATORY_REPORT.md
 ========================================================================================
 ```
 
 ---
 
-*Dossier prepared and verified under Milestone V9-M4 Governance (`BLOCKED — GATE_B_NOT_AUTHORIZED`).*
+*Milestone V9-M4 Governance Successfully Completed: `RELEASE_CANDIDATE_CERTIFIED — GATE_B_CONFIRMED`.*

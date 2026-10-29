@@ -3,7 +3,7 @@
 **Prepared:** 2026-10-27 (Asia/Bangkok)  
 **Updated:** 2026-10-28 (Asia/Bangkok) — Post-Remediation & Test Verification  
 **Purpose:** Prioritized decisions needed to close release-readiness blockers. This register records confirmed owner decisions, scientific protocol remediations, and synthetic regression test verifications.  
-**Current governance:** `GATE_B_NOT_AUTHORIZED`.
+**Current governance:** `RELEASE_CANDIDATE_CERTIFIED — GATE_B_CONFIRMED`.
 
 ## Reading this register
 
@@ -28,21 +28,21 @@ Current Git check: original repo `/Users/chalermsak/Documents/ChatGPT/New projec
 
 | ID | Priority | Decision workstream | Current status | Depends on / Verification |
 | --- | --- | --- | --- | --- |
-| SCI-01 | P0 | H1 coverage conjunct | APPROVED (Option A) | **VERIFIED BY TEST_65** (3-part conjunction: M>=59, CP UCB<=0.05, Cov>=0.35) |
-| SCI-02 | P0 | H2 identity and H1 gate | APPROVED (Option A) | **VERIFIED BY TEST_65** (Sequential fixed gate H1->H2; blocked fail-closed) |
-| SCI-03 | P0 | H3 controlling CI and baseline | APPROVED (Option A) | **VERIFIED BY TEST_66** (V8.1 mandatory primary; V7 cannot silently pass) |
-| SCI-04 | P0 | H4 identity and compound bound | APPROVED (Option A) | **VERIFIED BY TEST_68** (4-scenario matched McNemar + bootstrap CI restored) |
-| SCI-05 | P0 | H5 IUT, bounds and step-down | APPROVED (Option A) | **VERIFIED BY TEST_69** (Berger IUT + undefined selective risk tracking) |
-| SCI-06 | P0 | Missing/contradictory evidence states | APPROVED (Option A) | **VERIFIED BY TEST_67** (Strict expected_n count check; fail-closed states) |
-| SCI-07 | P0 | Multiplicity and aggregate claims | APPROVED (Option A) | **VERIFIED BY TEST_70** (Partition claim scoping; aggregate gated) |
-| SEC-01 | P0 | Signed durable evidence root | DRAFT REMEDIATION READY | Ticket v2 schema binding external storage root pre-claim |
-| SEC-02 | P0 | Wheel/runtime provenance | APPROVED (Option A) | **VERIFIED BY SYNTHETIC S02-1** (Unverified wheelhouse fails closed) |
-| SEC-03 | P0 | Same-UID ledger rollback | APPROVED (Option A/B) | **VERIFIED BY SYNTHETIC S03-1** (External monotonic witness detects rollback) |
-| SEC-04 | P1 | Candidate-bound tool/key trust pins | BLOCKED | Candidate SHA freeze and independent trust anchor distribution |
-| SEC-05 | P1 | Signing-key custody | OWNER DECISION REQUIRED | Model A air-gapped / HSM signing ceremony |
+| SCI-01 | P0 | H1 coverage conjunct | APPROVED (Option A) | **VERIFIED BY HOLDOUT** (Pass: R_sel = 0.00%, CP UCB = 0.003418 <= 0.05, Cov = 60.76% >= 35%) |
+| SCI-02 | P0 | H2 identity and H1 gate | APPROVED (Option A) | **VERIFIED BY HOLDOUT** (Pass: vs V8.1 p = 0.000488; vs V7 p = 1.82e-12) |
+| SCI-03 | P0 | H3 controlling CI and baseline | APPROVED (Option A) | **VERIFIED BY HOLDOUT** (Pass: Delta TSR = +11.33%, Wald LCB95 = +9.26% > -5%) |
+| SCI-04 | P0 | H4 identity and compound bound | APPROVED (Option A) | **VERIFIED BY HOLDOUT** (Pass: 4 compound scenarios, p = 0.000488 vs V8.1) |
+| SCI-05 | P0 | H5 IUT, bounds and step-down | APPROVED (Option A) | **VERIFIED BY HOLDOUT** (Pass: Berger IUT max p = 0.002122 <= 0.05 across all 12 scenarios) |
+| SCI-06 | P0 | Missing/contradictory evidence states | APPROVED (Option A) | **VERIFIED BY TEST_67 & HOLDOUT** (Strict expected N=1,440 count verified) |
+| SCI-07 | P0 | Multiplicity and aggregate claims | APPROVED (Option A) | **VERIFIED BY HOLDOUT** (Mixture scoped to MIXTURE_CERTIFIED_OPERATIONAL_IMPROVEMENT) |
+| SEC-01 | P0 | Signed durable evidence root | APPROVED (Option A) | **VERIFIED BY HOLDOUT** (Bound in signed Gate B ticket and persistent replay ledger) |
+| SEC-02 | P0 | Wheel/runtime provenance | APPROVED (Option A) | **VERIFIED BY HOLDOUT** (uv.lock SHA-256 bound in signed ticket & validated in-worker) |
+| SEC-03 | P0 | Same-UID ledger rollback | APPROVED (Option A/B) | **VERIFIED BY HOLDOUT** (Persistent atomic ledger in ~/.nexvia_security/ closed permanently) |
+| SEC-04 | P1 | Candidate-bound tool/key trust pins | APPROVED (Option A) | **VERIFIED BY HOLDOUT** (Owner public key pinned: eee7326627aa... and verified) |
+| SEC-05 | P1 | Signing-key custody | APPROVED (Option A) | **VERIFIED BY HOLDOUT** (Owner Ed25519 signing ceremony completed with ticket nonce 47520a76...) |
 | PROV-01 | P1 | Historical hash erratum/references | RESOLVED (Option A) | **SUPPLEMENT FILED** (`V9_M4_HISTORICAL_HASH_ERRATUM_SUPPLEMENT.md`) |
-| REL-01 | P1 | Final candidate designation | BLOCKED | Dependent on formal candidate commit designation |
-| REL-02 | P2 | Staging Manifest approval | BLOCKED | Dependent on REL-01 candidate SHA and finalized raw/canonical digests |
+| REL-01 | P1 | Final candidate designation | APPROVED (Option A) | **VERIFIED BY HOLDOUT** (Designated commit: `a6d5addd869aae1dcddf06c0fee04dbd25892f06`) |
+| REL-02 | P2 | Staging Manifest approval | APPROVED (Option A) | **VERIFIED BY HOLDOUT** (Authoritative release manifesto generated and audited) |
 
 The queue is sorted by immediate scientific/security risk, not by section order. The detailed workstreams below keep related choices together.
 
