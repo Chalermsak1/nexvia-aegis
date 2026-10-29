@@ -1,0 +1,38 @@
+{
+  "obstacle_avoidance": {
+    "unshielded_naive": {
+      "collision_rate_pct": 100.0,
+      "avg_max_tilt_deg": 32.3
+    },
+    "cbf_only": {
+      "collision_rate_pct": 0.0,
+      "avg_max_tilt_deg": 24.2
+    },
+    "aegis_full": {
+      "collision_rate_pct": 0.0,
+      "avg_max_tilt_deg": 24.2
+    }
+  },
+  "sensor_corruption": {
+    "unshielded_naive": {
+      "false_success_rate_pct": 100.0,
+      "abstain_rate_pct": 0.0,
+      "avg_final_distance_m": 0.792
+    },
+    "cbf_only": {
+      "false_success_rate_pct": 100.0,
+      "abstain_rate_pct": 0.0,
+      "avg_final_distance_m": 0.789
+    },
+    "aegis_full": {
+      "false_success_rate_pct": 0.0,
+      "abstain_rate_pct": 100.0,
+      "avg_final_distance_m": 0.48
+    }
+  },
+  "nominal_arrival": {
+    "true_success_rate_pct": 100.0,
+    "avg_final_distance_m": 0.177,
+    "avg_arrival_steps": 66.2
+  }
+}
