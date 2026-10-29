@@ -96,30 +96,38 @@ class ByzantineResilientMartingaleConsensus:
         # Swarm alarm triggered if resilient wealth crosses Ville bound
         swarm_alarm = consensus_wealth >= self.wealth_threshold
 
-        # 2. Resilient Coordinate Median / Centerpoint Spatial Fusion
-        # For 2D/3D vectors, compute geometric coordinate median to reject spatial Byzantine vectors
-        pos_matrix = np.array([m.pos_estimate for m in active_msgs])  # shape (n_active, dim)
-        coord_median = np.median(pos_matrix, axis=0)
+        # 2. Resilient Coordinate Trimmed Centerpoint Spatial Fusion
+        # Eliminates spatial distortion from up to F Byzantine peers along each dimension
+        pos_matrix = np.array([m.pos_estimate for m in active_msgs], dtype=np.float64)  # shape (n_active, dim)
+        dim = pos_matrix.shape[1]
+        coord_center = np.zeros(dim, dtype=np.float64)
+        for d in range(dim):
+            sorted_coords = np.sort(pos_matrix[:, d])
+            trimmed_slice = sorted_coords[f : n_active - f]
+            coord_center[d] = float(np.mean(trimmed_slice)) if len(trimmed_slice) > 0 else float(np.median(sorted_coords))
 
         # 3. Byzantine Quarantine Screening with Consecutive Breach Counter
-        # An agent is flagged for quarantine if its spatial discrepancy from the coordinate median
-        # exceeds byzantine_isolation_threshold * sigma for 3 consecutive steps.
+        # An agent is flagged for quarantine if its spatial discrepancy from the coordinate trimmed center
+        # exceeds byzantine_isolation_threshold * sigma for 3 consecutive steps, or exhibits an extreme wealth breach.
         newly_quarantined = []
         for m in active_msgs:
-            dev = float(np.linalg.norm(m.pos_estimate - coord_median))
+            dev = float(np.linalg.norm(m.pos_estimate - coord_center))
             normalized_dev = dev / max(m.sigma, 1e-4)
-            if normalized_dev > self.byzantine_isolation_threshold:
+            is_spatial_breach = normalized_dev > self.byzantine_isolation_threshold
+            is_wealth_breach = m.martingale_wealth >= self.wealth_threshold
+
+            if is_spatial_breach or (is_wealth_breach and normalized_dev > 2.0):
                 self.breach_counts[m.agent_id] = self.breach_counts.get(m.agent_id, 0) + 1
                 if self.breach_counts[m.agent_id] >= 3:
                     self.quarantine_registry.add(m.agent_id)
                     newly_quarantined.append(m.agent_id)
             else:
-                self.breach_counts[m.agent_id] = 0
+                self.breach_counts[m.agent_id] = max(0, self.breach_counts.get(m.agent_id, 0) - 1)
 
         # 4. Inverse-Variance Weighting over Remaining Un-quarantined Agents
         final_valid_msgs = [m for m in active_msgs if m.agent_id not in self.quarantine_registry]
         if not final_valid_msgs:
-            final_pos = coord_median
+            final_pos = coord_center
             weights = {m.agent_id: 0.0 for m in messages}
         else:
             w_raw = [1.0 / (m.sigma**2) for m in final_valid_msgs]
