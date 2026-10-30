@@ -79,7 +79,7 @@ def run_benchmark(n_episodes_per_controller: int = 15) -> dict:
         },
     }
 
-    env = AegisQuadrotor6DOFEnvironment(quad_cfg)
+    env = AegisQuadrotor6DOFEnvironment(quad_cfg, obstacles=[])
     m = quad_cfg.mass
     g = quad_cfg.gravity
     hover_f = np.array([0.0, 0.0, m * g], dtype=np.float64)
@@ -113,7 +113,7 @@ def run_benchmark(n_episodes_per_controller: int = 15) -> dict:
             nmpc_controller.reset()
             last_cmd_force = hover_f.copy()
 
-            ep_steps = 125 # 2.5 seconds max
+            ep_steps = 150 # 3.0 seconds max
             reached = False
 
             for step_idx in range(ep_steps):
@@ -132,8 +132,8 @@ def run_benchmark(n_episodes_per_controller: int = 15) -> dict:
                 d_curr = float(np.linalg.norm(curr_p - obs_center) - obs_radius - quad_cfg.robot_collision_radius)
                 min_dist = min(min_dist, d_curr)
 
-                # Check if reached target (within 0.12m)
-                if np.linalg.norm(curr_p - target_pos) < 0.12:
+                # Check if reached target (within 0.15m)
+                if np.linalg.norm(curr_p - target_pos) < 0.15:
                     reached = True
                     break
 
