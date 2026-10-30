@@ -1,11 +1,11 @@
-"""Production-Grade ROS 2 Humble Companion Computer Node for NEXVIA AEGIS.
+"""Experimental companion-computer control model for NEXVIA AEGIS.
 
 Implements real-time 200 Hz inner-loop attitude setpoint generation,
 latency-compensated HOCBF safety filtering, UKF obstacle tracking, and
 Active POMDP camera saccade control for PX4 Autopilot.
 
-Can run either inside a live ROS 2 Humble/Iron runtime, or in a standalone
-pure-Python Software-in-the-Loop (SITL) mode for deterministic testing.
+Provides a standalone pure-Python test harness. Live ROS 2 transport is not
+implemented; the live interface fails explicitly until it can be validated.
 """
 
 from __future__ import annotations
@@ -68,15 +68,15 @@ class AegisNodeConfig:
 
 
 class AegisROS2DroneNode(RclpyNode):
-    """AEGIS ROS 2 Companion Computer Autonomy Node.
+    """Standalone companion-computer control model.
 
-    Subscribes:
+    Intended future ROS 2 subscriptions (not implemented here):
       - /mavros/local_position/pose (geometry_msgs/msg/PoseStamped)
       - /mavros/local_position/velocity_local (geometry_msgs/msg/TwistStamped)
       - /perception/obstacles (custom list of SensorObservation or PoseArray)
       - /mavros/battery (sensor_msgs/msg/BatteryState)
 
-    Publishes:
+    Intended future ROS 2 publishers (current methods record in memory only):
       - /mavros/setpoint_raw/attitude (mavros_msgs/msg/AttitudeTarget) @ 200 Hz
       - /camera/gimbal_setpoint (geometry_msgs/msg/Vector3) @ 20 Hz
       - /aegis/diagnostics (telemetry JSON / diagnostic message)
@@ -84,7 +84,7 @@ class AegisROS2DroneNode(RclpyNode):
 
     def __init__(self, config: AegisNodeConfig | None = None) -> None:
         if _HAS_RCLPY:
-            super().__init__("aegis_drone_node")
+            raise RuntimeError("ROS 2 transport is not implemented or validated; use the standalone simulation harness")
         self.config = config or AegisNodeConfig()
 
         # Initialize sub-modules
@@ -113,19 +113,12 @@ class AegisROS2DroneNode(RclpyNode):
         self.published_gimbal_setpoints: list[dict[str, Any]] = []
         self.published_diagnostics: list[dict[str, Any]] = []
 
-        # ROS 2 Timers and interfaces if rclpy is present
-        if _HAS_RCLPY:
-            self._init_ros2_interfaces()
-
     def _init_ros2_interfaces(self) -> None:
-        """Initializes standard ROS 2 publishers and timers."""
-        # 200 Hz inner loop timer
-        self.control_timer = self.create_timer(
-            1.0 / self.config.control_rate_hz, self._on_control_cycle
-        )
+        """Prevent a live node from silently using in-memory test recorders."""
+        raise RuntimeError("ROS 2 transport is not implemented or validated; use the standalone simulation harness")
 
     def publish_attitude_target(self, setpoint: AttitudeTargetSetpoint) -> None:
-        """Publishes 200 Hz attitude setpoint to PX4 Autopilot (/mavros/setpoint_raw/attitude)."""
+        """Record a simulated attitude setpoint in memory; no ROS message is sent."""
         data = {
             "timestamp_s": setpoint.timestamp_s,
             "orientation_wxyz": setpoint.orientation_wxyz.copy(),
@@ -136,7 +129,7 @@ class AegisROS2DroneNode(RclpyNode):
         self.published_attitude_setpoints.append(data)
 
     def publish_gimbal_target(self, pan_deg: float, tilt_deg: float) -> None:
-        """Publishes 20 Hz active camera saccade setpoint (/camera/gimbal_setpoint)."""
+        """Record a simulated camera setpoint in memory."""
         data = {
             "pan_deg": float(pan_deg),
             "tilt_deg": float(tilt_deg),
@@ -145,7 +138,7 @@ class AegisROS2DroneNode(RclpyNode):
         self.published_gimbal_setpoints.append(data)
 
     def publish_diagnostics(self, diag: WatchdogDiagnostic) -> None:
-        """Publishes health and safety diagnostics telemetry (/aegis/diagnostics)."""
+        """Record simulated health and safety diagnostics in memory."""
         data = {
             "timestamp_s": diag.timestamp_s,
             "health_state": diag.health_state.name,
@@ -169,12 +162,20 @@ class AegisROS2DroneNode(RclpyNode):
         timestamp_s: float,
     ) -> None:
         """Ingests state estimate from PX4 EKF2."""
+        vectors = (position, quaternion_wxyz, linear_velocity, angular_velocity)
+        shapes = ((3,), (4,), (3,), (3,))
+        if any(np.shape(value) != shape or not np.all(np.isfinite(value))
+               for value, shape in zip(vectors, shapes)):
+            return
+        if np.linalg.norm(quaternion_wxyz) <= 1e-8:
+            return
+        if not self.watchdog.record_odometry(timestamp_s):
+            return
         self.current_odom.timestamp_s = timestamp_s
         self.current_odom.position = np.copy(position)
         self.current_odom.quaternion_wxyz = np.copy(quaternion_wxyz)
         self.current_odom.linear_velocity = np.copy(linear_velocity)
         self.current_odom.angular_velocity = np.copy(angular_velocity)
-        self.watchdog.record_odometry(timestamp_s)
 
     def ingest_perception_clusters(
         self,
@@ -183,8 +184,14 @@ class AegisROS2DroneNode(RclpyNode):
         dt: float = 0.05,
     ) -> None:
         """Ingests 3D obstacle clusters (centroid_xyz, radius) from LiDAR/camera clustering."""
+        if not math.isfinite(dt) or dt <= 0.0:
+            return
+        if any(np.shape(center) != (3,) or not np.all(np.isfinite(center))
+               or not math.isfinite(radius) or radius < 0.0 for center, radius in clusters):
+            return
+        if not self.watchdog.record_perception(timestamp_s):
+            return
         self.ukf_tracker.update_from_clusters(clusters, dt=dt)
-        self.watchdog.record_perception(timestamp_s)
 
     def ingest_perception(
         self,
@@ -203,6 +210,9 @@ class AegisROS2DroneNode(RclpyNode):
         timestamp_s: float,
     ) -> None:
         """Ingests battery power telemetry."""
+        if (not all(math.isfinite(v) for v in (voltage_v, current_a, percentage, timestamp_s))
+                or voltage_v <= 0.0 or timestamp_s <= self.current_battery.timestamp_s):
+            return
         self.current_battery.timestamp_s = timestamp_s
         self.current_battery.voltage_v = voltage_v
         self.current_battery.current_a = current_a
@@ -235,13 +245,17 @@ class AegisROS2DroneNode(RclpyNode):
     # 200 Hz Core Control and Safety Evaluation Cycle
     # ------------------------------------------------------------------
     def step_control_cycle(self, now_s: float) -> tuple[AttitudeTargetSetpoint, WatchdogDiagnostic]:
-        """Executes one real-time 200 Hz safety loop iteration."""
+        """Execute one simulated control cycle; real-time timing is not established."""
         self.watchdog.record_heartbeat(now_s)
 
         # 1. Evaluate Watchdog Health & Latency Compensation
+        if math.isfinite(now_s) and self.current_battery.timestamp_s > now_s:
+            # Discard a packet from another clock domain so a later valid one can recover.
+            self.current_battery.timestamp_s = 0.0
         diag = self.watchdog.evaluate_health(
             now_s=now_s,
-            battery_voltage_v=self.current_battery.voltage_v,
+            battery_voltage_v=(self.current_battery.voltage_v
+                               if self.current_battery.timestamp_s > 0.0 else float("nan")),
             martingale_violation=self.martingale_violation,
         )
 

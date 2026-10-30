@@ -1,13 +1,13 @@
-"""Real-Time Safety Watchdog and Latency-Compensating State Machine for Embedded Flight.
+"""Experimental safety watchdog and latency-compensating state machine.
 
-Ensures that transport latency (20-30ms), sensor dropouts, and communication
-jitter do not violate safety barrier forward invariance. Provides deterministic
-failsafe degradation levels for companion computers.
+Produces simulated failsafe recommendations from telemetry freshness and
+battery state. It does not prove forward invariance or provide an independent
+hardware watchdog if the process or control loop stops running.
 """
 
 from __future__ import annotations
 
-import time
+import math
 from dataclasses import dataclass, field
 from enum import Enum, auto
 import numpy as np
@@ -65,11 +65,17 @@ class RealtimeSafetyWatchdog:
     def record_heartbeat(self, now_s: float) -> None:
         self.last_heartbeat_time_s = now_s
 
-    def record_odometry(self, now_s: float) -> None:
+    def record_odometry(self, now_s: float) -> bool:
+        if not math.isfinite(now_s) or now_s <= 0.0 or now_s <= self.last_odometry_time_s:
+            return False
         self.last_odometry_time_s = now_s
+        return True
 
-    def record_perception(self, now_s: float) -> None:
+    def record_perception(self, now_s: float) -> bool:
+        if not math.isfinite(now_s) or now_s <= 0.0 or now_s <= self.last_perception_time_s:
+            return False
         self.last_perception_time_s = now_s
+        return True
 
     def extrapolate_state_for_latency(
         self,
@@ -96,8 +102,8 @@ class RealtimeSafetyWatchdog:
         martingale_violation: bool = False,
     ) -> WatchdogDiagnostic:
         """Evaluates health criteria and determines safety actions."""
-        has_odom = self.last_odometry_time_s > 0.0
-        has_perc = self.last_perception_time_s > 0.0
+        has_odom = math.isfinite(self.last_odometry_time_s) and self.last_odometry_time_s > 0.0
+        has_perc = math.isfinite(self.last_perception_time_s) and self.last_perception_time_s > 0.0
 
         odom_age = (now_s - self.last_odometry_time_s) if has_odom else float("inf")
         perc_age = (now_s - self.last_perception_time_s) if has_perc else float("inf")
@@ -108,6 +114,20 @@ class RealtimeSafetyWatchdog:
             perception_age_ms=perc_age * 1000.0 if has_perc else float("inf"),
             battery_voltage_v=battery_voltage_v,
         )
+
+        if not math.isfinite(now_s) or now_s < 0.0:
+            self.current_state = WatchdogHealthState.UNINITIALIZED
+            diagnostic.health_state = self.current_state
+            diagnostic.recommended_action = FailsafeAction.POSITION_HOLD_HOVER
+            diagnostic.failsafe_reason = "Invalid watchdog clock"
+            return diagnostic
+
+        if not math.isfinite(battery_voltage_v) or battery_voltage_v <= 0.0:
+            self.current_state = WatchdogHealthState.UNINITIALIZED
+            diagnostic.health_state = self.current_state
+            diagnostic.recommended_action = FailsafeAction.POSITION_HOLD_HOVER
+            diagnostic.failsafe_reason = "Battery telemetry is missing or invalid"
+            return diagnostic
 
         # 1. Critical Battery Failsafe
         if battery_voltage_v <= self.config.battery_critical_v:
@@ -133,6 +153,16 @@ class RealtimeSafetyWatchdog:
             diagnostic.failsafe_reason = "Odometry uninitialized: no EKF2 state packet received yet"
             return diagnostic
 
+        # Source timestamps must share the watchdog clock. A future sample
+        # cannot establish freshness; clear it so a later valid sample can recover.
+        if odom_age < 0.0:
+            self.last_odometry_time_s = 0.0
+            self.current_state = WatchdogHealthState.UNINITIALIZED
+            diagnostic.health_state = self.current_state
+            diagnostic.recommended_action = FailsafeAction.POSITION_HOLD_HOVER
+            diagnostic.failsafe_reason = "Odometry timestamp is ahead of watchdog clock"
+            return diagnostic
+
         # 4. Odometry Communication Timeout
         if odom_age > self.config.odometry_timeout_s:
             self.consecutive_timeouts += 1
@@ -149,14 +179,17 @@ class RealtimeSafetyWatchdog:
             return diagnostic
 
         # 5. Perception Timeout or Uninitialized Perception Feed
-        if not has_perc or perc_age > self.config.perception_timeout_s:
+        if not has_perc or perc_age < 0.0 or perc_age > self.config.perception_timeout_s:
+            if has_perc and perc_age < 0.0:
+                self.last_perception_time_s = 0.0
             self.current_state = WatchdogHealthState.VISION_DEGRADED
             diagnostic.health_state = self.current_state
             diagnostic.recommended_action = FailsafeAction.VELOCITY_AIR_BRAKE
             diagnostic.failsafe_reason = (
                 "Perception uninitialized (no visual/LiDAR feed received yet) - Engaging air-brake"
                 if not has_perc
-                else f"Perception feed delayed ({perc_age*1000:.1f}ms > {self.config.perception_timeout_s*1000:.1f}ms) - Engaging air-brake"
+                else ("Perception timestamp is ahead of watchdog clock - Engaging air-brake"
+                      if perc_age < 0.0 else f"Perception feed delayed ({perc_age*1000:.1f}ms > {self.config.perception_timeout_s*1000:.1f}ms) - Engaging air-brake")
             )
             return diagnostic
 

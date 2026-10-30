@@ -169,15 +169,28 @@ class Aegis3DAwareController:
         elif reading_b is not None:
             vec_b = np.asarray(reading_b, dtype=np.float64)
 
+        for vec, sigma in ((vec_a, sig_a), (vec_b, sig_b)):
+            if vec is not None and (
+                vec.shape != (3,) or not np.all(np.isfinite(vec))
+                or not math.isfinite(sigma) or sigma <= 0.0
+            ):
+                self.arrival_check_steps = 0
+                self.arrival_range_samples = []
+                self.terminal_reason = "INVALID_3D_VECTOR_OBSERVATION"
+                return np.zeros(3), "ABSTAIN", np.zeros(3), False
+
         r_dist: float | None = None
         r_valid = False
         sig_r = 0.05
         if isinstance(range_reading, RangeReading):
             if range_reading.valid and not range_reading.dropped:
-                r_dist = float(range_reading.distance)
-                r_valid = True
-                sig_r = float(range_reading.sigma)
-        elif range_reading is not None and math.isfinite(float(range_reading)):
+                candidate_range = float(range_reading.distance)
+                candidate_sigma = float(range_reading.sigma)
+                if math.isfinite(candidate_range) and candidate_range >= 0.0 and math.isfinite(candidate_sigma) and candidate_sigma > 0.0:
+                    r_dist = candidate_range
+                    r_valid = True
+                    sig_r = candidate_sigma
+        elif range_reading is not None and math.isfinite(float(range_reading)) and float(range_reading) >= 0.0:
             r_dist = float(range_reading)
             r_valid = True
 
@@ -197,17 +210,20 @@ class Aegis3DAwareController:
         # Anchor calibration update if available and valid
         query_anchor = False
         if anchor_reading is not None:
-            is_valid = anchor_reading.valid if isinstance(anchor_reading, AnchorReading) else True
+            is_valid = (anchor_reading.valid and anchor_reading.queried
+                        and math.isfinite(anchor_reading.sigma) and anchor_reading.sigma > 0.0
+                        if isinstance(anchor_reading, AnchorReading) else True)
             if is_valid:
                 anc_val = (
                     np.asarray(anchor_reading.estimate, dtype=np.float64)
                     if isinstance(anchor_reading, AnchorReading)
                     else np.asarray(anchor_reading, dtype=np.float64)
                 )
-                if vec_a is not None:
-                    self.cal_a.update(vec_a, anc_val)
-                if vec_b is not None:
-                    self.cal_b.update(vec_b, anc_val)
+                if anc_val.shape == (3,) and np.all(np.isfinite(anc_val)):
+                    if vec_a is not None:
+                        self.cal_a.update(vec_a, anc_val)
+                    if vec_b is not None:
+                        self.cal_b.update(vec_b, anc_val)
 
         # Complete sensor failure check
         if vec_a is None and vec_b is None:
