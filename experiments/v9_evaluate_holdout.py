@@ -1045,34 +1045,44 @@ def evaluate_mixture_holdout(
         if str(r.get("scenario", "")) in s10_suite or (r.get("scenario_index") is not None and int(r.get("scenario_index", 0)) <= 10)
     ]
     if not s10_records:
-        s10_records = list(records)
-    n_10 = len(s10_records)
-    m_10 = sum(1 for r in s10_records if int(r.get("accepted", 0)) == 1)
-    fs_10 = sum(1 for r in s10_records if int(r.get("accepted", 0)) == 1 and int(r.get("false_success", 0)) == 1)
-    r_sel_10 = fs_10 / m_10 if m_10 > 0 else float("nan")
-    h2_core10_precondition_met = bool(m_10 >= 59)
-    h2_core10_ucb95 = clopper_pearson_one_sided_ucb(fs_10, m_10, delta=0.05) if m_10 > 0 else float("nan")
-
-    if not h1_passed:
+        n_10 = 0
+        m_10 = 0
+        fs_10 = 0
+        r_sel_10 = float("nan")
+        h2_core10_precondition_met = False
+        h2_core10_ucb95 = float("nan")
         h2_core10_passed = False
-        h2_core10_status = "BLOCKED_BY_H1_GATE"
+        h2_core10_status = "UNEVALUABLE_NO_CORE10_DATA"
         h2_passed = False
-        h2_status = "BLOCKED_BY_H1_GATE"
-    elif not h2_core10_precondition_met:
-        h2_core10_passed = False
-        h2_core10_status = "INSUFFICIENT_ACCEPTED_SAMPLE_M_LT_59"
-        h2_passed = False
-        h2_status = "INSUFFICIENT_ACCEPTED_SAMPLE_M_LT_59"
-    elif h2_core10_ucb95 <= 0.05:
-        h2_core10_passed = True
-        h2_core10_status = "CONFIRMATORY_PASS"
-        h2_passed = True
-        h2_status = "CONFIRMATORY_PASS"
+        h2_status = "UNEVALUABLE_NO_CORE10_DATA"
     else:
-        h2_core10_passed = False
-        h2_core10_status = "FAILED_UCB"
-        h2_passed = False
-        h2_status = "FAILED_UCB"
+        n_10 = len(s10_records)
+        m_10 = sum(1 for r in s10_records if int(r.get("accepted", 0)) == 1)
+        fs_10 = sum(1 for r in s10_records if int(r.get("accepted", 0)) == 1 and int(r.get("false_success", 0)) == 1)
+        r_sel_10 = fs_10 / m_10 if m_10 > 0 else float("nan")
+        h2_core10_precondition_met = bool(m_10 >= 59)
+        h2_core10_ucb95 = clopper_pearson_one_sided_ucb(fs_10, m_10, delta=0.05) if m_10 > 0 else float("nan")
+
+        if not h1_passed:
+            h2_core10_passed = False
+            h2_core10_status = "BLOCKED_BY_H1_GATE"
+            h2_passed = False
+            h2_status = "BLOCKED_BY_H1_GATE"
+        elif not h2_core10_precondition_met:
+            h2_core10_passed = False
+            h2_core10_status = "INSUFFICIENT_ACCEPTED_SAMPLE_M_LT_59"
+            h2_passed = False
+            h2_status = "INSUFFICIENT_ACCEPTED_SAMPLE_M_LT_59"
+        elif h2_core10_ucb95 <= 0.05:
+            h2_core10_passed = True
+            h2_core10_status = "CONFIRMATORY_PASS"
+            h2_passed = True
+            h2_status = "CONFIRMATORY_PASS"
+        else:
+            h2_core10_passed = False
+            h2_core10_status = "FAILED_UCB"
+            h2_passed = False
+            h2_status = "FAILED_UCB"
 
     # Secondary Paired Incidence Baseline Comparisons (Gated by H_1)
     h2_results: dict[str, Any] = {}

@@ -17,6 +17,7 @@ from aegis.sim2real.mavlink_protocol import FailsafeAction, PX4FlightMode
 
 class WatchdogHealthState(Enum):
     """Real-time health status of companion computer safety loop."""
+    UNINITIALIZED = auto()
     HEALTHY_NOMINAL = auto()
     LATENCY_COMPENSATED = auto()
     VISION_DEGRADED = auto()
@@ -95,13 +96,16 @@ class RealtimeSafetyWatchdog:
         martingale_violation: bool = False,
     ) -> WatchdogDiagnostic:
         """Evaluates health criteria and determines safety actions."""
-        odom_age = now_s - self.last_odometry_time_s if self.last_odometry_time_s > 0.0 else 0.0
-        perc_age = now_s - self.last_perception_time_s if self.last_perception_time_s > 0.0 else 0.0
+        has_odom = self.last_odometry_time_s > 0.0
+        has_perc = self.last_perception_time_s > 0.0
+
+        odom_age = (now_s - self.last_odometry_time_s) if has_odom else float("inf")
+        perc_age = (now_s - self.last_perception_time_s) if has_perc else float("inf")
 
         diagnostic = WatchdogDiagnostic(
             timestamp_s=now_s,
-            odometry_age_ms=odom_age * 1000.0,
-            perception_age_ms=perc_age * 1000.0,
+            odometry_age_ms=odom_age * 1000.0 if has_odom else float("inf"),
+            perception_age_ms=perc_age * 1000.0 if has_perc else float("inf"),
             battery_voltage_v=battery_voltage_v,
         )
 
@@ -121,7 +125,15 @@ class RealtimeSafetyWatchdog:
             diagnostic.failsafe_reason = "Ville Supermartingale Wealth threshold crossed (Sensor Corrupted/Spoofed)"
             return diagnostic
 
-        # 3. Odometry Communication Timeout
+        # 3. Uninitialized Odometry (no odometry telemetry received yet)
+        if not has_odom:
+            self.current_state = WatchdogHealthState.UNINITIALIZED
+            diagnostic.health_state = self.current_state
+            diagnostic.recommended_action = FailsafeAction.POSITION_HOLD_HOVER
+            diagnostic.failsafe_reason = "Odometry uninitialized: no EKF2 state packet received yet"
+            return diagnostic
+
+        # 4. Odometry Communication Timeout
         if odom_age > self.config.odometry_timeout_s:
             self.consecutive_timeouts += 1
             if odom_age > self.config.odometry_timeout_s * 5.0:  # > 200 ms total loss
@@ -136,15 +148,19 @@ class RealtimeSafetyWatchdog:
                 diagnostic.failsafe_reason = f"Odometry timeout ({odom_age*1000:.1f}ms > {self.config.odometry_timeout_s*1000:.1f}ms)"
             return diagnostic
 
-        # 4. Perception Timeout (Vision / LiDAR drop)
-        if perc_age > self.config.perception_timeout_s:
+        # 5. Perception Timeout or Uninitialized Perception Feed
+        if not has_perc or perc_age > self.config.perception_timeout_s:
             self.current_state = WatchdogHealthState.VISION_DEGRADED
             diagnostic.health_state = self.current_state
             diagnostic.recommended_action = FailsafeAction.VELOCITY_AIR_BRAKE
-            diagnostic.failsafe_reason = f"Perception feed delayed ({perc_age*1000:.1f}ms > {self.config.perception_timeout_s*1000:.1f}ms) - Engaging air-brake"
+            diagnostic.failsafe_reason = (
+                "Perception uninitialized (no visual/LiDAR feed received yet) - Engaging air-brake"
+                if not has_perc
+                else f"Perception feed delayed ({perc_age*1000:.1f}ms > {self.config.perception_timeout_s*1000:.1f}ms) - Engaging air-brake"
+            )
             return diagnostic
 
-        # 5. Healthy Nominal State (with latency compensation)
+        # 6. Healthy Nominal State (with latency compensation)
         self.consecutive_timeouts = 0
         if odom_age > 0.010:
             self.current_state = WatchdogHealthState.LATENCY_COMPENSATED

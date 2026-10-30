@@ -186,24 +186,28 @@ class Aegis3DAwareController:
         # Handle range dropouts
         if not r_valid:
             self.consecutive_range_dropouts += 1
+            self.arrival_check_steps = 0
+            self.arrival_range_samples = []
             if self.consecutive_range_dropouts > 8 and self.mode == "ACTIVE_PROBING":
                 self.terminal_reason = "PERSISTENT_RANGE_DROPOUT_UNDER_STRESS"
                 return np.zeros(3), "ABSTAIN", self.last_nav_vector_3d, False
         else:
             self.consecutive_range_dropouts = 0
 
-        # Anchor calibration update if available
+        # Anchor calibration update if available and valid
         query_anchor = False
         if anchor_reading is not None:
-            anc_val = (
-                np.asarray(anchor_reading.estimate, dtype=np.float64)
-                if isinstance(anchor_reading, AnchorReading)
-                else np.asarray(anchor_reading, dtype=np.float64)
-            )
-            if vec_a is not None:
-                self.cal_a.update(vec_a, anc_val)
-            if vec_b is not None:
-                self.cal_b.update(vec_b, anc_val)
+            is_valid = anchor_reading.valid if isinstance(anchor_reading, AnchorReading) else True
+            if is_valid:
+                anc_val = (
+                    np.asarray(anchor_reading.estimate, dtype=np.float64)
+                    if isinstance(anchor_reading, AnchorReading)
+                    else np.asarray(anchor_reading, dtype=np.float64)
+                )
+                if vec_a is not None:
+                    self.cal_a.update(vec_a, anc_val)
+                if vec_b is not None:
+                    self.cal_b.update(vec_b, anc_val)
 
         # Complete sensor failure check
         if vec_a is None and vec_b is None:
@@ -312,7 +316,9 @@ class Aegis3DAwareController:
                         self.terminal_reason = "UNRESOLVED_3D_CROSS_MODAL_CONFLICT"
                         return np.zeros(3), "ABSTAIN", nav_3d, False
             else:
-                # No fresh range reading at arrival boundary -> cannot certify
+                # No fresh range reading at arrival boundary -> cannot certify, clear corroboration
+                self.arrival_check_steps = 0
+                self.arrival_range_samples = []
                 return np.zeros(3), "VERIFY", nav_3d, False
         else:
             self.arrival_check_steps = 0

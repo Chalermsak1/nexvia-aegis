@@ -108,6 +108,11 @@ class AegisROS2DroneNode(RclpyNode):
         self.latest_gimbal_decision: ActiveGazeDecision | None = None
         self.telemetry_history: list[dict[str, Any]] = []
 
+        # ROS 2 Publisher setpoint queues / streams
+        self.published_attitude_setpoints: list[dict[str, Any]] = []
+        self.published_gimbal_setpoints: list[dict[str, Any]] = []
+        self.published_diagnostics: list[dict[str, Any]] = []
+
         # ROS 2 Timers and interfaces if rclpy is present
         if _HAS_RCLPY:
             self._init_ros2_interfaces()
@@ -118,6 +123,39 @@ class AegisROS2DroneNode(RclpyNode):
         self.control_timer = self.create_timer(
             1.0 / self.config.control_rate_hz, self._on_control_cycle
         )
+
+    def publish_attitude_target(self, setpoint: AttitudeTargetSetpoint) -> None:
+        """Publishes 200 Hz attitude setpoint to PX4 Autopilot (/mavros/setpoint_raw/attitude)."""
+        data = {
+            "timestamp_s": setpoint.timestamp_s,
+            "orientation_wxyz": setpoint.orientation_wxyz.copy(),
+            "thrust_normalized": float(setpoint.thrust_normalized),
+            "body_rate_rad_s": setpoint.body_rate_rad_s.copy(),
+            "type_mask": int(setpoint.type_mask),
+        }
+        self.published_attitude_setpoints.append(data)
+
+    def publish_gimbal_target(self, pan_deg: float, tilt_deg: float) -> None:
+        """Publishes 20 Hz active camera saccade setpoint (/camera/gimbal_setpoint)."""
+        data = {
+            "pan_deg": float(pan_deg),
+            "tilt_deg": float(tilt_deg),
+            "timestamp_s": time.time(),
+        }
+        self.published_gimbal_setpoints.append(data)
+
+    def publish_diagnostics(self, diag: WatchdogDiagnostic) -> None:
+        """Publishes health and safety diagnostics telemetry (/aegis/diagnostics)."""
+        data = {
+            "timestamp_s": diag.timestamp_s,
+            "health_state": diag.health_state.name,
+            "recommended_action": diag.recommended_action.name,
+            "failsafe_reason": diag.failsafe_reason,
+            "odometry_age_ms": diag.odometry_age_ms,
+            "perception_age_ms": diag.perception_age_ms,
+            "battery_voltage_v": diag.battery_voltage_v,
+        }
+        self.published_diagnostics.append(data)
 
     # ------------------------------------------------------------------
     # Data Ingestion Callbacks (can be called by ROS 2 or test harness)
@@ -235,6 +273,8 @@ class AegisROS2DroneNode(RclpyNode):
                 thrust_normalized=thrust,
             )
             self.latest_attitude_target = setpoint
+            self.publish_attitude_target(setpoint)
+            self.publish_diagnostics(diag)
             return setpoint, diag
 
         if diag.recommended_action in (FailsafeAction.POSITION_HOLD_HOVER, FailsafeAction.SAFE_ABSTENTION_LOITER):
@@ -255,6 +295,31 @@ class AegisROS2DroneNode(RclpyNode):
                 thrust_normalized=thrust,
             )
             self.latest_attitude_target = setpoint
+            self.publish_attitude_target(setpoint)
+            self.publish_diagnostics(diag)
+            return setpoint, diag
+
+        if diag.recommended_action == FailsafeAction.VELOCITY_AIR_BRAKE:
+            # Commanded active aerodynamic deceleration opposing horizontal motion
+            v_brake_xy = -3.0 * self.current_odom.linear_velocity[:2]
+            f_xy = np.clip(v_brake_xy, -6.0, 6.0)
+            f_z = self.config.drone_mass_kg * 9.81
+            safe_force = np.array([f_xy[0], f_xy[1], f_z], dtype=np.float64)
+            quat, thrust = force_vector_to_attitude_and_thrust(
+                desired_force_world=safe_force,
+                desired_yaw_rad=current_yaw,
+                mass_kg=self.config.drone_mass_kg,
+                max_thrust_n=self.config.max_thrust_n,
+                max_tilt_rad=math.radians(self.config.max_tilt_deg),
+            )
+            setpoint = AttitudeTargetSetpoint(
+                timestamp_s=now_s,
+                orientation_wxyz=quat,
+                thrust_normalized=thrust,
+            )
+            self.latest_attitude_target = setpoint
+            self.publish_attitude_target(setpoint)
+            self.publish_diagnostics(diag)
             return setpoint, diag
 
         # 3. Active Vision POMDP Saccade & Shielded Navigation
@@ -267,6 +332,7 @@ class AegisROS2DroneNode(RclpyNode):
             tracked_obstacles=confirmed_tracks,
         )
         self.latest_gimbal_decision = gaze_decision
+        self.publish_gimbal_target(gaze_decision.desired_pan_deg, gaze_decision.desired_tilt_deg)
 
         # Convert 3D safe force to PX4 orientation quaternion and normalized thrust
         quat, thrust = force_vector_to_attitude_and_thrust(
@@ -283,6 +349,8 @@ class AegisROS2DroneNode(RclpyNode):
             thrust_normalized=thrust,
         )
         self.latest_attitude_target = setpoint
+        self.publish_attitude_target(setpoint)
+        self.publish_diagnostics(diag)
 
         # Record telemetry
         barrier_active = not np.allclose(gaze_decision.safe_force, gaze_decision.nominal_force, atol=1e-3)
