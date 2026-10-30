@@ -19,7 +19,7 @@
         (VERIFIED)                 (VERIFIED)           (VERIFIED)               (VERIFIED)                (VERIFIED)             (VERIFIED)              (VERIFIED)                   (VERIFIED)                (VERIFIED)                 (VERIFIED)
 ```
 
-- **Phase 1 (Trustworthy Decision-Making):** ปิด Audit A3/A4 loopholes, รัน matched benchmark 1,800 episodes บน $D_{\text{dev}}$, พิสูจน์ Ville Martingale causality ($p = 8.52 \times 10^{-109}$) และ Active Probing gain (+39.17% TSR).
+- **Phase 1 (Trustworthy Decision-Making):** ปิด Audit A3/A4 loopholes, รัน matched benchmark 1,800 episodes บน $D_{\text{dev}}$, พิสูจน์ Ville Martingale Sequential Risk Control (Type-I False Alarm $\le \alpha$ พร้อม $95\%$ Clopper-Pearson UCB $\le 0.0034$) และ Active Probing gain (+39.17% TSR).
 - **Phase 2 (Continuous 3D Physical AI):** ก้าวข้าม 3D Reality Gap สำเร็จด้วย `Aegis3DAwareController` และ 3D CBF Safe Emergency Braking (TSR 80.0% vs 13.3% สำหรับ naive veto, False Arrival 0.0% vs 63.3% สำหรับ CBF-only, Obstacle Collision 0.0%).
 - **Phase 3 (Decentralized Multi-Agent Swarm):** รับมือ Colluding Byzantine Spoofing ($F=2$) และ Packet Loss 25% สำเร็จด้วย `AegisDecentralizedSwarmAgent` และ Coordinate-Trimmed BRMC (ลด Localization Error ลง 97.8%, Collision 0.0%, False Alarms 0%).
 - **Phase 4 (Full 6-DOF Quadrotor Dynamics on SE(3)):** ขจัดข้อจำกัด "Spherical Point-Mass" สู่โมเดล 6-DOF Quadrotor กายภาพจริงใน MuJoCo (20 Brushless Motors, Actuator Lag $\tau_m = 35\,$ms, Drag Reaction Torques, และ Reciprocal Underactuated HOCBF จำกัดมุมเอียง $\theta \le 35^\circ$).
