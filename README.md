@@ -1,120 +1,100 @@
-# Nexvia Aegis
+# NEXVIA AEGIS
 
-### A self-verifying decision layer for Physical AI
+**A research prototype for evidence-aware decisions in uncertain physical environments.**
 
-Nexvia Aegis is a research prototype for risk-aware decision making in uncertain physical environments.
+NEXVIA AEGIS combines sensor checks, uncertainty monitoring, active verification, and control constraints to study when an autonomous agent should act, stop, or abstain. The repository contains simulated environments, controller implementations, benchmarks, and research records.
 
-The system combines:
+> **สรุปภาษาไทย:** โครงการนี้ศึกษาการตัดสินใจของระบบอัตโนมัติเมื่อข้อมูลเซนเซอร์อาจผิดพลาด มีงานจำลองตั้งแต่ระบบ 2 มิติไปจนถึงหุ่นยนต์ 3 มิติและระบบหลายตัว ผลที่แสดงในโครงการเป็นหลักฐานจากการทดลองตามขอบเขตที่ระบุในแต่ละรายงาน ยังไม่ใช่การยืนยันความปลอดภัยบนหุ่นยนต์จริง
 
-- Uncertainty estimation
-- Active sensing
-- Cross-sensor verification
-- Sensor arbitration
-- Risk-aware decision making
-- Abstention under insufficient evidence
+## Research status
 
-## Research Thesis
+**Research prototype · simulation-focused · not a safety-certified deployment.**
 
-> A Physical AI agent should not only know what to do — it should know when it has enough evidence to do it.
+- The repository includes V9 calibration and validation work, a published V9-M4 Holdout report, and subsequent 3D, swarm, vehicle, and software-in-the-loop experiments.
+- The [V9-M4 source audit](docs/reports/v9_m4_release_remediation/V9_M4_POSTEXECUTION_SOURCE_AUDIT_2026-10-29.md) records discrepancies between the published certification claim and some authorization, protocol, and execution evidence at the audited snapshot. Later code changes require independent reconciliation before relying on a confirmatory claim. See also the [published Holdout report](V9_M4_GATE_B_CONFIRMATORY_REPORT.md).
+- The [V9-M5 development status](docs/reports/v9_m5/V9_M5_DEVELOPMENT_CURRENT_STATUS_2026-10-29.md) describes an earlier 3D development snapshot and its safety-versus-coverage tradeoff. Later work adds a [3D-aware controller](src/aegis/v9/controller_3d.py); see the [Phase 2 report](docs/reports/v9_m5/V9_PHASE2_CONTINUOUS_3D_PHYSICAL_AI_REPORT.md) for its reported simulation results.
+- The repository includes ROS 2/PX4 integration code and a [software-in-the-loop benchmark](experiments/benchmark_sim2real_hardware.py). Their presence does not establish physical robot validation. No real-robot evaluation is claimed here.
 
-## Decision Loop
+Results are specific to their scenarios, code, and data. Zero observed failures in a simulation does not establish zero risk or prove a safety guarantee.
+
+## How the system is organized
 
 ```text
-Perceive
-   ↓
-Estimate
-   ↓
-Predict
-   ↓
-Evaluate Evidence
-   ↓
-Inspect / Verify
-   ↓
-Sensor Arbitration
-   ↓
-Risk-Aware Decision
-   ↓
-ACT / STOP / ABSTAIN
-   ↓
-Verify Again
-Experimental Setup
+Sensor observations
+       ↓
+Cross-sensor checks and uncertainty monitoring
+       ↓
+Optional sensing, probing, and verification
+       ↓
+Controller decision: act / stop / abstain
+       ↓
+Control constraints and simulated environment
+       ↓
+Outcome and evidence recording
+```
 
-The current prototype uses a custom 2D uncertain-target environment.
+The codebase explores several related directions:
 
-Policies:
+| Area | Starting point |
+|---|---|
+| V9 decision and monitoring | [`src/aegis/v9/`](src/aegis/v9/) |
+| 3D simulation and control barriers | [`src/aegis/env/mujoco_3d_cbf.py`](src/aegis/env/mujoco_3d_cbf.py) and [`src/aegis/v9/controller_3d.py`](src/aegis/v9/controller_3d.py) |
+| Swarm coordination | [`src/aegis/multiagent/`](src/aegis/multiagent/) |
+| Vision, learning, planning, and vehicles | [`src/aegis/vision/`](src/aegis/vision/), [`rl/`](src/aegis/rl/), [`nmpc/`](src/aegis/nmpc/), and [`av/`](src/aegis/av/) |
+| ROS 2/PX4 research integration | [`src/aegis/sim2real/`](src/aegis/sim2real/) |
+| Benchmarks and tests | [`experiments/`](experiments/) and [`tests/`](tests/) |
+| Reports and recorded outputs | [`docs/reports/`](docs/reports/) and [`results/`](results/) |
 
-Always Act
-Inspect Once
-Nexvia Aegis v1.0
+## Quick start
 
-Scenarios:
+Requirements: Python **3.12 or newer**, [uv](https://docs.astral.sh/uv/), and a platform supported by the locked dependencies, including MuJoCo. Commands below are run from the repository root.
 
-NORMAL
-BIASED
-HEAVY_TAIL
-OUTLIER
-DRIFT
-CORRELATED_BIAS
+```bash
+git clone https://github.com/Chalermsak1/nexvia-aegis.git
+cd nexvia-aegis
+uv sync --locked
+```
 
-Final benchmark:
+Run a short 3D simulation smoke test:
 
-1,000 episodes per policy per scenario
-Key Results
+```bash
+PYTHONPATH=src uv run python experiments/benchmark_physical_3d_cbf.py \
+  --n-seeds 1 --max-steps 5 --include-3d-aware
+```
 
-Aegis showed substantially lower false-stop rates under several uncertain and anomalous conditions.
+This checks that the benchmark starts and runs each configured policy. Five steps are too few to assess research performance; the output is **not** a confirmatory result.
 
-Scenario	Aegis Success	Aegis False Stop	Aegis Abstain
-NORMAL	74.00%	3.27%	23.50%
-BIASED	1.00%	85.07%	93.30%
-HEAVY_TAIL	65.80%	1.35%	33.30%
-OUTLIER	23.70%	3.27%	75.50%
-DRIFT	12.00%	49.37%	76.30%
-CORRELATED_BIAS	0.00%	100.00%	24.10%
+Run the test suite:
 
-These results indicate a clear safety-efficiency trade-off. Aegis can reduce unsafe stopping decisions by verifying evidence and abstaining, but remains vulnerable to systematic and correlated sensor failures.
+```bash
+uv run pytest -q
+```
 
-Limitations
+For a longer exploratory run, use `--n-seeds` and `--max-steps` to set the workload. The benchmark also supports range bias, dropout, latency, and vector-bias options:
 
-This is a research prototype rather than a production robotic system.
+```bash
+PYTHONPATH=src uv run python experiments/benchmark_physical_3d_cbf.py --help
+```
 
-Current limitations include:
+To retain episode-level output, add `--output` with a **new** file path. The tool refuses to overwrite an existing output file. Keep development results separate from any controlled evaluation artifacts.
 
-2D simulated environment
-Simplified sensor models
-Synthetic distribution-shift scenarios
-No physical robot evaluation
-Limited sensor modalities
-Correlated sensor failures remain difficult to detect
-Future Work
-MuJoCo
-   ↓
-Robot Manipulation
-   ↓
-Vision / Sensor Observations
-   ↓
-Aegis Decision Layer
-   ↓
-Act / Verify / Recover
+## Research records
 
-Future research directions include multimodal perception, learned uncertainty estimation, counterfactual action evaluation, adaptive sensor selection, recovery policies, and sim-to-real transfer.
+- [Preregistered V9 experiment protocol](docs/v9_experiment_protocol.md)
+- [V9-M4 source audit and outstanding questions](docs/reports/v9_m4_release_remediation/V9_M4_POSTEXECUTION_SOURCE_AUDIT_2026-10-29.md)
+- [Draft V9-M5 sim-to-real research protocol](docs/reports/v9_m4_release_remediation/V9_M5_SIM_TO_REAL_RESEARCH_PROTOCOL_DRAFT.md)
+- [V9-M5 3D development results and limitations](docs/reports/v9_m5/V9_M5_DEVELOPMENT_CURRENT_STATUS_2026-10-29.md)
+- [Phase 3 swarm coordination report](docs/reports/v9_m5/V9_PHASE3_SWARM_COORDINATION_REPORT.md)
+- [Research manuscript (PDF)](paper/aegis_ieee_preprint.pdf) and [LaTeX source](paper/main.tex)
 
-Reproducibility
+These documents reflect their respective snapshots and may use different status terminology. Check the underlying protocol, code, and evidence before treating a reported result as a formal claim.
 
-Install dependencies:
+## Reproducibility and scope
 
-uv sync
+Record the commit, dependency environment, scenario settings, seed schedule, and raw outputs for each experiment. The repository's 3D benchmark supports explicit output paths and records runtime and source hashes. Do not reuse development results as a fresh confirmatory set. Physical testing requires a separately reviewed platform, ground-truth measurements, and a safety procedure.
 
-Run the final benchmark:
+Earlier experiments, including the original 2D benchmark, remain available in [`experiments/final_benchmark.py`](experiments/final_benchmark.py). Their metrics and assumptions should be read in the context of those experiments rather than applied to the newer 3D system.
 
-PYTHONPATH=src uv run python experiments/final_benchmark.py
-Version
+## Author
 
-Nexvia Aegis v1.0.0
-
-Frozen research prototype.
-
-Author
-
-Chalermsak Sinsok
-
-Nexvia Core — Physical AI Research
+Chalermsak Sinsrok · NEXVIA Core — Physical AI Research
