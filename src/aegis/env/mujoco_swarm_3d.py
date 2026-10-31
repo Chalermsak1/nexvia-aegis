@@ -88,6 +88,15 @@ class SwarmCBF3DFilter:
         for i in range(n):
             pos_i = positions[i]
             vel_i = velocities[i]
+
+            # If agent i itself is quarantined (in air-brake / safe hover mode)
+            if quarantined_mask[i]:
+                # Pure local dissipation/damping only, no collaborative peer evasion
+                u_damped = np.clip(-2.2 * vel_i, -self.cfg.control_force_limit, self.cfg.control_force_limit)
+                safe_controls.append(u_damped)
+                barriers_active.append(False)
+                continue
+
             u_des_i = np.clip(desired_controls[i], -self.cfg.control_force_limit, self.cfg.control_force_limit)
 
             constraints: list[tuple[np.ndarray, float]] = []
@@ -125,25 +134,33 @@ class SwarmCBF3DFilter:
                 ))
 
             # 3. Inter-agent collision avoidance constraints
-            # Barrier between robot i and robot j:
-            # h_ij(p_i, p_j) = ||p_i - p_j||^2 - (2*r_rob + margin_inter)^2 >= 0
-            # h_dot_ij = 2(p_i - p_j)^T (v_i - v_j)
-            # In decentralized form, agent i assumes reciprocal sharing (half responsibility):
+            # Asymmetric Adaptation: If peer j is quarantined/faulty, it cannot be assumed to dodge.
+            # Agent i takes full unilateral evasion effort and expands safety margin.
             for j in range(n):
                 if i == j:
                     continue
                 pos_j = positions[j]
                 vel_j = velocities[j]
                 p_ij = pos_i - pos_j
-                r_mutual = 2.0 * r_rob + self.cfg.inter_agent_margin
+
+                peer_j_quarantined = quarantined_mask[j]
+                if peer_j_quarantined:
+                    r_mutual = 2.0 * r_rob + self.cfg.inter_agent_margin * 1.6
+                    alpha1_ij = alpha1 * 1.3
+                    alpha2_ij = alpha2 * 1.3
+                    effort_multiplier = 2.0  # Full 100% unilateral evasion effort
+                else:
+                    r_mutual = 2.0 * r_rob + self.cfg.inter_agent_margin
+                    alpha1_ij = alpha1
+                    alpha2_ij = alpha2
+                    effort_multiplier = 1.0  # Reciprocal half-effort sharing
+
                 h_ij = float(np.sum(p_ij**2) - r_mutual**2)
                 v_ij = vel_i - vel_j
                 h_dot_ij = 2.0 * float(np.dot(p_ij, v_ij))
 
-                # Half-effort projection for robot i:
-                # -2 (p_i - p_j)^T (u_i / m) <= ||v_ij||^2 + (alpha1 + alpha2) h_dot_ij + alpha1 * alpha2 * h_ij
                 a_ij = -2.0 * p_ij / m
-                b_ij = float(np.sum(v_ij**2)) + (alpha1 + alpha2) * h_dot_ij + alpha1 * alpha2 * h_ij
+                b_ij = effort_multiplier * float(np.sum(v_ij**2)) + (alpha1_ij + alpha2_ij) * h_dot_ij + alpha1_ij * alpha2_ij * h_ij
                 constraints.append((a_ij, b_ij))
 
             # Active set analytical projection
