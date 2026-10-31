@@ -1,0 +1,311 @@
+{
+  "generated_at": "2026-10-31T20:38:00+07:00",
+  "scope": "results/research_development/dev/*.jsonl",
+  "total_ledgers": 19,
+  "ledgers": [
+    {
+      "path": "results/research_development/dev/estimated_braking_ledger_v1.jsonl",
+      "bytes": 576138,
+      "sha256": "b882b77e51fe92041048aed198f9e5ea65b6f30770214518a9a20c9c46a0b888",
+      "status": "VALID",
+      "finalized": true,
+      "state": "FINALIZED",
+      "counts": {
+        "ASSIGNED": 0,
+        "STARTED": 0,
+        "COMPLETED": 24,
+        "ERROR": 0
+      },
+      "schema": "nexvia-development-ledger/1",
+      "last_sha256": "15b8ec437b005fec65e424b8915f5c2f9707da1d0a5e39176c3ebd84b8b04904"
+    },
+    {
+      "path": "results/research_development/dev/estimated_braking_ledger_v2.jsonl",
+      "bytes": 1450730,
+      "sha256": "7ab994c817f374458317d00c8e0f518e86a2ead705f67febf2ad032a4dc8bb87",
+      "status": "VALID",
+      "finalized": true,
+      "state": "FINALIZED",
+      "counts": {
+        "ASSIGNED": 0,
+        "STARTED": 0,
+        "COMPLETED": 24,
+        "ERROR": 0
+      },
+      "schema": "nexvia-development-ledger/1",
+      "last_sha256": "82a85c71dd70ddaf7b83fd221039ed79cca89651fb4c78d80f9b42a7c73aab4a"
+    },
+    {
+      "path": "results/research_development/dev/estimated_braking_step_ledger_v3.jsonl",
+      "bytes": 559177,
+      "sha256": "c9e9fc6bb0db0444d9cd1b4c02002dec82f9ac207c2f3971d96175a85b47c3d2",
+      "status": "VALID",
+      "finalized": true,
+      "state": "FINALIZED",
+      "counts": {
+        "ASSIGNED": 0,
+        "STARTED": 0,
+        "COMPLETED": 8,
+        "ERROR": 0
+      },
+      "schema": "nexvia-development-ledger/2",
+      "last_sha256": "3e7e357a1012a054c547e420a7c071aeabc074fe423afe1eecda2dcc6532f73e"
+    },
+    {
+      "path": "results/research_development/dev/navigation_force_ablation_v1.jsonl",
+      "bytes": 4588655,
+      "sha256": "6169d85eebfa1bb0dcf5ab0b4c95261f967dfe40d3a503b56ea9a182972e196d",
+      "status": "VALID",
+      "finalized": true,
+      "state": "FINALIZED",
+      "counts": {
+        "ASSIGNED": 0,
+        "STARTED": 0,
+        "COMPLETED": 6,
+        "ERROR": 0
+      },
+      "schema": "nexvia-development-ledger/2",
+      "last_sha256": "036d0cd0ea070bfb1f2be746ce19096598e8be7e9232f4d98631ead121abf4ab"
+    },
+    {
+      "path": "results/research_development/dev/recovery_monitor_ledger_v1.jsonl",
+      "bytes": 371521,
+      "sha256": "a676c1f0a6213f29757f2b0b01d0398f31ea8d0f6f998ace528d87e70e09ff98",
+      "status": "VALID",
+      "finalized": true,
+      "state": "FINALIZED",
+      "counts": {
+        "ASSIGNED": 0,
+        "STARTED": 0,
+        "COMPLETED": 36,
+        "ERROR": 0
+      },
+      "schema": "nexvia-development-ledger/1",
+      "last_sha256": "3b45888a18133fb87d75fba374623253ffd0cf33465ec9b461c90699fcdd2e61"
+    },
+    {
+      "path": "results/research_development/dev/recovery_monitor_step_ledger_v2.jsonl",
+      "bytes": 18976367,
+      "sha256": "1dda32819f6970b290237ef14906f4b9031ea74690f49fc3a944f1fc1dc07f0a",
+      "status": "VALID",
+      "finalized": true,
+      "state": "FINALIZED",
+      "counts": {
+        "ASSIGNED": 0,
+        "STARTED": 0,
+        "COMPLETED": 32,
+        "ERROR": 0
+      },
+      "schema": "nexvia-development-ledger/2",
+      "last_sha256": "748d43b296b01ded5fb896f2a281c36685774c5d587dd6985c9e7a2977349a20"
+    },
+    {
+      "path": "results/research_development/dev/recovery_monitor_step_trigger_diagnostic_v2.jsonl",
+      "bytes": 9982416,
+      "sha256": "75d15e7c863dc196f2129ceb9e8db776763f51110d84457748ac75966ccc0180",
+      "status": "VALID",
+      "finalized": true,
+      "state": "FINALIZED",
+      "counts": {
+        "ASSIGNED": 0,
+        "STARTED": 0,
+        "COMPLETED": 16,
+        "ERROR": 0
+      },
+      "schema": "nexvia-development-ledger/2",
+      "last_sha256": "bb1a1ff688320ad184ddf7dcf92c5d05733aa8f73de66c3deccb5c29f5b67abe"
+    },
+    {
+      "path": "results/research_development/dev/recovery_monitor_vector_loss_v2.jsonl",
+      "bytes": 481063,
+      "sha256": "aed0dc58956f63f675a45dec755f70942bb13d54ff7bb2ea02167b123995b458",
+      "status": "VALID",
+      "finalized": true,
+      "state": "FINALIZED",
+      "counts": {
+        "ASSIGNED": 0,
+        "STARTED": 0,
+        "COMPLETED": 48,
+        "ERROR": 0
+      },
+      "schema": "nexvia-development-ledger/1",
+      "last_sha256": "cc201d55b6b0d327b48c914bd59022998ce676441bf0b535a7811f160c71a3ae"
+    },
+    {
+      "path": "results/research_development/dev/recovery_progress_horizon_diagnostic_v1.jsonl",
+      "bytes": 8002984,
+      "sha256": "c73446f1d111546145d532d34ca998731615a98b30e5a6925acf771586f0618b",
+      "status": "VALID",
+      "finalized": true,
+      "state": "FINALIZED",
+      "counts": {
+        "ASSIGNED": 0,
+        "STARTED": 0,
+        "COMPLETED": 4,
+        "ERROR": 0
+      },
+      "schema": "nexvia-development-ledger/2",
+      "last_sha256": "5397c04d117cde209a2963bd3958bef1597a6757878d68b0147580b8882d20d8"
+    },
+    {
+      "path": "results/research_development/dev/team_force_axis_smoke_v1.jsonl",
+      "bytes": 6343849,
+      "sha256": "a8a96233912157c48d4cf35f54d1fb0dcaa94f025867f53239fae4121aa51ad6",
+      "status": "VALID",
+      "finalized": true,
+      "state": "FINALIZED",
+      "counts": {
+        "ASSIGNED": 0,
+        "STARTED": 0,
+        "COMPLETED": 8,
+        "ERROR": 0
+      },
+      "schema": "nexvia-development-ledger/2",
+      "last_sha256": "fdbb4222ae54ecddc0de8b1634a03eef905418683111891bb3a9c4351f685009"
+    },
+    {
+      "path": "results/research_development/dev/team_force_direction_smoke_v1.jsonl",
+      "bytes": 4547433,
+      "sha256": "34cf9601f56d7be643f6960f4016acdf6e01243f27dc04c40f15f490999afe2e",
+      "status": "VALID",
+      "finalized": true,
+      "state": "FINALIZED",
+      "counts": {
+        "ASSIGNED": 0,
+        "STARTED": 0,
+        "COMPLETED": 8,
+        "ERROR": 0
+      },
+      "schema": "nexvia-development-ledger/2",
+      "last_sha256": "2e77a02bcd700a9f6436a3ae4f3f736a2b497a97c16a8a54b0d03a78a48fc205"
+    },
+    {
+      "path": "results/research_development/dev/team_fresh_factorial_axis_100_v1.jsonl",
+      "bytes": 4203894,
+      "sha256": "18a8acd28a80e354cadf336bc1ace425750a55346629d8813ffff2978e1be6db",
+      "status": "VALID",
+      "finalized": true,
+      "state": "FINALIZED",
+      "counts": {
+        "ASSIGNED": 0,
+        "STARTED": 0,
+        "COMPLETED": 8,
+        "ERROR": 0
+      },
+      "schema": "nexvia-development-ledger/2",
+      "last_sha256": "003cdeb6971e986f90ec44e79a846f82484b4451a769bf2e26ac55ec8694c6e3"
+    },
+    {
+      "path": "results/research_development/dev/team_fresh_factorial_axis_300_v1.jsonl",
+      "bytes": 4203894,
+      "sha256": "eb2280addca946bb57557d4ab8a69682af0d22b266e5dce5e953969ac61266e6",
+      "status": "VALID",
+      "finalized": true,
+      "state": "FINALIZED",
+      "counts": {
+        "ASSIGNED": 0,
+        "STARTED": 0,
+        "COMPLETED": 8,
+        "ERROR": 0
+      },
+      "schema": "nexvia-development-ledger/2",
+      "last_sha256": "b808debd7206585b75b4ddb508fc2ef0358c73e8deb644d1bec2c106db6e9ce2"
+    },
+    {
+      "path": "results/research_development/dev/team_fresh_factorial_direction_100_v1.jsonl",
+      "bytes": 4188992,
+      "sha256": "c5fb46c66d412b8b2f73a58e992571e05fbfc69c2418876b7da819b43adce8e3",
+      "status": "VALID",
+      "finalized": true,
+      "state": "FINALIZED",
+      "counts": {
+        "ASSIGNED": 0,
+        "STARTED": 0,
+        "COMPLETED": 8,
+        "ERROR": 0
+      },
+      "schema": "nexvia-development-ledger/2",
+      "last_sha256": "60fbaac23ce38fa6d6af5a6ca3c7a1fc04c01893b37d0a37cbb71e0c40c9c2c7"
+    },
+    {
+      "path": "results/research_development/dev/team_fresh_factorial_direction_300_v1.jsonl",
+      "bytes": 4188992,
+      "sha256": "09ef447ce954aba20f9d1d3da01484ca8560097eb5605a8b13ec3057ccc09281",
+      "status": "VALID",
+      "finalized": true,
+      "state": "FINALIZED",
+      "counts": {
+        "ASSIGNED": 0,
+        "STARTED": 0,
+        "COMPLETED": 8,
+        "ERROR": 0
+      },
+      "schema": "nexvia-development-ledger/2",
+      "last_sha256": "91c93eb85f5ef384d658ed6f03299c3b2a03683f09e7899cc7ab97813ade56eb"
+    },
+    {
+      "path": "results/research_development/dev/team_recovery_budget_100_v1.jsonl",
+      "bytes": 5163185,
+      "sha256": "155059bc5bb15b6c9150a107c226175c591f9d81a590f3e478b87aaf87b3a92c",
+      "status": "VALID",
+      "finalized": true,
+      "state": "FINALIZED",
+      "counts": {
+        "ASSIGNED": 0,
+        "STARTED": 0,
+        "COMPLETED": 8,
+        "ERROR": 0
+      },
+      "schema": "nexvia-development-ledger/2",
+      "last_sha256": "684f0c0e8f6616b41d52b0f780ba3f06009c37d3f2865c7a765fe12b3de95c20"
+    },
+    {
+      "path": "results/research_development/dev/team_recovery_budget_300_v1.jsonl",
+      "bytes": 6109224,
+      "sha256": "22f1b9236434f89b64322f5afd70c8d60dc69582163d83c9b6bb922d058e4d2d",
+      "status": "VALID",
+      "finalized": true,
+      "state": "FINALIZED",
+      "counts": {
+        "ASSIGNED": 0,
+        "STARTED": 0,
+        "COMPLETED": 8,
+        "ERROR": 0
+      },
+      "schema": "nexvia-development-ledger/2",
+      "last_sha256": "bef0284a5012ee66460e5825ad885f908b10c2e63e8cda8f147cb30ccdec4256"
+    },
+    {
+      "path": "results/research_development/dev/team_recovery_fault_axis_v1.jsonl",
+      "bytes": 6435440,
+      "sha256": "0313735d0916e1b856f37ed17f2f7d24ba8d8affb9ea0c519f054a8c710e73e3",
+      "status": "VALID",
+      "finalized": true,
+      "state": "FINALIZED",
+      "counts": {
+        "ASSIGNED": 0,
+        "STARTED": 0,
+        "COMPLETED": 8,
+        "ERROR": 0
+      },
+      "schema": "nexvia-development-ledger/2",
+      "last_sha256": "416a7467de8577b4184e56b46863af43f084e45b4c8e1e6d66522a136aef5cb9"
+    },
+    {
+      "path": "results/research_development/dev/team_recovery_fault_direction_v1.jsonl",
+      "bytes": 3850809,
+      "sha256": "7bbbfae9c0de94b3ba3cbbf811cd127b224c4d4cc6bd85b438aece280ba9b53e",
+      "status": "VALID",
+      "finalized": true,
+      "state": "FINALIZED",
+      "counts": {
+        "ASSIGNED": 0,
+        "STARTED": 0,
+        "COMPLETED": 8,
+        "ERROR": 0
+      },
+      "schema": "nexvia-development-ledger/2",
+      "last_sha256": "55f24942f460931a95e3f50a6f44a9d1b02c2a9930ab4107a070942b44b7e4fd"
+    }
+  ]
+}
