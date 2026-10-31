@@ -1,0 +1,100 @@
+================================================================================
+NEXVIA AEGIS — CONTINUOUS 3D MUJOCO & CONTROL BARRIER FUNCTION BENCHMARK
+================================================================================
+
+Policy Architecture: UNSHIELDED
+  Episodes Evaluated: 9
+  True Success Rate:  22.2% (2/9)
+  False Arrival Rate: 55.6% (5/9)  <-- Safety Risk
+  Obstacle Collision: 11.1% (1/9)  <-- Simulated contact
+  Safe Abstention:    0.0% (0/9)
+  Accepted Decisions: 77.8% (7/9)
+  Timeouts:           2/9
+
+Policy Architecture: CBF_ONLY
+  Episodes Evaluated: 9
+  True Success Rate:  22.2% (2/9)
+  False Arrival Rate: 22.2% (2/9)  <-- Safety Risk
+  Obstacle Collision: 0.0% (0/9)  <-- Simulated contact
+  Safe Abstention:    0.0% (0/9)
+  Accepted Decisions: 44.4% (4/9)
+  Timeouts:           5/9
+  CBF Residual > 0:  0/9 episodes
+  CBF Unchecked:     0 braking steps
+  CBF Exact Fallback: 0 steps
+  CBF Infeasible:    0 steps
+
+Policy Architecture: AEGIS_V9_CBF
+  Episodes Evaluated: 9
+  True Success Rate:  11.1% (1/9)
+  False Arrival Rate: 0.0% (0/9)  <-- Safety Risk
+  Obstacle Collision: 0.0% (0/9)  <-- Simulated contact
+  Safe Abstention:    0.0% (0/9)
+  Accepted Decisions: 11.1% (1/9)
+  Timeouts:           8/9
+  CBF Residual > 0:  0/9 episodes
+  CBF Unchecked:     0 braking steps
+  CBF Exact Fallback: 0 steps
+  CBF Infeasible:    0 steps
+
+Policy Architecture: AEGIS_V9_CBF_RANGE_GUARD
+  Episodes Evaluated: 9
+  True Success Rate:  0.0% (0/9)
+  False Arrival Rate: 0.0% (0/9)  <-- Safety Risk
+  Obstacle Collision: 0.0% (0/9)  <-- Simulated contact
+  Safe Abstention:    11.1% (1/9)
+  Accepted Decisions: 0.0% (0/9)
+  Timeouts:           8/9
+  CBF Residual > 0:  0/9 episodes
+  CBF Unchecked:     0 braking steps
+  CBF Exact Fallback: 0 steps
+  CBF Infeasible:    0 steps
+
+Policy Architecture: AEGIS_V9_CBF_RANGE_WINDOW
+  Episodes Evaluated: 9
+  True Success Rate:  0.0% (0/9)
+  False Arrival Rate: 0.0% (0/9)  <-- Safety Risk
+  Obstacle Collision: 0.0% (0/9)  <-- Simulated contact
+  Safe Abstention:    11.1% (1/9)
+  Accepted Decisions: 0.0% (0/9)
+  Timeouts:           8/9
+  CBF Residual > 0:  0/9 episodes
+  CBF Unchecked:     0 braking steps
+  CBF Exact Fallback: 0 steps
+  CBF Infeasible:    0 steps
+
+Policy Architecture: AEGIS_V9_CBF_RANGE_3D_VETO
+  Episodes Evaluated: 9
+  True Success Rate:  0.0% (0/9)
+  False Arrival Rate: 0.0% (0/9)  <-- Safety Risk
+  Obstacle Collision: 0.0% (0/9)  <-- Simulated contact
+  Safe Abstention:    11.1% (1/9)
+  Accepted Decisions: 0.0% (0/9)
+  Timeouts:           8/9
+  CBF Residual > 0:  0/9 episodes
+  CBF Unchecked:     0 braking steps
+  CBF Exact Fallback: 0 steps
+  CBF Infeasible:    0 steps
+
+Policy Architecture: AEGIS_3D_AWARE_CBF
+  Episodes Evaluated: 9
+  True Success Rate:  66.7% (6/9)
+  False Arrival Rate: 0.0% (0/9)  <-- Safety Risk
+  Obstacle Collision: 0.0% (0/9)  <-- Simulated contact
+  Safe Abstention:    0.0% (0/9)
+  Accepted Decisions: 66.7% (6/9)
+  Timeouts:           3/9
+  CBF Residual > 0:  0/9 episodes
+  CBF Unchecked:     0 braking steps
+  CBF Exact Fallback: 0 steps
+  CBF Infeasible:    0 steps
+
+================================================================================
+Observed AEGIS_V9_CBF: 0/9 collision episodes; 0/9 false-arrival episodes.
+Observed AEGIS_V9_CBF_RANGE_GUARD: 0/9 collision episodes; 0/9 false-arrival episodes.
+Observed AEGIS_V9_CBF_RANGE_WINDOW: 0/9 collision episodes; 0/9 false-arrival episodes.
+Observed AEGIS_V9_CBF_RANGE_3D_VETO: 0/9 collision episodes; 0/9 false-arrival episodes.
+Observed AEGIS_3D_AWARE_CBF: 0/9 collision episodes; 0/9 false-arrival episodes.
+These simulation observations do not establish a safety guarantee or real-robot validation.
+================================================================================
+Evidence written: results/research_hardening/dev/3d_smoke_2026-10-30.json
