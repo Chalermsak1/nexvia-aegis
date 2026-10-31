@@ -11,6 +11,7 @@ from aegis.v9.anchor_range_gate import (
 )
 from aegis.v9.controller import AegisV9Controller, AegisV9Telemetry
 from aegis.v9.controller_3d import Aegis3DAwareController
+from aegis.v9.estimated_state_candidate import EstimatedStateCandidate
 from aegis.v9.cusum_monitor import (
     CusumChannelSpec,
     CusumStepResult,
@@ -68,6 +69,7 @@ __all__ = [
     "CusumStepResult",
     "DecoupledEpisodeRNG",
     "DisjointPerSensorCalibrator",
+    "EstimatedStateCandidate",
     "FixedSequenceLTTResult",
     "MultiChannelCusumMonitor",
     "MultiChannelVilleMonitor",

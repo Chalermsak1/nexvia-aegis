@@ -1,8 +1,40 @@
 {
-  "generated_at": "2026-10-31T20:38:00+07:00",
+  "generated_at": "2026-10-31T14:46:26.297238+00:00",
   "scope": "results/research_development/dev/*.jsonl",
-  "total_ledgers": 19,
+  "total_ledgers": 21,
   "ledgers": [
+    {
+      "path": "results/research_development/dev/agent_team_pilot_study_v1.jsonl",
+      "bytes": 1059467,
+      "sha256": "d40cb043d4bf398617e312dc58a477c16610207c9d26f0a018544a593fee8696",
+      "status": "VALID",
+      "finalized": true,
+      "state": "FINALIZED",
+      "counts": {
+        "ASSIGNED": 0,
+        "STARTED": 0,
+        "COMPLETED": 16,
+        "ERROR": 0
+      },
+      "schema": "nexvia-development-ledger/2",
+      "last_sha256": "6e9a3a672854d1dcc1ec8fbefa31b8fa456b144a8c5bf4e0f2cb1fab8cceb3c4"
+    },
+    {
+      "path": "results/research_development/dev/agent_team_study_20seeds_v1.jsonl",
+      "bytes": 34455377,
+      "sha256": "fbf9b36a2e745abc29ea68e9208509eef8d1272ff4654d594f227382ddf368eb",
+      "status": "VALID",
+      "finalized": true,
+      "state": "FINALIZED",
+      "counts": {
+        "ASSIGNED": 0,
+        "STARTED": 0,
+        "COMPLETED": 240,
+        "ERROR": 0
+      },
+      "schema": "nexvia-development-ledger/2",
+      "last_sha256": "43141784acb5707c7c580b2dcc4934a26093f3976b26c415166c34ac9c8c8277"
+    },
     {
       "path": "results/research_development/dev/estimated_braking_ledger_v1.jsonl",
       "bytes": 576138,
@@ -306,22 +338,6 @@
       },
       "schema": "nexvia-development-ledger/2",
       "last_sha256": "55f24942f460931a95e3f50a6f44a9d1b02c2a9930ab4107a070942b44b7e4fd"
-    },
-    {
-      "path": "results/research_development/dev/agent_team_pilot_study_v1.jsonl",
-      "bytes": 1059467,
-      "sha256": "d40cb043d4bf398617e312dc58a477c16610207c9d26f0a018544a593fee8696",
-      "status": "VALID",
-      "finalized": true,
-      "state": "FINALIZED",
-      "counts": {
-        "ASSIGNED": 0,
-        "STARTED": 0,
-        "COMPLETED": 16,
-        "ERROR": 0
-      },
-      "schema": "nexvia-development-ledger/2",
-      "last_sha256": "6e9a3a672854d1dcc1ec8fbefa31b8fa456b144a8c5bf4e0f2cb1fab8cceb3c4"
     }
   ]
 }

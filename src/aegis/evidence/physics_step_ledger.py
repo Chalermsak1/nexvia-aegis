@@ -223,14 +223,14 @@ class IncrementalPhysicsLedger:
             summary.decision_step = last_transit.decision_step
             summary.decision_dist_to_goal = last_transit.dist_to_goal
             summary.decision_true_speed = last_transit.true_speed
-            summary.decision_is_true_success = (last_transit.dist_to_goal <= self.success_radius)
+            summary.decision_is_true_success = (final_decision == "STOP" and last_transit.dist_to_goal <= self.success_radius)
             summary.decision_cbf_infeasible_count = sum(1 for r in transit_records if r.cbf_residual < -1e-4)
             summary.decision_collision = any(r.collision for r in transit_records)
         elif records:
             first_rec = records[0]
             summary.decision_dist_to_goal = first_rec.dist_to_goal
             summary.decision_true_speed = first_rec.true_speed
-            summary.decision_is_true_success = (first_rec.dist_to_goal <= self.success_radius)
+            summary.decision_is_true_success = (final_decision == "STOP" and first_rec.dist_to_goal <= self.success_radius)
 
         # 2. Post-STOP Dwell evaluation
         if dwell_records:

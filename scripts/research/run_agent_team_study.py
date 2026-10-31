@@ -41,18 +41,24 @@ from src.aegis.evidence import (
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--seeds", type=int, nargs="+", default=[2256000, 2256001], help="Fresh development seeds")
-    parser.add_argument("--max-steps", type=int, default=150, help="Per-episode step limit")
+    parser.add_argument("--seeds", type=int, nargs="+", default=None, help="Fresh development seeds list")
+    parser.add_argument("--seed-start", type=int, default=2256000, help="Starting fresh development seed")
+    parser.add_argument("--n-seeds", type=int, default=20, help="Number of independent seeds for statistical power")
+    parser.add_argument("--max-steps", type=int, default=250, help="Per-episode step limit")
     parser.add_argument("--post-stop-steps", type=int, default=30, help="Dwell observation window")
-    parser.add_argument("--output-ledger", type=Path, default=ROOT / "results/research_development/dev/agent_team_pilot_study_v1.jsonl")
+    parser.add_argument("--controllers", nargs="+", default=["CBF_ONLY", "AEGIS_3D_RECOVERY_MONITOR", "AEGIS_3D_ESTIMATED_STATE"], help="Controllers to benchmark")
+    parser.add_argument("--output-ledger", type=Path, default=ROOT / "results/research_development/dev/agent_team_study_20seeds_v1.jsonl")
     parser.add_argument("--output-report", type=Path, default=ROOT / "docs/research/AGENT_TEAM_AUDIT_REPORT_2026-10-31.md")
     parser.add_argument("--output-dossier-json", type=Path, default=ROOT / "results/research_development/dev/agent_team_dossier_2026-10-31.json")
     args = parser.parse_args()
 
+    seeds = args.seeds if args.seeds is not None else list(range(args.seed_start, args.seed_start + args.n_seeds))
+
     # Pre-flight Governance Verification
     print("=" * 80)
-    print("NEXVIA AEGIS — MULTI-AGENT RESEARCH TEAM DIAGNOSTIC STUDY")
+    print("NEXVIA AEGIS — MULTI-AGENT RESEARCH TEAM STATISTICAL INDEPENDENCE SUITE")
     print("Protocol Authority: GATE_B_NOT_AUTHORIZED (Strict Holdout Quarantine)")
+    print(f"Sample Size: n={len(seeds)} Independent Seeds ({seeds[0]} .. {seeds[-1]})")
     print("=" * 80)
 
     # 1. Prepare Factorial Diagnostic Matrix on Fresh Dev Worlds
@@ -61,11 +67,11 @@ def main():
         {"name": "biased_range", "range_bias_m": -0.08, "range_dropout_probability": 0.0},
     ]
     biases = [[0.0, 0.0, 0.0], [0.8, 0.8, -0.3]]
-    controllers = ["AEGIS_3D_ANCHOR_RECOVERY", "AEGIS_3D_RECOVERY_MONITOR"]
+    controllers = args.controllers
 
     assignments = []
     for c in cases:
-        for s in args.seeds:
+        for s in seeds:
             for b in biases:
                 for ctrl in controllers:
                     aid = f"{c['name']}:{s}:{b[0]}:{ctrl}"
@@ -76,10 +82,10 @@ def main():
                         "bias_xyz": b,
                         "controller": ctrl,
                         "max_steps": args.max_steps,
-                        "post_stop_steps": args.post_stop_steps,
+                        "post_stop_steps": args.post_stop_steps if ctrl != "CBF_ONLY" else 0,
                     })
 
-    print(f"[*] Prepared {len(assignments)} diagnostic assignments across seeds {args.seeds}")
+    print(f"[*] Prepared {len(assignments)} diagnostic assignments across {len(seeds)} seeds and {len(controllers)} controllers")
     args.output_ledger.parent.mkdir(parents=True, exist_ok=True)
     if args.output_ledger.exists():
         args.output_ledger.unlink()
@@ -138,8 +144,8 @@ def main():
                             assignment_id=aid,
                             stage=STAGE_POST_STOP_DWELL,
                             decision_step=res.get("steps", 0),
-                            true_pos=env.get_state()["robot_position"],
-                            true_vel=env.get_state()["robot_velocity"],
+                            true_pos=env.get_state().get("robot_pos", [0, 0, 0]),
+                            true_vel=env.get_state().get("robot_velocity", [0, 0, 0]),
                             dist_to_goal=p_step.get("distance", 999.0),
                             decision="STOP",
                             applied_force=[0.0, 0.0, 9.81],

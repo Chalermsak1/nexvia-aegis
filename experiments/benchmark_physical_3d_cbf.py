@@ -39,6 +39,7 @@ from aegis.v9.velocity_freshness_candidate import FreshVelocityStopCandidate, Ti
 from aegis.v9.bounded_gap_candidate import BoundedGapCandidate
 from aegis.v9.dual_velocity_candidate import DualVelocityCandidate
 from aegis.v9.recovery_monitor_candidate import RecoveryMonitorCandidate
+from aegis.v9.estimated_state_candidate import EstimatedStateCandidate
 from aegis.v9.exploratory_sensor_validation import valid_range
 
 
@@ -111,14 +112,14 @@ def run_3d_episode(
     if controller_type not in {
         "UNSHIELDED", "CBF_ONLY", "AEGIS_V9_CBF",
         "AEGIS_V9_CBF_RANGE_GUARD", "AEGIS_V9_CBF_RANGE_WINDOW",
-        "AEGIS_V9_CBF_RANGE_3D_VETO", "AEGIS_3D_AWARE_CBF", "AEGIS_3D_NO_ACTIVE_PROBE", "AEGIS_3D_STRICT_RANGE", "AEGIS_3D_ANCHOR_GUARD", "AEGIS_3D_STABILIZED", "AEGIS_3D_STABILIZED_RETRY", "AEGIS_3D_ANCHOR_RECOVERY", "AEGIS_3D_SUSTAINED_STOP", "AEGIS_3D_FRESH_VELOCITY", "AEGIS_3D_BOUNDED_GAP", "AEGIS_3D_DUAL_VELOCITY", "AEGIS_3D_RECOVERY_MONITOR",
+        "AEGIS_V9_CBF_RANGE_3D_VETO", "AEGIS_3D_AWARE_CBF", "AEGIS_3D_NO_ACTIVE_PROBE", "AEGIS_3D_STRICT_RANGE", "AEGIS_3D_ANCHOR_GUARD", "AEGIS_3D_STABILIZED", "AEGIS_3D_STABILIZED_RETRY", "AEGIS_3D_ANCHOR_RECOVERY", "AEGIS_3D_SUSTAINED_STOP", "AEGIS_3D_FRESH_VELOCITY", "AEGIS_3D_BOUNDED_GAP", "AEGIS_3D_DUAL_VELOCITY", "AEGIS_3D_RECOVERY_MONITOR", "AEGIS_3D_ESTIMATED_STATE",
     }:
         raise ValueError(f"Unknown 3D controller type: {controller_type}")
     if not 0.0 <= range_dropout_probability <= 1.0 or range_latency_steps < 0:
         raise ValueError("Range dropout probability must be in [0,1] and latency nonnegative")
     if not isinstance(post_stop_steps, int) or isinstance(post_stop_steps, bool) or post_stop_steps < 0:
         raise ValueError("post_stop_steps must be a nonnegative integer")
-    if post_stop_steps and controller_type not in {"AEGIS_3D_AWARE_CBF", "AEGIS_3D_NO_ACTIVE_PROBE", "AEGIS_3D_STRICT_RANGE", "AEGIS_3D_ANCHOR_GUARD", "AEGIS_3D_STABILIZED", "AEGIS_3D_STABILIZED_RETRY", "AEGIS_3D_ANCHOR_RECOVERY", "AEGIS_3D_SUSTAINED_STOP", "AEGIS_3D_FRESH_VELOCITY", "AEGIS_3D_BOUNDED_GAP", "AEGIS_3D_DUAL_VELOCITY", "AEGIS_3D_RECOVERY_MONITOR"}:
+    if post_stop_steps and controller_type not in {"AEGIS_3D_AWARE_CBF", "AEGIS_3D_NO_ACTIVE_PROBE", "AEGIS_3D_STRICT_RANGE", "AEGIS_3D_ANCHOR_GUARD", "AEGIS_3D_STABILIZED", "AEGIS_3D_STABILIZED_RETRY", "AEGIS_3D_ANCHOR_RECOVERY", "AEGIS_3D_SUSTAINED_STOP", "AEGIS_3D_FRESH_VELOCITY", "AEGIS_3D_BOUNDED_GAP", "AEGIS_3D_DUAL_VELOCITY", "AEGIS_3D_RECOVERY_MONITOR", "AEGIS_3D_ESTIMATED_STATE"}:
         raise ValueError("post-stop diagnostics currently support only 3D-aware arms")
     if not math.isfinite(range_bias_m) or np.shape(sensor_bias) != (3,) or not np.isfinite(sensor_bias).all():
         raise ValueError("Range bias and 3D vector-sensor bias must be finite")
@@ -173,6 +174,8 @@ def run_3d_episode(
         ctrl_3d = DualVelocityCandidate(success_radius=env.config.success_radius)
     if controller_type == "AEGIS_3D_RECOVERY_MONITOR":
         ctrl_3d = RecoveryMonitorCandidate(success_radius=env.config.success_radius, recovery_steps=recovery_steps)
+    if controller_type == "AEGIS_3D_ESTIMATED_STATE":
+        ctrl_3d = EstimatedStateCandidate(success_radius=env.config.success_radius)
     if ctrl_3d:
         ctrl_3d.reset()
 
@@ -272,17 +275,38 @@ def run_3d_episode(
             continue
 
         if controller_type == "UNSHIELDED":
-            # Decide and score arrival at the current state before applying a
-            # new action, matching the 3D-aware STOP decision boundary.
-            if np.linalg.norm(meas_a_3d) < 0.22:
+            u_des = 1.2 * meas_a_3d - 0.5 * vel
+            arrival_candidate = bool(np.linalg.norm(meas_a_3d) < 0.22)
+            dec_type = "STOP" if arrival_candidate else "NAVIGATE"
+            if trace is not None:
+                trace.append({
+                    "step": step, "position": pos.tolist(), "target": target.tolist(),
+                    "true_distance": true_dist, "velocity": vel.tolist(),
+                    "action": [0.0, 0.0, 0.0] if arrival_candidate else u_des.tolist(),
+                    "decision": dec_type,
+                    "effective_decision": dec_type,
+                    "vector_fault_injected": False,
+                })
+                if on_trace is not None:
+                    on_trace(dict(trace[-1]))
+            if arrival_candidate:
                 if true_dist <= env.config.success_radius:
                     true_success = True
                 else:
                     false_arrival = True
+                if post_stop_steps:
+                    after = []
+                    for _ in range(post_stop_steps):
+                        observed = env.step(np.zeros(3), force_braking=True)
+                        after.append({"distance": float(observed["distance"]),
+                                      "speed": float(np.linalg.norm(observed["robot_velocity"])),
+                                      "collision": bool(observed["safety_violation"]),
+                                      "cbf_residual": observed.get("cbf_constraint_residual")})
+                    post_stop = {"decision_distance": true_dist,
+                                 "decision_speed": float(np.linalg.norm(vel)),
+                                 "steps": after}
                 break
             # Direct tracking of biased sensor without CBF
-            u_des = 1.2 * meas_a_3d - 0.5 * vel
-            # In unshielded mode, we bypass CBF filter completely:
             f_total = np.clip(u_des, -env.config.control_force_limit, env.config.control_force_limit)
             f_total[2] += env.config.robot_mass * 9.81
             env.data.xfrc_applied[env.robot_body_id, :3] = f_total
@@ -293,14 +317,38 @@ def run_3d_episode(
             observe_step(state)
 
         elif controller_type == "CBF_ONLY":
-            if np.linalg.norm(meas_a_3d) < 0.22:
+            u_des = 1.2 * meas_a_3d - 0.5 * vel
+            arrival_candidate = bool(np.linalg.norm(meas_a_3d) < 0.22)
+            dec_type = "STOP" if arrival_candidate else "NAVIGATE"
+            if trace is not None:
+                trace.append({
+                    "step": step, "position": pos.tolist(), "target": target.tolist(),
+                    "true_distance": true_dist, "velocity": vel.tolist(),
+                    "action": [0.0, 0.0, 0.0] if arrival_candidate else u_des.tolist(),
+                    "decision": dec_type,
+                    "effective_decision": dec_type,
+                    "vector_fault_injected": False,
+                })
+                if on_trace is not None:
+                    on_trace(dict(trace[-1]))
+            if arrival_candidate:
                 if true_dist <= env.config.success_radius:
                     true_success = True
                 else:
                     false_arrival = True
+                if post_stop_steps:
+                    after = []
+                    for _ in range(post_stop_steps):
+                        observed = env.step(np.zeros(3), force_braking=True)
+                        after.append({"distance": float(observed["distance"]),
+                                      "speed": float(np.linalg.norm(observed["robot_velocity"])),
+                                      "collision": bool(observed["safety_violation"]),
+                                      "cbf_residual": observed.get("cbf_constraint_residual")})
+                    post_stop = {"decision_distance": true_dist,
+                                 "decision_speed": float(np.linalg.norm(vel)),
+                                 "steps": after}
                 break
             # Uses CBF to prevent obstacle collision, but trusts flawed sensor A
-            u_des = 1.2 * meas_a_3d - 0.5 * vel
             state = env.step(u_des, force_braking=False)
             observe_step(state)
 
@@ -386,7 +434,7 @@ def run_3d_episode(
                 state = env.step(u_des_3d, force_braking=force_brake)
                 observe_step(state)
 
-        elif controller_type in {"AEGIS_3D_AWARE_CBF", "AEGIS_3D_NO_ACTIVE_PROBE", "AEGIS_3D_STRICT_RANGE", "AEGIS_3D_ANCHOR_GUARD", "AEGIS_3D_STABILIZED", "AEGIS_3D_STABILIZED_RETRY", "AEGIS_3D_ANCHOR_RECOVERY", "AEGIS_3D_SUSTAINED_STOP", "AEGIS_3D_FRESH_VELOCITY", "AEGIS_3D_BOUNDED_GAP", "AEGIS_3D_DUAL_VELOCITY", "AEGIS_3D_RECOVERY_MONITOR"}:
+        elif controller_type in {"AEGIS_3D_AWARE_CBF", "AEGIS_3D_NO_ACTIVE_PROBE", "AEGIS_3D_STRICT_RANGE", "AEGIS_3D_ANCHOR_GUARD", "AEGIS_3D_STABILIZED", "AEGIS_3D_STABILIZED_RETRY", "AEGIS_3D_ANCHOR_RECOVERY", "AEGIS_3D_SUSTAINED_STOP", "AEGIS_3D_FRESH_VELOCITY", "AEGIS_3D_BOUNDED_GAP", "AEGIS_3D_DUAL_VELOCITY", "AEGIS_3D_RECOVERY_MONITOR", "AEGIS_3D_ESTIMATED_STATE"}:
             assert ctrl_3d is not None
             phase_before = getattr(ctrl_3d, "phase", None)
             vector_loss = fail_vectors_after_stop_proposal and getattr(ctrl_3d, "phase", "BASE") in {"BRAKING", "ANCHOR", "RECOVERY"}
@@ -435,7 +483,7 @@ def run_3d_episode(
             velocity_observation = None
             timed_velocity = None
             secondary_observation = None
-            if controller_type in {"AEGIS_3D_STABILIZED", "AEGIS_3D_STABILIZED_RETRY", "AEGIS_3D_ANCHOR_RECOVERY", "AEGIS_3D_SUSTAINED_STOP", "AEGIS_3D_FRESH_VELOCITY", "AEGIS_3D_BOUNDED_GAP", "AEGIS_3D_DUAL_VELOCITY", "AEGIS_3D_RECOVERY_MONITOR"}:
+            if controller_type in {"AEGIS_3D_STABILIZED", "AEGIS_3D_STABILIZED_RETRY", "AEGIS_3D_ANCHOR_RECOVERY", "AEGIS_3D_SUSTAINED_STOP", "AEGIS_3D_FRESH_VELOCITY", "AEGIS_3D_BOUNDED_GAP", "AEGIS_3D_DUAL_VELOCITY", "AEGIS_3D_RECOVERY_MONITOR", "AEGIS_3D_ESTIMATED_STATE"}:
                 sampled = velocity_scale * vel + velocity_bias_xyz + rng_velocity.normal(0.0, 0.02, size=3)
                 if velocity_dropout_probability > 0 and rng_velocity_faults.random() < velocity_dropout_probability:
                     sampled = None
@@ -445,7 +493,7 @@ def run_3d_episode(
                     timed_velocity = previous_velocity_delivery
                 previous_velocity_delivery = timed_velocity
                 velocity_observation = timed_velocity.vector if timed_velocity is not None else None
-                if controller_type == "AEGIS_3D_DUAL_VELOCITY":
+                if controller_type in {"AEGIS_3D_DUAL_VELOCITY", "AEGIS_3D_ESTIMATED_STATE"}:
                     secondary_observation = secondary_velocity_scale * vel + rng_secondary.normal(0.0, 0.02, size=3)
                     if secondary_velocity_dropout_probability > 0 and rng_secondary_fault.random() < secondary_velocity_dropout_probability:
                         secondary_observation = None
@@ -560,7 +608,10 @@ def run_3d_episode(
                                  "steps": after}
                 break
             else:
-                u_des_3d = action_3d - 0.5 * vel
+                if controller_type == "AEGIS_3D_ESTIMATED_STATE":
+                    u_des_3d = action_3d + ctrl_3d.compute_damping()
+                else:
+                    u_des_3d = action_3d - 0.5 * vel
                 force_brake = (dec_type == "VERIFY")
                 state = env.step(u_des_3d, force_braking=force_brake)
                 observe_step(state)

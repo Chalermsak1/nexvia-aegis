@@ -75,20 +75,21 @@ class StatisticalAuditorAgent:
                 seeds_seen.add(seed)
 
             # Determine category
-            if item_dict.get("true_success") or item_dict.get("decision_is_true_success"):
+            dec = str(item_dict.get("decision") or item_dict.get("final_decision") or "")
+            dist = float(item_dict.get("decision_dist_to_goal", item_dict.get("final_distance", 999.0)))
+            is_true_success = bool(item_dict.get("true_success") or (dec == "STOP" and dist <= 0.25))
+            is_false_arrival = bool(item_dict.get("false_arrival") or (dec == "STOP" and dist > 0.25))
+            is_abstain = bool(item_dict.get("abstained") or dec == "ABSTAIN")
+            is_timeout = bool(item_dict.get("timeout") or dec == "TIMEOUT")
+
+            if is_true_success:
                 true_success_count += 1
-            elif item_dict.get("false_arrival"):
+            elif is_false_arrival:
                 false_arrival_count += 1
-            elif item_dict.get("abstained") or item_dict.get("decision") == "ABSTAIN":
+            elif is_abstain:
                 abstain_count += 1
-            elif item_dict.get("timeout") or item_dict.get("decision") == "TIMEOUT":
+            elif is_timeout:
                 timeout_count += 1
-            elif item_dict.get("decision") == "STOP":
-                # Fallback check
-                if item_dict.get("decision_dist_to_goal", 999.0) <= 0.25:
-                    true_success_count += 1
-                else:
-                    false_arrival_count += 1
 
         # Check sample size & pseudo-replication
         unique_seeds_count = len(seeds_seen)
@@ -134,7 +135,58 @@ class StatisticalAuditorAgent:
             f"{false_arrival_count}/{accepted_count} ({selective_risk*100:.1f}%, 95% CI {selective_risk_ci})"
         )
 
-        if fa_rate > max_acceptable_false_arrival_rate:
+        # Per-controller Pareto Frontier analysis
+        by_controller: dict[str, list[dict]] = {}
+        for item in episodes_or_summaries:
+            item_dict = item.to_dict() if hasattr(item, "to_dict") else dict(item)
+            ctrl_name = (
+                item_dict.get("controller")
+                or item_dict.get("extra", {}).get("episode", {}).get("controller")
+                or (item_dict.get("assignment_id", "").split(":")[-1] if ":" in item_dict.get("assignment_id", "") else None)
+                or "UNKNOWN"
+            )
+            by_controller.setdefault(ctrl_name, []).append(item_dict)
+
+        pareto_breakdown: dict[str, Any] = {}
+        if len(by_controller) > 1 or (len(by_controller) == 1 and "UNKNOWN" not in by_controller):
+            findings.append("📊 การวิเคราะห์เส้นโค้ง Pareto Frontier (Selective Risk vs Coverage) รายตัวควบคุม:")
+            for c_name, c_items in by_controller.items():
+                c_n = len(c_items)
+                c_ts = sum(1 for x in c_items if x.get("true_success") or ((x.get("decision") == "STOP" or x.get("final_decision") == "STOP") and float(x.get("decision_dist_to_goal", x.get("final_distance", 999.0))) <= 0.25))
+                c_fa = sum(1 for x in c_items if x.get("false_arrival") or ((x.get("decision") == "STOP" or x.get("final_decision") == "STOP") and float(x.get("decision_dist_to_goal", x.get("final_distance", 999.0))) > 0.25))
+                c_abs = sum(1 for x in c_items if x.get("abstained") or x.get("decision") == "ABSTAIN" or x.get("final_decision") == "ABSTAIN")
+                c_acc = c_ts + c_fa
+                c_risk = (c_fa / c_acc) if c_acc > 0 else 0.0
+                c_cov = c_ts / c_n
+                c_ts_ci = clopper_pearson_ci(c_ts, c_n)
+                c_fa_ci = clopper_pearson_ci(c_fa, c_n)
+                c_risk_ci = clopper_pearson_ci(c_fa, c_acc) if c_acc > 0 else (0.0, 0.0)
+
+                pareto_breakdown[c_name] = {
+                    "samples": c_n,
+                    "coverage_rate": round(c_cov, 4),
+                    "coverage_95_ci": list(c_ts_ci),
+                    "false_arrival_rate": round(c_fa / c_n, 4),
+                    "false_arrival_95_ci": list(c_fa_ci),
+                    "selective_risk": round(c_risk, 4),
+                    "selective_risk_95_ci": list(c_risk_ci),
+                    "abstain_rate": round(c_abs / c_n, 4),
+                }
+                findings.append(
+                    f" - **{c_name}** (n={c_n}): Coverage (True Arrival)={c_cov*100:.1f}% [95% CI {c_ts_ci}], "
+                    f"Selective Risk={c_risk*100:.1f}% [95% CI {c_risk_ci}], Abstain={c_abs/c_n*100:.1f}%"
+                )
+
+        # Check false arrival blockers specifically on candidate AEGIS arms vs baselines
+        aegis_arms = {k: v for k, v in pareto_breakdown.items() if k.startswith("AEGIS")}
+        if aegis_arms:
+            for a_name, a_metrics in aegis_arms.items():
+                if a_metrics["false_arrival_rate"] > max_acceptable_false_arrival_rate:
+                    blockers.append(
+                        f"ตัวควบคุม {a_name} มีอัตราการตัดสินใจถึงเป้าหมายผิดพลาด (False Arrival = {a_metrics['false_arrival_rate']*100:.1f}%) "
+                        f"สูงเกินเกณฑ์ความปลอดภัยที่กำหนด ({max_acceptable_false_arrival_rate*100:.1f}%)"
+                    )
+        elif fa_rate > max_acceptable_false_arrival_rate:
             blockers.append(
                 f"อัตราการตัดสินใจถึงเป้าหมายผิดพลาด (False Arrival Rate = {fa_rate*100:.1f}%) "
                 f"สูงเกินเกณฑ์ความปลอดภัยที่กำหนด ({max_acceptable_false_arrival_rate*100:.1f}%)"
@@ -163,6 +215,7 @@ class StatisticalAuditorAgent:
             "accepted_count": accepted_count,
             "selective_risk": round(selective_risk, 4),
             "selective_risk_95_ci": list(selective_risk_ci),
+            "pareto_breakdown": pareto_breakdown,
         }
 
         return AgentSignOff(
