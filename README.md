@@ -78,6 +78,19 @@ PYTHONPATH=src uv run python experiments/benchmark_physical_3d_cbf.py --help
 
 To retain episode-level output, add `--output` with a **new** file path. The tool refuses to overwrite an existing output file. Keep development results separate from any controlled evaluation artifacts.
 
+For a development comparison that includes the 3D-aware controller and a no-active-probing ablation, add `--include-3d-no-probe`. The ablation retains routine range verification and abstains when probing or an anchor is requested. It is an exploratory comparison, not a confirmatory finding.
+
+Summarize an existing development result without re-running episodes:
+
+```bash
+python scripts/research/summarize_3d_development.py \
+  results/research_development/dev/3d_probe_ablation_v2.json \
+  --baseline AEGIS_3D_NO_ACTIVE_PROBE \
+  --output-dir /tmp/aegis-analysis-example
+```
+
+The destination must not already exist. The tool checks records against the design declared in the JSON and writes per-arm, per-scenario, and matched descriptive counts in Markdown, CSV, and JSON. It does not verify an independent assignment manifest or certify results.
+
 ## Research records
 
 - [Preregistered V9 experiment protocol](docs/v9_experiment_protocol.md)
@@ -85,6 +98,7 @@ To retain episode-level output, add `--output` with a **new** file path. The too
 - [Draft V9-M5 sim-to-real research protocol](docs/reports/v9_m4_release_remediation/V9_M5_SIM_TO_REAL_RESEARCH_PROTOCOL_DRAFT.md)
 - [V9-M5 3D development results and limitations](docs/reports/v9_m5/V9_M5_DEVELOPMENT_CURRENT_STATUS_2026-10-29.md)
 - [Phase 3 swarm coordination report](docs/reports/v9_m5/V9_PHASE3_SWARM_COORDINATION_REPORT.md)
+- [Draft single-robot study plan](docs/research/V9_M5_SINGLE_ROBOT_STUDY_PLAN_DRAFT.md) and [research-tool product brief](docs/research/AEGIS_RESEARCH_TOOL_PRODUCT_BRIEF_DRAFT.md)
 - [Research manuscript (PDF)](paper/aegis_ieee_preprint.pdf) and [LaTeX source](paper/main.tex)
 
 These documents reflect their respective snapshots and may use different status terminology. Check the underlying protocol, code, and evidence before treating a reported result as a formal claim.

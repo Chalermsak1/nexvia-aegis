@@ -9,6 +9,8 @@ Evaluates:
 5. AEGIS-V9 + CBF + fixed range window: Exploratory four-sample STOP check.
 6. AEGIS-V9 + CBF + 3D veto: Same range window plus two 3D vector
    plausibility checks. These are development heuristics, not risk certificates.
+7. Optional 3D-aware no-active-probing arm: abstains when the same 3D-aware
+   controller requests probing or an anchor; ordinary range checks remain enabled.
 
 This is a development benchmark. Observations are not a safety guarantee or a
 confirmatory evaluation, and the range guard is not a sequential confidence bound.
@@ -29,6 +31,13 @@ from aegis.v3.sensors.sensors import SensorReading
 from aegis.v7.anchor_sensor import AnchorReading
 from aegis.v9.controller import AegisV9Controller
 from aegis.v9.controller_3d import Aegis3DAwareController
+from aegis.v9.anchor_arrival_candidate import AnchorArrivalCandidate
+from aegis.v9.stabilized_arrival_candidate import StabilizedArrivalCandidate
+from aegis.v9.anchor_recovery_candidate import AnchorRecoveryCandidate
+from aegis.v9.sustained_stop_candidate import SustainedStopCandidate
+from aegis.v9.velocity_freshness_candidate import FreshVelocityStopCandidate, TimedVelocity
+from aegis.v9.bounded_gap_candidate import BoundedGapCandidate
+from aegis.v9.dual_velocity_candidate import DualVelocityCandidate
 
 
 def corroborate_3d_stop(
@@ -71,31 +80,81 @@ def run_3d_episode(
     range_bias_m: float = 0.0,
     range_dropout_probability: float = 0.0,
     range_latency_steps: int = 0,
+    trace: list[dict] | None = None,
+    anchor_bias_xyz: np.ndarray | None = None,
+    anchor_dropout_probability: float = 0.0,
+    post_stop_steps: int = 0,
+    velocity_bias_xyz: np.ndarray | None = None,
+    velocity_dropout_probability: float = 0.0,
+    velocity_scale: float = 1.0,
+    velocity_latency_steps: int = 0,
+    velocity_replay_probability: float = 0.0,
+    secondary_velocity_scale: float = 1.0,
+    secondary_velocity_dropout_probability: float = 0.0,
 ) -> dict:
     if controller_type not in {
         "UNSHIELDED", "CBF_ONLY", "AEGIS_V9_CBF",
         "AEGIS_V9_CBF_RANGE_GUARD", "AEGIS_V9_CBF_RANGE_WINDOW",
-        "AEGIS_V9_CBF_RANGE_3D_VETO", "AEGIS_3D_AWARE_CBF",
+        "AEGIS_V9_CBF_RANGE_3D_VETO", "AEGIS_3D_AWARE_CBF", "AEGIS_3D_NO_ACTIVE_PROBE", "AEGIS_3D_STRICT_RANGE", "AEGIS_3D_ANCHOR_GUARD", "AEGIS_3D_STABILIZED", "AEGIS_3D_STABILIZED_RETRY", "AEGIS_3D_ANCHOR_RECOVERY", "AEGIS_3D_SUSTAINED_STOP", "AEGIS_3D_FRESH_VELOCITY", "AEGIS_3D_BOUNDED_GAP", "AEGIS_3D_DUAL_VELOCITY",
     }:
         raise ValueError(f"Unknown 3D controller type: {controller_type}")
     if not 0.0 <= range_dropout_probability <= 1.0 or range_latency_steps < 0:
         raise ValueError("Range dropout probability must be in [0,1] and latency nonnegative")
+    if not isinstance(post_stop_steps, int) or isinstance(post_stop_steps, bool) or post_stop_steps < 0:
+        raise ValueError("post_stop_steps must be a nonnegative integer")
+    if post_stop_steps and controller_type not in {"AEGIS_3D_AWARE_CBF", "AEGIS_3D_NO_ACTIVE_PROBE", "AEGIS_3D_STRICT_RANGE", "AEGIS_3D_ANCHOR_GUARD", "AEGIS_3D_STABILIZED", "AEGIS_3D_STABILIZED_RETRY", "AEGIS_3D_ANCHOR_RECOVERY", "AEGIS_3D_SUSTAINED_STOP", "AEGIS_3D_FRESH_VELOCITY", "AEGIS_3D_BOUNDED_GAP", "AEGIS_3D_DUAL_VELOCITY"}:
+        raise ValueError("post-stop diagnostics currently support only 3D-aware arms")
     if not math.isfinite(range_bias_m) or np.shape(sensor_bias) != (3,) or not np.isfinite(sensor_bias).all():
         raise ValueError("Range bias and 3D vector-sensor bias must be finite")
-    env_seq, sensor_seq, fault_seq = np.random.SeedSequence(seed).spawn(3)
+    anchor_bias_xyz = np.zeros(3) if anchor_bias_xyz is None else np.asarray(anchor_bias_xyz)
+    if anchor_bias_xyz.shape != (3,) or not np.isfinite(anchor_bias_xyz).all() or not 0 <= anchor_dropout_probability <= 1:
+        raise ValueError("Anchor bias must be finite and dropout probability in [0,1]")
+    velocity_bias_xyz = np.zeros(3) if velocity_bias_xyz is None else np.asarray(velocity_bias_xyz)
+    if velocity_bias_xyz.shape != (3,) or not np.isfinite(velocity_bias_xyz).all() or not 0 <= velocity_dropout_probability <= 1:
+        raise ValueError("Velocity bias must be finite and dropout probability in [0,1]")
+    if not math.isfinite(velocity_scale) or not 0 <= velocity_scale <= 1:
+        raise ValueError("velocity_scale must be finite and in [0,1]")
+    if type(velocity_latency_steps) is not int or velocity_latency_steps < 0 or not 0 <= velocity_replay_probability <= 1:
+        raise ValueError("velocity latency must be a nonnegative integer and replay probability in [0,1]")
+    if not math.isfinite(secondary_velocity_scale) or not 0 <= secondary_velocity_scale <= 1 or not 0 <= secondary_velocity_dropout_probability <= 1:
+        raise ValueError("secondary velocity scale and dropout must be in [0,1]")
+    env_seq, sensor_seq, fault_seq, anchor_seq, anchor_fault_seq, velocity_seq, velocity_fault_seq, replay_seq, secondary_seq, secondary_fault_seq = np.random.SeedSequence(seed).spawn(10)
     rng_env = np.random.default_rng(env_seq)
     rng_sensors = np.random.default_rng(sensor_seq)
     rng_faults = np.random.default_rng(fault_seq)
+    rng_anchor = np.random.default_rng(anchor_seq)
+    rng_anchor_faults = np.random.default_rng(anchor_fault_seq)
+    rng_velocity = np.random.default_rng(velocity_seq)
+    rng_velocity_faults = np.random.default_rng(velocity_fault_seq)
+    rng_velocity_replay = np.random.default_rng(replay_seq)
+    rng_secondary = np.random.default_rng(secondary_seq)
+    rng_secondary_fault = np.random.default_rng(secondary_fault_seq)
     state = env.reset(rng_env)
 
     v9_ctrl = AegisV9Controller() if controller_type.startswith("AEGIS_V9_CBF") else None
     if v9_ctrl:
         v9_ctrl.reset()
-    ctrl_3d = Aegis3DAwareController(success_radius=env.config.success_radius) if controller_type == "AEGIS_3D_AWARE_CBF" else None
+    ctrl_3d = Aegis3DAwareController(success_radius=env.config.success_radius, arrival_margin_m=0.0 if controller_type == "AEGIS_3D_STRICT_RANGE" else 0.03) if controller_type in {"AEGIS_3D_AWARE_CBF", "AEGIS_3D_NO_ACTIVE_PROBE", "AEGIS_3D_STRICT_RANGE"} else None
+    if controller_type == "AEGIS_3D_ANCHOR_GUARD":
+        ctrl_3d = AnchorArrivalCandidate(success_radius=env.config.success_radius)
+    if controller_type == "AEGIS_3D_STABILIZED":
+        ctrl_3d = StabilizedArrivalCandidate(success_radius=env.config.success_radius)
+    if controller_type == "AEGIS_3D_STABILIZED_RETRY":
+        ctrl_3d = StabilizedArrivalCandidate(success_radius=env.config.success_radius, max_missing_velocity=2)
+    if controller_type == "AEGIS_3D_ANCHOR_RECOVERY":
+        ctrl_3d = AnchorRecoveryCandidate(success_radius=env.config.success_radius)
+    if controller_type == "AEGIS_3D_SUSTAINED_STOP":
+        ctrl_3d = SustainedStopCandidate(success_radius=env.config.success_radius)
+    if controller_type == "AEGIS_3D_FRESH_VELOCITY":
+        ctrl_3d = FreshVelocityStopCandidate(success_radius=env.config.success_radius)
+    if controller_type == "AEGIS_3D_BOUNDED_GAP":
+        ctrl_3d = BoundedGapCandidate(success_radius=env.config.success_radius)
+    if controller_type == "AEGIS_3D_DUAL_VELOCITY":
+        ctrl_3d = DualVelocityCandidate(success_radius=env.config.success_radius)
     if ctrl_3d:
         ctrl_3d.reset()
 
-    collision_occurred = False
+    collision_occurred = bool(state.get("safety_violation", False))
     cbf_constraint_violation_occurred = False
     cbf_unchecked_steps = 0
     cbf_exact_fallback_steps = 0
@@ -107,6 +166,11 @@ def run_3d_episode(
 
     steps_taken = 0
     next_query_anchor = False
+    anchor_queries = 0
+    anchor_valid_readings = 0
+    post_stop = None
+    velocity_history = []
+    previous_velocity_delivery = None
     range_window: list[float] = []
     vector_window_a: list[np.ndarray] = []
     vector_window_b: list[np.ndarray] = []
@@ -185,6 +249,14 @@ def run_3d_episode(
             continue
 
         if controller_type == "UNSHIELDED":
+            # Decide and score arrival at the current state before applying a
+            # new action, matching the 3D-aware STOP decision boundary.
+            if np.linalg.norm(meas_a_3d) < 0.22:
+                if true_dist <= env.config.success_radius:
+                    true_success = True
+                else:
+                    false_arrival = True
+                break
             # Direct tracking of biased sensor without CBF
             u_des = 1.2 * meas_a_3d - 0.5 * vel
             # In unshielded mode, we bypass CBF filter completely:
@@ -197,26 +269,17 @@ def run_3d_episode(
             state = env.get_state()
             observe_step(state)
 
-            # Arrival condition based on flawed sensor A
+        elif controller_type == "CBF_ONLY":
             if np.linalg.norm(meas_a_3d) < 0.22:
                 if true_dist <= env.config.success_radius:
                     true_success = True
                 else:
                     false_arrival = True
                 break
-
-        elif controller_type == "CBF_ONLY":
             # Uses CBF to prevent obstacle collision, but trusts flawed sensor A
             u_des = 1.2 * meas_a_3d - 0.5 * vel
             state = env.step(u_des, force_braking=False)
             observe_step(state)
-
-            if np.linalg.norm(meas_a_3d) < 0.22:
-                if true_dist <= env.config.success_radius:
-                    true_success = True
-                else:
-                    false_arrival = True
-                break
 
         elif controller_type.startswith("AEGIS_V9_CBF"):
             # AEGIS-V9 Runtime Assurance + CBF
@@ -248,7 +311,7 @@ def run_3d_episode(
             anc_reading = None
             if next_query_anchor:
                 # Provide high-integrity episodic anchor reading in 2D
-                anc_noise = rng_sensors.normal(0.0, 0.04, size=2)
+                anc_noise = rng_anchor.normal(0.0, 0.04, size=2)
                 anc_reading = AnchorReading(
                     estimate=true_delta_3d[:2] + anc_noise,
                     sigma=0.04,
@@ -300,7 +363,7 @@ def run_3d_episode(
                 state = env.step(u_des_3d, force_braking=force_brake)
                 observe_step(state)
 
-        elif controller_type == "AEGIS_3D_AWARE_CBF":
+        elif controller_type in {"AEGIS_3D_AWARE_CBF", "AEGIS_3D_NO_ACTIVE_PROBE", "AEGIS_3D_STRICT_RANGE", "AEGIS_3D_ANCHOR_GUARD", "AEGIS_3D_STABILIZED", "AEGIS_3D_STABILIZED_RETRY", "AEGIS_3D_ANCHOR_RECOVERY", "AEGIS_3D_SUSTAINED_STOP", "AEGIS_3D_FRESH_VELOCITY", "AEGIS_3D_BOUNDED_GAP", "AEGIS_3D_DUAL_VELOCITY"}:
             assert ctrl_3d is not None
             rd_a = SensorReading(
                 estimate=meas_a_3d,
@@ -321,25 +384,99 @@ def run_3d_episode(
                 drift=np.zeros(3),
             )
             rd_r = RangeReading(
-                distance=range_meas if range_valid else 0.0,
+                # A delayed reading describes an earlier position and cannot
+                # corroborate arrival without motion compensation.
+                distance=range_meas if range_fresh else 0.0,
                 sigma=0.05,
-                valid=range_valid,
-                dropped=not range_valid,
+                valid=range_fresh,
+                dropped=not range_fresh,
             )
             anc_reading = None
             if next_query_anchor:
-                anc_noise = rng_sensors.normal(0.0, 0.04, size=3)
+                anchor_queries += 1
+                anc_noise = rng_anchor.normal(0.0, 0.04, size=3)
+                anchor_valid = not (anchor_dropout_probability > 0 and rng_anchor_faults.random() < anchor_dropout_probability)
+                anchor_valid_readings += int(anchor_valid)
                 anc_reading = AnchorReading(
-                    estimate=true_delta_3d + anc_noise,
+                    estimate=true_delta_3d + anc_noise + anchor_bias_xyz,
                     sigma=0.04,
-                    valid=True,
+                    valid=anchor_valid,
                     queried=True,
                     cost_accrued=0.05,
                 )
 
-            action_3d, dec_type, _, next_query_anchor = ctrl_3d.update(
-                rd_a, rd_b, rd_r, anchor_reading=anc_reading, step=step
-            )
+            anchor_requested = next_query_anchor
+            velocity_observation = None
+            timed_velocity = None
+            secondary_observation = None
+            if controller_type in {"AEGIS_3D_STABILIZED", "AEGIS_3D_STABILIZED_RETRY", "AEGIS_3D_ANCHOR_RECOVERY", "AEGIS_3D_SUSTAINED_STOP", "AEGIS_3D_FRESH_VELOCITY", "AEGIS_3D_BOUNDED_GAP", "AEGIS_3D_DUAL_VELOCITY"}:
+                sampled = velocity_scale * vel + velocity_bias_xyz + rng_velocity.normal(0.0, 0.02, size=3)
+                if velocity_dropout_probability > 0 and rng_velocity_faults.random() < velocity_dropout_probability:
+                    sampled = None
+                velocity_history.append(None if sampled is None else TimedVelocity(sampled, step, step * env.config.timestep))
+                timed_velocity = velocity_history[-velocity_latency_steps - 1] if len(velocity_history) > velocity_latency_steps else None
+                if velocity_replay_probability > 0 and rng_velocity_replay.random() < velocity_replay_probability:
+                    timed_velocity = previous_velocity_delivery
+                previous_velocity_delivery = timed_velocity
+                velocity_observation = timed_velocity.vector if timed_velocity is not None else None
+                if controller_type == "AEGIS_3D_DUAL_VELOCITY":
+                    secondary_observation = secondary_velocity_scale * vel + rng_secondary.normal(0.0, 0.02, size=3)
+                    if secondary_velocity_dropout_probability > 0 and rng_secondary_fault.random() < secondary_velocity_dropout_probability:
+                        secondary_observation = None
+                    secondary = TimedVelocity(secondary_observation, step, step * env.config.timestep) if secondary_observation is not None else None
+                    action_3d, dec_type, nav_vector, next_query_anchor = ctrl_3d.update(
+                        rd_a, rd_b, rd_r, anchor_reading=anc_reading, step=step, velocity_reading=timed_velocity,
+                        secondary_velocity_reading=secondary, now_seconds=step * env.config.timestep)
+                elif controller_type in {"AEGIS_3D_FRESH_VELOCITY", "AEGIS_3D_BOUNDED_GAP"}:
+                    action_3d, dec_type, nav_vector, next_query_anchor = ctrl_3d.update(
+                        rd_a, rd_b, rd_r, anchor_reading=anc_reading, step=step,
+                        velocity_reading=timed_velocity, now_seconds=step * env.config.timestep)
+                else:
+                    action_3d, dec_type, nav_vector, next_query_anchor = ctrl_3d.update(
+                        rd_a, rd_b, rd_r, anchor_reading=anc_reading, step=step, velocity_reading=velocity_observation)
+            else:
+                action_3d, dec_type, nav_vector, next_query_anchor = ctrl_3d.update(
+                    rd_a, rd_b, rd_r, anchor_reading=anc_reading, step=step)
+            if trace is not None:
+                # Ground truth is recorded only after update and is never passed
+                # to the controller except through the simulated observations.
+                trace.append({
+                    "step": step, "position": pos.tolist(), "target": target.tolist(),
+                    "true_distance": true_dist, "velocity": vel.tolist(),
+                    "velocity_observation": velocity_observation.tolist() if velocity_observation is not None else None,
+                    "secondary_velocity_observation": secondary_observation.tolist() if secondary_observation is not None else None,
+                    "velocity_crosscheck_reason": ctrl_3d.crosscheck_reason if controller_type == "AEGIS_3D_DUAL_VELOCITY" else None,
+                    "velocity_sequence": timed_velocity.sequence if timed_velocity is not None else None,
+                    "velocity_acquired_seconds": timed_velocity.acquired_seconds if timed_velocity is not None else None,
+                    "velocity_gate_reason": ctrl_3d.velocity_gate.reason if controller_type in {"AEGIS_3D_FRESH_VELOCITY", "AEGIS_3D_BOUNDED_GAP"} else None,
+                    "gap_bridged": ctrl_3d.gap_bridged if controller_type == "AEGIS_3D_BOUNDED_GAP" else False,
+                    "gap_speed_bound": ctrl_3d.last_gap_bound if controller_type == "AEGIS_3D_BOUNDED_GAP" else None,
+                    "sensor_a": meas_a_3d.tolist(), "sensor_b": meas_b_3d.tolist(),
+                    "range": float(range_meas) if range_valid else None,
+                    "range_valid": bool(range_valid),
+                    "range_fresh": bool(range_fresh),
+                    "anchor_requested": bool(anchor_requested),
+                    "anchor": anc_reading.estimate.tolist() if anc_reading is not None else None,
+                    "anchor_valid": bool(anc_reading.valid) if anc_reading is not None else None,
+                    "action": action_3d.tolist(), "decision": dec_type,
+                    "nav_vector": nav_vector.tolist(), "mode": ctrl_3d.mode,
+                    "terminal_reason": ctrl_3d.terminal_reason,
+                    "low_speed_samples": getattr(ctrl_3d, "low_speed_samples", None),
+                    "next_query_anchor": bool(next_query_anchor),
+                    "calibration_count_a": ctrl_3d.cal_a.sample_count,
+                    "calibration_count_b": ctrl_3d.cal_b.sample_count,
+                    "bias_est_a": ctrl_3d.cal_a.bias_est.tolist(),
+                    "bias_est_b": ctrl_3d.cal_b.bias_est.tolist(),
+                    "arrival_range_samples": list(ctrl_3d.arrival_range_samples),
+                })
+            if controller_type == "AEGIS_3D_NO_ACTIVE_PROBE" and (dec_type == "PROBE" or next_query_anchor):
+                # The ablation keeps the same monitors and range confirmation,
+                # but terminates instead of probing or obtaining an anchor.
+                dec_type = "ABSTAIN"
+                next_query_anchor = False
+
+            if trace is not None:
+                trace[-1]["effective_decision"] = dec_type
 
             if dec_type == "ABSTAIN":
                 state = env.step(np.zeros(3), force_braking=True)
@@ -351,6 +488,20 @@ def run_3d_episode(
                     true_success = True
                 else:
                     false_arrival = True
+                if post_stop_steps:
+                    # Separate diagnostic horizon; keep original STOP score,
+                    # counts, and state intact. Ground truth is used for
+                    # observation only, never for controller decisions.
+                    after = []
+                    for _ in range(post_stop_steps):
+                        observed = env.step(np.zeros(3), force_braking=True)
+                        after.append({"distance": float(observed["distance"]),
+                                      "speed": float(np.linalg.norm(observed["robot_velocity"])),
+                                      "collision": bool(observed["safety_violation"]),
+                                      "cbf_residual": observed.get("cbf_constraint_residual")})
+                    post_stop = {"decision_distance": true_dist,
+                                 "decision_speed": float(np.linalg.norm(vel)),
+                                 "steps": after}
                 break
             else:
                 u_des_3d = action_3d - 0.5 * vel
@@ -361,7 +512,7 @@ def run_3d_episode(
     else:
         timeout = True
 
-    return {
+    result = {
         "controller": controller_type,
         "seed": seed,
         "steps": steps_taken,
@@ -378,7 +529,19 @@ def run_3d_episode(
         "range_bias_m": range_bias_m,
         "range_dropout_probability": range_dropout_probability,
         "range_latency_steps": range_latency_steps,
+        "anchor_queries": anchor_queries,
+        "anchor_valid_readings": anchor_valid_readings,
     }
+    if post_stop_steps:
+        result["post_stop"] = post_stop
+    if controller_type in {"AEGIS_3D_FRESH_VELOCITY", "AEGIS_3D_BOUNDED_GAP"}:
+        result["velocity_gate_rejections"] = ctrl_3d.velocity_gate.rejections
+    if controller_type == "AEGIS_3D_BOUNDED_GAP":
+        result["bridged_velocity_steps"] = ctrl_3d.bridged_steps
+    if controller_type == "AEGIS_3D_DUAL_VELOCITY":
+        result["velocity_comparisons"] = ctrl_3d.comparisons
+        result["velocity_disagreements"] = ctrl_3d.disagreements
+    return result
 
 
 def main(argv: list[str] | None = None):
@@ -393,6 +556,7 @@ def main(argv: list[str] | None = None):
                         metavar=("X", "Y", "Z"),
                         help="Run one explicit 3D vector-sensor bias instead of the default suite")
     parser.add_argument("--include-3d-aware", action="store_true", help="Include AEGIS_3D_AWARE_CBF in evaluation suite")
+    parser.add_argument("--include-3d-no-probe", action="store_true", help="Include paired 3D-aware and no-active-probing ablation arms")
     parser.add_argument("--output", type=Path, help="New JSON evidence file; existing files are never overwritten")
     args = parser.parse_args(argv)
     if args.n_seeds <= 0 or args.max_steps <= 0:
@@ -423,8 +587,10 @@ def main(argv: list[str] | None = None):
         "AEGIS_V9_CBF_RANGE_GUARD", "AEGIS_V9_CBF_RANGE_WINDOW",
         "AEGIS_V9_CBF_RANGE_3D_VETO",
     ]
-    if args.include_3d_aware:
+    if args.include_3d_aware or args.include_3d_no_probe:
         controllers.append("AEGIS_3D_AWARE_CBF")
+    if args.include_3d_no_probe:
+        controllers.append("AEGIS_3D_NO_ACTIVE_PROBE")
 
     all_results = {}
     episode_records = []
@@ -496,6 +662,8 @@ def main(argv: list[str] | None = None):
     ]
     if "AEGIS_3D_AWARE_CBF" in all_results:
         labels_to_print.append("AEGIS_3D_AWARE_CBF")
+    if "AEGIS_3D_NO_ACTIVE_PROBE" in all_results:
+        labels_to_print.append("AEGIS_3D_NO_ACTIVE_PROBE")
     for label in labels_to_print:
         candidate = all_results[label]
         print(f"Observed {label}: {candidate['collision']}/{candidate['episodes']} "
@@ -509,10 +677,11 @@ def main(argv: list[str] | None = None):
         payload = {
             "schema_version": "v9-m5-3d-development-benchmark/1.7",
             "classification": "EXPLORATORY_SIMULATION",
-            "random_streams": "SeedSequence(seed).spawn(3): environment, sensors, faults",
+            "random_streams": "SeedSequence(seed).spawn(4): environment, sensors, faults, anchor",
             "source_sha256": {
                 "benchmark": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
                 "world": hashlib.sha256(Path(world_module.__file__).read_bytes()).hexdigest(),
+                "controller_3d": hashlib.sha256(Path(sys.modules[Aegis3DAwareController.__module__].__file__).read_bytes()).hexdigest(),
             },
             "runtime": {
                 "python": sys.version.split()[0],

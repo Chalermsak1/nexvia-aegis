@@ -1,0 +1,391 @@
+{
+  "input_sha256": "9744ee7c8c7ad640fce39e47a58fd15447d3529a8d2feba513af00ef02281724",
+  "summary": [
+    {
+      "case": "nominal",
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "assigned": 8,
+      "errors": 0,
+      "true_success": 3,
+      "false_arrival": 0,
+      "abstained": 5,
+      "timeout": 0,
+      "comparisons": 0,
+      "disagreements": 0,
+      "hazard_counts": {}
+    },
+    {
+      "case": "nominal",
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_DUAL_VELOCITY",
+      "assigned": 8,
+      "errors": 0,
+      "true_success": 0,
+      "false_arrival": 0,
+      "abstained": 8,
+      "timeout": 0,
+      "comparisons": 2958,
+      "disagreements": 21,
+      "hazard_counts": {
+        "VELOCITIES_CONSISTENT": 16
+      }
+    },
+    {
+      "case": "nominal",
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "assigned": 8,
+      "errors": 0,
+      "true_success": 6,
+      "false_arrival": 0,
+      "abstained": 2,
+      "timeout": 0,
+      "comparisons": 0,
+      "disagreements": 0,
+      "hazard_counts": {}
+    },
+    {
+      "case": "nominal",
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_DUAL_VELOCITY",
+      "assigned": 8,
+      "errors": 0,
+      "true_success": 0,
+      "false_arrival": 0,
+      "abstained": 7,
+      "timeout": 1,
+      "comparisons": 4057,
+      "disagreements": 30,
+      "hazard_counts": {
+        "VELOCITIES_CONSISTENT": 23
+      }
+    },
+    {
+      "case": "primary_underreports",
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "assigned": 8,
+      "errors": 0,
+      "true_success": 2,
+      "false_arrival": 0,
+      "abstained": 6,
+      "timeout": 0,
+      "comparisons": 0,
+      "disagreements": 0,
+      "hazard_counts": {}
+    },
+    {
+      "case": "primary_underreports",
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_DUAL_VELOCITY",
+      "assigned": 8,
+      "errors": 0,
+      "true_success": 0,
+      "false_arrival": 0,
+      "abstained": 8,
+      "timeout": 0,
+      "comparisons": 1636,
+      "disagreements": 1612,
+      "hazard_counts": {
+        "VELOCITY_DISAGREEMENT": 18,
+        "VELOCITIES_CONSISTENT": 8
+      }
+    },
+    {
+      "case": "primary_underreports",
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "assigned": 8,
+      "errors": 0,
+      "true_success": 5,
+      "false_arrival": 0,
+      "abstained": 3,
+      "timeout": 0,
+      "comparisons": 0,
+      "disagreements": 0,
+      "hazard_counts": {}
+    },
+    {
+      "case": "primary_underreports",
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_DUAL_VELOCITY",
+      "assigned": 8,
+      "errors": 0,
+      "true_success": 0,
+      "false_arrival": 0,
+      "abstained": 8,
+      "timeout": 0,
+      "comparisons": 2102,
+      "disagreements": 2079,
+      "hazard_counts": {
+        "VELOCITY_DISAGREEMENT": 32,
+        "VELOCITIES_CONSISTENT": 8
+      }
+    },
+    {
+      "case": "secondary_underreports",
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "assigned": 8,
+      "errors": 0,
+      "true_success": 3,
+      "false_arrival": 0,
+      "abstained": 5,
+      "timeout": 0,
+      "comparisons": 0,
+      "disagreements": 0,
+      "hazard_counts": {}
+    },
+    {
+      "case": "secondary_underreports",
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_DUAL_VELOCITY",
+      "assigned": 8,
+      "errors": 0,
+      "true_success": 0,
+      "false_arrival": 0,
+      "abstained": 8,
+      "timeout": 0,
+      "comparisons": 1636,
+      "disagreements": 1612,
+      "hazard_counts": {
+        "VELOCITIES_CONSISTENT": 1
+      }
+    },
+    {
+      "case": "secondary_underreports",
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "assigned": 8,
+      "errors": 0,
+      "true_success": 6,
+      "false_arrival": 0,
+      "abstained": 2,
+      "timeout": 0,
+      "comparisons": 0,
+      "disagreements": 0,
+      "hazard_counts": {}
+    },
+    {
+      "case": "secondary_underreports",
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_DUAL_VELOCITY",
+      "assigned": 8,
+      "errors": 0,
+      "true_success": 0,
+      "false_arrival": 0,
+      "abstained": 8,
+      "timeout": 0,
+      "comparisons": 2102,
+      "disagreements": 2081,
+      "hazard_counts": {
+        "VELOCITY_DISAGREEMENT": 1,
+        "VELOCITIES_CONSISTENT": 1
+      }
+    },
+    {
+      "case": "common_underreport",
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "assigned": 8,
+      "errors": 0,
+      "true_success": 2,
+      "false_arrival": 0,
+      "abstained": 6,
+      "timeout": 0,
+      "comparisons": 0,
+      "disagreements": 0,
+      "hazard_counts": {}
+    },
+    {
+      "case": "common_underreport",
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_DUAL_VELOCITY",
+      "assigned": 8,
+      "errors": 0,
+      "true_success": 0,
+      "false_arrival": 0,
+      "abstained": 8,
+      "timeout": 0,
+      "comparisons": 2958,
+      "disagreements": 21,
+      "hazard_counts": {
+        "VELOCITIES_CONSISTENT": 216
+      }
+    },
+    {
+      "case": "common_underreport",
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "assigned": 8,
+      "errors": 0,
+      "true_success": 5,
+      "false_arrival": 0,
+      "abstained": 3,
+      "timeout": 0,
+      "comparisons": 0,
+      "disagreements": 0,
+      "hazard_counts": {}
+    },
+    {
+      "case": "common_underreport",
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_DUAL_VELOCITY",
+      "assigned": 8,
+      "errors": 0,
+      "true_success": 0,
+      "false_arrival": 0,
+      "abstained": 7,
+      "timeout": 1,
+      "comparisons": 4057,
+      "disagreements": 30,
+      "hazard_counts": {
+        "VELOCITIES_CONSISTENT": 308,
+        "VELOCITY_DISAGREEMENT": 1
+      }
+    },
+    {
+      "case": "secondary_dropout",
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "assigned": 8,
+      "errors": 0,
+      "true_success": 3,
+      "false_arrival": 0,
+      "abstained": 5,
+      "timeout": 0,
+      "comparisons": 0,
+      "disagreements": 0,
+      "hazard_counts": {}
+    },
+    {
+      "case": "secondary_dropout",
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_DUAL_VELOCITY",
+      "assigned": 8,
+      "errors": 0,
+      "true_success": 0,
+      "false_arrival": 0,
+      "abstained": 8,
+      "timeout": 0,
+      "comparisons": 2623,
+      "disagreements": 20,
+      "hazard_counts": {
+        "VELOCITIES_CONSISTENT": 15,
+        "SOURCE_UNAVAILABLE": 1
+      }
+    },
+    {
+      "case": "secondary_dropout",
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "assigned": 8,
+      "errors": 0,
+      "true_success": 6,
+      "false_arrival": 0,
+      "abstained": 2,
+      "timeout": 0,
+      "comparisons": 0,
+      "disagreements": 0,
+      "hazard_counts": {}
+    },
+    {
+      "case": "secondary_dropout",
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_DUAL_VELOCITY",
+      "assigned": 8,
+      "errors": 0,
+      "true_success": 0,
+      "false_arrival": 0,
+      "abstained": 7,
+      "timeout": 1,
+      "comparisons": 3408,
+      "disagreements": 27,
+      "hazard_counts": {
+        "VELOCITIES_CONSISTENT": 16,
+        "SOURCE_UNAVAILABLE": 3
+      }
+    }
+  ]
+}

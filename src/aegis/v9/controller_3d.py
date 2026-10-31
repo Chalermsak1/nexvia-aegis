@@ -11,7 +11,7 @@ Addresses the 3D Reality Gap identified in V9-M5 development audits:
    Tracks 3D vector discrepancies and altitude drift channels under non-exchangeable drift.
 4. Calibrated 3D Arrival Verification (Replaces flawed raw-measurement heuristics):
    Corroborates arrival against the CALIBRATED 3D state estimate rather than raw corrupted sensors,
-   eliminating false arrivals while recovering high coverage and utility.
+   intended to reduce false arrivals; performance requires empirical evaluation.
 5. Fail-Closed Actuator & Degradation Safeguards:
    Enforces fail-closed abstention under unresolvable common-mode failures or severe dropouts.
 """
@@ -64,12 +64,16 @@ class Aegis3DAwareController:
         alpha_risk: float = 0.05,
         tau_diff_3d: float = 3.0,
         tau_range_3d: float = 0.35,
+        arrival_margin_m: float = 0.03,
     ) -> None:
+        if not math.isfinite(arrival_margin_m) or arrival_margin_m < 0:
+            raise ValueError("arrival_margin_m must be finite and nonnegative")
         self.success_radius = float(success_radius)
         self.cbf_force_limit = float(cbf_force_limit)
         self.alpha_risk = float(alpha_risk)
         self.tau_diff_3d = float(tau_diff_3d)
         self.tau_range_3d = float(tau_range_3d)
+        self.arrival_margin_m = float(arrival_margin_m)
 
         self.cal_a = Sensor3DCalibration(bias_est=np.zeros(3, dtype=np.float64))
         self.cal_b = Sensor3DCalibration(bias_est=np.zeros(3, dtype=np.float64))
@@ -313,7 +317,7 @@ class Aegis3DAwareController:
                     if self.arrival_check_steps >= 3:
                         mean_r = float(np.mean(self.arrival_range_samples))
                         r_ucb = mean_r + 1.645 * sig_r / math.sqrt(len(self.arrival_range_samples))
-                        if r_ucb <= self.success_radius + 0.03:
+                        if r_ucb <= self.success_radius + self.arrival_margin_m:
                             self.mode = "STOP"
                             self.terminal_reason = "3D_CALIBRATED_VERIFIED_ARRIVAL"
                             return np.zeros(3), "STOP", nav_3d, False
