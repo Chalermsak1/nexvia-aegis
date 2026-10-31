@@ -56,6 +56,15 @@ from aegis.v9.ville_monitor import (
     VilleChannelSpec,
     VilleStepResult,
 )
+from aegis.v9.robust_tube_clbf import (
+    DwellPhase,
+    MicroActiveSetQPSolver,
+    MicroQPSolution,
+    RobustTubeCLBFConfig,
+    RobustTubeCLBFController,
+    TerminalPhysicalStillnessMonitor,
+    TubeUncertaintyState,
+)
 
 __all__ = [
     "Aegis3DAwareController",
@@ -69,15 +78,22 @@ __all__ = [
     "CusumStepResult",
     "DecoupledEpisodeRNG",
     "DisjointPerSensorCalibrator",
+    "DwellPhase",
     "EstimatedStateCandidate",
     "FixedSequenceLTTResult",
+    "MicroActiveSetQPSolver",
+    "MicroQPSolution",
     "MultiChannelCusumMonitor",
     "MultiChannelVilleMonitor",
     "PREREGISTERED_CANDIDATE_FAMILY",
     "PerSensorCalibrationState",
     "PolicyEvaluationSummary",
+    "RobustTubeCLBFConfig",
+    "RobustTubeCLBFController",
     "SensorCalStatus",
     "SymmetricAnchorRangeGate",
+    "TerminalPhysicalStillnessMonitor",
+    "TubeUncertaintyState",
     "V9CandidateParams",
     "V9HierarchicalManifestGenerator",
     "V9ScenarioSpec",

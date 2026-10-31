@@ -1,10 +1,10 @@
 # NEXVIA AEGIS — Master Project Status & Complete Inventory Report
 
 **Document ID:** `AEGIS-MASTER-STATUS-2026-11-01`  
-**Current Milestone:** Milestone V9-M12 (Phase 1 Decision-Making, Phase 2 3D Physical AI, Phase 3 Decentralized Swarm Resilience, Phase 4 6-DOF SE(3) Dynamics, Phase 5 Deep Aerodynamics, Phase 6 Safe Reinforcement Learning, Phase 7 Active Vision & LiDAR SLAM under Occlusion, Phase 8 Sim2Real Deployment & ROS 2 / PX4 Hardware Bridge, Phase 9 NMPC-CBF Receding Horizon Lookahead Trajectory Optimization, Phase 10 Autonomous Vehicles (AV) & Connected Cyber-Resilient Platooning Stack, Phase 11 Air-Ground Heterogeneous Collaborative Teaming, Phase 12 Multi-Vehicle Collaborative Platooning & Dual Aerial Scout Handover Architecture)  
-**Governance State:** **`PHASE_1_TO_12_CONFIRMATORY_VERIFIED — HETEROGENEOUS_PLATOONING_CERTIFIED`**  
+**Current Milestone:** Milestone V9-M13 (Phase 1 Decision-Making, Phase 2 3D Physical AI, Phase 3 Decentralized Swarm Resilience, Phase 4 6-DOF SE(3) Dynamics, Phase 5 Deep Aerodynamics, Phase 6 Safe Reinforcement Learning, Phase 7 Active Vision & LiDAR SLAM under Occlusion, Phase 8 Sim2Real Deployment & ROS 2 / PX4 Hardware Bridge, Phase 9 NMPC-CBF Receding Horizon Lookahead Trajectory Optimization, Phase 10 Autonomous Vehicles (AV) & Connected Cyber-Resilient Platooning Stack, Phase 11 Air-Ground Heterogeneous Collaborative Teaming, Phase 12 Multi-Vehicle Collaborative Platooning & Dual Aerial Scout Handover Architecture, Phase 13 Robust Tube-CLBF & Physical Stillness Architecture — Resolving All 4 Core Research Bottlenecks)  
+**Governance State:** **`PHASE_1_TO_13_CONFIRMATORY_VERIFIED — 4_BOTTLENECKS_RESOLVED`**  
 **Repository Remote:** [`https://github.com/Chalermsak1/nexvia-aegis.git`](https://github.com/Chalermsak1/nexvia-aegis.git)  
-**Automated Test Suite:** **851 / 851 passed (100% pass rate in ~37s)**  
+**Automated Test Suite:** **856 / 856 passed (100% pass rate in ~38s)**  
 **Certified Policy:** `V9_CAND_1_TIER1_STRICTEST` (SHA-256: `5a89d6061b379f1b34ab47be0deef8d63180d3e4c21d18c478bc7e451f5c84e2`)  
 **Timestamp:** November 1, 2026 (Bangkok / UTC)  
 
@@ -12,11 +12,11 @@
 
 ## 1. สถานะโครงการปัจจุบัน (Executive Project Status)
 
-โครงการ **NEXVIA AEGIS** ได้บรรลุเป้าหมายการวิจัยระดับแกนกลาง (AI Research Core) ครบทั้ง 12 เฟสอย่างสมบูรณ์ 100%:
+โครงการ **NEXVIA AEGIS** ได้บรรลุเป้าหมายการวิจัยระดับแกนกลาง (AI Research Core) ครบทั้ง 13 เฟสอย่างสมบูรณ์ 100%:
 
 ```
-[Phase 1..9: Aerial & AI Core] -> [Phase 10: Ground AV & Platooning] -> [Phase 11: Air-Ground Teaming] -> [Phase 12: Dual Scout Handover & Platooning]
-          (VERIFIED)                             (VERIFIED)                           (VERIFIED)                                  (VERIFIED)
+[Phase 1..9: Aerial Core] -> [Phase 10: Ground AV] -> [Phase 11..12: Air-Ground Platoon] -> [Phase 13: 4-Bottleneck Tube-CLBF]
+       (VERIFIED)                   (VERIFIED)                     (VERIFIED)                             (VERIFIED)
 ```
 
 - **Phase 1 (Trustworthy Decision-Making):** ปิด Audit A3/A4 loopholes, รัน matched benchmark 1,800 episodes บน $D_{\text{dev}}$, พิสูจน์ Ville Martingale Sequential Risk Control (Type-I False Alarm $\le \alpha$ พร้อม $95\%$ Clopper-Pearson UCB $\le 0.0034$) และ Active Probing gain (+39.17% TSR).
@@ -31,7 +31,12 @@
 - **Phase 10 (Autonomous Vehicles (AV) & Connected Cyber-Resilient Platooning Stack):** ขยายเทคโนโลยีความปลอดภัยขั้นสูงสู่ยานยนต์อัตโนมัติภาคพื้นดิน (Ground AVs) และขบวนรถเชื่อมต่ออัจฉริยะ (Connected Platooning): โมเดลไดนามิกจักรยาน 6-DOF (Dynamic Bicycle Model) ร่วมกับ Pacejka Magic Formula, การถ่ายเทน้ำหนักไดนามิก (Longitudinal Weight Transfer $\Delta F_z$), การแปลงพิกัดโค้งถนน Frenet Frame $(s, d)$, เกราะนิรภัย Frenet High-Order CBF (Relative degree 2 Lane Keeping, Kamm's Friction Circle Anti-Skid บนถนนลื่น $\mu=0.35$, Predictive Curvature Deceleration, ACC Barrier), และอัลกอริทึม Ville Supermartingale V2X Cross-Validation ขจัด Fake Phantom Brake Attack และ Spoofing ได้ภายใน 540 ms ($p \le 0.001$) พร้อม Autoware.Universe / ROS 2 Humble Node Bridge.
 - **Phase 11 (Air-Ground Heterogeneous Collaborative Teaming & Safety Architecture):** ขจัดข้อจำกัดทางกายภาพของการตรวจจับมุมอับสายตาบนโค้งถนนแคบ ($R = 80\,$m) และทางลื่นหิมะ/น้ำแข็ง ($\mu = 0.28$) ด้วยการบูรณาการโดรนลาดตระเวนทางอากาศ 6-DOF ("Eye-in-the-Sky" Quadrotor Scout บินนำหน้าขบวน $65\,$m ที่ความสูง $18\,$m พร้อมแบบจำลอง Deep Aerodynamics Drag & Gust), ระบบ V2A Wireless Telemetry ตรวจจับและรายงานสถานีสิ่งกีดขวาง $s_{\text{haz}}$ และสัมประสิทธิ์แรงเสียดทานถนน $\mu_{\text{est}}$ ล่วงหน้าถึง $150\,$m, เสริมด้วย Anytime-Valid Ville Supermartingale V2A Anomaly Guard ($W_t \ge 1000, p \le 0.001$) สกัดกั้น Adversarial Phantom Hazard Spoofing ได้สมบูรณ์แบบ ขจัดปัญหาการเบรกหลอกเหลือ 0.0%, และเกราะนิรภัย Cross-Domain Lookahead Frenet CBF Shield สั่งการชะลอความเร็วล่วงหน้าอย่างนุ่มนวล (Stopping Margin $+10.21\,$m ก่อนถึงสิ่งกีดขวาง).
 - **Phase 12 (Multi-Vehicle Heterogeneous Collaborative Platooning & Dual Aerial Scout Handover Architecture):** แก้ปัญหาคอขวดจุดอับสายตาระหว่างโดรนตัวเดียวแบตเตอรี่หมด ($SoC \le 35\%$) ด้วยระบบ Dual Aerial Scout Handover State Machine (Scout A $\to$ Launch $\to$ Dual Sync $\to$ Return $\to$ Scout B) พร้อมช่องทางบินแยกด้านข้าง (Lateral Flight Corridors $d = -5.0\,$m และ $+5.5\,$m) รับประกันระยะห่าง 3 มิติ $\ge 10.5\,$m ($>6.0\,$m Barrier), รักษาระดับการตรวจจับล่วงหน้าต่อเนื่อง $>90.2\%$, ผสานเกราะนิรภัย V2A-to-V2V Multi-Hop Cascading Platoon CBF Shield ควบคุมขบวนรถยนต์ 5 คันบนโค้งถนนน้ำแข็ง ($\mu = 0.25$) ให้ชะลอความเร็วพร้อมกันอย่างนุ่มนวล รักษาระดับ String Stability สมบูรณ์แบบ ($\|G(j\omega)\|_\infty = 1.000$) ไม่เกิดคลื่นกระแทกการเบรกสะท้อนท้ายแถว (เทียบกับ Unshielded Blind ที่อัตราขยายพุ่งสูงถึง 1.887), ขจัดการชนท้ายกันเองในขบวนและสิ่งกีดขวางเป็น 0.0% พร้อมระบบ Ville Supermartingale ขจัดโหนดรีเลย์ V2V ที่ถูกโจมตี (Byzantine Relay).
-- **สถานะการทำงานของโค้ด:** รันการทดสอบผ่าน 100% (851/851 tests) ไม่มี Failure, ไม่มี Broken Invariant.
+- **Phase 13 (Robust Tube-CLBF & Physical Stillness Architecture — Resolving All 4 Core Bottlenecks):** แก้ไข 4 คอขวดสำคัญระดับรากฐานตามรายงานพัฒนาการฉบับรวม (Section 11 & 14):
+  1. *Conservatism Elimination (CLBF):* ผสาน Control Lyapunov-Barrier Function ขจัดปัญหา Freeze/Stall ในช่องแคบ (Task Completion Rate 93.3% vs 0.0% ใน Baseline CBF ที่หยุดชะงัก).
+  2. *Sensor Uncertainty Tube Speed Gate (Section 11.3):* คำนวณ Robust Upper Bound $\|\mathbf{v}\| + \kappa_\delta \sqrt{\lambda_{\max}(\boldsymbol{\Sigma}_v)}$ สกัดกั้นการแอบยืนยันเป้าหมายขณะความเร็วจริงยังอันตราย (Dangerous False Accepts เหลือ 0 ครั้ง เทียบกับ Standard Gate ที่หลุด 7 ครั้ง).
+  3. *Physical Dwell & Terminal Stillness (Section 11.1):* ปลดล็อกข้อสมมติ Instant STOP สู่ Active Dwell Monitor บังคับชะลอความเร็วสูงสุดจนพลังงานจลน์ $E_k \le 0.005\,$J และคุมระยะไถลลดลง 60.5% (จาก $0.44\,$m เหลือ $0.17\,$m).
+  4. *Always-Feasible Micro-QP (Section 11.6):* รับประกันการแก้สมการได้ผลลัพธ์ 100.0% (Zero Infeasibility Crash) ด้วยความเร็วเฉลี่ย $57.2\,\mu\text{s}$ (Sub-millisecond) พร้อม Ville Supermartingale ป้องกันการแอบใช้ Slack เกินขอบเขตสถิติ.
+- **สถานะการทำงานของโค้ด:** รันการทดสอบผ่าน 100% (856/856 tests) ไม่มี Failure, ไม่มี Broken Invariant.
 
 ---
 

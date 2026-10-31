@@ -1,0 +1,31 @@
+{
+  "timestamp": "2026-10-31T18:27:21Z",
+  "milestone": "V9-M13",
+  "description": "Robust Tube-CLBF, True-Speed Bound, Terminal Dwell, and Micro-QP Feasibility",
+  "bottleneck_1_progress_clbf": {
+    "clbf_success_rate": 0.9333333333333333,
+    "baseline_cbf_success_rate": 0.0,
+    "clbf_avg_time_to_goal_s": 10.542857142857141,
+    "baseline_avg_time_to_goal_s": 0.0,
+    "clbf_min_clearance_m": 1.1531216794478847
+  },
+  "bottleneck_2_tube_speed_gate": {
+    "standard_speed_gate_false_accept_rate": 0.5384615384615384,
+    "tube_speed_bound_false_accept_rate": 0.0,
+    "standard_total_dangerous_accepts": 7,
+    "tube_total_dangerous_accepts": 0
+  },
+  "bottleneck_3_terminal_dwell": {
+    "instant_stop_avg_drift_m": 0.4355688253773251,
+    "active_dwell_avg_drift_m": 0.17201035143046528,
+    "instant_stop_peak_drift_m": 0.7578595298597142,
+    "active_dwell_peak_drift_m": 0.38091428013884254,
+    "active_dwell_drift_reduction_pct": 60.509030626455896
+  },
+  "bottleneck_4_micro_qp_feasibility": {
+    "micro_qp_avg_latency_ms": 0.05721533074080944,
+    "micro_qp_p99_latency_ms": 0.15,
+    "micro_qp_feasibility_rate": 1.0,
+    "micro_qp_avg_slack": 0.06896195213201606
+  }
+}
