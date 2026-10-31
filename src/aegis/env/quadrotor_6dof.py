@@ -209,17 +209,32 @@ class UnderactuatedCBF6DOF:
         desired_force: np.ndarray,
         obstacles: list[Obstacle3D],
         current_tilt: float,
-        adaptive_gammas: tuple[float, float] | None = None,
+        adaptive_gammas: tuple[float, float] | dict[str, float] | None = None,
+        estimated_disturbance_force: np.ndarray | None = None,
     ) -> tuple[np.ndarray, bool]:
         """
         Filters desired outer-loop force F_des to satisfy CBF constraints.
+        Supports disturbance-adaptive gammas and feedforward compensation of aerodynamic forces.
         Returns: (F_safe, barrier_active)
         """
         m = self.cfg.mass
         r_quad = self.cfg.robot_collision_radius
         margin = self.cfg.safety_margin
-        alpha1 = adaptive_gammas[0] if adaptive_gammas is not None else self.gamma1
-        alpha2 = adaptive_gammas[1] if adaptive_gammas is not None else self.gamma2
+        if isinstance(adaptive_gammas, dict):
+            alpha1 = float(adaptive_gammas.get("alpha1", adaptive_gammas.get("obstacle", self.gamma1)))
+            alpha2 = float(adaptive_gammas.get("alpha2", adaptive_gammas.get("floor", self.gamma2)))
+        elif adaptive_gammas is not None:
+            alpha1 = float(adaptive_gammas[0])
+            alpha2 = float(adaptive_gammas[1])
+        else:
+            alpha1 = self.gamma1
+            alpha2 = self.gamma2
+
+        f_dist = (
+            np.array(estimated_disturbance_force, dtype=np.float64)
+            if estimated_disturbance_force is not None
+            else np.zeros(3, dtype=np.float64)
+        )
 
         constraints: list[tuple[np.ndarray, float]] = []
 
@@ -231,17 +246,28 @@ class UnderactuatedCBF6DOF:
             h_dot = 2.0 * float(np.dot(p_rel, vel))
 
             # a^T F_des <= b
-            # Acceleration a_net = F_des / m - g e3
+            # Acceleration a_net = (F_des + F_dist) / m - g e3
             # Barrier derivative: B_dot + alpha2 * B >= 0
             a_vec = -2.0 * p_rel / m
-            b_val = 2.0 * float(np.sum(vel**2)) + (alpha1 + alpha2) * h_dot + alpha1 * alpha2 * h_val - 2.0 * p_rel[2] * self.cfg.gravity
+            b_val = (
+                2.0 * float(np.sum(vel**2))
+                + (alpha1 + alpha2) * h_dot
+                + alpha1 * alpha2 * h_val
+                - 2.0 * p_rel[2] * self.cfg.gravity
+                + float(np.dot(2.0 * p_rel / m, f_dist))
+            )
             constraints.append((a_vec, b_val))
 
         # 2. Floor limit: z >= r_quad + margin
         z_floor = r_quad + margin
         h_floor = pos[2] - z_floor
         a_floor = np.array([0.0, 0.0, -1.0 / m], dtype=np.float64)
-        b_floor = (alpha1 + alpha2) * vel[2] + alpha1 * alpha2 * h_floor - self.cfg.gravity
+        b_floor = (
+            (alpha1 + alpha2) * vel[2]
+            + alpha1 * alpha2 * h_floor
+            - self.cfg.gravity
+            + f_dist[2] / m
+        )
         constraints.append((a_floor, b_floor))
 
         # 3. Arena ceiling and wall boundaries
@@ -371,16 +397,25 @@ class AegisQuadrotor6DOFEnvironment:
         """
         return mujoco.MjModel.from_xml_string(xml)
 
-    def reset(self, rng: np.random.Generator | None = None, initial_soc: float = 1.0) -> dict[str, Any]:
+    def reset(
+        self,
+        rng: np.random.Generator | None = None,
+        initial_soc: float = 1.0,
+        initial_pos: np.ndarray | None = None,
+    ) -> dict[str, Any]:
         mujoco.mj_resetData(self.model, self.data)
         self.step_count = 0
         self.geom_ctrl.reset()
+        self.rng = rng or np.random.default_rng()
         if self.deep_aero is not None:
             self.deep_aero.reset(initial_soc=initial_soc)
 
-        px = -1.8 + (rng.normal(0, 0.02) if rng else 0.0)
-        py = -1.8 + (rng.normal(0, 0.02) if rng else 0.0)
-        pz = 0.5
+        if initial_pos is not None:
+            px, py, pz = float(initial_pos[0]), float(initial_pos[1]), float(initial_pos[2])
+        else:
+            px = -1.8 + (rng.normal(0, 0.02) if rng else 0.0)
+            py = -1.8 + (rng.normal(0, 0.02) if rng else 0.0)
+            pz = 0.5
 
         # Initialize qpos: [x, y, z, qw, qx, qy, qz]
         self.data.qpos[:3] = [px, py, pz]
@@ -422,6 +457,12 @@ class AegisQuadrotor6DOFEnvironment:
                 "ige_ratios": self.deep_aero.state.ige_ratios.copy(),
                 "tau_gyro": self.deep_aero.state.tau_gyro_body.copy(),
                 "energy_consumed_wh": self.deep_aero.state.energy_consumed_wh,
+                "wind_velocity": self.deep_aero.state.wind_velocity.copy(),
+                "gust_velocity": self.deep_aero.state.gust_velocity.copy(),
+                "total_wind": self.deep_aero.state.total_wind.copy(),
+                "relative_velocity": self.deep_aero.state.relative_velocity.copy(),
+                "aerodynamic_force": self.deep_aero.state.aerodynamic_force.copy(),
+                "ground_shear_torque": self.deep_aero.state.ground_shear_torque.copy(),
             }
 
         return {
@@ -442,6 +483,9 @@ class AegisQuadrotor6DOFEnvironment:
         desired_force_world: np.ndarray,
         shield_with_cbf: bool = True,
         desired_yaw: float = 0.0,
+        rng: np.random.Generator | None = None,
+        adaptive_gammas: tuple[float, float] | dict[str, float] | None = None,
+        estimated_disturbance_force: np.ndarray | None = None,
     ) -> tuple[dict[str, Any], bool]:
         """
         Executes one 50 Hz outer-loop step by running four 200 Hz inner SE(3) steps.
@@ -456,12 +500,18 @@ class AegisQuadrotor6DOFEnvironment:
         # 1. CBF Safety Shielding
         barrier_active = False
         if shield_with_cbf:
+            f_dist = estimated_disturbance_force
+            if f_dist is None and self.deep_aero is not None:
+                f_dist = self.deep_aero.state.aerodynamic_force
+
             force_safe, barrier_active = self.cbf.filter_safe_force(
                 pos=pos,
                 vel=vel,
                 desired_force=desired_force_world,
                 obstacles=self.obstacles,
                 current_tilt=current_tilt,
+                adaptive_gammas=adaptive_gammas,
+                estimated_disturbance_force=f_dist,
             )
         else:
             force_safe = desired_force_world
@@ -497,7 +547,7 @@ class AegisQuadrotor6DOFEnvironment:
                 max_thrust_per_motor=eff_max_thrust,
             )
 
-            # Deep aerodynamics: Ground Effect (IGE) and Gyroscopic Precession Moments
+            # Deep aerodynamics: Ground Effect (IGE), Gyroscopic Precession Moments, Wind & Drag
             if self.deep_aero is not None:
                 # 1. Cheeseman-Bennett In-Ground Effect on each rotor
                 ige_thrusts, _ = self.deep_aero.compute_ige_thrust(
@@ -515,13 +565,26 @@ class AegisQuadrotor6DOFEnvironment:
                     actual_thrusts=ige_thrusts,
                     omega_body=w_current,
                 )
+
+                # 3. Dynamic wind, quadratic drag, and ground effect vortex shear torque
+                curr_rng = rng if rng is not None else getattr(self, "rng", None)
+                f_aero, tau_shear, _ = self.deep_aero.step_wind_and_aerodynamics(
+                    drone_velocity=v_current,
+                    drone_pos=p_current,
+                    rotation_matrix=R,
+                    dt=self.cfg.inner_dt,
+                    rng=curr_rng,
+                    floor_z=0.0,
+                )
+                f_world += f_aero
+                d_rot = self.deep_aero.cfg.rotational_drag_damping
+                tau_body = np.array([wrench_actual[1], wrench_actual[2], wrench_actual[3]]) + tau_gyro + tau_shear - d_rot * w_current
             else:
                 wrench_actual = self.geom_ctrl.mixer @ rotors
                 tau_gyro = np.zeros(3, dtype=np.float64)
+                f_world += -drag_coeff_trans * v_current
+                tau_body = np.array([wrench_actual[1], wrench_actual[2], wrench_actual[3]]) + tau_gyro - drag_coeff_rot * w_current
 
-            # Aerodynamic damping + gyroscopic moments
-            f_world += -drag_coeff_trans * v_current
-            tau_body = np.array([wrench_actual[1], wrench_actual[2], wrench_actual[3]]) + tau_gyro - drag_coeff_rot * w_current
             tau_world = R @ tau_body
 
             # Apply forces directly to freejoint quadrotor body
