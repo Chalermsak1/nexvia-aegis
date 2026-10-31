@@ -8,7 +8,7 @@ def sample():
     for bias in ([0., 0., 0.], [0.8, 0.8, -0.3]):
         for arm in ("AEGIS_3D_FRESH_VELOCITY", "AEGIS_3D_DUAL_VELOCITY"):
             dual = arm == "AEGIS_3D_DUAL_VELOCITY"
-            event = {"velocity": [0.2, 0, 0], "velocity_observation": [0.01, 0, 0],
+            event = {"step": 0, "velocity": [0.2, 0, 0], "velocity_observation": [0.01, 0, 0],
                      "velocity_crosscheck_reason": "VELOCITIES_CONSISTENT"}
             row = {"case": "case", "seed": 1, "bias_xyz": bias, "controller": arm, "steps": 10,
                    "execution_status": "COMPLETED", "true_success": 1, "false_arrival": 0, "abstained": 0,
@@ -17,6 +17,7 @@ def sample():
             if dual: row.update(velocity_comparisons=10, velocity_disagreements=0)
             rows.append(row)
     return {"classification": "EXPLORATORY_SIMULATION", "sources_unchanged": True,
+            "source_sha256_before": {"source.py": "a" * 64}, "source_sha256_after": {"source.py": "a" * 64},
             "n_seeds": 1, "seed_start": 1, "cases": [{"name": "case"}], "episodes": rows}
 
 
@@ -24,7 +25,7 @@ def test_summary_retains_common_fault_evidence():
     assert analyze(sample())[1]["hazard_counts"] == {"VELOCITIES_CONSISTENT": 1}
 
 
-@pytest.mark.parametrize("defect", ["missing", "duplicate", "bad_example", "contradictory", "bad_counts"])
+@pytest.mark.parametrize("defect", ["missing", "duplicate", "bad_example", "contradictory", "bad_counts", "bad_hash", "missing_hash", "malformed_hash", "duplicate_event", "reason_count"])
 def test_invalid_evidence_is_rejected(defect):
     data = sample()
     if defect == "missing": data["episodes"].pop()
@@ -32,4 +33,14 @@ def test_invalid_evidence_is_rejected(defect):
     if defect == "bad_example": data["episodes"][1]["hazard_examples"][0]["velocity"] = [0., 0., 0.]
     if defect == "contradictory": data["episodes"][1]["timeout"] = 1
     if defect == "bad_counts": data["episodes"][1]["velocity_disagreements"] = 11
+    if defect == "bad_hash": data["source_sha256_after"]["source.py"] = "b" * 64
+    if defect == "missing_hash": del data["source_sha256_before"]
+    if defect == "malformed_hash": data["source_sha256_before"] = data["source_sha256_after"] = {"source.py": "not-a-hash"}
+    if defect == "duplicate_event":
+        data["episodes"][1]["hazard_counts"]["VELOCITIES_CONSISTENT"] = 2
+        data["episodes"][1]["hazard_examples"].append(copy.deepcopy(data["episodes"][1]["hazard_examples"][0]))
+    if defect == "reason_count":
+        data["episodes"][1]["hazard_counts"]["SOURCE_UNAVAILABLE"] = 1
+        event = copy.deepcopy(data["episodes"][1]["hazard_examples"][0]); event["step"] = 1
+        data["episodes"][1]["hazard_examples"].append(event)
     with pytest.raises(ValueError): analyze(data)

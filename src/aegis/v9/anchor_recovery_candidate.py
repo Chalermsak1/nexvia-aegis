@@ -1,11 +1,9 @@
 """Exploratory anchor-guided recovery in simulation; not safety rated."""
-import math
 import numpy as np
 
-from aegis.v3.sensors.cross_modal import RangeReading
 from aegis.v3.sensors.sensors import SensorReading
-from aegis.v7.anchor_sensor import AnchorReading
 from aegis.v9.stabilized_arrival_candidate import StabilizedArrivalCandidate
+from aegis.v9.exploratory_sensor_validation import valid_range, valid_anchor
 
 
 class AnchorRecoveryCandidate(StabilizedArrivalCandidate):
@@ -27,14 +25,12 @@ class AnchorRecoveryCandidate(StabilizedArrivalCandidate):
             self.recovery_steps += 1
             if self.recovery_steps > self.recovery_limit:
                 return self._abstain("RECOVERY_TIMEOUT")
-            if not (isinstance(r, RangeReading) and r.valid and not r.dropped and not r.anomaly
-                    and math.isfinite(r.distance) and r.distance >= 0 and math.isfinite(r.sigma) and r.sigma > 0):
+            if not valid_range(r):
                 return self._abstain("RECOVERY_RANGE_UNAVAILABLE")
-            if not (isinstance(anchor_reading, AnchorReading) and anchor_reading.valid and anchor_reading.queried
-                    and math.isfinite(anchor_reading.sigma) and anchor_reading.sigma > 0):
+            anchor = valid_anchor(anchor_reading)
+            if anchor is None:
                 return self._abstain("RECOVERY_ANCHOR_UNAVAILABLE")
             try:
-                anchor = np.asarray(anchor_reading.estimate, dtype=float)
                 velocity = np.asarray(velocity_reading, dtype=float)
                 vectors = [np.asarray(x.estimate, dtype=float) for x in (a, b) if isinstance(x, SensorReading) and x.valid and not x.dropped and not x.anomaly]
                 if (anchor.shape != (3,) or velocity.shape != (3,) or len(vectors) != 2

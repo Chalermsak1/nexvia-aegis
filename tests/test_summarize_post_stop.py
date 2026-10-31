@@ -13,6 +13,7 @@ def fixture():
                          "post_stop": {"steps": [{"distance": 0.3, "speed": 0.1,
                                                    "collision": False, "cbf_residual": 0.0}]}})
     return {"classification": "EXPLORATORY_SIMULATION", "sources_unchanged": True,
+            "source_sha256_before": {"source.py": "a" * 64}, "source_sha256_after": {"source.py": "a" * 64},
             "n_seeds": 1, "seed_start": 1, "post_stop_steps": 1,
             "cases": [{"name": "nominal"}], "episodes": rows}
 

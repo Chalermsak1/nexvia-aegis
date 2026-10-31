@@ -6,6 +6,10 @@ import json
 import math
 from collections import defaultdict
 from pathlib import Path
+if __package__:
+    from .evidence_integrity import validate_source_metadata
+else:
+    from evidence_integrity import validate_source_metadata
 
 
 def classify(row, radius, speed_limit, timestep, dwell_seconds):
@@ -19,7 +23,7 @@ def classify(row, radius, speed_limit, timestep, dwell_seconds):
     if any(type(x) is not int or x not in (0, 1) for x in outcomes) or sum(outcomes) != 1:
         return "UNEVALUABLE"
     if not (row.get("true_success") or row.get("false_arrival")):
-        return "NO_STOP"
+        return "NO_STOP" if row.get("post_stop") is None else "UNEVALUABLE"
     post = row.get("post_stop")
     if not isinstance(post, dict) or not isinstance(post.get("steps"), list):
         return "UNEVALUABLE"
@@ -34,11 +38,16 @@ def classify(row, radius, speed_limit, timestep, dwell_seconds):
     samples = [{"distance": post.get("decision_distance"), "speed": post.get("decision_speed"),
                 "collision": bool(prior_collision)}] + post["steps"][:intervals]
     for sample in samples:
+        if not isinstance(sample, dict):
+            return "UNEVALUABLE"
         distance, speed = sample.get("distance"), sample.get("speed")
         if (not isinstance(distance, (int, float)) or isinstance(distance, bool) or not math.isfinite(distance)
                 or distance < 0 or not isinstance(speed, (int, float)) or isinstance(speed, bool)
                 or not math.isfinite(speed) or speed < 0 or not isinstance(sample.get("collision"), bool)):
             return "UNEVALUABLE"
+    decision_in_radius = samples[0]["distance"] <= radius
+    if bool(row["true_success"]) != decision_in_radius:
+        return "UNEVALUABLE"
     return "MET_SAMPLED_DWELL" if all(s["distance"] <= radius and s["speed"] <= speed_limit and not s["collision"] for s in samples) else "NOT_MET"
 
 
@@ -53,8 +62,7 @@ def main():
     a = p.parse_args()
     raw = a.input.read_bytes()
     data = json.loads(raw)
-    if data.get("classification") != "EXPLORATORY_SIMULATION" or not data.get("sources_unchanged"):
-        raise ValueError("invalid or changed source evidence")
+    validate_source_metadata(data)
     timestep = data["runtime"]["timestep_seconds"]
     counts = defaultdict(lambda: defaultdict(int))
     assignments = set()

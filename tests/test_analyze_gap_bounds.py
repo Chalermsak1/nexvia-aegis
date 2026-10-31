@@ -12,6 +12,7 @@ def sample():
             rows.append({"case": "test", "seed": 1, "bias_xyz": bias, "controller": arm,
                          "execution_status": "COMPLETED", "gap_events": gap, "bridged_velocity_steps": len(gap)})
     return {"classification": "EXPLORATORY_SIMULATION", "sources_unchanged": True,
+            "source_sha256_before": {"source.py": "a" * 64}, "source_sha256_after": {"source.py": "a" * 64},
             "n_seeds": 1, "seed_start": 1, "cases": [{"name": "test"}], "episodes": rows}
 
 

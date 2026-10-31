@@ -6,13 +6,16 @@ import itertools
 import json
 import math
 from pathlib import Path
+if __package__:
+    from .evidence_integrity import validate_source_metadata
+else:
+    from evidence_integrity import validate_source_metadata
 
 
 def summarize(data, radius):
     if not math.isfinite(radius) or radius <= 0:
         raise ValueError("success radius must be finite and positive")
-    if data.get("classification") != "EXPLORATORY_SIMULATION" or not data.get("sources_unchanged"):
-        raise ValueError("missing exploratory classification or changed sources")
+    validate_source_metadata(data)
     n, start, horizon = data["n_seeds"], data["seed_start"], data["post_stop_steps"]
     if not all(isinstance(x, int) and not isinstance(x, bool) for x in (n, start, horizon)) or n <= 0 or horizon <= 0:
         raise ValueError("invalid design")

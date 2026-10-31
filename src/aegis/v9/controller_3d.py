@@ -27,6 +27,7 @@ from aegis.next.velocity_controller import KinematicVelocityController, Velocity
 from aegis.v3.sensors.cross_modal import RangeReading
 from aegis.v3.sensors.sensors import SensorReading
 from aegis.v7.anchor_sensor import AnchorReading
+from aegis.v9.exploratory_sensor_validation import boolean_flag, finite_real
 from aegis.v9.ville_monitor import MultiChannelVilleMonitor, VilleChannelSpec, VilleStepResult
 
 
@@ -157,21 +158,34 @@ class Aegis3DAwareController:
         # Extract 3D numpy arrays
         vec_a: np.ndarray | None = None
         sig_a = 0.05
-        if isinstance(reading_a, SensorReading):
-            if reading_a.valid and not reading_a.dropped:
-                vec_a = np.asarray(reading_a.estimate, dtype=np.float64)
-                sig_a = float(reading_a.sigma)
-        elif reading_a is not None:
-            vec_a = np.asarray(reading_a, dtype=np.float64)
-
         vec_b: np.ndarray | None = None
         sig_b = 0.05
-        if isinstance(reading_b, SensorReading):
-            if reading_b.valid and not reading_b.dropped:
-                vec_b = np.asarray(reading_b.estimate, dtype=np.float64)
-                sig_b = float(reading_b.sigma)
-        elif reading_b is not None:
-            vec_b = np.asarray(reading_b, dtype=np.float64)
+        try:
+            if isinstance(reading_a, SensorReading):
+                if not boolean_flag(reading_a.valid) or not boolean_flag(reading_a.dropped):
+                    raise ValueError("invalid sensor flags")
+                if reading_a.valid and not reading_a.dropped:
+                    if not finite_real(reading_a.sigma, positive=True):
+                        raise ValueError("invalid sensor sigma")
+                    vec_a = np.asarray(reading_a.estimate, dtype=np.float64)
+                    sig_a = float(reading_a.sigma)
+            elif reading_a is not None:
+                vec_a = np.asarray(reading_a, dtype=np.float64)
+            if isinstance(reading_b, SensorReading):
+                if not boolean_flag(reading_b.valid) or not boolean_flag(reading_b.dropped):
+                    raise ValueError("invalid sensor flags")
+                if reading_b.valid and not reading_b.dropped:
+                    if not finite_real(reading_b.sigma, positive=True):
+                        raise ValueError("invalid sensor sigma")
+                    vec_b = np.asarray(reading_b.estimate, dtype=np.float64)
+                    sig_b = float(reading_b.sigma)
+            elif reading_b is not None:
+                vec_b = np.asarray(reading_b, dtype=np.float64)
+        except (TypeError, ValueError, OverflowError):
+            self.arrival_check_steps = 0
+            self.arrival_range_samples = []
+            self.terminal_reason = "INVALID_3D_VECTOR_OBSERVATION"
+            return np.zeros(3), "ABSTAIN", np.zeros(3), False
 
         for vec, sigma in ((vec_a, sig_a), (vec_b, sig_b)):
             if vec is not None and (
@@ -186,17 +200,24 @@ class Aegis3DAwareController:
         r_dist: float | None = None
         r_valid = False
         sig_r = 0.05
-        if isinstance(range_reading, RangeReading):
-            if range_reading.valid and not range_reading.dropped:
-                candidate_range = float(range_reading.distance)
-                candidate_sigma = float(range_reading.sigma)
-                if math.isfinite(candidate_range) and candidate_range >= 0.0 and math.isfinite(candidate_sigma) and candidate_sigma > 0.0:
-                    r_dist = candidate_range
-                    r_valid = True
-                    sig_r = candidate_sigma
-        elif range_reading is not None and math.isfinite(float(range_reading)) and float(range_reading) >= 0.0:
-            r_dist = float(range_reading)
-            r_valid = True
+        try:
+            if isinstance(range_reading, RangeReading):
+                if boolean_flag(range_reading.valid) and boolean_flag(range_reading.dropped) and range_reading.valid and not range_reading.dropped:
+                    if not finite_real(range_reading.distance) or not finite_real(range_reading.sigma, positive=True):
+                        raise ValueError("invalid range measurement")
+                    candidate_range = float(range_reading.distance)
+                    candidate_sigma = float(range_reading.sigma)
+                    if math.isfinite(candidate_range) and candidate_range >= 0.0 and math.isfinite(candidate_sigma) and candidate_sigma > 0.0:
+                        r_dist = candidate_range
+                        r_valid = True
+                        sig_r = candidate_sigma
+            elif range_reading is not None and finite_real(range_reading):
+                r_dist = float(range_reading)
+                r_valid = True
+        except (TypeError, ValueError, OverflowError):
+            # Match existing invalid-range behavior: clear verification and
+            # treat this observation as unavailable.
+            pass
 
         self._ensure_monitors(sig_a, sig_b, sig_r)
 
@@ -214,15 +235,18 @@ class Aegis3DAwareController:
         # Anchor calibration update if available and valid
         query_anchor = False
         if anchor_reading is not None:
-            is_valid = (anchor_reading.valid and anchor_reading.queried
-                        and math.isfinite(anchor_reading.sigma) and anchor_reading.sigma > 0.0
-                        if isinstance(anchor_reading, AnchorReading) else True)
+            try:
+                is_valid = (boolean_flag(anchor_reading.valid) and boolean_flag(anchor_reading.queried)
+                            and anchor_reading.valid and anchor_reading.queried
+                            and finite_real(anchor_reading.sigma, positive=True)
+                            if isinstance(anchor_reading, AnchorReading) else True)
+            except (TypeError, ValueError, OverflowError):
+                is_valid = False
             if is_valid:
-                anc_val = (
-                    np.asarray(anchor_reading.estimate, dtype=np.float64)
-                    if isinstance(anchor_reading, AnchorReading)
-                    else np.asarray(anchor_reading, dtype=np.float64)
-                )
+                try:
+                    anc_val = np.asarray(anchor_reading.estimate if isinstance(anchor_reading, AnchorReading) else anchor_reading, dtype=np.float64)
+                except (TypeError, ValueError, OverflowError):
+                    anc_val = np.array([], dtype=np.float64)
                 if anc_val.shape == (3,) and np.all(np.isfinite(anc_val)):
                     if vec_a is not None:
                         self.cal_a.update(vec_a, anc_val)

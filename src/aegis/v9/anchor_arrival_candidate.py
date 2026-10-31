@@ -1,10 +1,8 @@
 """Exploratory arrival guard for simulation; not a safety certificate."""
-import math
 import numpy as np
 
-from aegis.v3.sensors.cross_modal import RangeReading
-from aegis.v7.anchor_sensor import AnchorReading
 from aegis.v9.controller_3d import Aegis3DAwareController
+from aegis.v9.exploratory_sensor_validation import valid_range, valid_anchor
 
 
 class AnchorArrivalCandidate:
@@ -41,20 +39,13 @@ class AnchorArrivalCandidate:
             return np.zeros(3), self.terminal_decision, self.base.last_nav_vector_3d, False
         if self.pending:
             self.pending = False
-            valid_range = (isinstance(r, RangeReading) and r.valid and not r.dropped and not r.anomaly
-                           and math.isfinite(r.distance) and r.distance >= 0
-                           and math.isfinite(r.sigma) and r.sigma > 0)
-            valid_anchor = (isinstance(anchor_reading, AnchorReading) and anchor_reading.valid
-                            and anchor_reading.queried and math.isfinite(anchor_reading.sigma)
-                            and anchor_reading.sigma > 0)
-            if valid_anchor:
-                anchor = np.asarray(anchor_reading.estimate, dtype=float)
-                valid_anchor = anchor.shape == (3,) and bool(np.isfinite(anchor).all())
-            if valid_range and valid_anchor and np.linalg.norm(anchor) + 1.645 * anchor_reading.sigma <= self.success_radius:
+            is_valid_range = valid_range(r)
+            anchor = valid_anchor(anchor_reading)
+            if is_valid_range and anchor is not None and np.linalg.norm(anchor) + 1.645 * anchor_reading.sigma <= self.success_radius:
                 self.reason = "EXPLORATORY_ANCHOR_CONFIRMED"
                 self.terminal_decision = "STOP"
                 return np.zeros(3), "STOP", self.base.last_nav_vector_3d, False
-            self.reason = ("ANCHOR_OR_RANGE_UNAVAILABLE" if not valid_range or not valid_anchor
+            self.reason = ("ANCHOR_OR_RANGE_UNAVAILABLE" if not is_valid_range or anchor is None
                            else "ANCHOR_OUTSIDE_CONFIRMATION_MARGIN")
             self.terminal_decision = "ABSTAIN"
             return np.zeros(3), "ABSTAIN", self.base.last_nav_vector_3d, False

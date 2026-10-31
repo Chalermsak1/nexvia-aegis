@@ -1,0 +1,3504 @@
+{
+  "classification": "EXPLORATORY_SIMULATION_DIAGNOSTIC",
+  "input_sha256": "75d15e7c863dc196f2129ceb9e8db776763f51110d84457748ac75966ccc0180",
+  "ledger_state": "FINALIZED",
+  "tail_steps": 50,
+  "measurement_scope": "Controller observations before physics; last observation is not final plant state. No success threshold inferred.",
+  "episodes": [
+    {
+      "id": "nominal:2251001:0.0:AEGIS_3D_ANCHOR_RECOVERY",
+      "assignment": {
+        "bias_xyz": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "case": {
+          "name": "nominal",
+          "range_bias_m": 0.0,
+          "range_dropout_probability": 0.0
+        },
+        "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+        "id": "nominal:2251001:0.0:AEGIS_3D_ANCHOR_RECOVERY",
+        "max_steps": 400,
+        "post_stop_steps": 50,
+        "runtime": {
+          "mujoco": "3.14.0",
+          "numpy": "2.5.3",
+          "python": "3.12.14"
+        },
+        "seed": 2251001,
+        "source_sha256": {
+          "experiments/benchmark_physical_3d_cbf.py": "cbbe6f5362a66ac4df45814f246b548b4ce222faa40ebb2a496168e36eb6c0e2",
+          "scripts/research/development_ledger.py": "254fe889557148110e458ed2cb6e3286837589a484d7a63e1ae3d2c34b645502",
+          "scripts/research/study_recovery_monitor_ledger.py": "4f5c13b83d31b412072308a13544a15bad6da5683a54346a905c4b0f5639f955",
+          "src/aegis/env/mujoco_3d_cbf.py": "438b8ec89d1d40101586b0d888de7e8b5d73c9763cbae2603ccab01f04801433",
+          "src/aegis/v9/anchor_recovery_candidate.py": "14234ba7efccecc28f639a0ecb6b390ea29b59eaccc3b82bd6f4360dccdf038a",
+          "src/aegis/v9/controller_3d.py": "4579219de9d9ab4269fa620e1962685e844f927ba00e6979d571aa47f73f6892",
+          "src/aegis/v9/exploratory_sensor_validation.py": "df4e18e4e538c55a7d52ad81cdb3123d2591183461b975607afa7f67d607bc11",
+          "src/aegis/v9/recovery_monitor_candidate.py": "134b2f549fde1762e5d48b5505131a231634ddf77edcbd766e1bf00fd189819d",
+          "src/aegis/v9/stabilized_arrival_candidate.py": "3f93b0c736a924296c949466fbec502040ce1c65a19912a64564ff7ec5928cb8",
+          "src/aegis/v9/ville_monitor.py": "41ff44c0984aafc91261a2c0e04f569d5e83f3a86d7d7ec0dc372f303ca7c8db"
+        }
+      },
+      "execution_status": "COMPLETED",
+      "observations": {
+        "decision_observations": 365,
+        "initial_observed_distance_m": 3.5497174620212957,
+        "last_prephysics_distance_m": 0.1587460728716061,
+        "minimum_observed_distance_m": 0.1587460728716061,
+        "observed_distance_reduction_m": 3.3909713891496898,
+        "tail_observations": 50,
+        "tail_distance_reduction_m": 0.1593957854931816,
+        "mode_counts": {
+          "NOMINAL": 340,
+          "STOP": 25
+        },
+        "effective_decision_counts": {
+          "NAVIGATE": 329,
+          "VERIFY": 35,
+          "STOP": 1
+        },
+        "tail_mode_counts": {
+          "NOMINAL": 25,
+          "STOP": 25
+        },
+        "interpretation": "DESCRIPTIVE_ONLY_NO_CAUSAL_OR_SAFETY_CLASSIFICATION"
+      },
+      "episode": {
+        "abstained": 0,
+        "anchor_queries": 3,
+        "anchor_valid_readings": 3,
+        "cbf_constraint_violation_occurred": 0,
+        "cbf_exact_fallback_steps": 0,
+        "cbf_infeasible_steps": 0,
+        "cbf_unchecked_steps": 0,
+        "collision_occurred": 0,
+        "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+        "false_arrival": 0,
+        "final_distance": 0.1587,
+        "post_stop": {
+          "decision_distance": 0.1587460728716061,
+          "decision_speed": 0.06568695196160468,
+          "steps": [
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.15758065471736016,
+              "speed": 0.0630594738831405
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1564640643065939,
+              "speed": 0.06053709492781488
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.15539421913727713,
+              "speed": 0.05811561113070229
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1543691261106391,
+              "speed": 0.055790986685474206
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.15338687781371133,
+              "speed": 0.05355934721805524
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1524456489380532,
+              "speed": 0.051416973329333024
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.15154369283124655,
+              "speed": 0.04936029439615971
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.15067933817776114,
+              "speed": 0.04738588262031331
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1498509858057996,
+              "speed": 0.04549044731550077
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1490571056167335,
+              "speed": 0.04367082942288075
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14829623363374553,
+              "speed": 0.04192399624596551
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14756696916629475,
+              "speed": 0.04024703639612689
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14686797208702662,
+              "speed": 0.03863715494028182
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14619796021775788,
+              "speed": 0.03709166874267055
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14555570682117697,
+              "speed": 0.035608001992963725
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14494003819491955,
+              "speed": 0.03418368191324518
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14434983136469853,
+              "speed": 0.032816334636715364
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14378401187319712,
+              "speed": 0.03150368125124676
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14324155166146635,
+              "speed": 0.030243534001196875
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14272146703960711,
+              "speed": 0.029033792641149005
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14222281674356146,
+              "speed": 0.027872440935503045
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14174470007488804,
+              "speed": 0.02675754329808292
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14128625512044962,
+              "speed": 0.025687241566159612
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14084665704900146,
+              "speed": 0.02465975190351322
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14042511648173117,
+              "speed": 0.023673361827372678
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1400208779338681,
+              "speed": 0.02272642735427777
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1396332183245496,
+              "speed": 0.02181737026010665
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13926144555220446,
+              "speed": 0.02094467544970237
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13890489713278908,
+              "speed": 0.02010688843171428
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13856293889828752,
+              "speed": 0.019302612894445702
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13823496375296446,
+              "speed": 0.018530508378667872
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1379203904849403,
+              "speed": 0.017789288043521166
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1376186626307352,
+              "speed": 0.01707771652178033
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13732924739050903,
+              "speed": 0.01639460786090911
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13705163459180364,
+              "speed": 0.015738823546472734
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13678533569967213,
+              "speed": 0.015109270604613829
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13652988287115808,
+              "speed": 0.014504899780429277
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13628482805216457,
+              "speed": 0.013924703789212104
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13604974211482931,
+              "speed": 0.01336771563764361
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13582421403359457,
+              "speed": 0.012833007012137868
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1356078500982357,
+              "speed": 0.012319686731652348
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13540027316218203,
+              "speed": 0.011826899262386255
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13520112192453268,
+              "speed": 0.011353823291890814
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13501005024423893,
+              "speed": 0.010899670360215174
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13482672648498734,
+              "speed": 0.010463683545806566
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13465083288938431,
+              "speed": 0.010045136203974299
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13448206498110235,
+              "speed": 0.009643330755815324
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13432013099370663,
+              "speed": 0.009257597525582702
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1341647513249398,
+              "speed": 0.008887293624559402
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1340156580152964,
+              "speed": 0.008531801879577031
+            }
+          ]
+        },
+        "range_bias_m": 0.0,
+        "range_dropout_probability": 0.0,
+        "range_latency_steps": 0,
+        "seed": 2251001,
+        "steps": 365,
+        "timeout": 0,
+        "true_success": 1
+      }
+    },
+    {
+      "id": "nominal:2251001:0.0:AEGIS_3D_RECOVERY_MONITOR",
+      "assignment": {
+        "bias_xyz": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "case": {
+          "name": "nominal",
+          "range_bias_m": 0.0,
+          "range_dropout_probability": 0.0
+        },
+        "controller": "AEGIS_3D_RECOVERY_MONITOR",
+        "id": "nominal:2251001:0.0:AEGIS_3D_RECOVERY_MONITOR",
+        "max_steps": 400,
+        "post_stop_steps": 50,
+        "runtime": {
+          "mujoco": "3.14.0",
+          "numpy": "2.5.3",
+          "python": "3.12.14"
+        },
+        "seed": 2251001,
+        "source_sha256": {
+          "experiments/benchmark_physical_3d_cbf.py": "cbbe6f5362a66ac4df45814f246b548b4ce222faa40ebb2a496168e36eb6c0e2",
+          "scripts/research/development_ledger.py": "254fe889557148110e458ed2cb6e3286837589a484d7a63e1ae3d2c34b645502",
+          "scripts/research/study_recovery_monitor_ledger.py": "4f5c13b83d31b412072308a13544a15bad6da5683a54346a905c4b0f5639f955",
+          "src/aegis/env/mujoco_3d_cbf.py": "438b8ec89d1d40101586b0d888de7e8b5d73c9763cbae2603ccab01f04801433",
+          "src/aegis/v9/anchor_recovery_candidate.py": "14234ba7efccecc28f639a0ecb6b390ea29b59eaccc3b82bd6f4360dccdf038a",
+          "src/aegis/v9/controller_3d.py": "4579219de9d9ab4269fa620e1962685e844f927ba00e6979d571aa47f73f6892",
+          "src/aegis/v9/exploratory_sensor_validation.py": "df4e18e4e538c55a7d52ad81cdb3123d2591183461b975607afa7f67d607bc11",
+          "src/aegis/v9/recovery_monitor_candidate.py": "134b2f549fde1762e5d48b5505131a231634ddf77edcbd766e1bf00fd189819d",
+          "src/aegis/v9/stabilized_arrival_candidate.py": "3f93b0c736a924296c949466fbec502040ce1c65a19912a64564ff7ec5928cb8",
+          "src/aegis/v9/ville_monitor.py": "41ff44c0984aafc91261a2c0e04f569d5e83f3a86d7d7ec0dc372f303ca7c8db"
+        }
+      },
+      "execution_status": "COMPLETED",
+      "observations": {
+        "decision_observations": 365,
+        "initial_observed_distance_m": 3.5497174620212957,
+        "last_prephysics_distance_m": 0.1587460728716061,
+        "minimum_observed_distance_m": 0.1587460728716061,
+        "observed_distance_reduction_m": 3.3909713891496898,
+        "tail_observations": 50,
+        "tail_distance_reduction_m": 0.1593957854931816,
+        "mode_counts": {
+          "NOMINAL": 340,
+          "STOP": 25
+        },
+        "effective_decision_counts": {
+          "NAVIGATE": 329,
+          "VERIFY": 35,
+          "STOP": 1
+        },
+        "tail_mode_counts": {
+          "NOMINAL": 25,
+          "STOP": 25
+        },
+        "interpretation": "DESCRIPTIVE_ONLY_NO_CAUSAL_OR_SAFETY_CLASSIFICATION"
+      },
+      "episode": {
+        "abstained": 0,
+        "anchor_queries": 3,
+        "anchor_valid_readings": 3,
+        "cbf_constraint_violation_occurred": 0,
+        "cbf_exact_fallback_steps": 0,
+        "cbf_infeasible_steps": 0,
+        "cbf_unchecked_steps": 0,
+        "collision_occurred": 0,
+        "controller": "AEGIS_3D_RECOVERY_MONITOR",
+        "false_arrival": 0,
+        "final_distance": 0.1587,
+        "post_stop": {
+          "decision_distance": 0.1587460728716061,
+          "decision_speed": 0.06568695196160468,
+          "steps": [
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.15758065471736016,
+              "speed": 0.0630594738831405
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1564640643065939,
+              "speed": 0.06053709492781488
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.15539421913727713,
+              "speed": 0.05811561113070229
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1543691261106391,
+              "speed": 0.055790986685474206
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.15338687781371133,
+              "speed": 0.05355934721805524
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1524456489380532,
+              "speed": 0.051416973329333024
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.15154369283124655,
+              "speed": 0.04936029439615971
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.15067933817776114,
+              "speed": 0.04738588262031331
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1498509858057996,
+              "speed": 0.04549044731550077
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1490571056167335,
+              "speed": 0.04367082942288075
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14829623363374553,
+              "speed": 0.04192399624596551
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14756696916629475,
+              "speed": 0.04024703639612689
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14686797208702662,
+              "speed": 0.03863715494028182
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14619796021775788,
+              "speed": 0.03709166874267055
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14555570682117697,
+              "speed": 0.035608001992963725
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14494003819491955,
+              "speed": 0.03418368191324518
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14434983136469853,
+              "speed": 0.032816334636715364
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14378401187319712,
+              "speed": 0.03150368125124676
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14324155166146635,
+              "speed": 0.030243534001196875
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14272146703960711,
+              "speed": 0.029033792641149005
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14222281674356146,
+              "speed": 0.027872440935503045
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14174470007488804,
+              "speed": 0.02675754329808292
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14128625512044962,
+              "speed": 0.025687241566159612
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14084665704900146,
+              "speed": 0.02465975190351322
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14042511648173117,
+              "speed": 0.023673361827372678
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1400208779338681,
+              "speed": 0.02272642735427777
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1396332183245496,
+              "speed": 0.02181737026010665
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13926144555220446,
+              "speed": 0.02094467544970237
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13890489713278908,
+              "speed": 0.02010688843171428
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13856293889828752,
+              "speed": 0.019302612894445702
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13823496375296446,
+              "speed": 0.018530508378667872
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1379203904849403,
+              "speed": 0.017789288043521166
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1376186626307352,
+              "speed": 0.01707771652178033
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13732924739050903,
+              "speed": 0.01639460786090911
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13705163459180364,
+              "speed": 0.015738823546472734
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13678533569967213,
+              "speed": 0.015109270604613829
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13652988287115808,
+              "speed": 0.014504899780429277
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13628482805216457,
+              "speed": 0.013924703789212104
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13604974211482931,
+              "speed": 0.01336771563764361
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13582421403359457,
+              "speed": 0.012833007012137868
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1356078500982357,
+              "speed": 0.012319686731652348
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13540027316218203,
+              "speed": 0.011826899262386255
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13520112192453268,
+              "speed": 0.011353823291890814
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13501005024423893,
+              "speed": 0.010899670360215174
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13482672648498734,
+              "speed": 0.010463683545806566
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13465083288938431,
+              "speed": 0.010045136203974299
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13448206498110235,
+              "speed": 0.009643330755815324
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13432013099370663,
+              "speed": 0.009257597525582702
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1341647513249398,
+              "speed": 0.008887293624559402
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1340156580152964,
+              "speed": 0.008531801879577031
+            }
+          ]
+        },
+        "postproposal_monitor_reason": "OBSERVED",
+        "postproposal_monitor_steps": 24,
+        "range_bias_m": 0.0,
+        "range_dropout_probability": 0.0,
+        "range_latency_steps": 0,
+        "seed": 2251001,
+        "steps": 365,
+        "timeout": 0,
+        "true_success": 1
+      }
+    },
+    {
+      "id": "nominal:2251001:0.8:AEGIS_3D_ANCHOR_RECOVERY",
+      "assignment": {
+        "bias_xyz": [
+          0.8,
+          0.8,
+          -0.3
+        ],
+        "case": {
+          "name": "nominal",
+          "range_bias_m": 0.0,
+          "range_dropout_probability": 0.0
+        },
+        "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+        "id": "nominal:2251001:0.8:AEGIS_3D_ANCHOR_RECOVERY",
+        "max_steps": 400,
+        "post_stop_steps": 50,
+        "runtime": {
+          "mujoco": "3.14.0",
+          "numpy": "2.5.3",
+          "python": "3.12.14"
+        },
+        "seed": 2251001,
+        "source_sha256": {
+          "experiments/benchmark_physical_3d_cbf.py": "cbbe6f5362a66ac4df45814f246b548b4ce222faa40ebb2a496168e36eb6c0e2",
+          "scripts/research/development_ledger.py": "254fe889557148110e458ed2cb6e3286837589a484d7a63e1ae3d2c34b645502",
+          "scripts/research/study_recovery_monitor_ledger.py": "4f5c13b83d31b412072308a13544a15bad6da5683a54346a905c4b0f5639f955",
+          "src/aegis/env/mujoco_3d_cbf.py": "438b8ec89d1d40101586b0d888de7e8b5d73c9763cbae2603ccab01f04801433",
+          "src/aegis/v9/anchor_recovery_candidate.py": "14234ba7efccecc28f639a0ecb6b390ea29b59eaccc3b82bd6f4360dccdf038a",
+          "src/aegis/v9/controller_3d.py": "4579219de9d9ab4269fa620e1962685e844f927ba00e6979d571aa47f73f6892",
+          "src/aegis/v9/exploratory_sensor_validation.py": "df4e18e4e538c55a7d52ad81cdb3123d2591183461b975607afa7f67d607bc11",
+          "src/aegis/v9/recovery_monitor_candidate.py": "134b2f549fde1762e5d48b5505131a231634ddf77edcbd766e1bf00fd189819d",
+          "src/aegis/v9/stabilized_arrival_candidate.py": "3f93b0c736a924296c949466fbec502040ce1c65a19912a64564ff7ec5928cb8",
+          "src/aegis/v9/ville_monitor.py": "41ff44c0984aafc91261a2c0e04f569d5e83f3a86d7d7ec0dc372f303ca7c8db"
+        }
+      },
+      "execution_status": "COMPLETED",
+      "observations": {
+        "decision_observations": 377,
+        "initial_observed_distance_m": 3.5497174620212957,
+        "last_prephysics_distance_m": 0.13686104383617598,
+        "minimum_observed_distance_m": 0.13686104383617598,
+        "observed_distance_reduction_m": 3.4128564181851195,
+        "tail_observations": 50,
+        "tail_distance_reduction_m": 0.16451039035939602,
+        "mode_counts": {
+          "NOMINAL": 5,
+          "ACTIVE_PROBING": 10,
+          "CALIBRATED_APPROACH": 337,
+          "STOP": 25
+        },
+        "effective_decision_counts": {
+          "NAVIGATE": 332,
+          "PROBE": 10,
+          "VERIFY": 34,
+          "STOP": 1
+        },
+        "tail_mode_counts": {
+          "CALIBRATED_APPROACH": 25,
+          "STOP": 25
+        },
+        "interpretation": "DESCRIPTIVE_ONLY_NO_CAUSAL_OR_SAFETY_CLASSIFICATION"
+      },
+      "episode": {
+        "abstained": 0,
+        "anchor_queries": 14,
+        "anchor_valid_readings": 14,
+        "cbf_constraint_violation_occurred": 0,
+        "cbf_exact_fallback_steps": 0,
+        "cbf_infeasible_steps": 0,
+        "cbf_unchecked_steps": 0,
+        "collision_occurred": 0,
+        "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+        "false_arrival": 0,
+        "final_distance": 0.1369,
+        "post_stop": {
+          "decision_distance": 0.13686104383617598,
+          "decision_speed": 0.0680163630510845,
+          "steps": [
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1355864915057182,
+              "speed": 0.06529570852904111
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1343645037420387,
+              "speed": 0.06268388018787947
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1331928940606823,
+              "speed": 0.0601765249803643
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13206956662712122,
+              "speed": 0.05776946398114973
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1309925126275653,
+              "speed": 0.05545868542190375
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.12995980677194496,
+              "speed": 0.053240338005027595
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.12896960392491785,
+              "speed": 0.0511107244848265
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.12802013586091449,
+              "speed": 0.04906629550543343
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.12710970813937944,
+              "speed": 0.04710364368521611
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.12623669709649307,
+              "speed": 0.04521949793780745
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.12539954694977173,
+              "speed": 0.04341071802029515
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.12459676701204744,
+              "speed": 0.041674289299483344
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.12382692901141917,
+              "speed": 0.040007317727504016
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.12308866451385278,
+              "speed": 0.03840702501840385
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.12238066244518299,
+              "speed": 0.036870744017667705
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.12170166670934324,
+              "speed": 0.035395914256960995
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.12105047389971615,
+              "speed": 0.03398007768668256
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.12042593110056257,
+              "speed": 0.03262087457921526
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.11982693377554836,
+              "speed": 0.031316039596046646
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.11925242374044966,
+              "speed": 0.030063398012204784
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1187013872171762,
+              "speed": 0.028860862091716604
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.11817285296631252,
+              "speed": 0.027706427608047934
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.11766589049543474,
+              "speed": 0.026598170503726017
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.11717960834052142,
+              "speed": 0.025534243683576985
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.11671315241783703,
+              "speed": 0.024512873936233918
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.11626570444372543,
+              "speed": 0.023532358978784553
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.11583648041981406,
+              "speed": 0.02259106461963317
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1154247291811909,
+              "speed": 0.021687422034847834
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.11502973100517684,
+              "speed": 0.020819925153453926
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.11465079627838322,
+              "speed": 0.019987128147315777
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1142872642198027,
+              "speed": 0.01918764302142314
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.11393850165775103,
+              "speed": 0.018420137300566214
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.11360390185853586,
+              "speed": 0.017683331808543555
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.11328288340479786,
+              "speed": 0.016975998536201818
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.11297488912152931,
+              "speed": 0.016296958594753736
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.11267938504784211,
+              "speed": 0.015645080250963575
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1123958594526187,
+              "speed": 0.015019277040925032
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.11212382189224299,
+              "speed": 0.01441850595928804
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.11186280230867036,
+              "speed": 0.013841765720916527
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.11161235016615687,
+              "speed": 0.013288095092079875
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.11137203362502865,
+              "speed": 0.012756571288396686
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.11114143875093169,
+              "speed": 0.012246308436860828
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.11092016875805925,
+              "speed": 0.011756456099386397
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1107078432849138,
+              "speed": 0.011286197855410933
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.11050409770121264,
+              "speed": 0.0108347499411945
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.11030858244460363,
+              "speed": 0.01040135994354671
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.11012096238590827,
+              "speed": 0.009985305545804844
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.10994091622166197,
+              "speed": 0.009585893323972661
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.10976813589277082,
+              "speed": 0.009202457591013763
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.10960232602815281,
+              "speed": 0.008834359287373222
+            }
+          ]
+        },
+        "range_bias_m": 0.0,
+        "range_dropout_probability": 0.0,
+        "range_latency_steps": 0,
+        "seed": 2251001,
+        "steps": 377,
+        "timeout": 0,
+        "true_success": 1
+      }
+    },
+    {
+      "id": "nominal:2251001:0.8:AEGIS_3D_RECOVERY_MONITOR",
+      "assignment": {
+        "bias_xyz": [
+          0.8,
+          0.8,
+          -0.3
+        ],
+        "case": {
+          "name": "nominal",
+          "range_bias_m": 0.0,
+          "range_dropout_probability": 0.0
+        },
+        "controller": "AEGIS_3D_RECOVERY_MONITOR",
+        "id": "nominal:2251001:0.8:AEGIS_3D_RECOVERY_MONITOR",
+        "max_steps": 400,
+        "post_stop_steps": 50,
+        "runtime": {
+          "mujoco": "3.14.0",
+          "numpy": "2.5.3",
+          "python": "3.12.14"
+        },
+        "seed": 2251001,
+        "source_sha256": {
+          "experiments/benchmark_physical_3d_cbf.py": "cbbe6f5362a66ac4df45814f246b548b4ce222faa40ebb2a496168e36eb6c0e2",
+          "scripts/research/development_ledger.py": "254fe889557148110e458ed2cb6e3286837589a484d7a63e1ae3d2c34b645502",
+          "scripts/research/study_recovery_monitor_ledger.py": "4f5c13b83d31b412072308a13544a15bad6da5683a54346a905c4b0f5639f955",
+          "src/aegis/env/mujoco_3d_cbf.py": "438b8ec89d1d40101586b0d888de7e8b5d73c9763cbae2603ccab01f04801433",
+          "src/aegis/v9/anchor_recovery_candidate.py": "14234ba7efccecc28f639a0ecb6b390ea29b59eaccc3b82bd6f4360dccdf038a",
+          "src/aegis/v9/controller_3d.py": "4579219de9d9ab4269fa620e1962685e844f927ba00e6979d571aa47f73f6892",
+          "src/aegis/v9/exploratory_sensor_validation.py": "df4e18e4e538c55a7d52ad81cdb3123d2591183461b975607afa7f67d607bc11",
+          "src/aegis/v9/recovery_monitor_candidate.py": "134b2f549fde1762e5d48b5505131a231634ddf77edcbd766e1bf00fd189819d",
+          "src/aegis/v9/stabilized_arrival_candidate.py": "3f93b0c736a924296c949466fbec502040ce1c65a19912a64564ff7ec5928cb8",
+          "src/aegis/v9/ville_monitor.py": "41ff44c0984aafc91261a2c0e04f569d5e83f3a86d7d7ec0dc372f303ca7c8db"
+        }
+      },
+      "execution_status": "COMPLETED",
+      "observations": {
+        "decision_observations": 359,
+        "initial_observed_distance_m": 3.5497174620212957,
+        "last_prephysics_distance_m": 0.17193725620017766,
+        "minimum_observed_distance_m": 0.17193725620017766,
+        "observed_distance_reduction_m": 3.377780205821118,
+        "tail_observations": 50,
+        "tail_distance_reduction_m": 0.22495460443175516,
+        "mode_counts": {
+          "NOMINAL": 5,
+          "ACTIVE_PROBING": 10,
+          "CALIBRATED_APPROACH": 337,
+          "STOP": 7
+        },
+        "effective_decision_counts": {
+          "NAVIGATE": 332,
+          "PROBE": 10,
+          "VERIFY": 16,
+          "ABSTAIN": 1
+        },
+        "tail_mode_counts": {
+          "CALIBRATED_APPROACH": 43,
+          "STOP": 7
+        },
+        "interpretation": "DESCRIPTIVE_ONLY_NO_CAUSAL_OR_SAFETY_CLASSIFICATION"
+      },
+      "episode": {
+        "abstained": 1,
+        "anchor_queries": 10,
+        "anchor_valid_readings": 10,
+        "cbf_constraint_violation_occurred": 0,
+        "cbf_exact_fallback_steps": 0,
+        "cbf_infeasible_steps": 0,
+        "cbf_unchecked_steps": 0,
+        "collision_occurred": 0,
+        "controller": "AEGIS_3D_RECOVERY_MONITOR",
+        "false_arrival": 0,
+        "final_distance": 0.1692,
+        "post_stop": null,
+        "postproposal_monitor_reason": "POSTPROPOSAL_MONITOR_ALARM",
+        "postproposal_monitor_steps": 6,
+        "range_bias_m": 0.0,
+        "range_dropout_probability": 0.0,
+        "range_latency_steps": 0,
+        "seed": 2251001,
+        "steps": 359,
+        "timeout": 0,
+        "true_success": 0
+      }
+    },
+    {
+      "id": "biased_range:2251001:0.0:AEGIS_3D_ANCHOR_RECOVERY",
+      "assignment": {
+        "bias_xyz": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "case": {
+          "name": "biased_range",
+          "range_bias_m": -0.08,
+          "range_dropout_probability": 0.0
+        },
+        "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+        "id": "biased_range:2251001:0.0:AEGIS_3D_ANCHOR_RECOVERY",
+        "max_steps": 400,
+        "post_stop_steps": 50,
+        "runtime": {
+          "mujoco": "3.14.0",
+          "numpy": "2.5.3",
+          "python": "3.12.14"
+        },
+        "seed": 2251001,
+        "source_sha256": {
+          "experiments/benchmark_physical_3d_cbf.py": "cbbe6f5362a66ac4df45814f246b548b4ce222faa40ebb2a496168e36eb6c0e2",
+          "scripts/research/development_ledger.py": "254fe889557148110e458ed2cb6e3286837589a484d7a63e1ae3d2c34b645502",
+          "scripts/research/study_recovery_monitor_ledger.py": "4f5c13b83d31b412072308a13544a15bad6da5683a54346a905c4b0f5639f955",
+          "src/aegis/env/mujoco_3d_cbf.py": "438b8ec89d1d40101586b0d888de7e8b5d73c9763cbae2603ccab01f04801433",
+          "src/aegis/v9/anchor_recovery_candidate.py": "14234ba7efccecc28f639a0ecb6b390ea29b59eaccc3b82bd6f4360dccdf038a",
+          "src/aegis/v9/controller_3d.py": "4579219de9d9ab4269fa620e1962685e844f927ba00e6979d571aa47f73f6892",
+          "src/aegis/v9/exploratory_sensor_validation.py": "df4e18e4e538c55a7d52ad81cdb3123d2591183461b975607afa7f67d607bc11",
+          "src/aegis/v9/recovery_monitor_candidate.py": "134b2f549fde1762e5d48b5505131a231634ddf77edcbd766e1bf00fd189819d",
+          "src/aegis/v9/stabilized_arrival_candidate.py": "3f93b0c736a924296c949466fbec502040ce1c65a19912a64564ff7ec5928cb8",
+          "src/aegis/v9/ville_monitor.py": "41ff44c0984aafc91261a2c0e04f569d5e83f3a86d7d7ec0dc372f303ca7c8db"
+        }
+      },
+      "execution_status": "COMPLETED",
+      "observations": {
+        "decision_observations": 365,
+        "initial_observed_distance_m": 3.5497174620212957,
+        "last_prephysics_distance_m": 0.16833128118106588,
+        "minimum_observed_distance_m": 0.16833128118106588,
+        "observed_distance_reduction_m": 3.38138618084023,
+        "tail_observations": 50,
+        "tail_distance_reduction_m": 0.14981057718372182,
+        "mode_counts": {
+          "NOMINAL": 330,
+          "STOP": 35
+        },
+        "effective_decision_counts": {
+          "NAVIGATE": 326,
+          "VERIFY": 38,
+          "STOP": 1
+        },
+        "tail_mode_counts": {
+          "NOMINAL": 15,
+          "STOP": 35
+        },
+        "interpretation": "DESCRIPTIVE_ONLY_NO_CAUSAL_OR_SAFETY_CLASSIFICATION"
+      },
+      "episode": {
+        "abstained": 0,
+        "anchor_queries": 5,
+        "anchor_valid_readings": 5,
+        "cbf_constraint_violation_occurred": 0,
+        "cbf_exact_fallback_steps": 0,
+        "cbf_infeasible_steps": 0,
+        "cbf_unchecked_steps": 0,
+        "collision_occurred": 0,
+        "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+        "false_arrival": 0,
+        "final_distance": 0.1683,
+        "post_stop": {
+          "decision_distance": 0.16833128118106588,
+          "decision_speed": 0.05679645481396163,
+          "steps": [
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.16735326506522238,
+              "speed": 0.05452459662140317
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1664162567838096,
+              "speed": 0.052343612756547045
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.16551849762304036,
+              "speed": 0.05024986824628516
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.16465830562429928,
+              "speed": 0.04823987351643375
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.16383407227310487,
+              "speed": 0.0463102785757764
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1630442593181524,
+              "speed": 0.044457867432745345
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.16228739571679981,
+              "speed": 0.04267955273543553
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.16156207470334033,
+              "speed": 0.040972370626018106
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.16086695097639228,
+              "speed": 0.03933347580097739
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.16020073800173765,
+              "speed": 0.03776013676893828
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1595622054269407,
+              "speed": 0.03624973129818076
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1589501766040953,
+              "speed": 0.03479974204625352
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1583635262170692,
+              "speed": 0.03340775236440338
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.15780117800964433,
+              "speed": 0.03207144226982725
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1572621026109905,
+              "speed": 0.030788584579034165
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.156745315454955,
+              "speed": 0.029557041195872796
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.15624987478970354,
+              "speed": 0.028374759548037882
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.15577487977430846,
+              "speed": 0.027239769166116364
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1553194686589423,
+              "speed": 0.026150178399471702
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1548828170454091,
+              "speed": 0.02510417126349284
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1544641362248174,
+              "speed": 0.02410000441295312
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.15406267158927986,
+              "speed": 0.023136004236434988
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1536777011146063,
+              "speed": 0.022210564066977596
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.15330853391104046,
+              "speed": 0.021322141504298488
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.15295450883918077,
+              "speed": 0.020469255844126545
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.15261499318830993,
+              "speed": 0.019650485610361493
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.15228938141445147,
+              "speed": 0.01886446618594703
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.15197709393555947,
+              "speed": 0.018109887538509152
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.15167757598133788,
+              "speed": 0.01738549203696878
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.15139029649527633,
+              "speed": 0.016690072355490037
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.15111474708657924,
+              "speed": 0.016022469461270443
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1508504410297508,
+              "speed": 0.015381570682819616
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.15059691230968827,
+              "speed": 0.014766307855506821
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.15035371471021985,
+              "speed": 0.014175655541286542
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.15012042094410719,
+              "speed": 0.013608629319635083
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14989662182261532,
+              "speed": 0.013064284146849674
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14968192546283182,
+              "speed": 0.012541712780975687
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14947595653099452,
+              "speed": 0.01204004426973665
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14927835552016314,
+              "speed": 0.01155844249894719
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14908877806064308,
+              "speed": 0.011096104798989304
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14890689426163958,
+              "speed": 0.010652260607029743
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14873238808268935,
+              "speed": 0.010226170182748547
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14856495673348266,
+              "speed": 0.009817123375438604
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14840431010075159,
+              "speed": 0.009424438440421052
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14825017020096165,
+              "speed": 0.009047460902804219
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14810227065760218,
+              "speed": 0.008685562466692042
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.147960356201927,
+              "speed": 0.008338139968024355
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14782418219605178,
+              "speed": 0.00800461436930339
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14769351417736384,
+              "speed": 0.007684429794531254
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1475681274232519,
+              "speed": 0.007377052602750011
+            }
+          ]
+        },
+        "range_bias_m": -0.08,
+        "range_dropout_probability": 0.0,
+        "range_latency_steps": 0,
+        "seed": 2251001,
+        "steps": 365,
+        "timeout": 0,
+        "true_success": 1
+      }
+    },
+    {
+      "id": "biased_range:2251001:0.0:AEGIS_3D_RECOVERY_MONITOR",
+      "assignment": {
+        "bias_xyz": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "case": {
+          "name": "biased_range",
+          "range_bias_m": -0.08,
+          "range_dropout_probability": 0.0
+        },
+        "controller": "AEGIS_3D_RECOVERY_MONITOR",
+        "id": "biased_range:2251001:0.0:AEGIS_3D_RECOVERY_MONITOR",
+        "max_steps": 400,
+        "post_stop_steps": 50,
+        "runtime": {
+          "mujoco": "3.14.0",
+          "numpy": "2.5.3",
+          "python": "3.12.14"
+        },
+        "seed": 2251001,
+        "source_sha256": {
+          "experiments/benchmark_physical_3d_cbf.py": "cbbe6f5362a66ac4df45814f246b548b4ce222faa40ebb2a496168e36eb6c0e2",
+          "scripts/research/development_ledger.py": "254fe889557148110e458ed2cb6e3286837589a484d7a63e1ae3d2c34b645502",
+          "scripts/research/study_recovery_monitor_ledger.py": "4f5c13b83d31b412072308a13544a15bad6da5683a54346a905c4b0f5639f955",
+          "src/aegis/env/mujoco_3d_cbf.py": "438b8ec89d1d40101586b0d888de7e8b5d73c9763cbae2603ccab01f04801433",
+          "src/aegis/v9/anchor_recovery_candidate.py": "14234ba7efccecc28f639a0ecb6b390ea29b59eaccc3b82bd6f4360dccdf038a",
+          "src/aegis/v9/controller_3d.py": "4579219de9d9ab4269fa620e1962685e844f927ba00e6979d571aa47f73f6892",
+          "src/aegis/v9/exploratory_sensor_validation.py": "df4e18e4e538c55a7d52ad81cdb3123d2591183461b975607afa7f67d607bc11",
+          "src/aegis/v9/recovery_monitor_candidate.py": "134b2f549fde1762e5d48b5505131a231634ddf77edcbd766e1bf00fd189819d",
+          "src/aegis/v9/stabilized_arrival_candidate.py": "3f93b0c736a924296c949466fbec502040ce1c65a19912a64564ff7ec5928cb8",
+          "src/aegis/v9/ville_monitor.py": "41ff44c0984aafc91261a2c0e04f569d5e83f3a86d7d7ec0dc372f303ca7c8db"
+        }
+      },
+      "execution_status": "COMPLETED",
+      "observations": {
+        "decision_observations": 359,
+        "initial_observed_distance_m": 3.5497174620212957,
+        "last_prephysics_distance_m": 0.17516959884977754,
+        "minimum_observed_distance_m": 0.17516959884977754,
+        "observed_distance_reduction_m": 3.374547863171518,
+        "tail_observations": 50,
+        "tail_distance_reduction_m": 0.17319235774529854,
+        "mode_counts": {
+          "NOMINAL": 330,
+          "STOP": 29
+        },
+        "effective_decision_counts": {
+          "NAVIGATE": 326,
+          "VERIFY": 32,
+          "ABSTAIN": 1
+        },
+        "tail_mode_counts": {
+          "NOMINAL": 21,
+          "STOP": 29
+        },
+        "interpretation": "DESCRIPTIVE_ONLY_NO_CAUSAL_OR_SAFETY_CLASSIFICATION"
+      },
+      "episode": {
+        "abstained": 1,
+        "anchor_queries": 2,
+        "anchor_valid_readings": 2,
+        "cbf_constraint_violation_occurred": 0,
+        "cbf_exact_fallback_steps": 0,
+        "cbf_infeasible_steps": 0,
+        "cbf_unchecked_steps": 0,
+        "collision_occurred": 0,
+        "controller": "AEGIS_3D_RECOVERY_MONITOR",
+        "false_arrival": 0,
+        "final_distance": 0.1739,
+        "post_stop": null,
+        "postproposal_monitor_reason": "POSTPROPOSAL_RANGE_UNAVAILABLE",
+        "postproposal_monitor_steps": 27,
+        "range_bias_m": -0.08,
+        "range_dropout_probability": 0.0,
+        "range_latency_steps": 0,
+        "seed": 2251001,
+        "steps": 359,
+        "timeout": 0,
+        "true_success": 0
+      }
+    },
+    {
+      "id": "biased_range:2251001:0.8:AEGIS_3D_ANCHOR_RECOVERY",
+      "assignment": {
+        "bias_xyz": [
+          0.8,
+          0.8,
+          -0.3
+        ],
+        "case": {
+          "name": "biased_range",
+          "range_bias_m": -0.08,
+          "range_dropout_probability": 0.0
+        },
+        "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+        "id": "biased_range:2251001:0.8:AEGIS_3D_ANCHOR_RECOVERY",
+        "max_steps": 400,
+        "post_stop_steps": 50,
+        "runtime": {
+          "mujoco": "3.14.0",
+          "numpy": "2.5.3",
+          "python": "3.12.14"
+        },
+        "seed": 2251001,
+        "source_sha256": {
+          "experiments/benchmark_physical_3d_cbf.py": "cbbe6f5362a66ac4df45814f246b548b4ce222faa40ebb2a496168e36eb6c0e2",
+          "scripts/research/development_ledger.py": "254fe889557148110e458ed2cb6e3286837589a484d7a63e1ae3d2c34b645502",
+          "scripts/research/study_recovery_monitor_ledger.py": "4f5c13b83d31b412072308a13544a15bad6da5683a54346a905c4b0f5639f955",
+          "src/aegis/env/mujoco_3d_cbf.py": "438b8ec89d1d40101586b0d888de7e8b5d73c9763cbae2603ccab01f04801433",
+          "src/aegis/v9/anchor_recovery_candidate.py": "14234ba7efccecc28f639a0ecb6b390ea29b59eaccc3b82bd6f4360dccdf038a",
+          "src/aegis/v9/controller_3d.py": "4579219de9d9ab4269fa620e1962685e844f927ba00e6979d571aa47f73f6892",
+          "src/aegis/v9/exploratory_sensor_validation.py": "df4e18e4e538c55a7d52ad81cdb3123d2591183461b975607afa7f67d607bc11",
+          "src/aegis/v9/recovery_monitor_candidate.py": "134b2f549fde1762e5d48b5505131a231634ddf77edcbd766e1bf00fd189819d",
+          "src/aegis/v9/stabilized_arrival_candidate.py": "3f93b0c736a924296c949466fbec502040ce1c65a19912a64564ff7ec5928cb8",
+          "src/aegis/v9/ville_monitor.py": "41ff44c0984aafc91261a2c0e04f569d5e83f3a86d7d7ec0dc372f303ca7c8db"
+        }
+      },
+      "execution_status": "COMPLETED",
+      "observations": {
+        "decision_observations": 382,
+        "initial_observed_distance_m": 3.5497174620212957,
+        "last_prephysics_distance_m": 0.135633149392526,
+        "minimum_observed_distance_m": 0.135633149392526,
+        "observed_distance_reduction_m": 3.41408431262877,
+        "tail_observations": 50,
+        "tail_distance_reduction_m": 0.1427847608436493,
+        "mode_counts": {
+          "NOMINAL": 5,
+          "ACTIVE_PROBING": 10,
+          "CALIBRATED_APPROACH": 337,
+          "STOP": 30
+        },
+        "effective_decision_counts": {
+          "NAVIGATE": 332,
+          "PROBE": 10,
+          "VERIFY": 39,
+          "ABSTAIN": 1
+        },
+        "tail_mode_counts": {
+          "CALIBRATED_APPROACH": 20,
+          "STOP": 30
+        },
+        "interpretation": "DESCRIPTIVE_ONLY_NO_CAUSAL_OR_SAFETY_CLASSIFICATION"
+      },
+      "episode": {
+        "abstained": 1,
+        "anchor_queries": 17,
+        "anchor_valid_readings": 17,
+        "cbf_constraint_violation_occurred": 0,
+        "cbf_exact_fallback_steps": 0,
+        "cbf_infeasible_steps": 0,
+        "cbf_unchecked_steps": 0,
+        "collision_occurred": 0,
+        "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+        "false_arrival": 0,
+        "final_distance": 0.1346,
+        "post_stop": null,
+        "range_bias_m": -0.08,
+        "range_dropout_probability": 0.0,
+        "range_latency_steps": 0,
+        "seed": 2251001,
+        "steps": 382,
+        "timeout": 0,
+        "true_success": 0
+      }
+    },
+    {
+      "id": "biased_range:2251001:0.8:AEGIS_3D_RECOVERY_MONITOR",
+      "assignment": {
+        "bias_xyz": [
+          0.8,
+          0.8,
+          -0.3
+        ],
+        "case": {
+          "name": "biased_range",
+          "range_bias_m": -0.08,
+          "range_dropout_probability": 0.0
+        },
+        "controller": "AEGIS_3D_RECOVERY_MONITOR",
+        "id": "biased_range:2251001:0.8:AEGIS_3D_RECOVERY_MONITOR",
+        "max_steps": 400,
+        "post_stop_steps": 50,
+        "runtime": {
+          "mujoco": "3.14.0",
+          "numpy": "2.5.3",
+          "python": "3.12.14"
+        },
+        "seed": 2251001,
+        "source_sha256": {
+          "experiments/benchmark_physical_3d_cbf.py": "cbbe6f5362a66ac4df45814f246b548b4ce222faa40ebb2a496168e36eb6c0e2",
+          "scripts/research/development_ledger.py": "254fe889557148110e458ed2cb6e3286837589a484d7a63e1ae3d2c34b645502",
+          "scripts/research/study_recovery_monitor_ledger.py": "4f5c13b83d31b412072308a13544a15bad6da5683a54346a905c4b0f5639f955",
+          "src/aegis/env/mujoco_3d_cbf.py": "438b8ec89d1d40101586b0d888de7e8b5d73c9763cbae2603ccab01f04801433",
+          "src/aegis/v9/anchor_recovery_candidate.py": "14234ba7efccecc28f639a0ecb6b390ea29b59eaccc3b82bd6f4360dccdf038a",
+          "src/aegis/v9/controller_3d.py": "4579219de9d9ab4269fa620e1962685e844f927ba00e6979d571aa47f73f6892",
+          "src/aegis/v9/exploratory_sensor_validation.py": "df4e18e4e538c55a7d52ad81cdb3123d2591183461b975607afa7f67d607bc11",
+          "src/aegis/v9/recovery_monitor_candidate.py": "134b2f549fde1762e5d48b5505131a231634ddf77edcbd766e1bf00fd189819d",
+          "src/aegis/v9/stabilized_arrival_candidate.py": "3f93b0c736a924296c949466fbec502040ce1c65a19912a64564ff7ec5928cb8",
+          "src/aegis/v9/ville_monitor.py": "41ff44c0984aafc91261a2c0e04f569d5e83f3a86d7d7ec0dc372f303ca7c8db"
+        }
+      },
+      "execution_status": "COMPLETED",
+      "observations": {
+        "decision_observations": 359,
+        "initial_observed_distance_m": 3.5497174620212957,
+        "last_prephysics_distance_m": 0.1767184139328482,
+        "minimum_observed_distance_m": 0.1767184139328482,
+        "observed_distance_reduction_m": 3.3729990480884475,
+        "tail_observations": 50,
+        "tail_distance_reduction_m": 0.22017344669908462,
+        "mode_counts": {
+          "NOMINAL": 5,
+          "ACTIVE_PROBING": 10,
+          "CALIBRATED_APPROACH": 337,
+          "STOP": 7
+        },
+        "effective_decision_counts": {
+          "NAVIGATE": 331,
+          "PROBE": 10,
+          "VERIFY": 17,
+          "ABSTAIN": 1
+        },
+        "tail_mode_counts": {
+          "CALIBRATED_APPROACH": 43,
+          "STOP": 7
+        },
+        "interpretation": "DESCRIPTIVE_ONLY_NO_CAUSAL_OR_SAFETY_CLASSIFICATION"
+      },
+      "episode": {
+        "abstained": 1,
+        "anchor_queries": 10,
+        "anchor_valid_readings": 10,
+        "cbf_constraint_violation_occurred": 0,
+        "cbf_exact_fallback_steps": 0,
+        "cbf_infeasible_steps": 0,
+        "cbf_unchecked_steps": 0,
+        "collision_occurred": 0,
+        "controller": "AEGIS_3D_RECOVERY_MONITOR",
+        "false_arrival": 0,
+        "final_distance": 0.174,
+        "post_stop": null,
+        "postproposal_monitor_reason": "POSTPROPOSAL_RANGE_UNAVAILABLE",
+        "postproposal_monitor_steps": 5,
+        "range_bias_m": -0.08,
+        "range_dropout_probability": 0.0,
+        "range_latency_steps": 0,
+        "seed": 2251001,
+        "steps": 359,
+        "timeout": 0,
+        "true_success": 0
+      }
+    },
+    {
+      "id": "range_dropout:2251001:0.0:AEGIS_3D_ANCHOR_RECOVERY",
+      "assignment": {
+        "bias_xyz": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "case": {
+          "name": "range_dropout",
+          "range_bias_m": 0.0,
+          "range_dropout_probability": 0.1
+        },
+        "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+        "id": "range_dropout:2251001:0.0:AEGIS_3D_ANCHOR_RECOVERY",
+        "max_steps": 400,
+        "post_stop_steps": 50,
+        "runtime": {
+          "mujoco": "3.14.0",
+          "numpy": "2.5.3",
+          "python": "3.12.14"
+        },
+        "seed": 2251001,
+        "source_sha256": {
+          "experiments/benchmark_physical_3d_cbf.py": "cbbe6f5362a66ac4df45814f246b548b4ce222faa40ebb2a496168e36eb6c0e2",
+          "scripts/research/development_ledger.py": "254fe889557148110e458ed2cb6e3286837589a484d7a63e1ae3d2c34b645502",
+          "scripts/research/study_recovery_monitor_ledger.py": "4f5c13b83d31b412072308a13544a15bad6da5683a54346a905c4b0f5639f955",
+          "src/aegis/env/mujoco_3d_cbf.py": "438b8ec89d1d40101586b0d888de7e8b5d73c9763cbae2603ccab01f04801433",
+          "src/aegis/v9/anchor_recovery_candidate.py": "14234ba7efccecc28f639a0ecb6b390ea29b59eaccc3b82bd6f4360dccdf038a",
+          "src/aegis/v9/controller_3d.py": "4579219de9d9ab4269fa620e1962685e844f927ba00e6979d571aa47f73f6892",
+          "src/aegis/v9/exploratory_sensor_validation.py": "df4e18e4e538c55a7d52ad81cdb3123d2591183461b975607afa7f67d607bc11",
+          "src/aegis/v9/recovery_monitor_candidate.py": "134b2f549fde1762e5d48b5505131a231634ddf77edcbd766e1bf00fd189819d",
+          "src/aegis/v9/stabilized_arrival_candidate.py": "3f93b0c736a924296c949466fbec502040ce1c65a19912a64564ff7ec5928cb8",
+          "src/aegis/v9/ville_monitor.py": "41ff44c0984aafc91261a2c0e04f569d5e83f3a86d7d7ec0dc372f303ca7c8db"
+        }
+      },
+      "execution_status": "COMPLETED",
+      "observations": {
+        "decision_observations": 365,
+        "initial_observed_distance_m": 3.5497174620212957,
+        "last_prephysics_distance_m": 0.1587460728716061,
+        "minimum_observed_distance_m": 0.1587460728716061,
+        "observed_distance_reduction_m": 3.3909713891496898,
+        "tail_observations": 50,
+        "tail_distance_reduction_m": 0.1593957854931816,
+        "mode_counts": {
+          "NOMINAL": 340,
+          "STOP": 25
+        },
+        "effective_decision_counts": {
+          "NAVIGATE": 329,
+          "VERIFY": 35,
+          "STOP": 1
+        },
+        "tail_mode_counts": {
+          "NOMINAL": 25,
+          "STOP": 25
+        },
+        "interpretation": "DESCRIPTIVE_ONLY_NO_CAUSAL_OR_SAFETY_CLASSIFICATION"
+      },
+      "episode": {
+        "abstained": 0,
+        "anchor_queries": 3,
+        "anchor_valid_readings": 3,
+        "cbf_constraint_violation_occurred": 0,
+        "cbf_exact_fallback_steps": 0,
+        "cbf_infeasible_steps": 0,
+        "cbf_unchecked_steps": 0,
+        "collision_occurred": 0,
+        "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+        "false_arrival": 0,
+        "final_distance": 0.1587,
+        "post_stop": {
+          "decision_distance": 0.1587460728716061,
+          "decision_speed": 0.06568695196160468,
+          "steps": [
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.15758065471736016,
+              "speed": 0.0630594738831405
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1564640643065939,
+              "speed": 0.06053709492781488
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.15539421913727713,
+              "speed": 0.05811561113070229
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1543691261106391,
+              "speed": 0.055790986685474206
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.15338687781371133,
+              "speed": 0.05355934721805524
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1524456489380532,
+              "speed": 0.051416973329333024
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.15154369283124655,
+              "speed": 0.04936029439615971
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.15067933817776114,
+              "speed": 0.04738588262031331
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1498509858057996,
+              "speed": 0.04549044731550077
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1490571056167335,
+              "speed": 0.04367082942288075
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14829623363374553,
+              "speed": 0.04192399624596551
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14756696916629475,
+              "speed": 0.04024703639612689
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14686797208702662,
+              "speed": 0.03863715494028182
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14619796021775788,
+              "speed": 0.03709166874267055
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14555570682117697,
+              "speed": 0.035608001992963725
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14494003819491955,
+              "speed": 0.03418368191324518
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14434983136469853,
+              "speed": 0.032816334636715364
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14378401187319712,
+              "speed": 0.03150368125124676
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14324155166146635,
+              "speed": 0.030243534001196875
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14272146703960711,
+              "speed": 0.029033792641149005
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14222281674356146,
+              "speed": 0.027872440935503045
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14174470007488804,
+              "speed": 0.02675754329808292
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14128625512044962,
+              "speed": 0.025687241566159612
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14084665704900146,
+              "speed": 0.02465975190351322
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14042511648173117,
+              "speed": 0.023673361827372678
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1400208779338681,
+              "speed": 0.02272642735427777
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1396332183245496,
+              "speed": 0.02181737026010665
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13926144555220446,
+              "speed": 0.02094467544970237
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13890489713278908,
+              "speed": 0.02010688843171428
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13856293889828752,
+              "speed": 0.019302612894445702
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13823496375296446,
+              "speed": 0.018530508378667872
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1379203904849403,
+              "speed": 0.017789288043521166
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1376186626307352,
+              "speed": 0.01707771652178033
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13732924739050903,
+              "speed": 0.01639460786090911
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13705163459180364,
+              "speed": 0.015738823546472734
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13678533569967213,
+              "speed": 0.015109270604613829
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13652988287115808,
+              "speed": 0.014504899780429277
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13628482805216457,
+              "speed": 0.013924703789212104
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13604974211482931,
+              "speed": 0.01336771563764361
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13582421403359457,
+              "speed": 0.012833007012137868
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1356078500982357,
+              "speed": 0.012319686731652348
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13540027316218203,
+              "speed": 0.011826899262386255
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13520112192453268,
+              "speed": 0.011353823291890814
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13501005024423893,
+              "speed": 0.010899670360215174
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13482672648498734,
+              "speed": 0.010463683545806566
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13465083288938431,
+              "speed": 0.010045136203974299
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13448206498110235,
+              "speed": 0.009643330755815324
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13432013099370663,
+              "speed": 0.009257597525582702
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1341647513249398,
+              "speed": 0.008887293624559402
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1340156580152964,
+              "speed": 0.008531801879577031
+            }
+          ]
+        },
+        "range_bias_m": 0.0,
+        "range_dropout_probability": 0.1,
+        "range_latency_steps": 0,
+        "seed": 2251001,
+        "steps": 365,
+        "timeout": 0,
+        "true_success": 1
+      }
+    },
+    {
+      "id": "range_dropout:2251001:0.0:AEGIS_3D_RECOVERY_MONITOR",
+      "assignment": {
+        "bias_xyz": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "case": {
+          "name": "range_dropout",
+          "range_bias_m": 0.0,
+          "range_dropout_probability": 0.1
+        },
+        "controller": "AEGIS_3D_RECOVERY_MONITOR",
+        "id": "range_dropout:2251001:0.0:AEGIS_3D_RECOVERY_MONITOR",
+        "max_steps": 400,
+        "post_stop_steps": 50,
+        "runtime": {
+          "mujoco": "3.14.0",
+          "numpy": "2.5.3",
+          "python": "3.12.14"
+        },
+        "seed": 2251001,
+        "source_sha256": {
+          "experiments/benchmark_physical_3d_cbf.py": "cbbe6f5362a66ac4df45814f246b548b4ce222faa40ebb2a496168e36eb6c0e2",
+          "scripts/research/development_ledger.py": "254fe889557148110e458ed2cb6e3286837589a484d7a63e1ae3d2c34b645502",
+          "scripts/research/study_recovery_monitor_ledger.py": "4f5c13b83d31b412072308a13544a15bad6da5683a54346a905c4b0f5639f955",
+          "src/aegis/env/mujoco_3d_cbf.py": "438b8ec89d1d40101586b0d888de7e8b5d73c9763cbae2603ccab01f04801433",
+          "src/aegis/v9/anchor_recovery_candidate.py": "14234ba7efccecc28f639a0ecb6b390ea29b59eaccc3b82bd6f4360dccdf038a",
+          "src/aegis/v9/controller_3d.py": "4579219de9d9ab4269fa620e1962685e844f927ba00e6979d571aa47f73f6892",
+          "src/aegis/v9/exploratory_sensor_validation.py": "df4e18e4e538c55a7d52ad81cdb3123d2591183461b975607afa7f67d607bc11",
+          "src/aegis/v9/recovery_monitor_candidate.py": "134b2f549fde1762e5d48b5505131a231634ddf77edcbd766e1bf00fd189819d",
+          "src/aegis/v9/stabilized_arrival_candidate.py": "3f93b0c736a924296c949466fbec502040ce1c65a19912a64564ff7ec5928cb8",
+          "src/aegis/v9/ville_monitor.py": "41ff44c0984aafc91261a2c0e04f569d5e83f3a86d7d7ec0dc372f303ca7c8db"
+        }
+      },
+      "execution_status": "COMPLETED",
+      "observations": {
+        "decision_observations": 359,
+        "initial_observed_distance_m": 3.5497174620212957,
+        "last_prephysics_distance_m": 0.16689285179146904,
+        "minimum_observed_distance_m": 0.16689285179146904,
+        "observed_distance_reduction_m": 3.3828246102298265,
+        "tail_observations": 50,
+        "tail_distance_reduction_m": 0.18146910480360703,
+        "mode_counts": {
+          "NOMINAL": 340,
+          "STOP": 19
+        },
+        "effective_decision_counts": {
+          "NAVIGATE": 329,
+          "VERIFY": 29,
+          "ABSTAIN": 1
+        },
+        "tail_mode_counts": {
+          "NOMINAL": 31,
+          "STOP": 19
+        },
+        "interpretation": "DESCRIPTIVE_ONLY_NO_CAUSAL_OR_SAFETY_CLASSIFICATION"
+      },
+      "episode": {
+        "abstained": 1,
+        "anchor_queries": 0,
+        "anchor_valid_readings": 0,
+        "cbf_constraint_violation_occurred": 0,
+        "cbf_exact_fallback_steps": 0,
+        "cbf_infeasible_steps": 0,
+        "cbf_unchecked_steps": 0,
+        "collision_occurred": 0,
+        "controller": "AEGIS_3D_RECOVERY_MONITOR",
+        "false_arrival": 0,
+        "final_distance": 0.1654,
+        "post_stop": null,
+        "postproposal_monitor_reason": "POSTPROPOSAL_RANGE_UNAVAILABLE",
+        "postproposal_monitor_steps": 17,
+        "range_bias_m": 0.0,
+        "range_dropout_probability": 0.1,
+        "range_latency_steps": 0,
+        "seed": 2251001,
+        "steps": 359,
+        "timeout": 0,
+        "true_success": 0
+      }
+    },
+    {
+      "id": "range_dropout:2251001:0.8:AEGIS_3D_ANCHOR_RECOVERY",
+      "assignment": {
+        "bias_xyz": [
+          0.8,
+          0.8,
+          -0.3
+        ],
+        "case": {
+          "name": "range_dropout",
+          "range_bias_m": 0.0,
+          "range_dropout_probability": 0.1
+        },
+        "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+        "id": "range_dropout:2251001:0.8:AEGIS_3D_ANCHOR_RECOVERY",
+        "max_steps": 400,
+        "post_stop_steps": 50,
+        "runtime": {
+          "mujoco": "3.14.0",
+          "numpy": "2.5.3",
+          "python": "3.12.14"
+        },
+        "seed": 2251001,
+        "source_sha256": {
+          "experiments/benchmark_physical_3d_cbf.py": "cbbe6f5362a66ac4df45814f246b548b4ce222faa40ebb2a496168e36eb6c0e2",
+          "scripts/research/development_ledger.py": "254fe889557148110e458ed2cb6e3286837589a484d7a63e1ae3d2c34b645502",
+          "scripts/research/study_recovery_monitor_ledger.py": "4f5c13b83d31b412072308a13544a15bad6da5683a54346a905c4b0f5639f955",
+          "src/aegis/env/mujoco_3d_cbf.py": "438b8ec89d1d40101586b0d888de7e8b5d73c9763cbae2603ccab01f04801433",
+          "src/aegis/v9/anchor_recovery_candidate.py": "14234ba7efccecc28f639a0ecb6b390ea29b59eaccc3b82bd6f4360dccdf038a",
+          "src/aegis/v9/controller_3d.py": "4579219de9d9ab4269fa620e1962685e844f927ba00e6979d571aa47f73f6892",
+          "src/aegis/v9/exploratory_sensor_validation.py": "df4e18e4e538c55a7d52ad81cdb3123d2591183461b975607afa7f67d607bc11",
+          "src/aegis/v9/recovery_monitor_candidate.py": "134b2f549fde1762e5d48b5505131a231634ddf77edcbd766e1bf00fd189819d",
+          "src/aegis/v9/stabilized_arrival_candidate.py": "3f93b0c736a924296c949466fbec502040ce1c65a19912a64564ff7ec5928cb8",
+          "src/aegis/v9/ville_monitor.py": "41ff44c0984aafc91261a2c0e04f569d5e83f3a86d7d7ec0dc372f303ca7c8db"
+        }
+      },
+      "execution_status": "COMPLETED",
+      "observations": {
+        "decision_observations": 377,
+        "initial_observed_distance_m": 3.5497174620212957,
+        "last_prephysics_distance_m": 0.13686104383617598,
+        "minimum_observed_distance_m": 0.13686104383617598,
+        "observed_distance_reduction_m": 3.4128564181851195,
+        "tail_observations": 50,
+        "tail_distance_reduction_m": 0.16451039035939602,
+        "mode_counts": {
+          "NOMINAL": 5,
+          "ACTIVE_PROBING": 10,
+          "CALIBRATED_APPROACH": 337,
+          "STOP": 25
+        },
+        "effective_decision_counts": {
+          "NAVIGATE": 332,
+          "PROBE": 10,
+          "VERIFY": 34,
+          "STOP": 1
+        },
+        "tail_mode_counts": {
+          "CALIBRATED_APPROACH": 25,
+          "STOP": 25
+        },
+        "interpretation": "DESCRIPTIVE_ONLY_NO_CAUSAL_OR_SAFETY_CLASSIFICATION"
+      },
+      "episode": {
+        "abstained": 0,
+        "anchor_queries": 14,
+        "anchor_valid_readings": 14,
+        "cbf_constraint_violation_occurred": 0,
+        "cbf_exact_fallback_steps": 0,
+        "cbf_infeasible_steps": 0,
+        "cbf_unchecked_steps": 0,
+        "collision_occurred": 0,
+        "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+        "false_arrival": 0,
+        "final_distance": 0.1369,
+        "post_stop": {
+          "decision_distance": 0.13686104383617598,
+          "decision_speed": 0.0680163630510845,
+          "steps": [
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1355864915057182,
+              "speed": 0.06529570852904111
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1343645037420387,
+              "speed": 0.06268388018787947
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1331928940606823,
+              "speed": 0.0601765249803643
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13206956662712122,
+              "speed": 0.05776946398114973
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1309925126275653,
+              "speed": 0.05545868542190375
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.12995980677194496,
+              "speed": 0.053240338005027595
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.12896960392491785,
+              "speed": 0.0511107244848265
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.12802013586091449,
+              "speed": 0.04906629550543343
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.12710970813937944,
+              "speed": 0.04710364368521611
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.12623669709649307,
+              "speed": 0.04521949793780745
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.12539954694977173,
+              "speed": 0.04341071802029515
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.12459676701204744,
+              "speed": 0.041674289299483344
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.12382692901141917,
+              "speed": 0.040007317727504016
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.12308866451385278,
+              "speed": 0.03840702501840385
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.12238066244518299,
+              "speed": 0.036870744017667705
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.12170166670934324,
+              "speed": 0.035395914256960995
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.12105047389971615,
+              "speed": 0.03398007768668256
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.12042593110056257,
+              "speed": 0.03262087457921526
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.11982693377554836,
+              "speed": 0.031316039596046646
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.11925242374044966,
+              "speed": 0.030063398012204784
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1187013872171762,
+              "speed": 0.028860862091716604
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.11817285296631252,
+              "speed": 0.027706427608047934
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.11766589049543474,
+              "speed": 0.026598170503726017
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.11717960834052142,
+              "speed": 0.025534243683576985
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.11671315241783703,
+              "speed": 0.024512873936233918
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.11626570444372543,
+              "speed": 0.023532358978784553
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.11583648041981406,
+              "speed": 0.02259106461963317
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1154247291811909,
+              "speed": 0.021687422034847834
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.11502973100517684,
+              "speed": 0.020819925153453926
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.11465079627838322,
+              "speed": 0.019987128147315777
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1142872642198027,
+              "speed": 0.01918764302142314
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.11393850165775103,
+              "speed": 0.018420137300566214
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.11360390185853586,
+              "speed": 0.017683331808543555
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.11328288340479786,
+              "speed": 0.016975998536201818
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.11297488912152931,
+              "speed": 0.016296958594753736
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.11267938504784211,
+              "speed": 0.015645080250963575
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1123958594526187,
+              "speed": 0.015019277040925032
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.11212382189224299,
+              "speed": 0.01441850595928804
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.11186280230867036,
+              "speed": 0.013841765720916527
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.11161235016615687,
+              "speed": 0.013288095092079875
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.11137203362502865,
+              "speed": 0.012756571288396686
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.11114143875093169,
+              "speed": 0.012246308436860828
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.11092016875805925,
+              "speed": 0.011756456099386397
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1107078432849138,
+              "speed": 0.011286197855410933
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.11050409770121264,
+              "speed": 0.0108347499411945
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.11030858244460363,
+              "speed": 0.01040135994354671
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.11012096238590827,
+              "speed": 0.009985305545804844
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.10994091622166197,
+              "speed": 0.009585893323972661
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.10976813589277082,
+              "speed": 0.009202457591013763
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.10960232602815281,
+              "speed": 0.008834359287373222
+            }
+          ]
+        },
+        "range_bias_m": 0.0,
+        "range_dropout_probability": 0.1,
+        "range_latency_steps": 0,
+        "seed": 2251001,
+        "steps": 377,
+        "timeout": 0,
+        "true_success": 1
+      }
+    },
+    {
+      "id": "range_dropout:2251001:0.8:AEGIS_3D_RECOVERY_MONITOR",
+      "assignment": {
+        "bias_xyz": [
+          0.8,
+          0.8,
+          -0.3
+        ],
+        "case": {
+          "name": "range_dropout",
+          "range_bias_m": 0.0,
+          "range_dropout_probability": 0.1
+        },
+        "controller": "AEGIS_3D_RECOVERY_MONITOR",
+        "id": "range_dropout:2251001:0.8:AEGIS_3D_RECOVERY_MONITOR",
+        "max_steps": 400,
+        "post_stop_steps": 50,
+        "runtime": {
+          "mujoco": "3.14.0",
+          "numpy": "2.5.3",
+          "python": "3.12.14"
+        },
+        "seed": 2251001,
+        "source_sha256": {
+          "experiments/benchmark_physical_3d_cbf.py": "cbbe6f5362a66ac4df45814f246b548b4ce222faa40ebb2a496168e36eb6c0e2",
+          "scripts/research/development_ledger.py": "254fe889557148110e458ed2cb6e3286837589a484d7a63e1ae3d2c34b645502",
+          "scripts/research/study_recovery_monitor_ledger.py": "4f5c13b83d31b412072308a13544a15bad6da5683a54346a905c4b0f5639f955",
+          "src/aegis/env/mujoco_3d_cbf.py": "438b8ec89d1d40101586b0d888de7e8b5d73c9763cbae2603ccab01f04801433",
+          "src/aegis/v9/anchor_recovery_candidate.py": "14234ba7efccecc28f639a0ecb6b390ea29b59eaccc3b82bd6f4360dccdf038a",
+          "src/aegis/v9/controller_3d.py": "4579219de9d9ab4269fa620e1962685e844f927ba00e6979d571aa47f73f6892",
+          "src/aegis/v9/exploratory_sensor_validation.py": "df4e18e4e538c55a7d52ad81cdb3123d2591183461b975607afa7f67d607bc11",
+          "src/aegis/v9/recovery_monitor_candidate.py": "134b2f549fde1762e5d48b5505131a231634ddf77edcbd766e1bf00fd189819d",
+          "src/aegis/v9/stabilized_arrival_candidate.py": "3f93b0c736a924296c949466fbec502040ce1c65a19912a64564ff7ec5928cb8",
+          "src/aegis/v9/ville_monitor.py": "41ff44c0984aafc91261a2c0e04f569d5e83f3a86d7d7ec0dc372f303ca7c8db"
+        }
+      },
+      "execution_status": "COMPLETED",
+      "observations": {
+        "decision_observations": 359,
+        "initial_observed_distance_m": 3.5497174620212957,
+        "last_prephysics_distance_m": 0.17193725620017766,
+        "minimum_observed_distance_m": 0.17193725620017766,
+        "observed_distance_reduction_m": 3.377780205821118,
+        "tail_observations": 50,
+        "tail_distance_reduction_m": 0.22495460443175516,
+        "mode_counts": {
+          "NOMINAL": 5,
+          "ACTIVE_PROBING": 10,
+          "CALIBRATED_APPROACH": 337,
+          "STOP": 7
+        },
+        "effective_decision_counts": {
+          "NAVIGATE": 332,
+          "PROBE": 10,
+          "VERIFY": 16,
+          "ABSTAIN": 1
+        },
+        "tail_mode_counts": {
+          "CALIBRATED_APPROACH": 43,
+          "STOP": 7
+        },
+        "interpretation": "DESCRIPTIVE_ONLY_NO_CAUSAL_OR_SAFETY_CLASSIFICATION"
+      },
+      "episode": {
+        "abstained": 1,
+        "anchor_queries": 10,
+        "anchor_valid_readings": 10,
+        "cbf_constraint_violation_occurred": 0,
+        "cbf_exact_fallback_steps": 0,
+        "cbf_infeasible_steps": 0,
+        "cbf_unchecked_steps": 0,
+        "collision_occurred": 0,
+        "controller": "AEGIS_3D_RECOVERY_MONITOR",
+        "false_arrival": 0,
+        "final_distance": 0.1692,
+        "post_stop": null,
+        "postproposal_monitor_reason": "POSTPROPOSAL_RANGE_UNAVAILABLE",
+        "postproposal_monitor_steps": 5,
+        "range_bias_m": 0.0,
+        "range_dropout_probability": 0.1,
+        "range_latency_steps": 0,
+        "seed": 2251001,
+        "steps": 359,
+        "timeout": 0,
+        "true_success": 0
+      }
+    },
+    {
+      "id": "vector_loss_after_proposal:2251001:0.0:AEGIS_3D_ANCHOR_RECOVERY",
+      "assignment": {
+        "bias_xyz": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "case": {
+          "fail_vectors_after_stop_proposal": true,
+          "name": "vector_loss_after_proposal",
+          "range_bias_m": 0.0,
+          "range_dropout_probability": 0.0
+        },
+        "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+        "id": "vector_loss_after_proposal:2251001:0.0:AEGIS_3D_ANCHOR_RECOVERY",
+        "max_steps": 400,
+        "post_stop_steps": 50,
+        "runtime": {
+          "mujoco": "3.14.0",
+          "numpy": "2.5.3",
+          "python": "3.12.14"
+        },
+        "seed": 2251001,
+        "source_sha256": {
+          "experiments/benchmark_physical_3d_cbf.py": "cbbe6f5362a66ac4df45814f246b548b4ce222faa40ebb2a496168e36eb6c0e2",
+          "scripts/research/development_ledger.py": "254fe889557148110e458ed2cb6e3286837589a484d7a63e1ae3d2c34b645502",
+          "scripts/research/study_recovery_monitor_ledger.py": "4f5c13b83d31b412072308a13544a15bad6da5683a54346a905c4b0f5639f955",
+          "src/aegis/env/mujoco_3d_cbf.py": "438b8ec89d1d40101586b0d888de7e8b5d73c9763cbae2603ccab01f04801433",
+          "src/aegis/v9/anchor_recovery_candidate.py": "14234ba7efccecc28f639a0ecb6b390ea29b59eaccc3b82bd6f4360dccdf038a",
+          "src/aegis/v9/controller_3d.py": "4579219de9d9ab4269fa620e1962685e844f927ba00e6979d571aa47f73f6892",
+          "src/aegis/v9/exploratory_sensor_validation.py": "df4e18e4e538c55a7d52ad81cdb3123d2591183461b975607afa7f67d607bc11",
+          "src/aegis/v9/recovery_monitor_candidate.py": "134b2f549fde1762e5d48b5505131a231634ddf77edcbd766e1bf00fd189819d",
+          "src/aegis/v9/stabilized_arrival_candidate.py": "3f93b0c736a924296c949466fbec502040ce1c65a19912a64564ff7ec5928cb8",
+          "src/aegis/v9/ville_monitor.py": "41ff44c0984aafc91261a2c0e04f569d5e83f3a86d7d7ec0dc372f303ca7c8db"
+        }
+      },
+      "execution_status": "COMPLETED",
+      "observations": {
+        "decision_observations": 365,
+        "initial_observed_distance_m": 3.5497174620212957,
+        "last_prephysics_distance_m": 0.1587460728716061,
+        "minimum_observed_distance_m": 0.1587460728716061,
+        "observed_distance_reduction_m": 3.3909713891496898,
+        "tail_observations": 50,
+        "tail_distance_reduction_m": 0.1593957854931816,
+        "mode_counts": {
+          "NOMINAL": 340,
+          "STOP": 25
+        },
+        "effective_decision_counts": {
+          "NAVIGATE": 329,
+          "VERIFY": 35,
+          "STOP": 1
+        },
+        "tail_mode_counts": {
+          "NOMINAL": 25,
+          "STOP": 25
+        },
+        "interpretation": "DESCRIPTIVE_ONLY_NO_CAUSAL_OR_SAFETY_CLASSIFICATION"
+      },
+      "episode": {
+        "abstained": 0,
+        "anchor_queries": 3,
+        "anchor_valid_readings": 3,
+        "cbf_constraint_violation_occurred": 0,
+        "cbf_exact_fallback_steps": 0,
+        "cbf_infeasible_steps": 0,
+        "cbf_unchecked_steps": 0,
+        "collision_occurred": 0,
+        "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+        "false_arrival": 0,
+        "final_distance": 0.1587,
+        "injected_vector_loss_steps": 24,
+        "post_stop": {
+          "decision_distance": 0.1587460728716061,
+          "decision_speed": 0.06568695196160468,
+          "steps": [
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.15758065471736016,
+              "speed": 0.0630594738831405
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1564640643065939,
+              "speed": 0.06053709492781488
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.15539421913727713,
+              "speed": 0.05811561113070229
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1543691261106391,
+              "speed": 0.055790986685474206
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.15338687781371133,
+              "speed": 0.05355934721805524
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1524456489380532,
+              "speed": 0.051416973329333024
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.15154369283124655,
+              "speed": 0.04936029439615971
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.15067933817776114,
+              "speed": 0.04738588262031331
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1498509858057996,
+              "speed": 0.04549044731550077
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1490571056167335,
+              "speed": 0.04367082942288075
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14829623363374553,
+              "speed": 0.04192399624596551
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14756696916629475,
+              "speed": 0.04024703639612689
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14686797208702662,
+              "speed": 0.03863715494028182
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14619796021775788,
+              "speed": 0.03709166874267055
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14555570682117697,
+              "speed": 0.035608001992963725
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14494003819491955,
+              "speed": 0.03418368191324518
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14434983136469853,
+              "speed": 0.032816334636715364
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14378401187319712,
+              "speed": 0.03150368125124676
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14324155166146635,
+              "speed": 0.030243534001196875
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14272146703960711,
+              "speed": 0.029033792641149005
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14222281674356146,
+              "speed": 0.027872440935503045
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14174470007488804,
+              "speed": 0.02675754329808292
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14128625512044962,
+              "speed": 0.025687241566159612
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14084665704900146,
+              "speed": 0.02465975190351322
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.14042511648173117,
+              "speed": 0.023673361827372678
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1400208779338681,
+              "speed": 0.02272642735427777
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1396332183245496,
+              "speed": 0.02181737026010665
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13926144555220446,
+              "speed": 0.02094467544970237
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13890489713278908,
+              "speed": 0.02010688843171428
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13856293889828752,
+              "speed": 0.019302612894445702
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13823496375296446,
+              "speed": 0.018530508378667872
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1379203904849403,
+              "speed": 0.017789288043521166
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1376186626307352,
+              "speed": 0.01707771652178033
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13732924739050903,
+              "speed": 0.01639460786090911
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13705163459180364,
+              "speed": 0.015738823546472734
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13678533569967213,
+              "speed": 0.015109270604613829
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13652988287115808,
+              "speed": 0.014504899780429277
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13628482805216457,
+              "speed": 0.013924703789212104
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13604974211482931,
+              "speed": 0.01336771563764361
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13582421403359457,
+              "speed": 0.012833007012137868
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1356078500982357,
+              "speed": 0.012319686731652348
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13540027316218203,
+              "speed": 0.011826899262386255
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13520112192453268,
+              "speed": 0.011353823291890814
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13501005024423893,
+              "speed": 0.010899670360215174
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13482672648498734,
+              "speed": 0.010463683545806566
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13465083288938431,
+              "speed": 0.010045136203974299
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13448206498110235,
+              "speed": 0.009643330755815324
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.13432013099370663,
+              "speed": 0.009257597525582702
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1341647513249398,
+              "speed": 0.008887293624559402
+            },
+            {
+              "cbf_residual": 0.0,
+              "collision": false,
+              "distance": 0.1340156580152964,
+              "speed": 0.008531801879577031
+            }
+          ]
+        },
+        "range_bias_m": 0.0,
+        "range_dropout_probability": 0.0,
+        "range_latency_steps": 0,
+        "seed": 2251001,
+        "steps": 365,
+        "timeout": 0,
+        "true_success": 1
+      }
+    },
+    {
+      "id": "vector_loss_after_proposal:2251001:0.0:AEGIS_3D_RECOVERY_MONITOR",
+      "assignment": {
+        "bias_xyz": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "case": {
+          "fail_vectors_after_stop_proposal": true,
+          "name": "vector_loss_after_proposal",
+          "range_bias_m": 0.0,
+          "range_dropout_probability": 0.0
+        },
+        "controller": "AEGIS_3D_RECOVERY_MONITOR",
+        "id": "vector_loss_after_proposal:2251001:0.0:AEGIS_3D_RECOVERY_MONITOR",
+        "max_steps": 400,
+        "post_stop_steps": 50,
+        "runtime": {
+          "mujoco": "3.14.0",
+          "numpy": "2.5.3",
+          "python": "3.12.14"
+        },
+        "seed": 2251001,
+        "source_sha256": {
+          "experiments/benchmark_physical_3d_cbf.py": "cbbe6f5362a66ac4df45814f246b548b4ce222faa40ebb2a496168e36eb6c0e2",
+          "scripts/research/development_ledger.py": "254fe889557148110e458ed2cb6e3286837589a484d7a63e1ae3d2c34b645502",
+          "scripts/research/study_recovery_monitor_ledger.py": "4f5c13b83d31b412072308a13544a15bad6da5683a54346a905c4b0f5639f955",
+          "src/aegis/env/mujoco_3d_cbf.py": "438b8ec89d1d40101586b0d888de7e8b5d73c9763cbae2603ccab01f04801433",
+          "src/aegis/v9/anchor_recovery_candidate.py": "14234ba7efccecc28f639a0ecb6b390ea29b59eaccc3b82bd6f4360dccdf038a",
+          "src/aegis/v9/controller_3d.py": "4579219de9d9ab4269fa620e1962685e844f927ba00e6979d571aa47f73f6892",
+          "src/aegis/v9/exploratory_sensor_validation.py": "df4e18e4e538c55a7d52ad81cdb3123d2591183461b975607afa7f67d607bc11",
+          "src/aegis/v9/recovery_monitor_candidate.py": "134b2f549fde1762e5d48b5505131a231634ddf77edcbd766e1bf00fd189819d",
+          "src/aegis/v9/stabilized_arrival_candidate.py": "3f93b0c736a924296c949466fbec502040ce1c65a19912a64564ff7ec5928cb8",
+          "src/aegis/v9/ville_monitor.py": "41ff44c0984aafc91261a2c0e04f569d5e83f3a86d7d7ec0dc372f303ca7c8db"
+        }
+      },
+      "execution_status": "COMPLETED",
+      "observations": {
+        "decision_observations": 342,
+        "initial_observed_distance_m": 3.5497174620212957,
+        "last_prephysics_distance_m": 0.2055106581623059,
+        "minimum_observed_distance_m": 0.2055106581623059,
+        "observed_distance_reduction_m": 3.34420680385899,
+        "tail_observations": 50,
+        "tail_distance_reduction_m": 0.23995284420463436,
+        "mode_counts": {
+          "NOMINAL": 340,
+          "STOP": 2
+        },
+        "effective_decision_counts": {
+          "NAVIGATE": 329,
+          "VERIFY": 12,
+          "ABSTAIN": 1
+        },
+        "tail_mode_counts": {
+          "NOMINAL": 48,
+          "STOP": 2
+        },
+        "interpretation": "DESCRIPTIVE_ONLY_NO_CAUSAL_OR_SAFETY_CLASSIFICATION"
+      },
+      "episode": {
+        "abstained": 1,
+        "anchor_queries": 0,
+        "anchor_valid_readings": 0,
+        "cbf_constraint_violation_occurred": 0,
+        "cbf_exact_fallback_steps": 0,
+        "cbf_infeasible_steps": 0,
+        "cbf_unchecked_steps": 0,
+        "collision_occurred": 0,
+        "controller": "AEGIS_3D_RECOVERY_MONITOR",
+        "false_arrival": 0,
+        "final_distance": 0.2024,
+        "injected_vector_loss_steps": 1,
+        "post_stop": null,
+        "postproposal_monitor_reason": "POSTPROPOSAL_VECTOR_UNAVAILABLE",
+        "postproposal_monitor_steps": 0,
+        "range_bias_m": 0.0,
+        "range_dropout_probability": 0.0,
+        "range_latency_steps": 0,
+        "seed": 2251001,
+        "steps": 342,
+        "timeout": 0,
+        "true_success": 0
+      }
+    },
+    {
+      "id": "vector_loss_after_proposal:2251001:0.8:AEGIS_3D_ANCHOR_RECOVERY",
+      "assignment": {
+        "bias_xyz": [
+          0.8,
+          0.8,
+          -0.3
+        ],
+        "case": {
+          "fail_vectors_after_stop_proposal": true,
+          "name": "vector_loss_after_proposal",
+          "range_bias_m": 0.0,
+          "range_dropout_probability": 0.0
+        },
+        "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+        "id": "vector_loss_after_proposal:2251001:0.8:AEGIS_3D_ANCHOR_RECOVERY",
+        "max_steps": 400,
+        "post_stop_steps": 50,
+        "runtime": {
+          "mujoco": "3.14.0",
+          "numpy": "2.5.3",
+          "python": "3.12.14"
+        },
+        "seed": 2251001,
+        "source_sha256": {
+          "experiments/benchmark_physical_3d_cbf.py": "cbbe6f5362a66ac4df45814f246b548b4ce222faa40ebb2a496168e36eb6c0e2",
+          "scripts/research/development_ledger.py": "254fe889557148110e458ed2cb6e3286837589a484d7a63e1ae3d2c34b645502",
+          "scripts/research/study_recovery_monitor_ledger.py": "4f5c13b83d31b412072308a13544a15bad6da5683a54346a905c4b0f5639f955",
+          "src/aegis/env/mujoco_3d_cbf.py": "438b8ec89d1d40101586b0d888de7e8b5d73c9763cbae2603ccab01f04801433",
+          "src/aegis/v9/anchor_recovery_candidate.py": "14234ba7efccecc28f639a0ecb6b390ea29b59eaccc3b82bd6f4360dccdf038a",
+          "src/aegis/v9/controller_3d.py": "4579219de9d9ab4269fa620e1962685e844f927ba00e6979d571aa47f73f6892",
+          "src/aegis/v9/exploratory_sensor_validation.py": "df4e18e4e538c55a7d52ad81cdb3123d2591183461b975607afa7f67d607bc11",
+          "src/aegis/v9/recovery_monitor_candidate.py": "134b2f549fde1762e5d48b5505131a231634ddf77edcbd766e1bf00fd189819d",
+          "src/aegis/v9/stabilized_arrival_candidate.py": "3f93b0c736a924296c949466fbec502040ce1c65a19912a64564ff7ec5928cb8",
+          "src/aegis/v9/ville_monitor.py": "41ff44c0984aafc91261a2c0e04f569d5e83f3a86d7d7ec0dc372f303ca7c8db"
+        }
+      },
+      "execution_status": "COMPLETED",
+      "observations": {
+        "decision_observations": 374,
+        "initial_observed_distance_m": 3.5497174620212957,
+        "last_prephysics_distance_m": 0.1410233928931357,
+        "minimum_observed_distance_m": 0.1410233928931357,
+        "observed_distance_reduction_m": 3.4086940691281598,
+        "tail_observations": 50,
+        "tail_distance_reduction_m": 0.17538284669255816,
+        "mode_counts": {
+          "NOMINAL": 5,
+          "ACTIVE_PROBING": 10,
+          "CALIBRATED_APPROACH": 337,
+          "STOP": 22
+        },
+        "effective_decision_counts": {
+          "NAVIGATE": 332,
+          "PROBE": 10,
+          "VERIFY": 31,
+          "ABSTAIN": 1
+        },
+        "tail_mode_counts": {
+          "CALIBRATED_APPROACH": 28,
+          "STOP": 22
+        },
+        "interpretation": "DESCRIPTIVE_ONLY_NO_CAUSAL_OR_SAFETY_CLASSIFICATION"
+      },
+      "episode": {
+        "abstained": 1,
+        "anchor_queries": 13,
+        "anchor_valid_readings": 13,
+        "cbf_constraint_violation_occurred": 0,
+        "cbf_exact_fallback_steps": 0,
+        "cbf_infeasible_steps": 0,
+        "cbf_unchecked_steps": 0,
+        "collision_occurred": 0,
+        "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+        "false_arrival": 0,
+        "final_distance": 0.1396,
+        "injected_vector_loss_steps": 21,
+        "post_stop": null,
+        "range_bias_m": 0.0,
+        "range_dropout_probability": 0.0,
+        "range_latency_steps": 0,
+        "seed": 2251001,
+        "steps": 374,
+        "timeout": 0,
+        "true_success": 0
+      }
+    },
+    {
+      "id": "vector_loss_after_proposal:2251001:0.8:AEGIS_3D_RECOVERY_MONITOR",
+      "assignment": {
+        "bias_xyz": [
+          0.8,
+          0.8,
+          -0.3
+        ],
+        "case": {
+          "fail_vectors_after_stop_proposal": true,
+          "name": "vector_loss_after_proposal",
+          "range_bias_m": 0.0,
+          "range_dropout_probability": 0.0
+        },
+        "controller": "AEGIS_3D_RECOVERY_MONITOR",
+        "id": "vector_loss_after_proposal:2251001:0.8:AEGIS_3D_RECOVERY_MONITOR",
+        "max_steps": 400,
+        "post_stop_steps": 50,
+        "runtime": {
+          "mujoco": "3.14.0",
+          "numpy": "2.5.3",
+          "python": "3.12.14"
+        },
+        "seed": 2251001,
+        "source_sha256": {
+          "experiments/benchmark_physical_3d_cbf.py": "cbbe6f5362a66ac4df45814f246b548b4ce222faa40ebb2a496168e36eb6c0e2",
+          "scripts/research/development_ledger.py": "254fe889557148110e458ed2cb6e3286837589a484d7a63e1ae3d2c34b645502",
+          "scripts/research/study_recovery_monitor_ledger.py": "4f5c13b83d31b412072308a13544a15bad6da5683a54346a905c4b0f5639f955",
+          "src/aegis/env/mujoco_3d_cbf.py": "438b8ec89d1d40101586b0d888de7e8b5d73c9763cbae2603ccab01f04801433",
+          "src/aegis/v9/anchor_recovery_candidate.py": "14234ba7efccecc28f639a0ecb6b390ea29b59eaccc3b82bd6f4360dccdf038a",
+          "src/aegis/v9/controller_3d.py": "4579219de9d9ab4269fa620e1962685e844f927ba00e6979d571aa47f73f6892",
+          "src/aegis/v9/exploratory_sensor_validation.py": "df4e18e4e538c55a7d52ad81cdb3123d2591183461b975607afa7f67d607bc11",
+          "src/aegis/v9/recovery_monitor_candidate.py": "134b2f549fde1762e5d48b5505131a231634ddf77edcbd766e1bf00fd189819d",
+          "src/aegis/v9/stabilized_arrival_candidate.py": "3f93b0c736a924296c949466fbec502040ce1c65a19912a64564ff7ec5928cb8",
+          "src/aegis/v9/ville_monitor.py": "41ff44c0984aafc91261a2c0e04f569d5e83f3a86d7d7ec0dc372f303ca7c8db"
+        }
+      },
+      "execution_status": "COMPLETED",
+      "observations": {
+        "decision_observations": 354,
+        "initial_observed_distance_m": 3.5497174620212957,
+        "last_prephysics_distance_m": 0.18741839221596343,
+        "minimum_observed_distance_m": 0.18741839221596343,
+        "observed_distance_reduction_m": 3.3622990698053323,
+        "tail_observations": 50,
+        "tail_distance_reduction_m": 0.24005123656183167,
+        "mode_counts": {
+          "NOMINAL": 5,
+          "ACTIVE_PROBING": 10,
+          "CALIBRATED_APPROACH": 337,
+          "STOP": 2
+        },
+        "effective_decision_counts": {
+          "NAVIGATE": 332,
+          "PROBE": 10,
+          "VERIFY": 11,
+          "ABSTAIN": 1
+        },
+        "tail_mode_counts": {
+          "CALIBRATED_APPROACH": 48,
+          "STOP": 2
+        },
+        "interpretation": "DESCRIPTIVE_ONLY_NO_CAUSAL_OR_SAFETY_CLASSIFICATION"
+      },
+      "episode": {
+        "abstained": 1,
+        "anchor_queries": 10,
+        "anchor_valid_readings": 10,
+        "cbf_constraint_violation_occurred": 0,
+        "cbf_exact_fallback_steps": 0,
+        "cbf_infeasible_steps": 0,
+        "cbf_unchecked_steps": 0,
+        "collision_occurred": 0,
+        "controller": "AEGIS_3D_RECOVERY_MONITOR",
+        "false_arrival": 0,
+        "final_distance": 0.1841,
+        "injected_vector_loss_steps": 1,
+        "post_stop": null,
+        "postproposal_monitor_reason": "POSTPROPOSAL_VECTOR_UNAVAILABLE",
+        "postproposal_monitor_steps": 0,
+        "range_bias_m": 0.0,
+        "range_dropout_probability": 0.0,
+        "range_latency_steps": 0,
+        "seed": 2251001,
+        "steps": 354,
+        "timeout": 0,
+        "true_success": 0
+      }
+    }
+  ]
+}

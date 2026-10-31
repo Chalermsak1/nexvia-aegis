@@ -7,11 +7,14 @@ import itertools
 import json
 import math
 from pathlib import Path
+if __package__:
+    from .evidence_integrity import validate_source_metadata
+else:
+    from evidence_integrity import validate_source_metadata
 
 
 def analyze(data):
-    if data.get("classification") != "EXPLORATORY_SIMULATION" or data.get("sources_unchanged") is not True:
-        raise ValueError("invalid experimental identity")
+    validate_source_metadata(data)
     n, start = data["n_seeds"], data["seed_start"]
     names = [c["name"] for c in data["cases"]]
     if type(n) is not int or n <= 0 or type(start) is not int or not names or len(set(names)) != len(names):
@@ -43,13 +46,21 @@ def analyze(data):
         examples = row.get("hazard_examples")
         if not isinstance(examples, list) or len(examples) > sum(counts.values()):
             raise ValueError("invalid hazard examples")
+        example_steps = set()
+        example_reasons = Counter()
         for event in examples:
             actual, primary = event.get("velocity"), event.get("velocity_observation")
+            event_step = event.get("step")
             if (not isinstance(actual, list) or not isinstance(primary, list) or len(actual) != 3 or len(primary) != 3
                 or any(type(v) not in (int, float) or not math.isfinite(v) for v in actual + primary)
                 or math.sqrt(sum(v*v for v in actual)) <= 0.05 or math.sqrt(sum(v*v for v in primary)) > 0.05
+                or type(event_step) is not int or not 0 <= event_step < row["steps"] or event_step in example_steps
                 or event.get("velocity_crosscheck_reason") not in counts):
                 raise ValueError("invalid hazard example")
+            example_steps.add(event_step)
+            example_reasons[event["velocity_crosscheck_reason"]] += 1
+        if any(example_reasons[reason] > counts[reason] for reason in example_reasons):
+            raise ValueError("hazard examples exceed reported reason counts")
         if key[3] == "AEGIS_3D_DUAL_VELOCITY":
             comparisons, disagreements = row["velocity_comparisons"], row["velocity_disagreements"]
             if type(comparisons) is not int or type(disagreements) is not int or not 0 <= disagreements <= comparisons <= row["steps"]:

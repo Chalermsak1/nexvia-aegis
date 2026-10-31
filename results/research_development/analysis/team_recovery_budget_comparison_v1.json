@@ -1,0 +1,2159 @@
+{
+  "classification": "EXPLORATORY_MATCHED_BUDGET_COMPARISON",
+  "input_sha256": [
+    "155059bc5bb15b6c9150a107c226175c591f9d81a590f3e478b87aaf87b3a92c",
+    "22f1b9236434f89b64322f5afd70c8d60dc69582163d83c9b6bb922d058e4d2d"
+  ],
+  "ledger_states": [
+    "FINALIZED",
+    "FINALIZED"
+  ],
+  "budgets": [
+    100,
+    300
+  ],
+  "assignments": [
+    {
+      "id": "nominal:2252000:0.0:AEGIS_3D_ANCHOR_RECOVERY",
+      "conditions": {
+        "seed": 2252000,
+        "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+        "bias_xyz": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "case": {
+          "name": "nominal",
+          "range_bias_m": 0.0,
+          "range_dropout_probability": 0.0
+        }
+      },
+      "observations": [
+        {
+          "recovery_steps_limit": 100,
+          "execution_status": "COMPLETED",
+          "episode": {
+            "abstained": 1,
+            "anchor_queries": 103,
+            "anchor_valid_readings": 103,
+            "cbf_constraint_violation_occurred": 0,
+            "cbf_exact_fallback_steps": 55,
+            "cbf_infeasible_steps": 0,
+            "cbf_unchecked_steps": 0,
+            "collision_occurred": 0,
+            "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+            "false_arrival": 0,
+            "final_distance": 0.4064,
+            "navigation_force_method": "DIRECTION_PRESERVING_PEAK",
+            "post_stop": null,
+            "range_bias_m": 0.0,
+            "range_dropout_probability": 0.0,
+            "range_latency_steps": 0,
+            "recovery_steps_limit": 100,
+            "seed": 2252000,
+            "steps": 424,
+            "timeout": 0,
+            "true_success": 0
+          },
+          "last_observed_reason": "RECOVERY_TIMEOUT"
+        },
+        {
+          "recovery_steps_limit": 300,
+          "execution_status": "COMPLETED",
+          "episode": {
+            "abstained": 0,
+            "anchor_queries": 134,
+            "anchor_valid_readings": 134,
+            "cbf_constraint_violation_occurred": 0,
+            "cbf_exact_fallback_steps": 55,
+            "cbf_infeasible_steps": 0,
+            "cbf_unchecked_steps": 0,
+            "collision_occurred": 0,
+            "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+            "false_arrival": 0,
+            "final_distance": 0.077,
+            "navigation_force_method": "DIRECTION_PRESERVING_PEAK",
+            "post_stop": {
+              "decision_distance": 0.07701777615734366,
+              "decision_speed": 0.07211021927661082,
+              "steps": [
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.07559807422181665,
+                  "speed": 0.0692258105055464
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.07423597651465916,
+                  "speed": 0.06645677808532453
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.07292915704896961,
+                  "speed": 0.06379850696191156
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.07167538248376462,
+                  "speed": 0.06124656668343509
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.07047250848975349,
+                  "speed": 0.058796704016097684
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.06931847625993821,
+                  "speed": 0.056444835855453776
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.06821130915878311,
+                  "speed": 0.05418704242123563
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.06714910950397544,
+                  "speed": 0.052019560724386196
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.06613005547505973,
+                  "speed": 0.049938778295410755
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.06515239814349771,
+                  "speed": 0.04794122716359432
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.06421445861895282,
+                  "speed": 0.046023578077050556
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.06331462530684938,
+                  "speed": 0.04418263495396853
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.06245135127248851,
+                  "speed": 0.04241532955580979
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.06162315170724132,
+                  "speed": 0.0407187163735774
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.060828601492550476,
+                  "speed": 0.03908996771863431
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.06006633285769198,
+                  "speed": 0.037526369009888934
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.05933503312744535,
+                  "speed": 0.03602531424949338
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.058633442556016324,
+                  "speed": 0.034584301679513645
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.05796035224373993,
+                  "speed": 0.0332009296123331
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.05731460213326393,
+                  "speed": 0.03187289242783977
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.05669507908207851,
+                  "speed": 0.03059797673072618
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.056100715008412565,
+                  "speed": 0.029374057661497133
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.05553048510766296,
+                  "speed": 0.028199095355037247
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.05498340613665951,
+                  "speed": 0.02707113154083576
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.0544585347631985,
+                  "speed": 0.02598828627920233
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.0539549659783932,
+                  "speed": 0.024948754828034235
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.05347183156950716,
+                  "speed": 0.023950804634912864
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.053008298651035436,
+                  "speed": 0.022992772449516353
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.05256356825189983,
+                  "speed": 0.022073061551535697
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.052136873956713424,
+                  "speed": 0.02119013908947427
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.05172748059915237,
+                  "speed": 0.0203425335258953
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.05133468300555582,
+                  "speed": 0.019528832184859485
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.050957804786943825,
+                  "speed": 0.018747678897465102
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.050596197177716476,
+                  "speed": 0.0179977717415665
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.05024923791935571,
+                  "speed": 0.01727786087190384
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04991633018751957,
+                  "speed": 0.016586746437027684
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04959690156096699,
+                  "speed": 0.015923276579546577
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04929040303081226,
+                  "speed": 0.015286345516364713
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.0489963080486542,
+                  "speed": 0.014674891695710126
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04871411161217491,
+                  "speed": 0.01408789602788172
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.0484433293868498,
+                  "speed": 0.01352438018676645
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04818349686245257,
+                  "speed": 0.012983404979295793
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04793416854308274,
+                  "speed": 0.012464068780123962
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04769491716948169,
+                  "speed": 0.011965506028919003
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04746533297244594,
+                  "speed": 0.011486885787762243
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04724502295617866,
+                  "speed": 0.011027410356251752
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.047033610210462685,
+                  "speed": 0.010586313942001681
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04683073325056933,
+                  "speed": 0.010162861384321615
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.046636045383855504,
+                  "speed": 0.00975634692894875
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04644921410203274,
+                  "speed": 0.0093660930517908
+                }
+              ]
+            },
+            "range_bias_m": 0.0,
+            "range_dropout_probability": 0.0,
+            "range_latency_steps": 0,
+            "recovery_steps_limit": 300,
+            "seed": 2252000,
+            "steps": 491,
+            "timeout": 0,
+            "true_success": 1
+          },
+          "last_observed_reason": "EXPLORATORY_STABILIZED_ANCHOR_CONFIRMED"
+        }
+      ]
+    },
+    {
+      "id": "nominal:2252000:0.0:AEGIS_3D_RECOVERY_MONITOR",
+      "conditions": {
+        "seed": 2252000,
+        "controller": "AEGIS_3D_RECOVERY_MONITOR",
+        "bias_xyz": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "case": {
+          "name": "nominal",
+          "range_bias_m": 0.0,
+          "range_dropout_probability": 0.0
+        }
+      },
+      "observations": [
+        {
+          "recovery_steps_limit": 100,
+          "execution_status": "COMPLETED",
+          "episode": {
+            "abstained": 1,
+            "anchor_queries": 103,
+            "anchor_valid_readings": 103,
+            "cbf_constraint_violation_occurred": 0,
+            "cbf_exact_fallback_steps": 55,
+            "cbf_infeasible_steps": 0,
+            "cbf_unchecked_steps": 0,
+            "collision_occurred": 0,
+            "controller": "AEGIS_3D_RECOVERY_MONITOR",
+            "false_arrival": 0,
+            "final_distance": 0.4064,
+            "navigation_force_method": "DIRECTION_PRESERVING_PEAK",
+            "post_stop": null,
+            "postproposal_monitor_reason": "OBSERVED",
+            "postproposal_monitor_steps": 179,
+            "range_bias_m": 0.0,
+            "range_dropout_probability": 0.0,
+            "range_latency_steps": 0,
+            "recovery_steps_limit": 100,
+            "seed": 2252000,
+            "steps": 424,
+            "timeout": 0,
+            "true_success": 0
+          },
+          "last_observed_reason": "RECOVERY_TIMEOUT"
+        },
+        {
+          "recovery_steps_limit": 300,
+          "execution_status": "COMPLETED",
+          "episode": {
+            "abstained": 0,
+            "anchor_queries": 134,
+            "anchor_valid_readings": 134,
+            "cbf_constraint_violation_occurred": 0,
+            "cbf_exact_fallback_steps": 55,
+            "cbf_infeasible_steps": 0,
+            "cbf_unchecked_steps": 0,
+            "collision_occurred": 0,
+            "controller": "AEGIS_3D_RECOVERY_MONITOR",
+            "false_arrival": 0,
+            "final_distance": 0.077,
+            "navigation_force_method": "DIRECTION_PRESERVING_PEAK",
+            "post_stop": {
+              "decision_distance": 0.07701777615734366,
+              "decision_speed": 0.07211021927661082,
+              "steps": [
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.07559807422181665,
+                  "speed": 0.0692258105055464
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.07423597651465916,
+                  "speed": 0.06645677808532453
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.07292915704896961,
+                  "speed": 0.06379850696191156
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.07167538248376462,
+                  "speed": 0.06124656668343509
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.07047250848975349,
+                  "speed": 0.058796704016097684
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.06931847625993821,
+                  "speed": 0.056444835855453776
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.06821130915878311,
+                  "speed": 0.05418704242123563
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.06714910950397544,
+                  "speed": 0.052019560724386196
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.06613005547505973,
+                  "speed": 0.049938778295410755
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.06515239814349771,
+                  "speed": 0.04794122716359432
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.06421445861895282,
+                  "speed": 0.046023578077050556
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.06331462530684938,
+                  "speed": 0.04418263495396853
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.06245135127248851,
+                  "speed": 0.04241532955580979
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.06162315170724132,
+                  "speed": 0.0407187163735774
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.060828601492550476,
+                  "speed": 0.03908996771863431
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.06006633285769198,
+                  "speed": 0.037526369009888934
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.05933503312744535,
+                  "speed": 0.03602531424949338
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.058633442556016324,
+                  "speed": 0.034584301679513645
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.05796035224373993,
+                  "speed": 0.0332009296123331
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.05731460213326393,
+                  "speed": 0.03187289242783977
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.05669507908207851,
+                  "speed": 0.03059797673072618
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.056100715008412565,
+                  "speed": 0.029374057661497133
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.05553048510766296,
+                  "speed": 0.028199095355037247
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.05498340613665951,
+                  "speed": 0.02707113154083576
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.0544585347631985,
+                  "speed": 0.02598828627920233
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.0539549659783932,
+                  "speed": 0.024948754828034235
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.05347183156950716,
+                  "speed": 0.023950804634912864
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.053008298651035436,
+                  "speed": 0.022992772449516353
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.05256356825189983,
+                  "speed": 0.022073061551535697
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.052136873956713424,
+                  "speed": 0.02119013908947427
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.05172748059915237,
+                  "speed": 0.0203425335258953
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.05133468300555582,
+                  "speed": 0.019528832184859485
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.050957804786943825,
+                  "speed": 0.018747678897465102
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.050596197177716476,
+                  "speed": 0.0179977717415665
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.05024923791935571,
+                  "speed": 0.01727786087190384
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04991633018751957,
+                  "speed": 0.016586746437027684
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04959690156096699,
+                  "speed": 0.015923276579546577
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04929040303081226,
+                  "speed": 0.015286345516364713
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.0489963080486542,
+                  "speed": 0.014674891695710126
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04871411161217491,
+                  "speed": 0.01408789602788172
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.0484433293868498,
+                  "speed": 0.01352438018676645
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04818349686245257,
+                  "speed": 0.012983404979295793
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04793416854308274,
+                  "speed": 0.012464068780123962
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04769491716948169,
+                  "speed": 0.011965506028919003
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04746533297244594,
+                  "speed": 0.011486885787762243
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04724502295617866,
+                  "speed": 0.011027410356251752
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.047033610210462685,
+                  "speed": 0.010586313942001681
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04683073325056933,
+                  "speed": 0.010162861384321615
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.046636045383855504,
+                  "speed": 0.00975634692894875
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04644921410203274,
+                  "speed": 0.0093660930517908
+                }
+              ]
+            },
+            "postproposal_monitor_reason": "OBSERVED",
+            "postproposal_monitor_steps": 246,
+            "range_bias_m": 0.0,
+            "range_dropout_probability": 0.0,
+            "range_latency_steps": 0,
+            "recovery_steps_limit": 300,
+            "seed": 2252000,
+            "steps": 491,
+            "timeout": 0,
+            "true_success": 1
+          },
+          "last_observed_reason": "EXPLORATORY_STABILIZED_ANCHOR_CONFIRMED"
+        }
+      ]
+    },
+    {
+      "id": "nominal:2252000:0.8:AEGIS_3D_ANCHOR_RECOVERY",
+      "conditions": {
+        "seed": 2252000,
+        "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+        "bias_xyz": [
+          0.8,
+          0.8,
+          -0.3
+        ],
+        "case": {
+          "name": "nominal",
+          "range_bias_m": 0.0,
+          "range_dropout_probability": 0.0
+        }
+      },
+      "observations": [
+        {
+          "recovery_steps_limit": 100,
+          "execution_status": "COMPLETED",
+          "episode": {
+            "abstained": 1,
+            "anchor_queries": 112,
+            "anchor_valid_readings": 112,
+            "cbf_constraint_violation_occurred": 0,
+            "cbf_exact_fallback_steps": 57,
+            "cbf_infeasible_steps": 0,
+            "cbf_unchecked_steps": 0,
+            "collision_occurred": 0,
+            "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+            "false_arrival": 0,
+            "final_distance": 0.4063,
+            "navigation_force_method": "DIRECTION_PRESERVING_PEAK",
+            "post_stop": null,
+            "range_bias_m": 0.0,
+            "range_dropout_probability": 0.0,
+            "range_latency_steps": 0,
+            "recovery_steps_limit": 100,
+            "seed": 2252000,
+            "steps": 424,
+            "timeout": 0,
+            "true_success": 0
+          },
+          "last_observed_reason": "RECOVERY_TIMEOUT"
+        },
+        {
+          "recovery_steps_limit": 300,
+          "execution_status": "COMPLETED",
+          "episode": {
+            "abstained": 0,
+            "anchor_queries": 142,
+            "anchor_valid_readings": 142,
+            "cbf_constraint_violation_occurred": 0,
+            "cbf_exact_fallback_steps": 57,
+            "cbf_infeasible_steps": 0,
+            "cbf_unchecked_steps": 0,
+            "collision_occurred": 0,
+            "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+            "false_arrival": 0,
+            "final_distance": 0.0816,
+            "navigation_force_method": "DIRECTION_PRESERVING_PEAK",
+            "post_stop": {
+              "decision_distance": 0.08157215782114724,
+              "decision_speed": 0.06948628324826442,
+              "steps": [
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.08019948775358653,
+                  "speed": 0.06670683191833383
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.07888228640575998,
+                  "speed": 0.06403855864160049
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.07761831735422203,
+                  "speed": 0.06147701629593646
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.07640543354505241,
+                  "speed": 0.059017935644099004
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.07524157377002072,
+                  "speed": 0.05665721821833505
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.07412475928202496,
+                  "speed": 0.05439092948960165
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.07305309054397667,
+                  "speed": 0.05221529231001758
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.07202474410556253,
+                  "speed": 0.05012668061761688
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.07103796960256929,
+                  "speed": 0.0481216133929122
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.07009108687369836,
+                  "speed": 0.04619674885719571
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.0691824831900336,
+                  "speed": 0.04434887890290789
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.0683106105925457,
+                  "speed": 0.042574923746791574
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.06747398333323652,
+                  "speed": 0.04087192679691991
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.06667117541572963,
+                  "speed": 0.03923704972504312
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.0659008182313068,
+                  "speed": 0.037667567736041394
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.06516159828658162,
+                  "speed": 0.03616086502659974
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.06445225501917358,
+                  "speed": 0.03471443042553575
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.06377157869791762,
+                  "speed": 0.03332585320851432
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.06311840840429953,
+                  "speed": 0.03199281908017375
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.062491630091961466,
+                  "speed": 0.030713106316966797
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.06189017472126057,
+                  "speed": 0.029484582064288126
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.06131301646599963,
+                  "speed": 0.028305198781716598
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.060759170989573306,
+                  "speed": 0.027172990830447937
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.060227693787893825,
+                  "speed": 0.02608607119723002
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.059717678596570185,
+                  "speed": 0.025042628349340817
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.05922825585992134,
+                  "speed": 0.024040923215367188
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.058758591259502585,
+                  "speed": 0.023079286286752498
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.05830788429991727,
+                  "speed": 0.022156114835282396
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.05787536694977656,
+                  "speed": 0.021269870241871103
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.057460302335748045,
+                  "speed": 0.02041907543219626
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.05706198348771834,
+                  "speed": 0.01960231241490841
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.05667973213316542,
+                  "speed": 0.018818219918312073
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.056312897538907135,
+                  "speed": 0.01806549112157959
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.0559608553984628,
+                  "speed": 0.017342871476716405
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.055623006763321874,
+                  "speed": 0.01664915661764775
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.055298777016482455,
+                  "speed": 0.01598319035294184
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.05498761488667272,
+                  "speed": 0.015343862738824167
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.054688991501729206,
+                  "speed": 0.0147301082292712
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.05440239947965753,
+                  "speed": 0.014140903900100352
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.054127352055950054,
+                  "speed": 0.013575267744096335
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.053863382245787995,
+                  "speed": 0.013032257034332485
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.053610042039799584,
+                  "speed": 0.012510966752959185
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.05336690163209387,
+                  "speed": 0.012010528082840817
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.05313354867933267,
+                  "speed": 0.011530106959527183
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.052909587589646145,
+                  "speed": 0.011068902681146096
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.052694638840239935,
+                  "speed": 0.010626146573900253
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.0524883383225803,
+                  "speed": 0.010201100710944242
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.05229033671408442,
+                  "speed": 0.009793056682506473
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.05210029887527894,
+                  "speed": 0.009401334415206214
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.05191790327142908,
+                  "speed": 0.009025281038597966
+                }
+              ]
+            },
+            "range_bias_m": 0.0,
+            "range_dropout_probability": 0.0,
+            "range_latency_steps": 0,
+            "recovery_steps_limit": 300,
+            "seed": 2252000,
+            "steps": 491,
+            "timeout": 0,
+            "true_success": 1
+          },
+          "last_observed_reason": "EXPLORATORY_STABILIZED_ANCHOR_CONFIRMED"
+        }
+      ]
+    },
+    {
+      "id": "nominal:2252000:0.8:AEGIS_3D_RECOVERY_MONITOR",
+      "conditions": {
+        "seed": 2252000,
+        "controller": "AEGIS_3D_RECOVERY_MONITOR",
+        "bias_xyz": [
+          0.8,
+          0.8,
+          -0.3
+        ],
+        "case": {
+          "name": "nominal",
+          "range_bias_m": 0.0,
+          "range_dropout_probability": 0.0
+        }
+      },
+      "observations": [
+        {
+          "recovery_steps_limit": 100,
+          "execution_status": "COMPLETED",
+          "episode": {
+            "abstained": 1,
+            "anchor_queries": 10,
+            "anchor_valid_readings": 10,
+            "cbf_constraint_violation_occurred": 0,
+            "cbf_exact_fallback_steps": 57,
+            "cbf_infeasible_steps": 0,
+            "cbf_unchecked_steps": 0,
+            "collision_occurred": 0,
+            "controller": "AEGIS_3D_RECOVERY_MONITOR",
+            "false_arrival": 0,
+            "final_distance": 0.2374,
+            "navigation_force_method": "DIRECTION_PRESERVING_PEAK",
+            "post_stop": null,
+            "postproposal_monitor_reason": "POSTPROPOSAL_MONITOR_ALARM",
+            "postproposal_monitor_steps": 7,
+            "range_bias_m": 0.0,
+            "range_dropout_probability": 0.0,
+            "range_latency_steps": 0,
+            "recovery_steps_limit": 100,
+            "seed": 2252000,
+            "steps": 252,
+            "timeout": 0,
+            "true_success": 0
+          },
+          "last_observed_reason": "POSTPROPOSAL_MONITOR_ALARM"
+        },
+        {
+          "recovery_steps_limit": 300,
+          "execution_status": "COMPLETED",
+          "episode": {
+            "abstained": 1,
+            "anchor_queries": 10,
+            "anchor_valid_readings": 10,
+            "cbf_constraint_violation_occurred": 0,
+            "cbf_exact_fallback_steps": 57,
+            "cbf_infeasible_steps": 0,
+            "cbf_unchecked_steps": 0,
+            "collision_occurred": 0,
+            "controller": "AEGIS_3D_RECOVERY_MONITOR",
+            "false_arrival": 0,
+            "final_distance": 0.2374,
+            "navigation_force_method": "DIRECTION_PRESERVING_PEAK",
+            "post_stop": null,
+            "postproposal_monitor_reason": "POSTPROPOSAL_MONITOR_ALARM",
+            "postproposal_monitor_steps": 7,
+            "range_bias_m": 0.0,
+            "range_dropout_probability": 0.0,
+            "range_latency_steps": 0,
+            "recovery_steps_limit": 300,
+            "seed": 2252000,
+            "steps": 252,
+            "timeout": 0,
+            "true_success": 0
+          },
+          "last_observed_reason": "POSTPROPOSAL_MONITOR_ALARM"
+        }
+      ]
+    },
+    {
+      "id": "nominal:2254000:0.0:AEGIS_3D_ANCHOR_RECOVERY",
+      "conditions": {
+        "seed": 2254000,
+        "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+        "bias_xyz": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "case": {
+          "name": "nominal",
+          "range_bias_m": 0.0,
+          "range_dropout_probability": 0.0
+        }
+      },
+      "observations": [
+        {
+          "recovery_steps_limit": 100,
+          "execution_status": "COMPLETED",
+          "episode": {
+            "abstained": 1,
+            "anchor_queries": 103,
+            "anchor_valid_readings": 103,
+            "cbf_constraint_violation_occurred": 0,
+            "cbf_exact_fallback_steps": 0,
+            "cbf_infeasible_steps": 0,
+            "cbf_unchecked_steps": 0,
+            "collision_occurred": 0,
+            "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+            "false_arrival": 0,
+            "final_distance": 0.7532,
+            "navigation_force_method": "DIRECTION_PRESERVING_PEAK",
+            "post_stop": null,
+            "range_bias_m": 0.0,
+            "range_dropout_probability": 0.0,
+            "range_latency_steps": 0,
+            "recovery_steps_limit": 100,
+            "seed": 2254000,
+            "steps": 297,
+            "timeout": 0,
+            "true_success": 0
+          },
+          "last_observed_reason": "RECOVERY_TIMEOUT"
+        },
+        {
+          "recovery_steps_limit": 300,
+          "execution_status": "COMPLETED",
+          "episode": {
+            "abstained": 0,
+            "anchor_queries": 174,
+            "anchor_valid_readings": 174,
+            "cbf_constraint_violation_occurred": 0,
+            "cbf_exact_fallback_steps": 0,
+            "cbf_infeasible_steps": 0,
+            "cbf_unchecked_steps": 0,
+            "collision_occurred": 0,
+            "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+            "false_arrival": 0,
+            "final_distance": 0.0605,
+            "navigation_force_method": "DIRECTION_PRESERVING_PEAK",
+            "post_stop": {
+              "decision_distance": 0.06050081817991889,
+              "decision_speed": 0.09034545964701962,
+              "steps": [
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.05931124386245573,
+                  "speed": 0.08673164126113883
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.058199163101349885,
+                  "speed": 0.08326237561069327
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.05716074183974234,
+                  "speed": 0.07993188058626555
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.05619223866587267,
+                  "speed": 0.07673460536281493
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.055290007868870686,
+                  "speed": 0.07366522114830233
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.05445050281893737,
+                  "speed": 0.07071861230237023
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.05367027950908047,
+                  "speed": 0.06788986781027542
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.05294600010079625,
+                  "speed": 0.0651742730978644
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.05227443632660436,
+                  "speed": 0.06256730217394983
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.051652472617362534,
+                  "speed": 0.06006461008699184
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.0510771088408429,
+                  "speed": 0.05766202568351216
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.050545462559040126,
+                  "speed": 0.05535554465617168
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.05005477073396045,
+                  "speed": 0.05314132286992481
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04960239083412745,
+                  "speed": 0.051015669955127824
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04918580131574769,
+                  "speed": 0.04897504315692271
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.048802601472610466,
+                  "speed": 0.0470160414306458
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.048450510666697415,
+                  "speed": 0.04513539977341996
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04812736696676545,
+                  "speed": 0.04332998378248317
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.047831125234578824,
+                  "speed": 0.04159678443118384
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.047559854707978765,
+                  "speed": 0.03993291305393649
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04731173613666074,
+                  "speed": 0.03833559653177902
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04708505853061004,
+                  "speed": 0.036802172670507866
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04687821558289952,
+                  "speed": 0.03533008576368755
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.0466897018283169,
+                  "speed": 0.03391688233314005
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04651810859742489,
+                  "speed": 0.03256020703981445
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04636211982251525,
+                  "speed": 0.03125779875822187
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.046220507747832214,
+                  "speed": 0.030007486807892995
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04609212859172095,
+                  "speed": 0.028807187335577272
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04597591820325719,
+                  "speed": 0.027654899842154187
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.045870887750675444,
+                  "speed": 0.026548703848468014
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04577611947369725,
+                  "speed": 0.025486755694529295
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.045690762526815705,
+                  "speed": 0.024467285466748125
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04561402893583501,
+                  "speed": 0.0234885940480782
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.045545189685540825,
+                  "speed": 0.022549050286155073
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04548357095235726,
+                  "speed": 0.02164708827470887
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04542855049224036,
+                  "speed": 0.020781204743720513
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04537955419086548,
+                  "speed": 0.01994995655397169
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.045336052780400336,
+                  "speed": 0.019151958291812824
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.045297558724768594,
+                  "speed": 0.01838587996014031
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04526362327329788,
+                  "speed": 0.017650444761734697
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04523383368097023,
+                  "speed": 0.01694442697126531
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04520781059212384,
+                  "speed": 0.0162666498924147
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04518520558336277,
+                  "speed": 0.01561598389671811
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04516569886056677,
+                  "speed": 0.014991344540849386
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.045148997104258695,
+                  "speed": 0.014391690759215411
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04513483145711408,
+                  "speed": 0.013816023128846795
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04512295564708868,
+                  "speed": 0.013263382203692923
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.045113144239463124,
+                  "speed": 0.012732846915545206
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04510519101102138,
+                  "speed": 0.012223533038923397
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04509890743960455,
+                  "speed": 0.011734591717366462
+                }
+              ]
+            },
+            "range_bias_m": 0.0,
+            "range_dropout_probability": 0.0,
+            "range_latency_steps": 0,
+            "recovery_steps_limit": 300,
+            "seed": 2254000,
+            "steps": 403,
+            "timeout": 0,
+            "true_success": 1
+          },
+          "last_observed_reason": "EXPLORATORY_STABILIZED_ANCHOR_CONFIRMED"
+        }
+      ]
+    },
+    {
+      "id": "nominal:2254000:0.0:AEGIS_3D_RECOVERY_MONITOR",
+      "conditions": {
+        "seed": 2254000,
+        "controller": "AEGIS_3D_RECOVERY_MONITOR",
+        "bias_xyz": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "case": {
+          "name": "nominal",
+          "range_bias_m": 0.0,
+          "range_dropout_probability": 0.0
+        }
+      },
+      "observations": [
+        {
+          "recovery_steps_limit": 100,
+          "execution_status": "COMPLETED",
+          "episode": {
+            "abstained": 1,
+            "anchor_queries": 0,
+            "anchor_valid_readings": 0,
+            "cbf_constraint_violation_occurred": 0,
+            "cbf_exact_fallback_steps": 0,
+            "cbf_infeasible_steps": 0,
+            "cbf_unchecked_steps": 0,
+            "collision_occurred": 0,
+            "controller": "AEGIS_3D_RECOVERY_MONITOR",
+            "false_arrival": 0,
+            "final_distance": 0.0292,
+            "navigation_force_method": "DIRECTION_PRESERVING_PEAK",
+            "post_stop": null,
+            "postproposal_monitor_reason": "POSTPROPOSAL_RANGE_UNAVAILABLE",
+            "postproposal_monitor_steps": 1,
+            "range_bias_m": 0.0,
+            "range_dropout_probability": 0.0,
+            "range_latency_steps": 0,
+            "recovery_steps_limit": 100,
+            "seed": 2254000,
+            "steps": 111,
+            "timeout": 0,
+            "true_success": 0
+          },
+          "last_observed_reason": "POSTPROPOSAL_RANGE_UNAVAILABLE"
+        },
+        {
+          "recovery_steps_limit": 300,
+          "execution_status": "COMPLETED",
+          "episode": {
+            "abstained": 1,
+            "anchor_queries": 0,
+            "anchor_valid_readings": 0,
+            "cbf_constraint_violation_occurred": 0,
+            "cbf_exact_fallback_steps": 0,
+            "cbf_infeasible_steps": 0,
+            "cbf_unchecked_steps": 0,
+            "collision_occurred": 0,
+            "controller": "AEGIS_3D_RECOVERY_MONITOR",
+            "false_arrival": 0,
+            "final_distance": 0.0292,
+            "navigation_force_method": "DIRECTION_PRESERVING_PEAK",
+            "post_stop": null,
+            "postproposal_monitor_reason": "POSTPROPOSAL_RANGE_UNAVAILABLE",
+            "postproposal_monitor_steps": 1,
+            "range_bias_m": 0.0,
+            "range_dropout_probability": 0.0,
+            "range_latency_steps": 0,
+            "recovery_steps_limit": 300,
+            "seed": 2254000,
+            "steps": 111,
+            "timeout": 0,
+            "true_success": 0
+          },
+          "last_observed_reason": "POSTPROPOSAL_RANGE_UNAVAILABLE"
+        }
+      ]
+    },
+    {
+      "id": "nominal:2254000:0.8:AEGIS_3D_ANCHOR_RECOVERY",
+      "conditions": {
+        "seed": 2254000,
+        "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+        "bias_xyz": [
+          0.8,
+          0.8,
+          -0.3
+        ],
+        "case": {
+          "name": "nominal",
+          "range_bias_m": 0.0,
+          "range_dropout_probability": 0.0
+        }
+      },
+      "observations": [
+        {
+          "recovery_steps_limit": 100,
+          "execution_status": "COMPLETED",
+          "episode": {
+            "abstained": 1,
+            "anchor_queries": 113,
+            "anchor_valid_readings": 113,
+            "cbf_constraint_violation_occurred": 0,
+            "cbf_exact_fallback_steps": 0,
+            "cbf_infeasible_steps": 0,
+            "cbf_unchecked_steps": 0,
+            "collision_occurred": 0,
+            "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+            "false_arrival": 0,
+            "final_distance": 0.6602,
+            "navigation_force_method": "DIRECTION_PRESERVING_PEAK",
+            "post_stop": null,
+            "range_bias_m": 0.0,
+            "range_dropout_probability": 0.0,
+            "range_latency_steps": 0,
+            "recovery_steps_limit": 100,
+            "seed": 2254000,
+            "steps": 297,
+            "timeout": 0,
+            "true_success": 0
+          },
+          "last_observed_reason": "RECOVERY_TIMEOUT"
+        },
+        {
+          "recovery_steps_limit": 300,
+          "execution_status": "COMPLETED",
+          "episode": {
+            "abstained": 0,
+            "anchor_queries": 176,
+            "anchor_valid_readings": 176,
+            "cbf_constraint_violation_occurred": 0,
+            "cbf_exact_fallback_steps": 0,
+            "cbf_infeasible_steps": 0,
+            "cbf_unchecked_steps": 0,
+            "collision_occurred": 0,
+            "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+            "false_arrival": 0,
+            "final_distance": 0.0507,
+            "navigation_force_method": "DIRECTION_PRESERVING_PEAK",
+            "post_stop": {
+              "decision_distance": 0.05066513503736704,
+              "decision_speed": 0.06550377242698194,
+              "steps": [
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04969508433756836,
+                  "speed": 0.06288362152990266
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.048778791211336846,
+                  "speed": 0.060368276668706554
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.047913724297404245,
+                  "speed": 0.05795354560195829
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04709743270651679,
+                  "speed": 0.05563540377787996
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.046327545350553535,
+                  "speed": 0.053409987626764764
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.0456017703871906,
+                  "speed": 0.05127358812169418
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04491789473621152,
+                  "speed": 0.049222644596826404
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04427378362593146,
+                  "speed": 0.04725373881295335
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.043667380131473664,
+                  "speed": 0.04536358926043521
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04309670467065283,
+                  "speed": 0.0435490456900178
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.042559854427807346,
+                  "speed": 0.04180708386241709
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04205500268091194,
+                  "speed": 0.040134800507920405
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04158039801248714,
+                  "speed": 0.03852940848760359
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04113436339003481,
+                  "speed": 0.036988232148099445
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.040715295106805056,
+                  "speed": 0.03550870286217547
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.04032166157847728,
+                  "speed": 0.034088354747688454
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.03995200199573676,
+                  "speed": 0.03272482055778091
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.03960492483661418,
+                  "speed": 0.03141582773546968
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.039279106245809076,
+                  "speed": 0.030159194626050895
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.038973288290987444,
+                  "speed": 0.028952826841008857
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.03868627710822368,
+                  "speed": 0.027794713767368504
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.03841694095036881,
+                  "speed": 0.026682925216673762
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.03816420815320546,
+                  "speed": 0.025615608208006815
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.0379270650348268,
+                  "speed": 0.02459098387968654
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.037704553743834135,
+                  "speed": 0.023607344524499075
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.037495770071707804,
+                  "speed": 0.02266305074351911
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.03729986124418553,
+                  "speed": 0.021756528713778346
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.03711602370567679,
+                  "speed": 0.020886267565227216
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.0369435009097806,
+                  "speed": 0.02005081686261813
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.03678158112785033,
+                  "speed": 0.0192487841881134
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.036629595286356766,
+                  "speed": 0.018478832820588865
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.03648691484255427,
+                  "speed": 0.01773967950776531
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.03635294970670583,
+                  "speed": 0.017030092327454695
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.03622714621789247,
+                  "speed": 0.01634888863435651
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.0361089851792496,
+                  "speed": 0.01569493308898225
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.035997979957350594,
+                  "speed": 0.015067135765422958
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.03589367464941598,
+                  "speed": 0.01446445033480604
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.03579564232106313,
+                  "speed": 0.013885872321413799
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.035703483316443144,
+                  "speed": 0.013330437428557246
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.035616823641830296,
+                  "speed": 0.01279721993141496
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.03553531342304088,
+                  "speed": 0.01228533113415836
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.035458625436455164,
+                  "speed": 0.011793917888792027
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.03538645371290357,
+                  "speed": 0.011322161173240345
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.035318512213227835,
+                  "speed": 0.01086927472631073
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.03525453357397475,
+                  "speed": 0.010434503737258303
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.035194267921367664,
+                  "speed": 0.01001712358776797
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.03513748175146852,
+                  "speed": 0.009616438644257251
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.03508395687425592,
+                  "speed": 0.009231781098486961
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.035033489419200425,
+                  "speed": 0.008862509854547484
+                },
+                {
+                  "cbf_residual": 0.0,
+                  "collision": false,
+                  "distance": 0.03498588889983096,
+                  "speed": 0.008508009460365585
+                }
+              ]
+            },
+            "range_bias_m": 0.0,
+            "range_dropout_probability": 0.0,
+            "range_latency_steps": 0,
+            "recovery_steps_limit": 300,
+            "seed": 2254000,
+            "steps": 400,
+            "timeout": 0,
+            "true_success": 1
+          },
+          "last_observed_reason": "EXPLORATORY_STABILIZED_ANCHOR_CONFIRMED"
+        }
+      ]
+    },
+    {
+      "id": "nominal:2254000:0.8:AEGIS_3D_RECOVERY_MONITOR",
+      "conditions": {
+        "seed": 2254000,
+        "controller": "AEGIS_3D_RECOVERY_MONITOR",
+        "bias_xyz": [
+          0.8,
+          0.8,
+          -0.3
+        ],
+        "case": {
+          "name": "nominal",
+          "range_bias_m": 0.0,
+          "range_dropout_probability": 0.0
+        }
+      },
+      "observations": [
+        {
+          "recovery_steps_limit": 100,
+          "execution_status": "COMPLETED",
+          "episode": {
+            "abstained": 1,
+            "anchor_queries": 10,
+            "anchor_valid_readings": 10,
+            "cbf_constraint_violation_occurred": 0,
+            "cbf_exact_fallback_steps": 0,
+            "cbf_infeasible_steps": 0,
+            "cbf_unchecked_steps": 0,
+            "collision_occurred": 0,
+            "controller": "AEGIS_3D_RECOVERY_MONITOR",
+            "false_arrival": 0,
+            "final_distance": 0.0675,
+            "navigation_force_method": "DIRECTION_PRESERVING_PEAK",
+            "post_stop": null,
+            "postproposal_monitor_reason": "POSTPROPOSAL_RANGE_UNAVAILABLE",
+            "postproposal_monitor_steps": 4,
+            "range_bias_m": 0.0,
+            "range_dropout_probability": 0.0,
+            "range_latency_steps": 0,
+            "recovery_steps_limit": 100,
+            "seed": 2254000,
+            "steps": 114,
+            "timeout": 0,
+            "true_success": 0
+          },
+          "last_observed_reason": "POSTPROPOSAL_RANGE_UNAVAILABLE"
+        },
+        {
+          "recovery_steps_limit": 300,
+          "execution_status": "COMPLETED",
+          "episode": {
+            "abstained": 1,
+            "anchor_queries": 10,
+            "anchor_valid_readings": 10,
+            "cbf_constraint_violation_occurred": 0,
+            "cbf_exact_fallback_steps": 0,
+            "cbf_infeasible_steps": 0,
+            "cbf_unchecked_steps": 0,
+            "collision_occurred": 0,
+            "controller": "AEGIS_3D_RECOVERY_MONITOR",
+            "false_arrival": 0,
+            "final_distance": 0.0675,
+            "navigation_force_method": "DIRECTION_PRESERVING_PEAK",
+            "post_stop": null,
+            "postproposal_monitor_reason": "POSTPROPOSAL_RANGE_UNAVAILABLE",
+            "postproposal_monitor_steps": 4,
+            "range_bias_m": 0.0,
+            "range_dropout_probability": 0.0,
+            "range_latency_steps": 0,
+            "recovery_steps_limit": 300,
+            "seed": 2254000,
+            "steps": 114,
+            "timeout": 0,
+            "true_success": 0
+          },
+          "last_observed_reason": "POSTPROPOSAL_RANGE_UNAVAILABLE"
+        }
+      ]
+    }
+  ],
+  "limitation": "Repeated worlds, unchanged STOP rules; no risk probability, safety guarantee or confirmatory pass inferred."
+}

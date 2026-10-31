@@ -36,7 +36,7 @@ def main():
                                 range_bias_m=args.range_bias_m, trace=trace,
                                 anchor_bias_xyz=np.asarray(args.anchor_bias_xyz),
                                 anchor_dropout_probability=args.anchor_dropout_probability)
-        paths = ["experiments/benchmark_physical_3d_cbf.py", "src/aegis/v9/controller_3d.py",
+        paths = ["experiments/benchmark_physical_3d_cbf.py", "src/aegis/v9/controller_3d.py", "src/aegis/v9/exploratory_sensor_validation.py",
                  "src/aegis/env/mujoco_3d_cbf.py", "src/aegis/v9/anchor_arrival_candidate.py",
                  "scripts/research/trace_3d_development.py"]
         payload = {"classification": "EXPLORATORY_SIMULATION", "seed": args.seed,

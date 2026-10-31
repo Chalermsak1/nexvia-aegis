@@ -16,7 +16,7 @@ sys.path.insert(0, str(ROOT / "src"))
 from experiments.benchmark_physical_3d_cbf import run_3d_episode
 from aegis.env.mujoco_3d_cbf import AegisMuJoCo3DEnvironment
 
-FILES = ["experiments/benchmark_physical_3d_cbf.py", "src/aegis/v9/controller_3d.py",
+FILES = ["experiments/benchmark_physical_3d_cbf.py", "src/aegis/v9/controller_3d.py", "src/aegis/v9/exploratory_sensor_validation.py",
          "src/aegis/v9/anchor_arrival_candidate.py", "src/aegis/env/mujoco_3d_cbf.py",
          "scripts/research/study_post_stop.py"]
 

@@ -32,7 +32,7 @@ def main():
         {"name": "range_bias_anchor_dropout", "range_bias_m": -0.08, "anchor_bias_xyz": [0., 0., 0.], "anchor_dropout_probability": 0.3},
         {"name": "range_bias_anchor_bias", "range_bias_m": -0.08, "anchor_bias_xyz": [0.08, 0., 0.], "anchor_dropout_probability": 0.},
     ]
-    paths = ["experiments/benchmark_physical_3d_cbf.py", "src/aegis/v9/controller_3d.py",
+    paths = ["experiments/benchmark_physical_3d_cbf.py", "src/aegis/v9/controller_3d.py", "src/aegis/v9/exploratory_sensor_validation.py",
              "src/aegis/v9/anchor_arrival_candidate.py", "src/aegis/env/mujoco_3d_cbf.py",
              "scripts/research/compare_anchor_guard.py"]
     with args.output.open("x", encoding="utf-8") as out:

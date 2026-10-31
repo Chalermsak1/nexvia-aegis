@@ -1,0 +1,49 @@
+{
+  "classification": "EXPLORATORY_ANALYTICAL_TOY_MODEL",
+  "not_episode_success_probability": true,
+  "source_sha256": "30c8b51bc7c961327b5b073447744bb0acce6c5258c1456b5c6c766d79d8a17c",
+  "conditions": [
+    {
+      "assumptions": {
+        "true_velocity": [
+          0,
+          0,
+          0
+        ],
+        "sigma_per_axis": 0.02,
+        "threshold": 0.05,
+        "sources": 2,
+        "independent_axes_sources_and_time": true,
+        "per_source_dropout": 0.0,
+        "dropout_independent_of_noise": true,
+        "consecutive_fresh_samples": 20,
+        "horizon_samples": 220
+      },
+      "single_source_probability": 0.8999391668806049,
+      "joint_step_probability": 0.8098905040857572,
+      "one_fixed_window_probability": 0.014740972582207136,
+      "at_least_one_run_in_horizon": 0.4564314580628567
+    },
+    {
+      "assumptions": {
+        "true_velocity": [
+          0,
+          0,
+          0
+        ],
+        "sigma_per_axis": 0.02,
+        "threshold": 0.05,
+        "sources": 2,
+        "independent_axes_sources_and_time": true,
+        "per_source_dropout": 0.1,
+        "dropout_independent_of_noise": true,
+        "consecutive_fresh_samples": 20,
+        "horizon_samples": 220
+      },
+      "single_source_probability": 0.8999391668806049,
+      "joint_step_probability": 0.6560113083094635,
+      "one_fixed_window_probability": 0.00021788459018050153,
+      "at_least_one_run_in_horizon": 0.015114711671957659
+    }
+  ]
+}

@@ -1,0 +1,1230 @@
+{
+  "classification": "EXPLORATORY_RECOVERY_TRANSITION_DIAGNOSTIC",
+  "input_sha256": "a8a96233912157c48d4cf35f54d1fb0dcaa94f025867f53239fae4121aa51ad6",
+  "ledger_state": "FINALIZED",
+  "episodes": [
+    {
+      "id": "nominal:2252000:0.0:AEGIS_3D_ANCHOR_RECOVERY",
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "seed": 2252000,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "navigation_force_method": "AXIS_CLIP",
+      "execution_status": "COMPLETED",
+      "terminal_reason": null,
+      "diagnostic": {
+        "decision_events": 600,
+        "phase_transitions": [],
+        "mode_changes": [
+          {
+            "step": 0,
+            "mode": "NOMINAL"
+          }
+        ],
+        "reason_changes": [
+          {
+            "step": 0,
+            "reason": "ACTIVE"
+          }
+        ],
+        "phase_before_counts": {
+          "BASE": 600
+        },
+        "phase_after_counts": {
+          "BASE": 600
+        },
+        "availability_counts": {
+          "range_valid": {
+            "true": 600
+          },
+          "range_fresh": {
+            "true": 600
+          },
+          "range_semantically_valid": {
+            "unrecorded_or_not_applicable": 600
+          },
+          "range_raw_transport_valid": {
+            "unrecorded_or_not_applicable": 600
+          },
+          "anchor_requested": {
+            "false": 600
+          },
+          "anchor_valid": {
+            "unrecorded_or_not_applicable": 600
+          },
+          "next_query_anchor": {
+            "false": 600
+          }
+        },
+        "recovery_update_observations": 0,
+        "recovery_guidance_observations": 0,
+        "recovery_availability_counts": {
+          "range_valid": {},
+          "range_fresh": {},
+          "range_semantically_valid": {},
+          "range_raw_transport_valid": {},
+          "anchor_requested": {},
+          "anchor_valid": {},
+          "next_query_anchor": {}
+        },
+        "first_recovery_update": null,
+        "last_recovery_update": null,
+        "low_speed_samples_recorded": [],
+        "low_speed_samples_unavailable_count": 600,
+        "last_recorded_reason": "ACTIVE",
+        "internal_counters": {
+          "recovery_steps": {
+            "recorded_observations": 0,
+            "last_recorded_value": null
+          },
+          "stabilization_wait_steps": {
+            "recorded_observations": 0,
+            "last_recorded_value": null
+          },
+          "missing_velocity_count": {
+            "recorded_observations": 0,
+            "last_recorded_value": null
+          }
+        },
+        "interpretation": "Recovery update count is observed phase occupancy, not the unrecorded internal recovery_steps variable. Missing low_speed_samples does not mean zero."
+      },
+      "limitation": "Pre-physics controller observations only. Last recorded reason is not an execution-completion verdict."
+    },
+    {
+      "id": "nominal:2252000:0.0:AEGIS_3D_RECOVERY_MONITOR",
+      "controller": "AEGIS_3D_RECOVERY_MONITOR",
+      "seed": 2252000,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "navigation_force_method": "AXIS_CLIP",
+      "execution_status": "COMPLETED",
+      "terminal_reason": null,
+      "diagnostic": {
+        "decision_events": 600,
+        "phase_transitions": [],
+        "mode_changes": [
+          {
+            "step": 0,
+            "mode": "NOMINAL"
+          }
+        ],
+        "reason_changes": [
+          {
+            "step": 0,
+            "reason": "ACTIVE"
+          }
+        ],
+        "phase_before_counts": {
+          "BASE": 600
+        },
+        "phase_after_counts": {
+          "BASE": 600
+        },
+        "availability_counts": {
+          "range_valid": {
+            "true": 600
+          },
+          "range_fresh": {
+            "true": 600
+          },
+          "range_semantically_valid": {
+            "unrecorded_or_not_applicable": 600
+          },
+          "range_raw_transport_valid": {
+            "unrecorded_or_not_applicable": 600
+          },
+          "anchor_requested": {
+            "false": 600
+          },
+          "anchor_valid": {
+            "unrecorded_or_not_applicable": 600
+          },
+          "next_query_anchor": {
+            "false": 600
+          }
+        },
+        "recovery_update_observations": 0,
+        "recovery_guidance_observations": 0,
+        "recovery_availability_counts": {
+          "range_valid": {},
+          "range_fresh": {},
+          "range_semantically_valid": {},
+          "range_raw_transport_valid": {},
+          "anchor_requested": {},
+          "anchor_valid": {},
+          "next_query_anchor": {}
+        },
+        "first_recovery_update": null,
+        "last_recovery_update": null,
+        "low_speed_samples_recorded": [],
+        "low_speed_samples_unavailable_count": 600,
+        "last_recorded_reason": "ACTIVE",
+        "internal_counters": {
+          "recovery_steps": {
+            "recorded_observations": 0,
+            "last_recorded_value": null
+          },
+          "stabilization_wait_steps": {
+            "recorded_observations": 0,
+            "last_recorded_value": null
+          },
+          "missing_velocity_count": {
+            "recorded_observations": 0,
+            "last_recorded_value": null
+          }
+        },
+        "interpretation": "Recovery update count is observed phase occupancy, not the unrecorded internal recovery_steps variable. Missing low_speed_samples does not mean zero."
+      },
+      "limitation": "Pre-physics controller observations only. Last recorded reason is not an execution-completion verdict."
+    },
+    {
+      "id": "nominal:2252000:0.8:AEGIS_3D_ANCHOR_RECOVERY",
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "seed": 2252000,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "navigation_force_method": "AXIS_CLIP",
+      "execution_status": "COMPLETED",
+      "terminal_reason": null,
+      "diagnostic": {
+        "decision_events": 600,
+        "phase_transitions": [],
+        "mode_changes": [
+          {
+            "step": 0,
+            "mode": "NOMINAL"
+          },
+          {
+            "step": 6,
+            "mode": "ACTIVE_PROBING"
+          },
+          {
+            "step": 16,
+            "mode": "CALIBRATED_APPROACH"
+          }
+        ],
+        "reason_changes": [
+          {
+            "step": 0,
+            "reason": "ACTIVE"
+          }
+        ],
+        "phase_before_counts": {
+          "BASE": 600
+        },
+        "phase_after_counts": {
+          "BASE": 600
+        },
+        "availability_counts": {
+          "range_valid": {
+            "true": 600
+          },
+          "range_fresh": {
+            "true": 600
+          },
+          "range_semantically_valid": {
+            "unrecorded_or_not_applicable": 600
+          },
+          "range_raw_transport_valid": {
+            "unrecorded_or_not_applicable": 600
+          },
+          "anchor_requested": {
+            "false": 590,
+            "true": 10
+          },
+          "anchor_valid": {
+            "unrecorded_or_not_applicable": 590,
+            "true": 10
+          },
+          "next_query_anchor": {
+            "false": 590,
+            "true": 10
+          }
+        },
+        "recovery_update_observations": 0,
+        "recovery_guidance_observations": 0,
+        "recovery_availability_counts": {
+          "range_valid": {},
+          "range_fresh": {},
+          "range_semantically_valid": {},
+          "range_raw_transport_valid": {},
+          "anchor_requested": {},
+          "anchor_valid": {},
+          "next_query_anchor": {}
+        },
+        "first_recovery_update": null,
+        "last_recovery_update": null,
+        "low_speed_samples_recorded": [],
+        "low_speed_samples_unavailable_count": 600,
+        "last_recorded_reason": "ACTIVE",
+        "internal_counters": {
+          "recovery_steps": {
+            "recorded_observations": 0,
+            "last_recorded_value": null
+          },
+          "stabilization_wait_steps": {
+            "recorded_observations": 0,
+            "last_recorded_value": null
+          },
+          "missing_velocity_count": {
+            "recorded_observations": 0,
+            "last_recorded_value": null
+          }
+        },
+        "interpretation": "Recovery update count is observed phase occupancy, not the unrecorded internal recovery_steps variable. Missing low_speed_samples does not mean zero."
+      },
+      "limitation": "Pre-physics controller observations only. Last recorded reason is not an execution-completion verdict."
+    },
+    {
+      "id": "nominal:2252000:0.8:AEGIS_3D_RECOVERY_MONITOR",
+      "controller": "AEGIS_3D_RECOVERY_MONITOR",
+      "seed": 2252000,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "navigation_force_method": "AXIS_CLIP",
+      "execution_status": "COMPLETED",
+      "terminal_reason": null,
+      "diagnostic": {
+        "decision_events": 600,
+        "phase_transitions": [],
+        "mode_changes": [
+          {
+            "step": 0,
+            "mode": "NOMINAL"
+          },
+          {
+            "step": 6,
+            "mode": "ACTIVE_PROBING"
+          },
+          {
+            "step": 16,
+            "mode": "CALIBRATED_APPROACH"
+          }
+        ],
+        "reason_changes": [
+          {
+            "step": 0,
+            "reason": "ACTIVE"
+          }
+        ],
+        "phase_before_counts": {
+          "BASE": 600
+        },
+        "phase_after_counts": {
+          "BASE": 600
+        },
+        "availability_counts": {
+          "range_valid": {
+            "true": 600
+          },
+          "range_fresh": {
+            "true": 600
+          },
+          "range_semantically_valid": {
+            "unrecorded_or_not_applicable": 600
+          },
+          "range_raw_transport_valid": {
+            "unrecorded_or_not_applicable": 600
+          },
+          "anchor_requested": {
+            "false": 590,
+            "true": 10
+          },
+          "anchor_valid": {
+            "unrecorded_or_not_applicable": 590,
+            "true": 10
+          },
+          "next_query_anchor": {
+            "false": 590,
+            "true": 10
+          }
+        },
+        "recovery_update_observations": 0,
+        "recovery_guidance_observations": 0,
+        "recovery_availability_counts": {
+          "range_valid": {},
+          "range_fresh": {},
+          "range_semantically_valid": {},
+          "range_raw_transport_valid": {},
+          "anchor_requested": {},
+          "anchor_valid": {},
+          "next_query_anchor": {}
+        },
+        "first_recovery_update": null,
+        "last_recovery_update": null,
+        "low_speed_samples_recorded": [],
+        "low_speed_samples_unavailable_count": 600,
+        "last_recorded_reason": "ACTIVE",
+        "internal_counters": {
+          "recovery_steps": {
+            "recorded_observations": 0,
+            "last_recorded_value": null
+          },
+          "stabilization_wait_steps": {
+            "recorded_observations": 0,
+            "last_recorded_value": null
+          },
+          "missing_velocity_count": {
+            "recorded_observations": 0,
+            "last_recorded_value": null
+          }
+        },
+        "interpretation": "Recovery update count is observed phase occupancy, not the unrecorded internal recovery_steps variable. Missing low_speed_samples does not mean zero."
+      },
+      "limitation": "Pre-physics controller observations only. Last recorded reason is not an execution-completion verdict."
+    },
+    {
+      "id": "nominal:2254000:0.0:AEGIS_3D_ANCHOR_RECOVERY",
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "seed": 2254000,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "navigation_force_method": "AXIS_CLIP",
+      "execution_status": "COMPLETED",
+      "terminal_reason": null,
+      "diagnostic": {
+        "decision_events": 297,
+        "phase_transitions": [
+          {
+            "step": 108,
+            "before": "BASE",
+            "after": "BRAKING",
+            "decision": "VERIFY",
+            "reason": "BRAKING_BEFORE_CONFIRMATION"
+          },
+          {
+            "step": 192,
+            "before": "BRAKING",
+            "after": "ANCHOR",
+            "decision": "VERIFY",
+            "reason": "AWAITING_STABILIZED_ANCHOR"
+          },
+          {
+            "step": 193,
+            "before": "ANCHOR",
+            "after": "BRAKING",
+            "decision": "VERIFY",
+            "reason": "BRAKING_BEFORE_CONFIRMATION"
+          },
+          {
+            "step": 194,
+            "before": "BRAKING",
+            "after": "ANCHOR",
+            "decision": "VERIFY",
+            "reason": "AWAITING_STABILIZED_ANCHOR"
+          },
+          {
+            "step": 195,
+            "before": "ANCHOR",
+            "after": "RECOVERY",
+            "decision": "VERIFY",
+            "reason": "RECOVERY_ANCHOR_REQUESTED"
+          },
+          {
+            "step": 296,
+            "before": "RECOVERY",
+            "after": "TERMINAL",
+            "decision": "ABSTAIN",
+            "reason": "RECOVERY_TIMEOUT"
+          }
+        ],
+        "mode_changes": [
+          {
+            "step": 0,
+            "mode": "NOMINAL"
+          },
+          {
+            "step": 108,
+            "mode": "STOP"
+          }
+        ],
+        "reason_changes": [
+          {
+            "step": 0,
+            "reason": "ACTIVE"
+          },
+          {
+            "step": 108,
+            "reason": "BRAKING_BEFORE_CONFIRMATION"
+          },
+          {
+            "step": 192,
+            "reason": "AWAITING_STABILIZED_ANCHOR"
+          },
+          {
+            "step": 193,
+            "reason": "BRAKING_BEFORE_CONFIRMATION"
+          },
+          {
+            "step": 194,
+            "reason": "AWAITING_STABILIZED_ANCHOR"
+          },
+          {
+            "step": 195,
+            "reason": "RECOVERY_ANCHOR_REQUESTED"
+          },
+          {
+            "step": 196,
+            "reason": "ANCHOR_GUIDED_RECOVERY"
+          },
+          {
+            "step": 296,
+            "reason": "RECOVERY_TIMEOUT"
+          }
+        ],
+        "phase_before_counts": {
+          "BASE": 109,
+          "BRAKING": 85,
+          "ANCHOR": 2,
+          "RECOVERY": 101
+        },
+        "phase_after_counts": {
+          "BASE": 108,
+          "BRAKING": 85,
+          "ANCHOR": 2,
+          "RECOVERY": 101,
+          "TERMINAL": 1
+        },
+        "availability_counts": {
+          "range_valid": {
+            "true": 297
+          },
+          "range_fresh": {
+            "true": 297
+          },
+          "range_semantically_valid": {
+            "unrecorded_or_not_applicable": 297
+          },
+          "range_raw_transport_valid": {
+            "unrecorded_or_not_applicable": 297
+          },
+          "anchor_requested": {
+            "false": 194,
+            "true": 103
+          },
+          "anchor_valid": {
+            "unrecorded_or_not_applicable": 194,
+            "true": 103
+          },
+          "next_query_anchor": {
+            "false": 194,
+            "true": 103
+          }
+        },
+        "recovery_update_observations": 101,
+        "recovery_guidance_observations": 100,
+        "recovery_availability_counts": {
+          "range_valid": {
+            "true": 101
+          },
+          "range_fresh": {
+            "true": 101
+          },
+          "range_semantically_valid": {
+            "unrecorded_or_not_applicable": 101
+          },
+          "range_raw_transport_valid": {
+            "unrecorded_or_not_applicable": 101
+          },
+          "anchor_requested": {
+            "true": 101
+          },
+          "anchor_valid": {
+            "true": 101
+          },
+          "next_query_anchor": {
+            "true": 100,
+            "false": 1
+          }
+        },
+        "first_recovery_update": {
+          "step": 196,
+          "phase_before": "RECOVERY",
+          "phase_after": "RECOVERY",
+          "true_distance": 1.1433782587636052,
+          "range": 1.1917979744753848,
+          "range_valid": true,
+          "range_fresh": true,
+          "range_semantically_valid": null,
+          "range_raw_sample": null,
+          "range_raw_transport_valid": null,
+          "range_validation_status": null,
+          "recovery_steps": null,
+          "stabilization_wait_steps": null,
+          "missing_velocity_count": null,
+          "anchor_requested": true,
+          "anchor_valid": true,
+          "effective_decision": "NAVIGATE",
+          "terminal_reason": "ANCHOR_GUIDED_RECOVERY",
+          "anchor_norm": 1.1594573397774597,
+          "velocity_observation_norm": 0.09353866330500257,
+          "action_norm": 0.3366401815908468
+        },
+        "last_recovery_update": {
+          "step": 296,
+          "phase_before": "RECOVERY",
+          "phase_after": "TERMINAL",
+          "true_distance": 0.7747101563081943,
+          "range": 0.7053704112770584,
+          "range_valid": true,
+          "range_fresh": true,
+          "range_semantically_valid": null,
+          "range_raw_sample": null,
+          "range_raw_transport_valid": null,
+          "range_validation_status": null,
+          "recovery_steps": null,
+          "stabilization_wait_steps": null,
+          "missing_velocity_count": null,
+          "anchor_requested": true,
+          "anchor_valid": true,
+          "effective_decision": "ABSTAIN",
+          "terminal_reason": "RECOVERY_TIMEOUT",
+          "anchor_norm": 0.7822331591729742,
+          "velocity_observation_norm": 0.33616386056979536,
+          "action_norm": 0.0
+        },
+        "low_speed_samples_recorded": [],
+        "low_speed_samples_unavailable_count": 297,
+        "last_recorded_reason": "RECOVERY_TIMEOUT",
+        "internal_counters": {
+          "recovery_steps": {
+            "recorded_observations": 0,
+            "last_recorded_value": null
+          },
+          "stabilization_wait_steps": {
+            "recorded_observations": 0,
+            "last_recorded_value": null
+          },
+          "missing_velocity_count": {
+            "recorded_observations": 0,
+            "last_recorded_value": null
+          }
+        },
+        "interpretation": "Recovery update count is observed phase occupancy, not the unrecorded internal recovery_steps variable. Missing low_speed_samples does not mean zero."
+      },
+      "limitation": "Pre-physics controller observations only. Last recorded reason is not an execution-completion verdict."
+    },
+    {
+      "id": "nominal:2254000:0.0:AEGIS_3D_RECOVERY_MONITOR",
+      "controller": "AEGIS_3D_RECOVERY_MONITOR",
+      "seed": 2254000,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "navigation_force_method": "AXIS_CLIP",
+      "execution_status": "COMPLETED",
+      "terminal_reason": null,
+      "diagnostic": {
+        "decision_events": 297,
+        "phase_transitions": [
+          {
+            "step": 108,
+            "before": "BASE",
+            "after": "BRAKING",
+            "decision": "VERIFY",
+            "reason": "BRAKING_BEFORE_CONFIRMATION"
+          },
+          {
+            "step": 192,
+            "before": "BRAKING",
+            "after": "ANCHOR",
+            "decision": "VERIFY",
+            "reason": "AWAITING_STABILIZED_ANCHOR"
+          },
+          {
+            "step": 193,
+            "before": "ANCHOR",
+            "after": "BRAKING",
+            "decision": "VERIFY",
+            "reason": "BRAKING_BEFORE_CONFIRMATION"
+          },
+          {
+            "step": 194,
+            "before": "BRAKING",
+            "after": "ANCHOR",
+            "decision": "VERIFY",
+            "reason": "AWAITING_STABILIZED_ANCHOR"
+          },
+          {
+            "step": 195,
+            "before": "ANCHOR",
+            "after": "RECOVERY",
+            "decision": "VERIFY",
+            "reason": "RECOVERY_ANCHOR_REQUESTED"
+          },
+          {
+            "step": 296,
+            "before": "RECOVERY",
+            "after": "TERMINAL",
+            "decision": "ABSTAIN",
+            "reason": "RECOVERY_TIMEOUT"
+          }
+        ],
+        "mode_changes": [
+          {
+            "step": 0,
+            "mode": "NOMINAL"
+          },
+          {
+            "step": 108,
+            "mode": "STOP"
+          }
+        ],
+        "reason_changes": [
+          {
+            "step": 0,
+            "reason": "ACTIVE"
+          },
+          {
+            "step": 108,
+            "reason": "BRAKING_BEFORE_CONFIRMATION"
+          },
+          {
+            "step": 192,
+            "reason": "AWAITING_STABILIZED_ANCHOR"
+          },
+          {
+            "step": 193,
+            "reason": "BRAKING_BEFORE_CONFIRMATION"
+          },
+          {
+            "step": 194,
+            "reason": "AWAITING_STABILIZED_ANCHOR"
+          },
+          {
+            "step": 195,
+            "reason": "RECOVERY_ANCHOR_REQUESTED"
+          },
+          {
+            "step": 196,
+            "reason": "ANCHOR_GUIDED_RECOVERY"
+          },
+          {
+            "step": 296,
+            "reason": "RECOVERY_TIMEOUT"
+          }
+        ],
+        "phase_before_counts": {
+          "BASE": 109,
+          "BRAKING": 85,
+          "ANCHOR": 2,
+          "RECOVERY": 101
+        },
+        "phase_after_counts": {
+          "BASE": 108,
+          "BRAKING": 85,
+          "ANCHOR": 2,
+          "RECOVERY": 101,
+          "TERMINAL": 1
+        },
+        "availability_counts": {
+          "range_valid": {
+            "true": 297
+          },
+          "range_fresh": {
+            "true": 297
+          },
+          "range_semantically_valid": {
+            "unrecorded_or_not_applicable": 297
+          },
+          "range_raw_transport_valid": {
+            "unrecorded_or_not_applicable": 297
+          },
+          "anchor_requested": {
+            "false": 194,
+            "true": 103
+          },
+          "anchor_valid": {
+            "unrecorded_or_not_applicable": 194,
+            "true": 103
+          },
+          "next_query_anchor": {
+            "false": 194,
+            "true": 103
+          }
+        },
+        "recovery_update_observations": 101,
+        "recovery_guidance_observations": 100,
+        "recovery_availability_counts": {
+          "range_valid": {
+            "true": 101
+          },
+          "range_fresh": {
+            "true": 101
+          },
+          "range_semantically_valid": {
+            "unrecorded_or_not_applicable": 101
+          },
+          "range_raw_transport_valid": {
+            "unrecorded_or_not_applicable": 101
+          },
+          "anchor_requested": {
+            "true": 101
+          },
+          "anchor_valid": {
+            "true": 101
+          },
+          "next_query_anchor": {
+            "true": 100,
+            "false": 1
+          }
+        },
+        "first_recovery_update": {
+          "step": 196,
+          "phase_before": "RECOVERY",
+          "phase_after": "RECOVERY",
+          "true_distance": 1.1433782587636052,
+          "range": 1.1917979744753848,
+          "range_valid": true,
+          "range_fresh": true,
+          "range_semantically_valid": null,
+          "range_raw_sample": null,
+          "range_raw_transport_valid": null,
+          "range_validation_status": null,
+          "recovery_steps": null,
+          "stabilization_wait_steps": null,
+          "missing_velocity_count": null,
+          "anchor_requested": true,
+          "anchor_valid": true,
+          "effective_decision": "NAVIGATE",
+          "terminal_reason": "ANCHOR_GUIDED_RECOVERY",
+          "anchor_norm": 1.1594573397774597,
+          "velocity_observation_norm": 0.09353866330500257,
+          "action_norm": 0.3366401815908468
+        },
+        "last_recovery_update": {
+          "step": 296,
+          "phase_before": "RECOVERY",
+          "phase_after": "TERMINAL",
+          "true_distance": 0.7747101563081943,
+          "range": 0.7053704112770584,
+          "range_valid": true,
+          "range_fresh": true,
+          "range_semantically_valid": null,
+          "range_raw_sample": null,
+          "range_raw_transport_valid": null,
+          "range_validation_status": null,
+          "recovery_steps": null,
+          "stabilization_wait_steps": null,
+          "missing_velocity_count": null,
+          "anchor_requested": true,
+          "anchor_valid": true,
+          "effective_decision": "ABSTAIN",
+          "terminal_reason": "RECOVERY_TIMEOUT",
+          "anchor_norm": 0.7822331591729742,
+          "velocity_observation_norm": 0.33616386056979536,
+          "action_norm": 0.0
+        },
+        "low_speed_samples_recorded": [],
+        "low_speed_samples_unavailable_count": 297,
+        "last_recorded_reason": "RECOVERY_TIMEOUT",
+        "internal_counters": {
+          "recovery_steps": {
+            "recorded_observations": 0,
+            "last_recorded_value": null
+          },
+          "stabilization_wait_steps": {
+            "recorded_observations": 0,
+            "last_recorded_value": null
+          },
+          "missing_velocity_count": {
+            "recorded_observations": 0,
+            "last_recorded_value": null
+          }
+        },
+        "interpretation": "Recovery update count is observed phase occupancy, not the unrecorded internal recovery_steps variable. Missing low_speed_samples does not mean zero."
+      },
+      "limitation": "Pre-physics controller observations only. Last recorded reason is not an execution-completion verdict."
+    },
+    {
+      "id": "nominal:2254000:0.8:AEGIS_3D_ANCHOR_RECOVERY",
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "seed": 2254000,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "navigation_force_method": "AXIS_CLIP",
+      "execution_status": "COMPLETED",
+      "terminal_reason": null,
+      "diagnostic": {
+        "decision_events": 297,
+        "phase_transitions": [
+          {
+            "step": 108,
+            "before": "BASE",
+            "after": "BRAKING",
+            "decision": "VERIFY",
+            "reason": "BRAKING_BEFORE_CONFIRMATION"
+          },
+          {
+            "step": 192,
+            "before": "BRAKING",
+            "after": "ANCHOR",
+            "decision": "VERIFY",
+            "reason": "AWAITING_STABILIZED_ANCHOR"
+          },
+          {
+            "step": 193,
+            "before": "ANCHOR",
+            "after": "BRAKING",
+            "decision": "VERIFY",
+            "reason": "BRAKING_BEFORE_CONFIRMATION"
+          },
+          {
+            "step": 194,
+            "before": "BRAKING",
+            "after": "ANCHOR",
+            "decision": "VERIFY",
+            "reason": "AWAITING_STABILIZED_ANCHOR"
+          },
+          {
+            "step": 195,
+            "before": "ANCHOR",
+            "after": "RECOVERY",
+            "decision": "VERIFY",
+            "reason": "RECOVERY_ANCHOR_REQUESTED"
+          },
+          {
+            "step": 296,
+            "before": "RECOVERY",
+            "after": "TERMINAL",
+            "decision": "ABSTAIN",
+            "reason": "RECOVERY_TIMEOUT"
+          }
+        ],
+        "mode_changes": [
+          {
+            "step": 0,
+            "mode": "NOMINAL"
+          },
+          {
+            "step": 6,
+            "mode": "ACTIVE_PROBING"
+          },
+          {
+            "step": 16,
+            "mode": "CALIBRATED_APPROACH"
+          },
+          {
+            "step": 108,
+            "mode": "STOP"
+          }
+        ],
+        "reason_changes": [
+          {
+            "step": 0,
+            "reason": "ACTIVE"
+          },
+          {
+            "step": 108,
+            "reason": "BRAKING_BEFORE_CONFIRMATION"
+          },
+          {
+            "step": 192,
+            "reason": "AWAITING_STABILIZED_ANCHOR"
+          },
+          {
+            "step": 193,
+            "reason": "BRAKING_BEFORE_CONFIRMATION"
+          },
+          {
+            "step": 194,
+            "reason": "AWAITING_STABILIZED_ANCHOR"
+          },
+          {
+            "step": 195,
+            "reason": "RECOVERY_ANCHOR_REQUESTED"
+          },
+          {
+            "step": 196,
+            "reason": "ANCHOR_GUIDED_RECOVERY"
+          },
+          {
+            "step": 296,
+            "reason": "RECOVERY_TIMEOUT"
+          }
+        ],
+        "phase_before_counts": {
+          "BASE": 109,
+          "BRAKING": 85,
+          "ANCHOR": 2,
+          "RECOVERY": 101
+        },
+        "phase_after_counts": {
+          "BASE": 108,
+          "BRAKING": 85,
+          "ANCHOR": 2,
+          "RECOVERY": 101,
+          "TERMINAL": 1
+        },
+        "availability_counts": {
+          "range_valid": {
+            "true": 297
+          },
+          "range_fresh": {
+            "true": 297
+          },
+          "range_semantically_valid": {
+            "unrecorded_or_not_applicable": 297
+          },
+          "range_raw_transport_valid": {
+            "unrecorded_or_not_applicable": 297
+          },
+          "anchor_requested": {
+            "false": 184,
+            "true": 113
+          },
+          "anchor_valid": {
+            "unrecorded_or_not_applicable": 184,
+            "true": 113
+          },
+          "next_query_anchor": {
+            "false": 184,
+            "true": 113
+          }
+        },
+        "recovery_update_observations": 101,
+        "recovery_guidance_observations": 100,
+        "recovery_availability_counts": {
+          "range_valid": {
+            "true": 101
+          },
+          "range_fresh": {
+            "true": 101
+          },
+          "range_semantically_valid": {
+            "unrecorded_or_not_applicable": 101
+          },
+          "range_raw_transport_valid": {
+            "unrecorded_or_not_applicable": 101
+          },
+          "anchor_requested": {
+            "true": 101
+          },
+          "anchor_valid": {
+            "true": 101
+          },
+          "next_query_anchor": {
+            "true": 100,
+            "false": 1
+          }
+        },
+        "first_recovery_update": {
+          "step": 196,
+          "phase_before": "RECOVERY",
+          "phase_after": "RECOVERY",
+          "true_distance": 1.0983623480801739,
+          "range": 1.1467820637919535,
+          "range_valid": true,
+          "range_fresh": true,
+          "range_semantically_valid": null,
+          "range_raw_sample": null,
+          "range_raw_transport_valid": null,
+          "range_validation_status": null,
+          "recovery_steps": null,
+          "stabilization_wait_steps": null,
+          "missing_velocity_count": null,
+          "anchor_requested": true,
+          "anchor_valid": true,
+          "effective_decision": "NAVIGATE",
+          "terminal_reason": "ANCHOR_GUIDED_RECOVERY",
+          "anchor_norm": 1.054766501676128,
+          "velocity_observation_norm": 0.09444287663351404,
+          "action_norm": 0.31312842397347457
+        },
+        "last_recovery_update": {
+          "step": 296,
+          "phase_before": "RECOVERY",
+          "phase_after": "TERMINAL",
+          "true_distance": 0.7387913287654063,
+          "range": 0.6694515837342704,
+          "range_valid": true,
+          "range_fresh": true,
+          "range_semantically_valid": null,
+          "range_raw_sample": null,
+          "range_raw_transport_valid": null,
+          "range_validation_status": null,
+          "recovery_steps": null,
+          "stabilization_wait_steps": null,
+          "missing_velocity_count": null,
+          "anchor_requested": true,
+          "anchor_valid": true,
+          "effective_decision": "ABSTAIN",
+          "terminal_reason": "RECOVERY_TIMEOUT",
+          "anchor_norm": 0.7451736207418086,
+          "velocity_observation_norm": 0.33104223818096135,
+          "action_norm": 0.0
+        },
+        "low_speed_samples_recorded": [],
+        "low_speed_samples_unavailable_count": 297,
+        "last_recorded_reason": "RECOVERY_TIMEOUT",
+        "internal_counters": {
+          "recovery_steps": {
+            "recorded_observations": 0,
+            "last_recorded_value": null
+          },
+          "stabilization_wait_steps": {
+            "recorded_observations": 0,
+            "last_recorded_value": null
+          },
+          "missing_velocity_count": {
+            "recorded_observations": 0,
+            "last_recorded_value": null
+          }
+        },
+        "interpretation": "Recovery update count is observed phase occupancy, not the unrecorded internal recovery_steps variable. Missing low_speed_samples does not mean zero."
+      },
+      "limitation": "Pre-physics controller observations only. Last recorded reason is not an execution-completion verdict."
+    },
+    {
+      "id": "nominal:2254000:0.8:AEGIS_3D_RECOVERY_MONITOR",
+      "controller": "AEGIS_3D_RECOVERY_MONITOR",
+      "seed": 2254000,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "navigation_force_method": "AXIS_CLIP",
+      "execution_status": "COMPLETED",
+      "terminal_reason": null,
+      "diagnostic": {
+        "decision_events": 111,
+        "phase_transitions": [
+          {
+            "step": 108,
+            "before": "BASE",
+            "after": "BRAKING",
+            "decision": "VERIFY",
+            "reason": "BRAKING_BEFORE_CONFIRMATION"
+          },
+          {
+            "step": 110,
+            "before": "BRAKING",
+            "after": "TERMINAL",
+            "decision": "ABSTAIN",
+            "reason": "POSTPROPOSAL_RANGE_UNAVAILABLE"
+          }
+        ],
+        "mode_changes": [
+          {
+            "step": 0,
+            "mode": "NOMINAL"
+          },
+          {
+            "step": 6,
+            "mode": "ACTIVE_PROBING"
+          },
+          {
+            "step": 16,
+            "mode": "CALIBRATED_APPROACH"
+          },
+          {
+            "step": 108,
+            "mode": "STOP"
+          }
+        ],
+        "reason_changes": [
+          {
+            "step": 0,
+            "reason": "ACTIVE"
+          },
+          {
+            "step": 108,
+            "reason": "BRAKING_BEFORE_CONFIRMATION"
+          },
+          {
+            "step": 110,
+            "reason": "POSTPROPOSAL_RANGE_UNAVAILABLE"
+          }
+        ],
+        "phase_before_counts": {
+          "BASE": 109,
+          "BRAKING": 2
+        },
+        "phase_after_counts": {
+          "BASE": 108,
+          "BRAKING": 2,
+          "TERMINAL": 1
+        },
+        "availability_counts": {
+          "range_valid": {
+            "true": 111
+          },
+          "range_fresh": {
+            "true": 111
+          },
+          "range_semantically_valid": {
+            "unrecorded_or_not_applicable": 111
+          },
+          "range_raw_transport_valid": {
+            "unrecorded_or_not_applicable": 111
+          },
+          "anchor_requested": {
+            "false": 101,
+            "true": 10
+          },
+          "anchor_valid": {
+            "unrecorded_or_not_applicable": 101,
+            "true": 10
+          },
+          "next_query_anchor": {
+            "false": 101,
+            "true": 10
+          }
+        },
+        "recovery_update_observations": 0,
+        "recovery_guidance_observations": 0,
+        "recovery_availability_counts": {
+          "range_valid": {},
+          "range_fresh": {},
+          "range_semantically_valid": {},
+          "range_raw_transport_valid": {},
+          "anchor_requested": {},
+          "anchor_valid": {},
+          "next_query_anchor": {}
+        },
+        "first_recovery_update": null,
+        "last_recovery_update": null,
+        "low_speed_samples_recorded": [],
+        "low_speed_samples_unavailable_count": 111,
+        "last_recorded_reason": "POSTPROPOSAL_RANGE_UNAVAILABLE",
+        "internal_counters": {
+          "recovery_steps": {
+            "recorded_observations": 0,
+            "last_recorded_value": null
+          },
+          "stabilization_wait_steps": {
+            "recorded_observations": 0,
+            "last_recorded_value": null
+          },
+          "missing_velocity_count": {
+            "recorded_observations": 0,
+            "last_recorded_value": null
+          }
+        },
+        "interpretation": "Recovery update count is observed phase occupancy, not the unrecorded internal recovery_steps variable. Missing low_speed_samples does not mean zero."
+      },
+      "limitation": "Pre-physics controller observations only. Last recorded reason is not an execution-completion verdict."
+    }
+  ]
+}

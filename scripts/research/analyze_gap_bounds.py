@@ -6,11 +6,14 @@ import itertools
 import json
 import math
 from pathlib import Path
+if __package__:
+    from .evidence_integrity import validate_source_metadata
+else:
+    from evidence_integrity import validate_source_metadata
 
 
 def analyze(data):
-    if data.get("classification") != "EXPLORATORY_SIMULATION" or not data.get("sources_unchanged"):
-        raise ValueError("invalid experiment or source changes")
+    validate_source_metadata(data)
     names = [x["name"] for x in data["cases"]]
     if not names or len(names) != len(set(names)) or data["n_seeds"] <= 0:
         raise ValueError("invalid self-declared design")

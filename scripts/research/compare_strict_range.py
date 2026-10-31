@@ -42,7 +42,7 @@ def main():
                                          range_latency_steps=args.range_latency_steps)
                     row["bias_xyz"] = bias
                     episodes.append(row)
-        paths = ["experiments/benchmark_physical_3d_cbf.py", "src/aegis/v9/controller_3d.py",
+        paths = ["experiments/benchmark_physical_3d_cbf.py", "src/aegis/v9/controller_3d.py", "src/aegis/v9/exploratory_sensor_validation.py",
                  "src/aegis/env/mujoco_3d_cbf.py", "scripts/research/compare_strict_range.py"]
         json.dump({"classification": "EXPLORATORY_SIMULATION", "seed_start": args.seed_start,
                    "n_seeds": args.n_seeds, "max_steps": args.max_steps,

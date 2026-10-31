@@ -2,9 +2,8 @@
 import math
 import numpy as np
 
-from aegis.v3.sensors.cross_modal import RangeReading
-from aegis.v7.anchor_sensor import AnchorReading
 from aegis.v9.controller_3d import Aegis3DAwareController
+from aegis.v9.exploratory_sensor_validation import valid_range, valid_anchor
 
 
 class StabilizedArrivalCandidate:
@@ -88,16 +87,8 @@ class StabilizedArrivalCandidate:
             self.reason = "AWAITING_STABILIZED_ANCHOR"
             return np.zeros(3), "VERIFY", self.base.last_nav_vector_3d, True
 
-        valid_range = (isinstance(r, RangeReading) and r.valid and not r.dropped and not r.anomaly
-                       and math.isfinite(r.distance) and r.distance >= 0 and math.isfinite(r.sigma) and r.sigma > 0)
-        valid_anchor = (isinstance(anchor_reading, AnchorReading) and anchor_reading.valid and anchor_reading.queried
-                        and math.isfinite(anchor_reading.sigma) and anchor_reading.sigma > 0)
-        try:
-            anchor = np.asarray(anchor_reading.estimate, dtype=float) if valid_anchor else None
-            valid_anchor = bool(valid_anchor and anchor.shape == (3,) and np.isfinite(anchor).all())
-        except (TypeError, ValueError):
-            valid_anchor = False
-        if not valid_range or not valid_anchor:
+        anchor = valid_anchor(anchor_reading)
+        if not valid_range(r) or anchor is None:
             return self._abstain("ANCHOR_OR_RANGE_UNAVAILABLE")
         if np.linalg.norm(anchor) + 1.645 * anchor_reading.sigma > self.success_radius:
             return self._abstain("ANCHOR_OUTSIDE_CONFIRMATION_MARGIN")
