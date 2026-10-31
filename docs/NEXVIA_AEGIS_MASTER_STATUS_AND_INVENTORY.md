@@ -1,22 +1,22 @@
 # NEXVIA AEGIS — Master Project Status & Complete Inventory Report
 
-**Document ID:** `AEGIS-MASTER-STATUS-2026-10-31`  
-**Current Milestone:** Milestone V9-M11 (Phase 1 Decision-Making, Phase 2 3D Physical AI, Phase 3 Decentralized Swarm Resilience, Phase 4 6-DOF SE(3) Dynamics, Phase 5 Deep Aerodynamics, Phase 6 Safe Reinforcement Learning, Phase 7 Active Vision & LiDAR SLAM under Occlusion, Phase 8 Sim2Real Deployment & ROS 2 / PX4 Hardware Bridge, Phase 9 NMPC-CBF Receding Horizon Lookahead Trajectory Optimization, Phase 10 Autonomous Vehicles (AV) & Connected Cyber-Resilient Platooning Stack, Phase 11 Air-Ground Heterogeneous Collaborative Teaming & Safety Architecture)  
-**Governance State:** **`PHASE_1_TO_11_CONFIRMATORY_VERIFIED — AIR_GROUND_HETEROGENEOUS_CERTIFIED`**  
+**Document ID:** `AEGIS-MASTER-STATUS-2026-11-01`  
+**Current Milestone:** Milestone V9-M12 (Phase 1 Decision-Making, Phase 2 3D Physical AI, Phase 3 Decentralized Swarm Resilience, Phase 4 6-DOF SE(3) Dynamics, Phase 5 Deep Aerodynamics, Phase 6 Safe Reinforcement Learning, Phase 7 Active Vision & LiDAR SLAM under Occlusion, Phase 8 Sim2Real Deployment & ROS 2 / PX4 Hardware Bridge, Phase 9 NMPC-CBF Receding Horizon Lookahead Trajectory Optimization, Phase 10 Autonomous Vehicles (AV) & Connected Cyber-Resilient Platooning Stack, Phase 11 Air-Ground Heterogeneous Collaborative Teaming, Phase 12 Multi-Vehicle Collaborative Platooning & Dual Aerial Scout Handover Architecture)  
+**Governance State:** **`PHASE_1_TO_12_CONFIRMATORY_VERIFIED — HETEROGENEOUS_PLATOONING_CERTIFIED`**  
 **Repository Remote:** [`https://github.com/Chalermsak1/nexvia-aegis.git`](https://github.com/Chalermsak1/nexvia-aegis.git)  
-**Automated Test Suite:** **846 / 846 passed (100% pass rate in ~70s)**  
+**Automated Test Suite:** **851 / 851 passed (100% pass rate in ~37s)**  
 **Certified Policy:** `V9_CAND_1_TIER1_STRICTEST` (SHA-256: `5a89d6061b379f1b34ab47be0deef8d63180d3e4c21d18c478bc7e451f5c84e2`)  
-**Timestamp:** October 31, 2026 (Bangkok / UTC)  
+**Timestamp:** November 1, 2026 (Bangkok / UTC)  
 
 ---
 
 ## 1. สถานะโครงการปัจจุบัน (Executive Project Status)
 
-โครงการ **NEXVIA AEGIS** ได้บรรลุเป้าหมายการวิจัยระดับแกนกลาง (AI Research Core) ครบทั้ง 11 เฟสอย่างสมบูรณ์ 100%:
+โครงการ **NEXVIA AEGIS** ได้บรรลุเป้าหมายการวิจัยระดับแกนกลาง (AI Research Core) ครบทั้ง 12 เฟสอย่างสมบูรณ์ 100%:
 
 ```
-[Phase 1..9: Aerial & AI Core] -> [Phase 10: Ground AV & Platooning] -> [Phase 11: Air-Ground Heterogeneous Teaming]
-          (VERIFIED)                             (VERIFIED)                                  (VERIFIED)
+[Phase 1..9: Aerial & AI Core] -> [Phase 10: Ground AV & Platooning] -> [Phase 11: Air-Ground Teaming] -> [Phase 12: Dual Scout Handover & Platooning]
+          (VERIFIED)                             (VERIFIED)                           (VERIFIED)                                  (VERIFIED)
 ```
 
 - **Phase 1 (Trustworthy Decision-Making):** ปิด Audit A3/A4 loopholes, รัน matched benchmark 1,800 episodes บน $D_{\text{dev}}$, พิสูจน์ Ville Martingale Sequential Risk Control (Type-I False Alarm $\le \alpha$ พร้อม $95\%$ Clopper-Pearson UCB $\le 0.0034$) และ Active Probing gain (+39.17% TSR).
@@ -29,8 +29,9 @@
 - **Phase 8 (Sim2Real Deployment & ROS 2 / PX4 Hardware Bridge):** พัฒนาระบบเชื่อมต่อฮาร์ดแวร์จริงระดับ Embedded Production รองรับ ROS 2 Humble/Iron (`aegis_drone_node`) และ MAVLink protocol (`SET_ATTITUDE_TARGET` 200 Hz) ร่วมกับ Latency Forward Extrapolation ($\mathbf{p} + \mathbf{v}\Delta t_{\text{comp}}$) และ Real-Time Safety Watchdog ป้องกันการเจาะทะลุ Barrier ภายใต้ Jitter ขนส่งข้อมูล 15ms และ Packet Drop 3% โดยขจัดการชนเหลือ 0.0% (เทียบกับ Naive PX4 ชน 100% และ Delayed MAVROS ชน 100%) พร้อม Failsafe Position-Hold Hover เมื่อสัญญาณขาดหาย 60ms.
 - **Phase 9 (Nonlinear Model Predictive Control with Control Barrier Functions - NMPC-CBF Lookahead):** ขยายการตัดสินใจจาก Pointwise Myopic CBF สู่การพยากรณ์วิถีการบินล่วงหน้า 15 สเต็ป ($0.75\,$s lookahead) แบบ Receding Horizon พร้อม D-CBF Safety Constraints ตลอด Horizon, การลด Jerk อัตราการเปลี่ยนแปลงแรงขับเคลื่อน ($\|\Delta \mathbf{F}\|^2$), และการจำกัดมุมเอียงไม่เกิน $35^\circ$ แก้ปัญหาการเบรกกระตุกเฉียบพลันและการกระดอนขึ้นเพดาน (Altitude Ballooning) ของ Pointwise CBF โดยรัน Real-Time ในระดับ sub-50ms พร้อมระบบ Fallback Shield รับประกันความปลอดภัย 100%.
 - **Phase 10 (Autonomous Vehicles (AV) & Connected Cyber-Resilient Platooning Stack):** ขยายเทคโนโลยีความปลอดภัยขั้นสูงสู่ยานยนต์อัตโนมัติภาคพื้นดิน (Ground AVs) และขบวนรถเชื่อมต่ออัจฉริยะ (Connected Platooning): โมเดลไดนามิกจักรยาน 6-DOF (Dynamic Bicycle Model) ร่วมกับ Pacejka Magic Formula, การถ่ายเทน้ำหนักไดนามิก (Longitudinal Weight Transfer $\Delta F_z$), การแปลงพิกัดโค้งถนน Frenet Frame $(s, d)$, เกราะนิรภัย Frenet High-Order CBF (Relative degree 2 Lane Keeping, Kamm's Friction Circle Anti-Skid บนถนนลื่น $\mu=0.35$, Predictive Curvature Deceleration, ACC Barrier), และอัลกอริทึม Ville Supermartingale V2X Cross-Validation ขจัด Fake Phantom Brake Attack และ Spoofing ได้ภายใน 540 ms ($p \le 0.001$) พร้อม Autoware.Universe / ROS 2 Humble Node Bridge.
-- **Phase 11 (Air-Ground Heterogeneous Collaborative Teaming & Safety Architecture):** ขจัดข้อจำกัดทางกายภาพของการตรวจจับมุมอับสายตาบนโค้งถนนแคบ ($R = 80\,$m) และทางลื่นหิมะ/น้ำแข็ง ($\mu = 0.28$) ที่เซนเซอร์ภาคพื้นดินมีระยะมองเห็นจำกัด $\le 35\,$m (ซึ่งต้องการระยะเบรกจริง $\ge 89.6\,$m จึงชน 100% เสมอหากพึ่งพาเฉพาะเซนเซอร์ตัวรถ) ด้วยการบูรณาการโดรนลาดตระเวนทางอากาศ 6-DOF ("Eye-in-the-Sky" Quadrotor Scout บินนำหน้าขบวน $65\,$m ที่ความสูง $18\,$m พร้อมแบบจำลอง Deep Aerodynamics Drag & Gust), ระบบ V2A Wireless Telemetry ตรวจจับและรายงานสถานีสิ่งกีดขวาง $s_{\text{haz}}$ และสัมประสิทธิ์แรงเสียดทานถนน $\mu_{\text{est}}$ ล่วงหน้าถึง $150\,$m, เสริมด้วย Anytime-Valid Ville Supermartingale V2A Anomaly Guard ($W_t \ge 1000, p \le 0.001$) สกัดกั้นการโจมตีทางไซเบอร์แบบ Adversarial Phantom Hazard Spoofing ได้สมบูรณ์แบบ ขจัดปัญหาการเบรกหลอก (False Emergency Stop / Phantom Braking) เหลือ 0.0% (เทียบกับ Naive V2A ที่เบรกกะทันหันกลางทางด่วน 100%), และเกราะนิรภัย Cross-Domain Lookahead Frenet CBF Shield ที่สั่งการชะลอความเร็วล่วงหน้าอย่างนุ่มนวล (Smooth Gradual Deceleration $-2.0\,\text{m/s}^2$) ก่อนถึงจุดอับสายตากว่า 95 เมตร หยุดรถได้อย่างปลอดภัย 100% (Stopping Margin $+10.21\,$m ก่อนถึงสิ่งกีดขวาง) โดยรักษาขอบเขตวงกลมแรงเสียดทานของ Kamm (Kamm's Friction Circle Adhesion) ได้อย่างสมบูรณ์.
-- **สถานะการทำงานของโค้ด:** รันการทดสอบผ่าน 100% (846/846 tests) ไม่มี Failure, ไม่มี Broken Invariant.
+- **Phase 11 (Air-Ground Heterogeneous Collaborative Teaming & Safety Architecture):** ขจัดข้อจำกัดทางกายภาพของการตรวจจับมุมอับสายตาบนโค้งถนนแคบ ($R = 80\,$m) และทางลื่นหิมะ/น้ำแข็ง ($\mu = 0.28$) ด้วยการบูรณาการโดรนลาดตระเวนทางอากาศ 6-DOF ("Eye-in-the-Sky" Quadrotor Scout บินนำหน้าขบวน $65\,$m ที่ความสูง $18\,$m พร้อมแบบจำลอง Deep Aerodynamics Drag & Gust), ระบบ V2A Wireless Telemetry ตรวจจับและรายงานสถานีสิ่งกีดขวาง $s_{\text{haz}}$ และสัมประสิทธิ์แรงเสียดทานถนน $\mu_{\text{est}}$ ล่วงหน้าถึง $150\,$m, เสริมด้วย Anytime-Valid Ville Supermartingale V2A Anomaly Guard ($W_t \ge 1000, p \le 0.001$) สกัดกั้น Adversarial Phantom Hazard Spoofing ได้สมบูรณ์แบบ ขจัดปัญหาการเบรกหลอกเหลือ 0.0%, และเกราะนิรภัย Cross-Domain Lookahead Frenet CBF Shield สั่งการชะลอความเร็วล่วงหน้าอย่างนุ่มนวล (Stopping Margin $+10.21\,$m ก่อนถึงสิ่งกีดขวาง).
+- **Phase 12 (Multi-Vehicle Heterogeneous Collaborative Platooning & Dual Aerial Scout Handover Architecture):** แก้ปัญหาคอขวดจุดอับสายตาระหว่างโดรนตัวเดียวแบตเตอรี่หมด ($SoC \le 35\%$) ด้วยระบบ Dual Aerial Scout Handover State Machine (Scout A $\to$ Launch $\to$ Dual Sync $\to$ Return $\to$ Scout B) พร้อมช่องทางบินแยกด้านข้าง (Lateral Flight Corridors $d = -5.0\,$m และ $+5.5\,$m) รับประกันระยะห่าง 3 มิติ $\ge 10.5\,$m ($>6.0\,$m Barrier), รักษาระดับการตรวจจับล่วงหน้าต่อเนื่อง $>90.2\%$, ผสานเกราะนิรภัย V2A-to-V2V Multi-Hop Cascading Platoon CBF Shield ควบคุมขบวนรถยนต์ 5 คันบนโค้งถนนน้ำแข็ง ($\mu = 0.25$) ให้ชะลอความเร็วพร้อมกันอย่างนุ่มนวล รักษาระดับ String Stability สมบูรณ์แบบ ($\|G(j\omega)\|_\infty = 1.000$) ไม่เกิดคลื่นกระแทกการเบรกสะท้อนท้ายแถว (เทียบกับ Unshielded Blind ที่อัตราขยายพุ่งสูงถึง 1.887), ขจัดการชนท้ายกันเองในขบวนและสิ่งกีดขวางเป็น 0.0% พร้อมระบบ Ville Supermartingale ขจัดโหนดรีเลย์ V2V ที่ถูกโจมตี (Byzantine Relay).
+- **สถานะการทำงานของโค้ด:** รันการทดสอบผ่าน 100% (851/851 tests) ไม่มี Failure, ไม่มี Broken Invariant.
 
 ---
 
