@@ -1,0 +1,331 @@
+{
+  "classification": "EXPLORATORY_SIMULATION_DIAGNOSTIC",
+  "input_sha256": "c73446f1d111546145d532d34ca998731615a98b30e5a6925acf771586f0618b",
+  "ledger_state": "FINALIZED",
+  "tail_steps": 50,
+  "measurement_scope": "Controller observations before physics; last observation is not final plant state. No success threshold inferred.",
+  "episodes": [
+    {
+      "id": "nominal:2252000:0.0:AEGIS_3D_ANCHOR_RECOVERY",
+      "assignment": {
+        "bias_xyz": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "case": {
+          "name": "nominal",
+          "range_bias_m": 0.0,
+          "range_dropout_probability": 0.0
+        },
+        "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+        "id": "nominal:2252000:0.0:AEGIS_3D_ANCHOR_RECOVERY",
+        "max_steps": 1200,
+        "post_stop_steps": 50,
+        "runtime": {
+          "mujoco": "3.14.0",
+          "numpy": "2.5.3",
+          "python": "3.12.14"
+        },
+        "seed": 2252000,
+        "source_sha256": {
+          "experiments/benchmark_physical_3d_cbf.py": "cbbe6f5362a66ac4df45814f246b548b4ce222faa40ebb2a496168e36eb6c0e2",
+          "scripts/research/development_ledger.py": "254fe889557148110e458ed2cb6e3286837589a484d7a63e1ae3d2c34b645502",
+          "scripts/research/study_recovery_monitor_ledger.py": "22809e4be243f9b8e1fa34bb737cd1d0cbfbd165ff3d433447dca9bfbeb708b7",
+          "src/aegis/env/mujoco_3d_cbf.py": "438b8ec89d1d40101586b0d888de7e8b5d73c9763cbae2603ccab01f04801433",
+          "src/aegis/v9/anchor_recovery_candidate.py": "14234ba7efccecc28f639a0ecb6b390ea29b59eaccc3b82bd6f4360dccdf038a",
+          "src/aegis/v9/controller_3d.py": "4579219de9d9ab4269fa620e1962685e844f927ba00e6979d571aa47f73f6892",
+          "src/aegis/v9/exploratory_sensor_validation.py": "df4e18e4e538c55a7d52ad81cdb3123d2591183461b975607afa7f67d607bc11",
+          "src/aegis/v9/recovery_monitor_candidate.py": "134b2f549fde1762e5d48b5505131a231634ddf77edcbd766e1bf00fd189819d",
+          "src/aegis/v9/stabilized_arrival_candidate.py": "3f93b0c736a924296c949466fbec502040ce1c65a19912a64564ff7ec5928cb8",
+          "src/aegis/v9/ville_monitor.py": "41ff44c0984aafc91261a2c0e04f569d5e83f3a86d7d7ec0dc372f303ca7c8db"
+        }
+      },
+      "execution_status": "COMPLETED",
+      "observations": {
+        "decision_observations": 1200,
+        "initial_observed_distance_m": 5.461645201145673,
+        "last_prephysics_distance_m": 3.4454502851388007,
+        "minimum_observed_distance_m": 3.4454502851388007,
+        "observed_distance_reduction_m": 2.0161949160068726,
+        "tail_observations": 50,
+        "tail_distance_reduction_m": 0.0,
+        "mode_counts": {
+          "NOMINAL": 1200
+        },
+        "effective_decision_counts": {
+          "NAVIGATE": 1200
+        },
+        "tail_mode_counts": {
+          "NOMINAL": 50
+        },
+        "interpretation": "DESCRIPTIVE_ONLY_NO_CAUSAL_OR_SAFETY_CLASSIFICATION"
+      },
+      "episode": {
+        "abstained": 0,
+        "anchor_queries": 0,
+        "anchor_valid_readings": 0,
+        "cbf_constraint_violation_occurred": 0,
+        "cbf_exact_fallback_steps": 1100,
+        "cbf_infeasible_steps": 0,
+        "cbf_unchecked_steps": 0,
+        "collision_occurred": 0,
+        "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+        "false_arrival": 0,
+        "final_distance": 3.4455,
+        "post_stop": null,
+        "range_bias_m": 0.0,
+        "range_dropout_probability": 0.0,
+        "range_latency_steps": 0,
+        "seed": 2252000,
+        "steps": 1200,
+        "timeout": 1,
+        "true_success": 0
+      }
+    },
+    {
+      "id": "nominal:2252000:0.0:AEGIS_3D_RECOVERY_MONITOR",
+      "assignment": {
+        "bias_xyz": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "case": {
+          "name": "nominal",
+          "range_bias_m": 0.0,
+          "range_dropout_probability": 0.0
+        },
+        "controller": "AEGIS_3D_RECOVERY_MONITOR",
+        "id": "nominal:2252000:0.0:AEGIS_3D_RECOVERY_MONITOR",
+        "max_steps": 1200,
+        "post_stop_steps": 50,
+        "runtime": {
+          "mujoco": "3.14.0",
+          "numpy": "2.5.3",
+          "python": "3.12.14"
+        },
+        "seed": 2252000,
+        "source_sha256": {
+          "experiments/benchmark_physical_3d_cbf.py": "cbbe6f5362a66ac4df45814f246b548b4ce222faa40ebb2a496168e36eb6c0e2",
+          "scripts/research/development_ledger.py": "254fe889557148110e458ed2cb6e3286837589a484d7a63e1ae3d2c34b645502",
+          "scripts/research/study_recovery_monitor_ledger.py": "22809e4be243f9b8e1fa34bb737cd1d0cbfbd165ff3d433447dca9bfbeb708b7",
+          "src/aegis/env/mujoco_3d_cbf.py": "438b8ec89d1d40101586b0d888de7e8b5d73c9763cbae2603ccab01f04801433",
+          "src/aegis/v9/anchor_recovery_candidate.py": "14234ba7efccecc28f639a0ecb6b390ea29b59eaccc3b82bd6f4360dccdf038a",
+          "src/aegis/v9/controller_3d.py": "4579219de9d9ab4269fa620e1962685e844f927ba00e6979d571aa47f73f6892",
+          "src/aegis/v9/exploratory_sensor_validation.py": "df4e18e4e538c55a7d52ad81cdb3123d2591183461b975607afa7f67d607bc11",
+          "src/aegis/v9/recovery_monitor_candidate.py": "134b2f549fde1762e5d48b5505131a231634ddf77edcbd766e1bf00fd189819d",
+          "src/aegis/v9/stabilized_arrival_candidate.py": "3f93b0c736a924296c949466fbec502040ce1c65a19912a64564ff7ec5928cb8",
+          "src/aegis/v9/ville_monitor.py": "41ff44c0984aafc91261a2c0e04f569d5e83f3a86d7d7ec0dc372f303ca7c8db"
+        }
+      },
+      "execution_status": "COMPLETED",
+      "observations": {
+        "decision_observations": 1200,
+        "initial_observed_distance_m": 5.461645201145673,
+        "last_prephysics_distance_m": 3.4454502851388007,
+        "minimum_observed_distance_m": 3.4454502851388007,
+        "observed_distance_reduction_m": 2.0161949160068726,
+        "tail_observations": 50,
+        "tail_distance_reduction_m": 0.0,
+        "mode_counts": {
+          "NOMINAL": 1200
+        },
+        "effective_decision_counts": {
+          "NAVIGATE": 1200
+        },
+        "tail_mode_counts": {
+          "NOMINAL": 50
+        },
+        "interpretation": "DESCRIPTIVE_ONLY_NO_CAUSAL_OR_SAFETY_CLASSIFICATION"
+      },
+      "episode": {
+        "abstained": 0,
+        "anchor_queries": 0,
+        "anchor_valid_readings": 0,
+        "cbf_constraint_violation_occurred": 0,
+        "cbf_exact_fallback_steps": 1100,
+        "cbf_infeasible_steps": 0,
+        "cbf_unchecked_steps": 0,
+        "collision_occurred": 0,
+        "controller": "AEGIS_3D_RECOVERY_MONITOR",
+        "false_arrival": 0,
+        "final_distance": 3.4455,
+        "post_stop": null,
+        "postproposal_monitor_reason": "NOT_STARTED",
+        "postproposal_monitor_steps": 0,
+        "range_bias_m": 0.0,
+        "range_dropout_probability": 0.0,
+        "range_latency_steps": 0,
+        "seed": 2252000,
+        "steps": 1200,
+        "timeout": 1,
+        "true_success": 0
+      }
+    },
+    {
+      "id": "nominal:2252000:0.8:AEGIS_3D_ANCHOR_RECOVERY",
+      "assignment": {
+        "bias_xyz": [
+          0.8,
+          0.8,
+          -0.3
+        ],
+        "case": {
+          "name": "nominal",
+          "range_bias_m": 0.0,
+          "range_dropout_probability": 0.0
+        },
+        "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+        "id": "nominal:2252000:0.8:AEGIS_3D_ANCHOR_RECOVERY",
+        "max_steps": 1200,
+        "post_stop_steps": 50,
+        "runtime": {
+          "mujoco": "3.14.0",
+          "numpy": "2.5.3",
+          "python": "3.12.14"
+        },
+        "seed": 2252000,
+        "source_sha256": {
+          "experiments/benchmark_physical_3d_cbf.py": "cbbe6f5362a66ac4df45814f246b548b4ce222faa40ebb2a496168e36eb6c0e2",
+          "scripts/research/development_ledger.py": "254fe889557148110e458ed2cb6e3286837589a484d7a63e1ae3d2c34b645502",
+          "scripts/research/study_recovery_monitor_ledger.py": "22809e4be243f9b8e1fa34bb737cd1d0cbfbd165ff3d433447dca9bfbeb708b7",
+          "src/aegis/env/mujoco_3d_cbf.py": "438b8ec89d1d40101586b0d888de7e8b5d73c9763cbae2603ccab01f04801433",
+          "src/aegis/v9/anchor_recovery_candidate.py": "14234ba7efccecc28f639a0ecb6b390ea29b59eaccc3b82bd6f4360dccdf038a",
+          "src/aegis/v9/controller_3d.py": "4579219de9d9ab4269fa620e1962685e844f927ba00e6979d571aa47f73f6892",
+          "src/aegis/v9/exploratory_sensor_validation.py": "df4e18e4e538c55a7d52ad81cdb3123d2591183461b975607afa7f67d607bc11",
+          "src/aegis/v9/recovery_monitor_candidate.py": "134b2f549fde1762e5d48b5505131a231634ddf77edcbd766e1bf00fd189819d",
+          "src/aegis/v9/stabilized_arrival_candidate.py": "3f93b0c736a924296c949466fbec502040ce1c65a19912a64564ff7ec5928cb8",
+          "src/aegis/v9/ville_monitor.py": "41ff44c0984aafc91261a2c0e04f569d5e83f3a86d7d7ec0dc372f303ca7c8db"
+        }
+      },
+      "execution_status": "COMPLETED",
+      "observations": {
+        "decision_observations": 1200,
+        "initial_observed_distance_m": 5.461645201145673,
+        "last_prephysics_distance_m": 3.4454502851388007,
+        "minimum_observed_distance_m": 3.4454502851388007,
+        "observed_distance_reduction_m": 2.0161949160068726,
+        "tail_observations": 50,
+        "tail_distance_reduction_m": 0.0,
+        "mode_counts": {
+          "NOMINAL": 6,
+          "ACTIVE_PROBING": 10,
+          "CALIBRATED_APPROACH": 1184
+        },
+        "effective_decision_counts": {
+          "NAVIGATE": 1190,
+          "PROBE": 10
+        },
+        "tail_mode_counts": {
+          "CALIBRATED_APPROACH": 50
+        },
+        "interpretation": "DESCRIPTIVE_ONLY_NO_CAUSAL_OR_SAFETY_CLASSIFICATION"
+      },
+      "episode": {
+        "abstained": 0,
+        "anchor_queries": 10,
+        "anchor_valid_readings": 10,
+        "cbf_constraint_violation_occurred": 0,
+        "cbf_exact_fallback_steps": 1106,
+        "cbf_infeasible_steps": 0,
+        "cbf_unchecked_steps": 0,
+        "collision_occurred": 0,
+        "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+        "false_arrival": 0,
+        "final_distance": 3.4455,
+        "post_stop": null,
+        "range_bias_m": 0.0,
+        "range_dropout_probability": 0.0,
+        "range_latency_steps": 0,
+        "seed": 2252000,
+        "steps": 1200,
+        "timeout": 1,
+        "true_success": 0
+      }
+    },
+    {
+      "id": "nominal:2252000:0.8:AEGIS_3D_RECOVERY_MONITOR",
+      "assignment": {
+        "bias_xyz": [
+          0.8,
+          0.8,
+          -0.3
+        ],
+        "case": {
+          "name": "nominal",
+          "range_bias_m": 0.0,
+          "range_dropout_probability": 0.0
+        },
+        "controller": "AEGIS_3D_RECOVERY_MONITOR",
+        "id": "nominal:2252000:0.8:AEGIS_3D_RECOVERY_MONITOR",
+        "max_steps": 1200,
+        "post_stop_steps": 50,
+        "runtime": {
+          "mujoco": "3.14.0",
+          "numpy": "2.5.3",
+          "python": "3.12.14"
+        },
+        "seed": 2252000,
+        "source_sha256": {
+          "experiments/benchmark_physical_3d_cbf.py": "cbbe6f5362a66ac4df45814f246b548b4ce222faa40ebb2a496168e36eb6c0e2",
+          "scripts/research/development_ledger.py": "254fe889557148110e458ed2cb6e3286837589a484d7a63e1ae3d2c34b645502",
+          "scripts/research/study_recovery_monitor_ledger.py": "22809e4be243f9b8e1fa34bb737cd1d0cbfbd165ff3d433447dca9bfbeb708b7",
+          "src/aegis/env/mujoco_3d_cbf.py": "438b8ec89d1d40101586b0d888de7e8b5d73c9763cbae2603ccab01f04801433",
+          "src/aegis/v9/anchor_recovery_candidate.py": "14234ba7efccecc28f639a0ecb6b390ea29b59eaccc3b82bd6f4360dccdf038a",
+          "src/aegis/v9/controller_3d.py": "4579219de9d9ab4269fa620e1962685e844f927ba00e6979d571aa47f73f6892",
+          "src/aegis/v9/exploratory_sensor_validation.py": "df4e18e4e538c55a7d52ad81cdb3123d2591183461b975607afa7f67d607bc11",
+          "src/aegis/v9/recovery_monitor_candidate.py": "134b2f549fde1762e5d48b5505131a231634ddf77edcbd766e1bf00fd189819d",
+          "src/aegis/v9/stabilized_arrival_candidate.py": "3f93b0c736a924296c949466fbec502040ce1c65a19912a64564ff7ec5928cb8",
+          "src/aegis/v9/ville_monitor.py": "41ff44c0984aafc91261a2c0e04f569d5e83f3a86d7d7ec0dc372f303ca7c8db"
+        }
+      },
+      "execution_status": "COMPLETED",
+      "observations": {
+        "decision_observations": 1200,
+        "initial_observed_distance_m": 5.461645201145673,
+        "last_prephysics_distance_m": 3.4454502851388007,
+        "minimum_observed_distance_m": 3.4454502851388007,
+        "observed_distance_reduction_m": 2.0161949160068726,
+        "tail_observations": 50,
+        "tail_distance_reduction_m": 0.0,
+        "mode_counts": {
+          "NOMINAL": 6,
+          "ACTIVE_PROBING": 10,
+          "CALIBRATED_APPROACH": 1184
+        },
+        "effective_decision_counts": {
+          "NAVIGATE": 1190,
+          "PROBE": 10
+        },
+        "tail_mode_counts": {
+          "CALIBRATED_APPROACH": 50
+        },
+        "interpretation": "DESCRIPTIVE_ONLY_NO_CAUSAL_OR_SAFETY_CLASSIFICATION"
+      },
+      "episode": {
+        "abstained": 0,
+        "anchor_queries": 10,
+        "anchor_valid_readings": 10,
+        "cbf_constraint_violation_occurred": 0,
+        "cbf_exact_fallback_steps": 1106,
+        "cbf_infeasible_steps": 0,
+        "cbf_unchecked_steps": 0,
+        "collision_occurred": 0,
+        "controller": "AEGIS_3D_RECOVERY_MONITOR",
+        "false_arrival": 0,
+        "final_distance": 3.4455,
+        "post_stop": null,
+        "postproposal_monitor_reason": "NOT_STARTED",
+        "postproposal_monitor_steps": 0,
+        "range_bias_m": 0.0,
+        "range_dropout_probability": 0.0,
+        "range_latency_steps": 0,
+        "seed": 2252000,
+        "steps": 1200,
+        "timeout": 1,
+        "true_success": 0
+      }
+    }
+  ]
+}

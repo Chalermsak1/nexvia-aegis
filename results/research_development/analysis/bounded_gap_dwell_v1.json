@@ -1,0 +1,2460 @@
+{
+  "input_sha256": "afec1fa2efefdcff93eff8c891865b726012d2ecc70592919c2e53a9f9cd5db9",
+  "radius": 0.25,
+  "speed_limit": 0.05,
+  "dwell_seconds": 1.0,
+  "timestep_seconds": 0.02,
+  "summary": [
+    {
+      "case": "nominal",
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "counts": {
+        "NO_STOP": 8,
+        "MET_SAMPLED_DWELL": 2
+      }
+    },
+    {
+      "case": "nominal",
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "counts": {
+        "NO_STOP": 8,
+        "MET_SAMPLED_DWELL": 2
+      }
+    },
+    {
+      "case": "nominal",
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "counts": {
+        "NO_STOP": 5,
+        "MET_SAMPLED_DWELL": 5
+      }
+    },
+    {
+      "case": "nominal",
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "counts": {
+        "NO_STOP": 5,
+        "MET_SAMPLED_DWELL": 5
+      }
+    },
+    {
+      "case": "dropout_10_percent",
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "counts": {
+        "NO_STOP": 10
+      }
+    },
+    {
+      "case": "dropout_10_percent",
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "counts": {
+        "NO_STOP": 9,
+        "MET_SAMPLED_DWELL": 1
+      }
+    },
+    {
+      "case": "dropout_10_percent",
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "counts": {
+        "NO_STOP": 10
+      }
+    },
+    {
+      "case": "dropout_10_percent",
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "counts": {
+        "NO_STOP": 8,
+        "MET_SAMPLED_DWELL": 2
+      }
+    },
+    {
+      "case": "dropout_30_percent",
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "counts": {
+        "NO_STOP": 10
+      }
+    },
+    {
+      "case": "dropout_30_percent",
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "counts": {
+        "NO_STOP": 9,
+        "MET_SAMPLED_DWELL": 1
+      }
+    },
+    {
+      "case": "dropout_30_percent",
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "counts": {
+        "NO_STOP": 10
+      }
+    },
+    {
+      "case": "dropout_30_percent",
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "counts": {
+        "NO_STOP": 10
+      }
+    },
+    {
+      "case": "dropout_10_underreport",
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "counts": {
+        "NO_STOP": 10
+      }
+    },
+    {
+      "case": "dropout_10_underreport",
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "counts": {
+        "NO_STOP": 9,
+        "MET_SAMPLED_DWELL": 1
+      }
+    },
+    {
+      "case": "dropout_10_underreport",
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "counts": {
+        "NO_STOP": 10
+      }
+    },
+    {
+      "case": "dropout_10_underreport",
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "counts": {
+        "NO_STOP": 7,
+        "MET_SAMPLED_DWELL": 3
+      }
+    },
+    {
+      "case": "replay_20_percent",
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "counts": {
+        "NO_STOP": 10
+      }
+    },
+    {
+      "case": "replay_20_percent",
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "counts": {
+        "NO_STOP": 10
+      }
+    },
+    {
+      "case": "replay_20_percent",
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "counts": {
+        "NO_STOP": 10
+      }
+    },
+    {
+      "case": "replay_20_percent",
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "counts": {
+        "NO_STOP": 10
+      }
+    }
+  ],
+  "episodes": [
+    {
+      "case": "nominal",
+      "seed": 2244000,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2244000,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2244000,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2244000,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2244001,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2244001,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2244001,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2244001,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2244002,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2244002,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2244002,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2244002,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2244003,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "nominal",
+      "seed": 2244003,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "nominal",
+      "seed": 2244003,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "nominal",
+      "seed": 2244003,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "nominal",
+      "seed": 2244004,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2244004,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2244004,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "nominal",
+      "seed": 2244004,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "nominal",
+      "seed": 2244005,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2244005,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2244005,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "nominal",
+      "seed": 2244005,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "nominal",
+      "seed": 2244006,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2244006,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2244006,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2244006,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2244007,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2244007,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2244007,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2244007,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2244008,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "nominal",
+      "seed": 2244008,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "nominal",
+      "seed": 2244008,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "nominal",
+      "seed": 2244008,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "nominal",
+      "seed": 2244009,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2244009,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2244009,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "nominal",
+      "seed": 2244009,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "dropout_10_percent",
+      "seed": 2244000,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_percent",
+      "seed": 2244000,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_percent",
+      "seed": 2244000,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_percent",
+      "seed": 2244000,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_percent",
+      "seed": 2244001,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_percent",
+      "seed": 2244001,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_percent",
+      "seed": 2244001,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_percent",
+      "seed": 2244001,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_percent",
+      "seed": 2244002,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_percent",
+      "seed": 2244002,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_percent",
+      "seed": 2244002,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_percent",
+      "seed": 2244002,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_percent",
+      "seed": 2244003,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_percent",
+      "seed": 2244003,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "dropout_10_percent",
+      "seed": 2244003,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_percent",
+      "seed": 2244003,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "dropout_10_percent",
+      "seed": 2244004,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_percent",
+      "seed": 2244004,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_percent",
+      "seed": 2244004,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_percent",
+      "seed": 2244004,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_percent",
+      "seed": 2244005,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_percent",
+      "seed": 2244005,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_percent",
+      "seed": 2244005,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_percent",
+      "seed": 2244005,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_percent",
+      "seed": 2244006,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_percent",
+      "seed": 2244006,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_percent",
+      "seed": 2244006,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_percent",
+      "seed": 2244006,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_percent",
+      "seed": 2244007,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_percent",
+      "seed": 2244007,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_percent",
+      "seed": 2244007,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_percent",
+      "seed": 2244007,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_percent",
+      "seed": 2244008,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_percent",
+      "seed": 2244008,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_percent",
+      "seed": 2244008,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_percent",
+      "seed": 2244008,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_percent",
+      "seed": 2244009,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_percent",
+      "seed": 2244009,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_percent",
+      "seed": 2244009,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_percent",
+      "seed": 2244009,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "dropout_30_percent",
+      "seed": 2244000,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_30_percent",
+      "seed": 2244000,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_30_percent",
+      "seed": 2244000,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_30_percent",
+      "seed": 2244000,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_30_percent",
+      "seed": 2244001,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_30_percent",
+      "seed": 2244001,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_30_percent",
+      "seed": 2244001,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_30_percent",
+      "seed": 2244001,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_30_percent",
+      "seed": 2244002,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_30_percent",
+      "seed": 2244002,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_30_percent",
+      "seed": 2244002,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_30_percent",
+      "seed": 2244002,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_30_percent",
+      "seed": 2244003,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_30_percent",
+      "seed": 2244003,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "dropout_30_percent",
+      "seed": 2244003,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_30_percent",
+      "seed": 2244003,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_30_percent",
+      "seed": 2244004,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_30_percent",
+      "seed": 2244004,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_30_percent",
+      "seed": 2244004,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_30_percent",
+      "seed": 2244004,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_30_percent",
+      "seed": 2244005,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_30_percent",
+      "seed": 2244005,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_30_percent",
+      "seed": 2244005,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_30_percent",
+      "seed": 2244005,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_30_percent",
+      "seed": 2244006,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_30_percent",
+      "seed": 2244006,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_30_percent",
+      "seed": 2244006,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_30_percent",
+      "seed": 2244006,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_30_percent",
+      "seed": 2244007,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_30_percent",
+      "seed": 2244007,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_30_percent",
+      "seed": 2244007,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_30_percent",
+      "seed": 2244007,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_30_percent",
+      "seed": 2244008,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_30_percent",
+      "seed": 2244008,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_30_percent",
+      "seed": 2244008,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_30_percent",
+      "seed": 2244008,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_30_percent",
+      "seed": 2244009,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_30_percent",
+      "seed": 2244009,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_30_percent",
+      "seed": 2244009,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_30_percent",
+      "seed": 2244009,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_underreport",
+      "seed": 2244000,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_underreport",
+      "seed": 2244000,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_underreport",
+      "seed": 2244000,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_underreport",
+      "seed": 2244000,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_underreport",
+      "seed": 2244001,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_underreport",
+      "seed": 2244001,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_underreport",
+      "seed": 2244001,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_underreport",
+      "seed": 2244001,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_underreport",
+      "seed": 2244002,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_underreport",
+      "seed": 2244002,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_underreport",
+      "seed": 2244002,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_underreport",
+      "seed": 2244002,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_underreport",
+      "seed": 2244003,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_underreport",
+      "seed": 2244003,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "dropout_10_underreport",
+      "seed": 2244003,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_underreport",
+      "seed": 2244003,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "dropout_10_underreport",
+      "seed": 2244004,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_underreport",
+      "seed": 2244004,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_underreport",
+      "seed": 2244004,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_underreport",
+      "seed": 2244004,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_underreport",
+      "seed": 2244005,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_underreport",
+      "seed": 2244005,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_underreport",
+      "seed": 2244005,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_underreport",
+      "seed": 2244005,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "dropout_10_underreport",
+      "seed": 2244006,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_underreport",
+      "seed": 2244006,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_underreport",
+      "seed": 2244006,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_underreport",
+      "seed": 2244006,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_underreport",
+      "seed": 2244007,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_underreport",
+      "seed": 2244007,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_underreport",
+      "seed": 2244007,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_underreport",
+      "seed": 2244007,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_underreport",
+      "seed": 2244008,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_underreport",
+      "seed": 2244008,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_underreport",
+      "seed": 2244008,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_underreport",
+      "seed": 2244008,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_underreport",
+      "seed": 2244009,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_underreport",
+      "seed": 2244009,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_underreport",
+      "seed": 2244009,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "dropout_10_underreport",
+      "seed": 2244009,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "replay_20_percent",
+      "seed": 2244000,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "replay_20_percent",
+      "seed": 2244000,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "replay_20_percent",
+      "seed": 2244000,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "replay_20_percent",
+      "seed": 2244000,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "replay_20_percent",
+      "seed": 2244001,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "replay_20_percent",
+      "seed": 2244001,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "replay_20_percent",
+      "seed": 2244001,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "replay_20_percent",
+      "seed": 2244001,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "replay_20_percent",
+      "seed": 2244002,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "replay_20_percent",
+      "seed": 2244002,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "replay_20_percent",
+      "seed": 2244002,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "replay_20_percent",
+      "seed": 2244002,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "replay_20_percent",
+      "seed": 2244003,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "replay_20_percent",
+      "seed": 2244003,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "replay_20_percent",
+      "seed": 2244003,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "replay_20_percent",
+      "seed": 2244003,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "replay_20_percent",
+      "seed": 2244004,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "replay_20_percent",
+      "seed": 2244004,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "replay_20_percent",
+      "seed": 2244004,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "replay_20_percent",
+      "seed": 2244004,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "replay_20_percent",
+      "seed": 2244005,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "replay_20_percent",
+      "seed": 2244005,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "replay_20_percent",
+      "seed": 2244005,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "replay_20_percent",
+      "seed": 2244005,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "replay_20_percent",
+      "seed": 2244006,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "replay_20_percent",
+      "seed": 2244006,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "replay_20_percent",
+      "seed": 2244006,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "replay_20_percent",
+      "seed": 2244006,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "replay_20_percent",
+      "seed": 2244007,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "replay_20_percent",
+      "seed": 2244007,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "replay_20_percent",
+      "seed": 2244007,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "replay_20_percent",
+      "seed": 2244007,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "replay_20_percent",
+      "seed": 2244008,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "replay_20_percent",
+      "seed": 2244008,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "replay_20_percent",
+      "seed": 2244008,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "replay_20_percent",
+      "seed": 2244008,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "replay_20_percent",
+      "seed": 2244009,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "replay_20_percent",
+      "seed": 2244009,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "replay_20_percent",
+      "seed": 2244009,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_FRESH_VELOCITY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "replay_20_percent",
+      "seed": 2244009,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_BOUNDED_GAP",
+      "dwell": "NO_STOP"
+    }
+  ]
+}

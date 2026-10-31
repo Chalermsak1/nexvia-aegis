@@ -1,0 +1,143 @@
+{
+  "input_sha256": "c9e9fc6bb0db0444d9cd1b4c02002dec82f9ac207c2f3971d96175a85b47c3d2",
+  "ledger_state": "FINALIZED",
+  "integrity": "VALID_SELF_REPORTED_CHAIN",
+  "summary": [
+    {
+      "case": "nominal",
+      "controller": "ORACLE_STATE_CBF_BRAKE",
+      "assigned": 1,
+      "completed": 1,
+      "errors": 0,
+      "incomplete": 0,
+      "no_command": 0,
+      "steps_applied": 40,
+      "positive_force_dot_steps": 0,
+      "episodes_with_safety_violation": 0,
+      "cbf_residual_missing_steps": 0,
+      "cbf_residual_violation_steps": 0,
+      "final_speeds": [
+        0.07814646062212807
+      ]
+    },
+    {
+      "case": "nominal",
+      "controller": "ESTIMATED_STATE_CBF_BRAKE",
+      "assigned": 1,
+      "completed": 1,
+      "errors": 0,
+      "incomplete": 0,
+      "no_command": 0,
+      "steps_applied": 40,
+      "positive_force_dot_steps": 0,
+      "episodes_with_safety_violation": 0,
+      "cbf_residual_missing_steps": 0,
+      "cbf_residual_violation_steps": 0,
+      "final_speeds": [
+        0.07513823528378054
+      ]
+    },
+    {
+      "case": "underreported",
+      "controller": "ORACLE_STATE_CBF_BRAKE",
+      "assigned": 1,
+      "completed": 1,
+      "errors": 0,
+      "incomplete": 0,
+      "no_command": 0,
+      "steps_applied": 40,
+      "positive_force_dot_steps": 0,
+      "episodes_with_safety_violation": 0,
+      "cbf_residual_missing_steps": 0,
+      "cbf_residual_violation_steps": 0,
+      "final_speeds": [
+        0.07814646062212807
+      ]
+    },
+    {
+      "case": "underreported",
+      "controller": "ESTIMATED_STATE_CBF_BRAKE",
+      "assigned": 1,
+      "completed": 1,
+      "errors": 0,
+      "incomplete": 0,
+      "no_command": 0,
+      "steps_applied": 40,
+      "positive_force_dot_steps": 0,
+      "episodes_with_safety_violation": 0,
+      "cbf_residual_missing_steps": 0,
+      "cbf_residual_violation_steps": 0,
+      "final_speeds": [
+        0.265573588515521
+      ]
+    },
+    {
+      "case": "reversed",
+      "controller": "ORACLE_STATE_CBF_BRAKE",
+      "assigned": 1,
+      "completed": 1,
+      "errors": 0,
+      "incomplete": 0,
+      "no_command": 0,
+      "steps_applied": 40,
+      "positive_force_dot_steps": 0,
+      "episodes_with_safety_violation": 0,
+      "cbf_residual_missing_steps": 0,
+      "cbf_residual_violation_steps": 0,
+      "final_speeds": [
+        0.07814646062212807
+      ]
+    },
+    {
+      "case": "reversed",
+      "controller": "ESTIMATED_STATE_CBF_BRAKE",
+      "assigned": 1,
+      "completed": 1,
+      "errors": 0,
+      "incomplete": 0,
+      "no_command": 0,
+      "steps_applied": 40,
+      "positive_force_dot_steps": 40,
+      "episodes_with_safety_violation": 0,
+      "cbf_residual_missing_steps": 0,
+      "cbf_residual_violation_steps": 0,
+      "final_speeds": [
+        1.6704943526471279
+      ]
+    },
+    {
+      "case": "missing",
+      "controller": "ORACLE_STATE_CBF_BRAKE",
+      "assigned": 1,
+      "completed": 1,
+      "errors": 0,
+      "incomplete": 0,
+      "no_command": 0,
+      "steps_applied": 40,
+      "positive_force_dot_steps": 0,
+      "episodes_with_safety_violation": 0,
+      "cbf_residual_missing_steps": 0,
+      "cbf_residual_violation_steps": 0,
+      "final_speeds": [
+        0.07814646062212807
+      ]
+    },
+    {
+      "case": "missing",
+      "controller": "ESTIMATED_STATE_CBF_BRAKE",
+      "assigned": 1,
+      "completed": 1,
+      "errors": 0,
+      "incomplete": 0,
+      "no_command": 1,
+      "steps_applied": 0,
+      "positive_force_dot_steps": 0,
+      "episodes_with_safety_violation": 0,
+      "cbf_residual_missing_steps": 0,
+      "cbf_residual_violation_steps": 0,
+      "final_speeds": [
+        null
+      ]
+    }
+  ]
+}

@@ -1,0 +1,116 @@
+{
+  "classification": "EXPLORATORY_IDEAL_STATE_ABLATION",
+  "ledger_state": "FINALIZED",
+  "input_sha256": "6169d85eebfa1bb0dcf5ab0b4c95261f967dfe40d3a503b56ea9a182972e196d",
+  "episodes": [
+    {
+      "id": "2252000:AXIS_CLIP",
+      "seed": 2252000,
+      "arm": "AXIS_CLIP",
+      "execution_status": "COMPLETED",
+      "event_count": 800,
+      "episode": {
+        "arm": "AXIS_CLIP",
+        "claim": "NO_ARRIVAL_OR_SAFETY_PASS_CLASSIFICATION",
+        "constraint_violation_steps": 0,
+        "final_distance": 3.4454502851388007,
+        "initial_distance": 5.461645201145673,
+        "minimum_distance": 3.4454502851388007,
+        "safety_violation_observed": false,
+        "seed": 2252000,
+        "steps": 800
+      }
+    },
+    {
+      "id": "2252000:DIRECTION_PRESERVING_PEAK",
+      "seed": 2252000,
+      "arm": "DIRECTION_PRESERVING_PEAK",
+      "execution_status": "COMPLETED",
+      "event_count": 800,
+      "episode": {
+        "arm": "DIRECTION_PRESERVING_PEAK",
+        "claim": "NO_ARRIVAL_OR_SAFETY_PASS_CLASSIFICATION",
+        "constraint_violation_steps": 0,
+        "final_distance": 0.05582582283516217,
+        "initial_distance": 5.461645201145673,
+        "minimum_distance": 0.004384739066528465,
+        "safety_violation_observed": false,
+        "seed": 2252000,
+        "steps": 800
+      }
+    },
+    {
+      "id": "2253000:AXIS_CLIP",
+      "seed": 2253000,
+      "arm": "AXIS_CLIP",
+      "execution_status": "COMPLETED",
+      "event_count": 800,
+      "episode": {
+        "arm": "AXIS_CLIP",
+        "claim": "NO_ARRIVAL_OR_SAFETY_PASS_CLASSIFICATION",
+        "constraint_violation_steps": 0,
+        "final_distance": 0.04869411301639636,
+        "initial_distance": 3.075233042586175,
+        "minimum_distance": 0.00736890717013411,
+        "safety_violation_observed": false,
+        "seed": 2253000,
+        "steps": 800
+      }
+    },
+    {
+      "id": "2253000:DIRECTION_PRESERVING_PEAK",
+      "seed": 2253000,
+      "arm": "DIRECTION_PRESERVING_PEAK",
+      "execution_status": "COMPLETED",
+      "event_count": 800,
+      "episode": {
+        "arm": "DIRECTION_PRESERVING_PEAK",
+        "claim": "NO_ARRIVAL_OR_SAFETY_PASS_CLASSIFICATION",
+        "constraint_violation_steps": 0,
+        "final_distance": 0.04880547876588665,
+        "initial_distance": 3.075233042586175,
+        "minimum_distance": 0.005649007271435747,
+        "safety_violation_observed": false,
+        "seed": 2253000,
+        "steps": 800
+      }
+    },
+    {
+      "id": "2253001:AXIS_CLIP",
+      "seed": 2253001,
+      "arm": "AXIS_CLIP",
+      "execution_status": "COMPLETED",
+      "event_count": 800,
+      "episode": {
+        "arm": "AXIS_CLIP",
+        "claim": "NO_ARRIVAL_OR_SAFETY_PASS_CLASSIFICATION",
+        "constraint_violation_steps": 0,
+        "final_distance": 0.008465811851027618,
+        "initial_distance": 1.0700247740855546,
+        "minimum_distance": 0.0002768659589445406,
+        "safety_violation_observed": false,
+        "seed": 2253001,
+        "steps": 800
+      }
+    },
+    {
+      "id": "2253001:DIRECTION_PRESERVING_PEAK",
+      "seed": 2253001,
+      "arm": "DIRECTION_PRESERVING_PEAK",
+      "execution_status": "COMPLETED",
+      "event_count": 800,
+      "episode": {
+        "arm": "DIRECTION_PRESERVING_PEAK",
+        "claim": "NO_ARRIVAL_OR_SAFETY_PASS_CLASSIFICATION",
+        "constraint_violation_steps": 0,
+        "final_distance": 0.008465811851027618,
+        "initial_distance": 1.0700247740855546,
+        "minimum_distance": 0.0002768659589445406,
+        "safety_violation_observed": false,
+        "seed": 2253001,
+        "steps": 800
+      }
+    }
+  ],
+  "limitations": "Simulator truth, static known geometry; no arrival or safety pass; selected diagnostic seed is not independent replication."
+}

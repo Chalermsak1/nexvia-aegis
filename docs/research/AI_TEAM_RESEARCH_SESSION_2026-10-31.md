@@ -1,0 +1,22 @@
+# AI research team — development session
+
+**Scope:** exploratory V9-M5 simulation and synthetic checks. Gate B remains `GATE_B_NOT_AUTHORIZED`; no V9-M4 Holdout or reserved seed contents were accessed, no production ticket was created, and no registered statistical logic or frozen artifact was modified. This is not hardware validation or safety certification. Task-scoped AI agents did not perform independent human statistical or security review.
+
+## Work completed
+
+- Reproduced and hardened malformed 3D range, vector and anchor handling. The base controller treats unusable range as unavailable, rejects malformed active vector data with `ABSTAIN`, and does not update calibration from invalid anchors. Exploratory confirmation and recovery wrappers abstain on invalid range or anchor without issuing a movement/query command. Existing real-valued valid paths and thresholds are retained; these are prototype input-handling rules, not registered V9-M4 decisions. Malformed boolean flags and boolean numeric values are rejected for these paths.
+- Added `exploratory_sensor_validation.py` to the selected source hash lists of future development runners and the benchmark. This improves selected-file bookkeeping only: it does not attest the complete dependency tree, authenticate the source, or retroactively change historical artifacts.
+- Added self-reported before/after source-map checks to the dual-velocity analyzer, gap analyzer, dwell diagnostic and post-stop summaries. A matching pair of self-reported hashes is not independent provenance. Dwell now reports `UNEVALUABLE` for contradictory outcome/distance, no-STOP records with post-STOP data, and malformed post-STOP samples. The dual-velocity analyzer rejects duplicate hazard example steps and example-reason counts exceeding reported totals.
+- Reanalyzed five retained development datasets in memory and confirmed their summaries matched their prior summaries. No historical output was overwritten. A separate dual-velocity smoke run in a temporary directory assigned 20 development episodes, recorded zero execution errors, and included the new sensor-validation helper in its source map. This small smoke run is not independent or confirmatory evidence.
+
+## Review findings and remaining work
+
+1. The base 3D monitor is not updated through all braking, anchor confirmation and recovery states. A synthetic reproduction showed both vector observations can be absent at confirmation while the current prototype still emits STOP if other observations appear valid. A separately specified fail-closed sensor-loss policy and continuous monitoring architecture need development and tests; this was not silently changed in this session.
+2. The simulator uses plant-state velocity for portions of damping and CBF braking even though controller inputs may be noisy. Add an explicitly named no-oracle development arm, document information parity, and validate it with synthetic faults before comparing outputs.
+3. Existing study runners accumulate episode records in RAM and write the final JSON at the end. An interrupted run may lose progress or leave a partial file. Design a separate per-assignment durable ledger with explicit incomplete/error states, interrupted-write tests and no automatic silent reruns.
+4. Dual-velocity time steps and arms that share seeds are dependent; step counts cannot be treated as independent trials. Review the sampling unit, missingness, prospective endpoint and multiplicity with an independent statistician before any confirmatory inference. The existing dual-sensor simulation does not prove physical independence.
+5. The development log cited in `V9_M5_DEVELOPMENT_HANDOFF.md` exists locally and its SHA-256 is `0fa9386909d052d9a939b242f2de683231221e5e047a8baa4eb1a4be17965787`, matching the historical handoff, but Git ignores `*.log` and the file is not tracked. Do not claim it is preserved on GitHub. Retention and publication must preserve its original bytes.
+
+## Verification
+
+The selected adjacent regression suite passed **198 tests** after the source-handling and evidence fixes. It does not cover the entire repository or establish real-world safety. Previously generated study outputs embed hashes of the source state used when generated; current controller and runner files have since changed, so do not present a rerun with current source as an exact reproduction of those original hashes.

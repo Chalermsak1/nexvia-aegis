@@ -1,0 +1,648 @@
+{
+  "schema_version": "aegis-exploratory-summary/1.0",
+  "input_sha256": "ebeaf8b6df40a1d865e8da2bc00d3004f901a469e15a6424c93abbbd7fb7e624",
+  "analyzer_sha256": "27d524a5e9961bc4970344afb1c641a67716e80daf99dc9be1e42971987011d7",
+  "classification": "EXPLORATORY_SIMULATION",
+  "input_metadata": {
+    "schema_version": "v9-m5-3d-development-benchmark/1.7",
+    "seed_start": 2234000,
+    "n_seeds_per_bias": 5,
+    "bias_vectors_xyz": [
+      [
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.5,
+        -0.4,
+        0.2
+      ],
+      [
+        0.8,
+        0.8,
+        -0.3
+      ]
+    ],
+    "max_steps": 100,
+    "range_fault": {
+      "bias_m": 0.0,
+      "dropout_probability": 0.0,
+      "latency_steps": 0
+    },
+    "source_sha256": {
+      "benchmark": "0904139f0307459f24611231dd0bb307597f3f91c917471bd7de0b0c2f337f12",
+      "world": "438b8ec89d1d40101586b0d888de7e8b5d73c9763cbae2603ccab01f04801433",
+      "controller_3d": "8e4172c73678fec4c08a8152ec962a56838822cd14c1a980b7b5e995f38f2997"
+    },
+    "runtime": {
+      "python": "3.12.14",
+      "numpy": "2.5.3",
+      "mujoco": "3.14.0"
+    }
+  },
+  "results": [
+    {
+      "controller": "UNSHIELDED",
+      "episodes": 15,
+      "true_success": 3,
+      "false_arrival": 9,
+      "accepted": 12,
+      "abstained": 0,
+      "timeout": 3,
+      "collision": 1,
+      "cbf_infeasible_episodes": 0,
+      "coverage": 0.8,
+      "true_success_rate": 0.2,
+      "false_arrival_incidence": 0.6,
+      "false_arrival_given_accepted": 0.75
+    },
+    {
+      "controller": "CBF_ONLY",
+      "episodes": 15,
+      "true_success": 3,
+      "false_arrival": 7,
+      "accepted": 10,
+      "abstained": 0,
+      "timeout": 5,
+      "collision": 0,
+      "cbf_infeasible_episodes": 0,
+      "coverage": 0.6666666666666666,
+      "true_success_rate": 0.2,
+      "false_arrival_incidence": 0.4666666666666667,
+      "false_arrival_given_accepted": 0.7
+    },
+    {
+      "controller": "AEGIS_V9_CBF",
+      "episodes": 15,
+      "true_success": 1,
+      "false_arrival": 2,
+      "accepted": 3,
+      "abstained": 3,
+      "timeout": 9,
+      "collision": 0,
+      "cbf_infeasible_episodes": 0,
+      "coverage": 0.2,
+      "true_success_rate": 0.06666666666666667,
+      "false_arrival_incidence": 0.13333333333333333,
+      "false_arrival_given_accepted": 0.6666666666666666
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "episodes": 15,
+      "true_success": 1,
+      "false_arrival": 0,
+      "accepted": 1,
+      "abstained": 5,
+      "timeout": 9,
+      "collision": 0,
+      "cbf_infeasible_episodes": 0,
+      "coverage": 0.06666666666666667,
+      "true_success_rate": 0.06666666666666667,
+      "false_arrival_incidence": 0.0,
+      "false_arrival_given_accepted": 0.0
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "episodes": 15,
+      "true_success": 1,
+      "false_arrival": 0,
+      "accepted": 1,
+      "abstained": 5,
+      "timeout": 9,
+      "collision": 0,
+      "cbf_infeasible_episodes": 0,
+      "coverage": 0.06666666666666667,
+      "true_success_rate": 0.06666666666666667,
+      "false_arrival_incidence": 0.0,
+      "false_arrival_given_accepted": 0.0
+    },
+    {
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "episodes": 15,
+      "true_success": 0,
+      "false_arrival": 0,
+      "accepted": 0,
+      "abstained": 6,
+      "timeout": 9,
+      "collision": 0,
+      "cbf_infeasible_episodes": 0,
+      "coverage": 0.0,
+      "true_success_rate": 0.0,
+      "false_arrival_incidence": 0.0,
+      "false_arrival_given_accepted": null
+    },
+    {
+      "controller": "AEGIS_3D_AWARE_CBF",
+      "episodes": 15,
+      "true_success": 6,
+      "false_arrival": 2,
+      "accepted": 8,
+      "abstained": 2,
+      "timeout": 5,
+      "collision": 0,
+      "cbf_infeasible_episodes": 0,
+      "coverage": 0.5333333333333333,
+      "true_success_rate": 0.4,
+      "false_arrival_incidence": 0.13333333333333333,
+      "false_arrival_given_accepted": 0.25
+    },
+    {
+      "controller": "AEGIS_3D_NO_ACTIVE_PROBE",
+      "episodes": 15,
+      "true_success": 3,
+      "false_arrival": 0,
+      "accepted": 3,
+      "abstained": 11,
+      "timeout": 1,
+      "collision": 0,
+      "cbf_infeasible_episodes": 0,
+      "coverage": 0.2,
+      "true_success_rate": 0.2,
+      "false_arrival_incidence": 0.0,
+      "false_arrival_given_accepted": 0.0
+    }
+  ],
+  "by_scenario": [
+    {
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "UNSHIELDED",
+      "episodes": 5,
+      "true_success": 3,
+      "false_arrival": 1,
+      "accepted": 4,
+      "abstained": 0,
+      "timeout": 1,
+      "collision": 0,
+      "cbf_infeasible_episodes": 0,
+      "coverage": 0.8,
+      "true_success_rate": 0.6,
+      "false_arrival_incidence": 0.2,
+      "false_arrival_given_accepted": 0.25
+    },
+    {
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ],
+      "controller": "UNSHIELDED",
+      "episodes": 5,
+      "true_success": 0,
+      "false_arrival": 5,
+      "accepted": 5,
+      "abstained": 0,
+      "timeout": 0,
+      "collision": 0,
+      "cbf_infeasible_episodes": 0,
+      "coverage": 1.0,
+      "true_success_rate": 0.0,
+      "false_arrival_incidence": 1.0,
+      "false_arrival_given_accepted": 1.0
+    },
+    {
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "UNSHIELDED",
+      "episodes": 5,
+      "true_success": 0,
+      "false_arrival": 3,
+      "accepted": 3,
+      "abstained": 0,
+      "timeout": 2,
+      "collision": 1,
+      "cbf_infeasible_episodes": 0,
+      "coverage": 0.6,
+      "true_success_rate": 0.0,
+      "false_arrival_incidence": 0.6,
+      "false_arrival_given_accepted": 1.0
+    },
+    {
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "CBF_ONLY",
+      "episodes": 5,
+      "true_success": 3,
+      "false_arrival": 1,
+      "accepted": 4,
+      "abstained": 0,
+      "timeout": 1,
+      "collision": 0,
+      "cbf_infeasible_episodes": 0,
+      "coverage": 0.8,
+      "true_success_rate": 0.6,
+      "false_arrival_incidence": 0.2,
+      "false_arrival_given_accepted": 0.25
+    },
+    {
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ],
+      "controller": "CBF_ONLY",
+      "episodes": 5,
+      "true_success": 0,
+      "false_arrival": 4,
+      "accepted": 4,
+      "abstained": 0,
+      "timeout": 1,
+      "collision": 0,
+      "cbf_infeasible_episodes": 0,
+      "coverage": 0.8,
+      "true_success_rate": 0.0,
+      "false_arrival_incidence": 0.8,
+      "false_arrival_given_accepted": 1.0
+    },
+    {
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "CBF_ONLY",
+      "episodes": 5,
+      "true_success": 0,
+      "false_arrival": 2,
+      "accepted": 2,
+      "abstained": 0,
+      "timeout": 3,
+      "collision": 0,
+      "cbf_infeasible_episodes": 0,
+      "coverage": 0.4,
+      "true_success_rate": 0.0,
+      "false_arrival_incidence": 0.4,
+      "false_arrival_given_accepted": 1.0
+    },
+    {
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_V9_CBF",
+      "episodes": 5,
+      "true_success": 0,
+      "false_arrival": 1,
+      "accepted": 1,
+      "abstained": 1,
+      "timeout": 3,
+      "collision": 0,
+      "cbf_infeasible_episodes": 0,
+      "coverage": 0.2,
+      "true_success_rate": 0.0,
+      "false_arrival_incidence": 0.2,
+      "false_arrival_given_accepted": 1.0
+    },
+    {
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ],
+      "controller": "AEGIS_V9_CBF",
+      "episodes": 5,
+      "true_success": 1,
+      "false_arrival": 0,
+      "accepted": 1,
+      "abstained": 1,
+      "timeout": 3,
+      "collision": 0,
+      "cbf_infeasible_episodes": 0,
+      "coverage": 0.2,
+      "true_success_rate": 0.2,
+      "false_arrival_incidence": 0.0,
+      "false_arrival_given_accepted": 0.0
+    },
+    {
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_V9_CBF",
+      "episodes": 5,
+      "true_success": 0,
+      "false_arrival": 1,
+      "accepted": 1,
+      "abstained": 1,
+      "timeout": 3,
+      "collision": 0,
+      "cbf_infeasible_episodes": 0,
+      "coverage": 0.2,
+      "true_success_rate": 0.0,
+      "false_arrival_incidence": 0.2,
+      "false_arrival_given_accepted": 1.0
+    },
+    {
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "episodes": 5,
+      "true_success": 0,
+      "false_arrival": 0,
+      "accepted": 0,
+      "abstained": 2,
+      "timeout": 3,
+      "collision": 0,
+      "cbf_infeasible_episodes": 0,
+      "coverage": 0.0,
+      "true_success_rate": 0.0,
+      "false_arrival_incidence": 0.0,
+      "false_arrival_given_accepted": null
+    },
+    {
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ],
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "episodes": 5,
+      "true_success": 1,
+      "false_arrival": 0,
+      "accepted": 1,
+      "abstained": 1,
+      "timeout": 3,
+      "collision": 0,
+      "cbf_infeasible_episodes": 0,
+      "coverage": 0.2,
+      "true_success_rate": 0.2,
+      "false_arrival_incidence": 0.0,
+      "false_arrival_given_accepted": 0.0
+    },
+    {
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_V9_CBF_RANGE_GUARD",
+      "episodes": 5,
+      "true_success": 0,
+      "false_arrival": 0,
+      "accepted": 0,
+      "abstained": 2,
+      "timeout": 3,
+      "collision": 0,
+      "cbf_infeasible_episodes": 0,
+      "coverage": 0.0,
+      "true_success_rate": 0.0,
+      "false_arrival_incidence": 0.0,
+      "false_arrival_given_accepted": null
+    },
+    {
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "episodes": 5,
+      "true_success": 0,
+      "false_arrival": 0,
+      "accepted": 0,
+      "abstained": 2,
+      "timeout": 3,
+      "collision": 0,
+      "cbf_infeasible_episodes": 0,
+      "coverage": 0.0,
+      "true_success_rate": 0.0,
+      "false_arrival_incidence": 0.0,
+      "false_arrival_given_accepted": null
+    },
+    {
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ],
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "episodes": 5,
+      "true_success": 1,
+      "false_arrival": 0,
+      "accepted": 1,
+      "abstained": 1,
+      "timeout": 3,
+      "collision": 0,
+      "cbf_infeasible_episodes": 0,
+      "coverage": 0.2,
+      "true_success_rate": 0.2,
+      "false_arrival_incidence": 0.0,
+      "false_arrival_given_accepted": 0.0
+    },
+    {
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_V9_CBF_RANGE_WINDOW",
+      "episodes": 5,
+      "true_success": 0,
+      "false_arrival": 0,
+      "accepted": 0,
+      "abstained": 2,
+      "timeout": 3,
+      "collision": 0,
+      "cbf_infeasible_episodes": 0,
+      "coverage": 0.0,
+      "true_success_rate": 0.0,
+      "false_arrival_incidence": 0.0,
+      "false_arrival_given_accepted": null
+    },
+    {
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "episodes": 5,
+      "true_success": 0,
+      "false_arrival": 0,
+      "accepted": 0,
+      "abstained": 2,
+      "timeout": 3,
+      "collision": 0,
+      "cbf_infeasible_episodes": 0,
+      "coverage": 0.0,
+      "true_success_rate": 0.0,
+      "false_arrival_incidence": 0.0,
+      "false_arrival_given_accepted": null
+    },
+    {
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ],
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "episodes": 5,
+      "true_success": 0,
+      "false_arrival": 0,
+      "accepted": 0,
+      "abstained": 2,
+      "timeout": 3,
+      "collision": 0,
+      "cbf_infeasible_episodes": 0,
+      "coverage": 0.0,
+      "true_success_rate": 0.0,
+      "false_arrival_incidence": 0.0,
+      "false_arrival_given_accepted": null
+    },
+    {
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_V9_CBF_RANGE_3D_VETO",
+      "episodes": 5,
+      "true_success": 0,
+      "false_arrival": 0,
+      "accepted": 0,
+      "abstained": 2,
+      "timeout": 3,
+      "collision": 0,
+      "cbf_infeasible_episodes": 0,
+      "coverage": 0.0,
+      "true_success_rate": 0.0,
+      "false_arrival_incidence": 0.0,
+      "false_arrival_given_accepted": null
+    },
+    {
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_AWARE_CBF",
+      "episodes": 5,
+      "true_success": 3,
+      "false_arrival": 0,
+      "accepted": 3,
+      "abstained": 1,
+      "timeout": 1,
+      "collision": 0,
+      "cbf_infeasible_episodes": 0,
+      "coverage": 0.6,
+      "true_success_rate": 0.6,
+      "false_arrival_incidence": 0.0,
+      "false_arrival_given_accepted": 0.0
+    },
+    {
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ],
+      "controller": "AEGIS_3D_AWARE_CBF",
+      "episodes": 5,
+      "true_success": 2,
+      "false_arrival": 0,
+      "accepted": 2,
+      "abstained": 1,
+      "timeout": 2,
+      "collision": 0,
+      "cbf_infeasible_episodes": 0,
+      "coverage": 0.4,
+      "true_success_rate": 0.4,
+      "false_arrival_incidence": 0.0,
+      "false_arrival_given_accepted": 0.0
+    },
+    {
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_AWARE_CBF",
+      "episodes": 5,
+      "true_success": 1,
+      "false_arrival": 2,
+      "accepted": 3,
+      "abstained": 0,
+      "timeout": 2,
+      "collision": 0,
+      "cbf_infeasible_episodes": 0,
+      "coverage": 0.6,
+      "true_success_rate": 0.2,
+      "false_arrival_incidence": 0.4,
+      "false_arrival_given_accepted": 0.6666666666666666
+    },
+    {
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_NO_ACTIVE_PROBE",
+      "episodes": 5,
+      "true_success": 3,
+      "false_arrival": 0,
+      "accepted": 3,
+      "abstained": 1,
+      "timeout": 1,
+      "collision": 0,
+      "cbf_infeasible_episodes": 0,
+      "coverage": 0.6,
+      "true_success_rate": 0.6,
+      "false_arrival_incidence": 0.0,
+      "false_arrival_given_accepted": 0.0
+    },
+    {
+      "bias_xyz": [
+        0.5,
+        -0.4,
+        0.2
+      ],
+      "controller": "AEGIS_3D_NO_ACTIVE_PROBE",
+      "episodes": 5,
+      "true_success": 0,
+      "false_arrival": 0,
+      "accepted": 0,
+      "abstained": 5,
+      "timeout": 0,
+      "collision": 0,
+      "cbf_infeasible_episodes": 0,
+      "coverage": 0.0,
+      "true_success_rate": 0.0,
+      "false_arrival_incidence": 0.0,
+      "false_arrival_given_accepted": null
+    },
+    {
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_NO_ACTIVE_PROBE",
+      "episodes": 5,
+      "true_success": 0,
+      "false_arrival": 0,
+      "accepted": 0,
+      "abstained": 5,
+      "timeout": 0,
+      "collision": 0,
+      "cbf_infeasible_episodes": 0,
+      "coverage": 0.0,
+      "true_success_rate": 0.0,
+      "false_arrival_incidence": 0.0,
+      "false_arrival_given_accepted": null
+    }
+  ]
+}

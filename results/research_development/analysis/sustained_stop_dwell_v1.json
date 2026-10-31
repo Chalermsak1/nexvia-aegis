@@ -1,0 +1,4359 @@
+{
+  "input_sha256": "7169c730ee4de8984eeafe3b4733844ab56c305734f507fb6dc811c0464af002",
+  "radius": 0.25,
+  "speed_limit": 0.05,
+  "dwell_seconds": 1.0,
+  "timestep_seconds": 0.02,
+  "summary": [
+    {
+      "case": "nominal",
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "counts": {
+        "NO_STOP": 2,
+        "NOT_MET": 10
+      }
+    },
+    {
+      "case": "nominal",
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "counts": {
+        "NO_STOP": 8,
+        "NOT_MET": 4
+      }
+    },
+    {
+      "case": "nominal",
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "counts": {
+        "NO_STOP": 7,
+        "MET_SAMPLED_DWELL": 5
+      }
+    },
+    {
+      "case": "nominal",
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "counts": {
+        "NOT_MET": 11,
+        "NO_STOP": 1
+      }
+    },
+    {
+      "case": "nominal",
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "counts": {
+        "NO_STOP": 8,
+        "NOT_MET": 4
+      }
+    },
+    {
+      "case": "nominal",
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "counts": {
+        "MET_SAMPLED_DWELL": 3,
+        "NO_STOP": 9
+      }
+    },
+    {
+      "case": "biased_range",
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "counts": {
+        "NO_STOP": 2,
+        "NOT_MET": 10
+      }
+    },
+    {
+      "case": "biased_range",
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "counts": {
+        "NO_STOP": 9,
+        "NOT_MET": 3
+      }
+    },
+    {
+      "case": "biased_range",
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "counts": {
+        "NO_STOP": 7,
+        "MET_SAMPLED_DWELL": 5
+      }
+    },
+    {
+      "case": "biased_range",
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "counts": {
+        "NOT_MET": 11,
+        "NO_STOP": 1
+      }
+    },
+    {
+      "case": "biased_range",
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "counts": {
+        "NO_STOP": 8,
+        "NOT_MET": 4
+      }
+    },
+    {
+      "case": "biased_range",
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "counts": {
+        "MET_SAMPLED_DWELL": 2,
+        "NO_STOP": 10
+      }
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "counts": {
+        "NO_STOP": 2,
+        "NOT_MET": 10
+      }
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "counts": {
+        "NO_STOP": 10,
+        "NOT_MET": 2
+      }
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "counts": {
+        "NO_STOP": 12
+      }
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "counts": {
+        "NOT_MET": 11,
+        "NO_STOP": 1
+      }
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "counts": {
+        "NO_STOP": 7,
+        "NOT_MET": 4,
+        "MET_SAMPLED_DWELL": 1
+      }
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "counts": {
+        "NO_STOP": 12
+      }
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "counts": {
+        "NO_STOP": 2,
+        "NOT_MET": 10
+      }
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "counts": {
+        "NO_STOP": 12
+      }
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "counts": {
+        "NO_STOP": 10,
+        "MET_SAMPLED_DWELL": 2
+      }
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "counts": {
+        "NOT_MET": 11,
+        "NO_STOP": 1
+      }
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "counts": {
+        "NO_STOP": 8,
+        "NOT_MET": 4
+      }
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "counts": {
+        "NO_STOP": 10,
+        "MET_SAMPLED_DWELL": 2
+      }
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "counts": {
+        "NO_STOP": 2,
+        "NOT_MET": 10
+      }
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "counts": {
+        "NO_STOP": 8,
+        "NOT_MET": 4
+      }
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "counts": {
+        "NO_STOP": 7,
+        "MET_SAMPLED_DWELL": 5
+      }
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "counts": {
+        "NOT_MET": 11,
+        "NO_STOP": 1
+      }
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "counts": {
+        "NO_STOP": 9,
+        "NOT_MET": 3
+      }
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "counts": {
+        "NO_STOP": 10,
+        "MET_SAMPLED_DWELL": 2
+      }
+    }
+  ],
+  "episodes": [
+    {
+      "case": "nominal",
+      "seed": 2242000,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242000,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242000,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242000,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242000,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242000,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242001,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242001,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242001,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242001,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242001,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242001,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242002,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242002,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242002,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242002,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242002,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242002,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242003,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242003,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242003,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242003,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242003,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242003,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242004,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242004,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242004,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242004,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242004,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242004,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242005,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242005,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242005,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242005,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242005,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242005,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242006,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242006,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242006,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242006,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242006,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242006,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242007,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242007,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242007,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242007,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242007,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242007,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242008,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242008,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242008,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242008,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242008,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242008,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242009,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242009,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242009,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242009,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242009,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242009,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242010,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242010,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242010,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242010,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242010,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242010,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242011,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242011,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242011,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242011,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242011,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "nominal",
+      "seed": 2242011,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242000,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242000,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242000,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242000,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242000,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242000,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242001,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242001,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242001,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242001,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242001,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242001,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242002,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242002,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242002,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242002,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242002,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242002,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242003,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242003,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242003,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242003,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242003,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242003,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242004,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242004,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242004,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242004,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242004,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242004,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242005,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242005,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242005,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242005,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242005,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242005,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242006,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242006,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242006,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242006,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242006,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242006,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242007,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242007,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242007,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242007,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242007,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242007,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242008,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242008,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242008,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242008,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242008,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242008,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242009,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242009,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242009,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242009,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242009,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242009,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242010,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242010,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242010,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242010,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242010,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242010,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242011,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242011,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242011,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242011,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242011,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range",
+      "seed": 2242011,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242000,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242000,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242000,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242000,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242000,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242000,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242001,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242001,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242001,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242001,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242001,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242001,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242002,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242002,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242002,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242002,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242002,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242002,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242003,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242003,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242003,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242003,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242003,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242003,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242004,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242004,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242004,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242004,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242004,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242004,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242005,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242005,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242005,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242005,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242005,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242005,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242006,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242006,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242006,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242006,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242006,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242006,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242007,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242007,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242007,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242007,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242007,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242007,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242008,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242008,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242008,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242008,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242008,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242008,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242009,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242009,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242009,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242009,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242009,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242009,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242010,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242010,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242010,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242010,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242010,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242010,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242011,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242011,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242011,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242011,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242011,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_dropout",
+      "seed": 2242011,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242000,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242000,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242000,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242000,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242000,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242000,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242001,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242001,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242001,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242001,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242001,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242001,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242002,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242002,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242002,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242002,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242002,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242002,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242003,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242003,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242003,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242003,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242003,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242003,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242004,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242004,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242004,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242004,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242004,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242004,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242005,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242005,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242005,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242005,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242005,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242005,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242006,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242006,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242006,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242006,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242006,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242006,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242007,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242007,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242007,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242007,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242007,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242007,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242008,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242008,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242008,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242008,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242008,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242008,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242009,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242009,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242009,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242009,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242009,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242009,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242010,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242010,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242010,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242010,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242010,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242010,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242011,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242011,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242011,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242011,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242011,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_anchor_dropout",
+      "seed": 2242011,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242000,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242000,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242000,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242000,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242000,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242000,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242001,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242001,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242001,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242001,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242001,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242001,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242002,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242002,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242002,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242002,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242002,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242002,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242003,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242003,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242003,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242003,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242003,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242003,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242004,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242004,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242004,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242004,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242004,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242004,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242005,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242005,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242005,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242005,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242005,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242005,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242006,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242006,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242006,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242006,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242006,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242006,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242007,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242007,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242007,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242007,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242007,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242007,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242008,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242008,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242008,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "MET_SAMPLED_DWELL"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242008,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242008,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242008,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242009,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242009,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242009,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242009,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242009,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242009,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242010,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242010,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242010,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242010,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242010,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242010,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242011,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242011,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242011,
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242011,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_STRICT_RANGE",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242011,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "dwell": "NOT_MET"
+    },
+    {
+      "case": "biased_range_velocity_underreport",
+      "seed": 2242011,
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_SUSTAINED_STOP",
+      "dwell": "NO_STOP"
+    }
+  ]
+}

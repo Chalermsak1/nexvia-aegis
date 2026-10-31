@@ -1,0 +1,710 @@
+{
+  "classification": "EXPLORATORY_MATCHED_RECOVERY_FACTORIAL",
+  "interpretation": "Descriptive counts over all assigned cases. No probability, statistical acceptance or real-robot claim. Decision-time STOP and post-STOP observations remain separate; absent post evidence is null.",
+  "matched_assignments_per_cell": 8,
+  "budgets": [
+    100,
+    300
+  ],
+  "cells": [
+    {
+      "navigation_force_method": "AXIS_CLIP",
+      "recovery_steps_limit": 100,
+      "input_path": "results/research_development/dev/team_fresh_factorial_axis_100_v1.jsonl",
+      "input_sha256": "18a8acd28a80e354cadf336bc1ace425750a55346629d8813ffff2978e1be6db",
+      "ledger_state": "FINALIZED",
+      "assigned": 8,
+      "execution_counts": {
+        "COMPLETED": 8
+      },
+      "outcome_counts": {
+        "true_success": 1,
+        "false_arrival": 0,
+        "abstained": 7,
+        "timeout": 0
+      },
+      "assignments": [
+        {
+          "id": "nominal:2256000:0.0:AEGIS_3D_ANCHOR_RECOVERY",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "decision_state_action_record_count": 142,
+          "decision_state_action_sha256": "058fea55593539502970b127ca894b6e216a6d1bf00fe1a315a0582d3487fec5",
+          "collision_occurred": 0,
+          "last_recorded_reason": "ANCHOR_OUTSIDE_CONFIRMATION_MARGIN"
+        },
+        {
+          "id": "nominal:2256000:0.0:AEGIS_3D_RECOVERY_MONITOR",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "decision_state_action_record_count": 87,
+          "decision_state_action_sha256": "0261ddef7c1633ab4b01952a9bd35f288c6aa3e5c6710f766bf9685338e0abd4",
+          "collision_occurred": 0,
+          "last_recorded_reason": "POSTPROPOSAL_RANGE_UNAVAILABLE"
+        },
+        {
+          "id": "nominal:2256000:0.8:AEGIS_3D_ANCHOR_RECOVERY",
+          "execution_status": "COMPLETED",
+          "outcome": "true_success",
+          "post_stop": {
+            "decision_distance": 0.15305639729961137,
+            "decision_speed": 0.06967574288935234,
+            "post_samples": 50,
+            "post_distance_min": 0.15034148681286838,
+            "post_distance_max": 0.15280122329434814,
+            "post_speed_min": 0.009049889154421098,
+            "post_speed_max": 0.06688871317377823,
+            "post_collision_observed": false
+          },
+          "decision_state_action_record_count": 252,
+          "decision_state_action_sha256": "fa63dd35a6f639d5ba59edba5e060c739f19ca77b856fdd709f82fa2cf1a4677",
+          "collision_occurred": 0,
+          "last_recorded_reason": "EXPLORATORY_STABILIZED_ANCHOR_CONFIRMED"
+        },
+        {
+          "id": "nominal:2256000:0.8:AEGIS_3D_RECOVERY_MONITOR",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "decision_state_action_record_count": 222,
+          "decision_state_action_sha256": "be321a01f6c51d51f6eb0cd8bf82156a35413af6c101d534267765046006983e",
+          "collision_occurred": 0,
+          "last_recorded_reason": "POSTPROPOSAL_MONITOR_ALARM"
+        },
+        {
+          "id": "nominal:2256001:0.0:AEGIS_3D_ANCHOR_RECOVERY",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "decision_state_action_record_count": 339,
+          "decision_state_action_sha256": "71acc2070c430db17b8ac4a1fe1cbb470c525850640c0ed6e5cd96c9566893af",
+          "collision_occurred": 0,
+          "last_recorded_reason": "ANCHOR_OUTSIDE_CONFIRMATION_MARGIN"
+        },
+        {
+          "id": "nominal:2256001:0.0:AEGIS_3D_RECOVERY_MONITOR",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "decision_state_action_record_count": 339,
+          "decision_state_action_sha256": "71acc2070c430db17b8ac4a1fe1cbb470c525850640c0ed6e5cd96c9566893af",
+          "collision_occurred": 0,
+          "last_recorded_reason": "ANCHOR_OUTSIDE_CONFIRMATION_MARGIN"
+        },
+        {
+          "id": "nominal:2256001:0.8:AEGIS_3D_ANCHOR_RECOVERY",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "decision_state_action_record_count": 291,
+          "decision_state_action_sha256": "cdc228939f2608dcee33547d6f4ba1bf37d6061191d90b628f44db0ba2bddb02",
+          "collision_occurred": 0,
+          "last_recorded_reason": "ANCHOR_OUTSIDE_CONFIRMATION_MARGIN"
+        },
+        {
+          "id": "nominal:2256001:0.8:AEGIS_3D_RECOVERY_MONITOR",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "decision_state_action_record_count": 239,
+          "decision_state_action_sha256": "5bac265ff4a6ccd807f981c3a7f3e70fd3d309c0915157e6013af994704cc18c",
+          "collision_occurred": 0,
+          "last_recorded_reason": "POSTPROPOSAL_MONITOR_ALARM"
+        }
+      ]
+    },
+    {
+      "navigation_force_method": "AXIS_CLIP",
+      "recovery_steps_limit": 300,
+      "input_path": "results/research_development/dev/team_fresh_factorial_axis_300_v1.jsonl",
+      "input_sha256": "eb2280addca946bb57557d4ab8a69682af0d22b266e5dce5e953969ac61266e6",
+      "ledger_state": "FINALIZED",
+      "assigned": 8,
+      "execution_counts": {
+        "COMPLETED": 8
+      },
+      "outcome_counts": {
+        "true_success": 1,
+        "false_arrival": 0,
+        "abstained": 7,
+        "timeout": 0
+      },
+      "assignments": [
+        {
+          "id": "nominal:2256000:0.0:AEGIS_3D_ANCHOR_RECOVERY",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "decision_state_action_record_count": 142,
+          "decision_state_action_sha256": "058fea55593539502970b127ca894b6e216a6d1bf00fe1a315a0582d3487fec5",
+          "collision_occurred": 0,
+          "last_recorded_reason": "ANCHOR_OUTSIDE_CONFIRMATION_MARGIN"
+        },
+        {
+          "id": "nominal:2256000:0.0:AEGIS_3D_RECOVERY_MONITOR",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "decision_state_action_record_count": 87,
+          "decision_state_action_sha256": "0261ddef7c1633ab4b01952a9bd35f288c6aa3e5c6710f766bf9685338e0abd4",
+          "collision_occurred": 0,
+          "last_recorded_reason": "POSTPROPOSAL_RANGE_UNAVAILABLE"
+        },
+        {
+          "id": "nominal:2256000:0.8:AEGIS_3D_ANCHOR_RECOVERY",
+          "execution_status": "COMPLETED",
+          "outcome": "true_success",
+          "post_stop": {
+            "decision_distance": 0.15305639729961137,
+            "decision_speed": 0.06967574288935234,
+            "post_samples": 50,
+            "post_distance_min": 0.15034148681286838,
+            "post_distance_max": 0.15280122329434814,
+            "post_speed_min": 0.009049889154421098,
+            "post_speed_max": 0.06688871317377823,
+            "post_collision_observed": false
+          },
+          "decision_state_action_record_count": 252,
+          "decision_state_action_sha256": "fa63dd35a6f639d5ba59edba5e060c739f19ca77b856fdd709f82fa2cf1a4677",
+          "collision_occurred": 0,
+          "last_recorded_reason": "EXPLORATORY_STABILIZED_ANCHOR_CONFIRMED"
+        },
+        {
+          "id": "nominal:2256000:0.8:AEGIS_3D_RECOVERY_MONITOR",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "decision_state_action_record_count": 222,
+          "decision_state_action_sha256": "be321a01f6c51d51f6eb0cd8bf82156a35413af6c101d534267765046006983e",
+          "collision_occurred": 0,
+          "last_recorded_reason": "POSTPROPOSAL_MONITOR_ALARM"
+        },
+        {
+          "id": "nominal:2256001:0.0:AEGIS_3D_ANCHOR_RECOVERY",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "decision_state_action_record_count": 339,
+          "decision_state_action_sha256": "71acc2070c430db17b8ac4a1fe1cbb470c525850640c0ed6e5cd96c9566893af",
+          "collision_occurred": 0,
+          "last_recorded_reason": "ANCHOR_OUTSIDE_CONFIRMATION_MARGIN"
+        },
+        {
+          "id": "nominal:2256001:0.0:AEGIS_3D_RECOVERY_MONITOR",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "decision_state_action_record_count": 339,
+          "decision_state_action_sha256": "71acc2070c430db17b8ac4a1fe1cbb470c525850640c0ed6e5cd96c9566893af",
+          "collision_occurred": 0,
+          "last_recorded_reason": "ANCHOR_OUTSIDE_CONFIRMATION_MARGIN"
+        },
+        {
+          "id": "nominal:2256001:0.8:AEGIS_3D_ANCHOR_RECOVERY",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "decision_state_action_record_count": 291,
+          "decision_state_action_sha256": "cdc228939f2608dcee33547d6f4ba1bf37d6061191d90b628f44db0ba2bddb02",
+          "collision_occurred": 0,
+          "last_recorded_reason": "ANCHOR_OUTSIDE_CONFIRMATION_MARGIN"
+        },
+        {
+          "id": "nominal:2256001:0.8:AEGIS_3D_RECOVERY_MONITOR",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "decision_state_action_record_count": 239,
+          "decision_state_action_sha256": "5bac265ff4a6ccd807f981c3a7f3e70fd3d309c0915157e6013af994704cc18c",
+          "collision_occurred": 0,
+          "last_recorded_reason": "POSTPROPOSAL_MONITOR_ALARM"
+        }
+      ]
+    },
+    {
+      "navigation_force_method": "DIRECTION_PRESERVING_PEAK",
+      "recovery_steps_limit": 100,
+      "input_path": "results/research_development/dev/team_fresh_factorial_direction_100_v1.jsonl",
+      "input_sha256": "c5fb46c66d412b8b2f73a58e992571e05fbfc69c2418876b7da819b43adce8e3",
+      "ledger_state": "FINALIZED",
+      "assigned": 8,
+      "execution_counts": {
+        "COMPLETED": 8
+      },
+      "outcome_counts": {
+        "true_success": 1,
+        "false_arrival": 0,
+        "abstained": 7,
+        "timeout": 0
+      },
+      "assignments": [
+        {
+          "id": "nominal:2256000:0.0:AEGIS_3D_ANCHOR_RECOVERY",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "decision_state_action_record_count": 139,
+          "decision_state_action_sha256": "4788e42c8fa4746f7d728a438580d136d6c317dd183802fdccf4617118a20c01",
+          "collision_occurred": 0,
+          "last_recorded_reason": "ANCHOR_OUTSIDE_CONFIRMATION_MARGIN"
+        },
+        {
+          "id": "nominal:2256000:0.0:AEGIS_3D_RECOVERY_MONITOR",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "decision_state_action_record_count": 86,
+          "decision_state_action_sha256": "bbc0a94f9d699fc57461d98d28a90c5fb4c7669bb3f756919cac2582532d5e13",
+          "collision_occurred": 0,
+          "last_recorded_reason": "POSTPROPOSAL_RANGE_UNAVAILABLE"
+        },
+        {
+          "id": "nominal:2256000:0.8:AEGIS_3D_ANCHOR_RECOVERY",
+          "execution_status": "COMPLETED",
+          "outcome": "true_success",
+          "post_stop": {
+            "decision_distance": 0.15626421924981365,
+            "decision_speed": 0.08263212681745916,
+            "post_samples": 50,
+            "post_distance_min": 0.15615385074475951,
+            "post_distance_max": 0.1590219229966703,
+            "post_speed_min": 0.010732739362099427,
+            "post_speed_max": 0.0793268417447608,
+            "post_collision_observed": false
+          },
+          "decision_state_action_record_count": 252,
+          "decision_state_action_sha256": "ba3ebefb103fbaf0582aa86c7f2c5082f895decc67147fb173210f1822fdf720",
+          "collision_occurred": 0,
+          "last_recorded_reason": "EXPLORATORY_STABILIZED_ANCHOR_CONFIRMED"
+        },
+        {
+          "id": "nominal:2256000:0.8:AEGIS_3D_RECOVERY_MONITOR",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "decision_state_action_record_count": 222,
+          "decision_state_action_sha256": "f052035d7fa0db418d2fcb1fe5d14b31759e04d55aaf43ee9011aff63e0bdeb5",
+          "collision_occurred": 0,
+          "last_recorded_reason": "POSTPROPOSAL_MONITOR_ALARM"
+        },
+        {
+          "id": "nominal:2256001:0.0:AEGIS_3D_ANCHOR_RECOVERY",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "decision_state_action_record_count": 331,
+          "decision_state_action_sha256": "497e796c677fec11912b5a3af37086963b6d00ba4b3887971aed2ce0ee9a969e",
+          "collision_occurred": 0,
+          "last_recorded_reason": "ANCHOR_OUTSIDE_CONFIRMATION_MARGIN"
+        },
+        {
+          "id": "nominal:2256001:0.0:AEGIS_3D_RECOVERY_MONITOR",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "decision_state_action_record_count": 331,
+          "decision_state_action_sha256": "497e796c677fec11912b5a3af37086963b6d00ba4b3887971aed2ce0ee9a969e",
+          "collision_occurred": 0,
+          "last_recorded_reason": "ANCHOR_OUTSIDE_CONFIRMATION_MARGIN"
+        },
+        {
+          "id": "nominal:2256001:0.8:AEGIS_3D_ANCHOR_RECOVERY",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "decision_state_action_record_count": 297,
+          "decision_state_action_sha256": "48b4569472dbb12a9a43363f1c57db8a2262d70c03a14108b63a45f847a3fc3e",
+          "collision_occurred": 0,
+          "last_recorded_reason": "ANCHOR_OUTSIDE_CONFIRMATION_MARGIN"
+        },
+        {
+          "id": "nominal:2256001:0.8:AEGIS_3D_RECOVERY_MONITOR",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "decision_state_action_record_count": 227,
+          "decision_state_action_sha256": "1efd35ad7b8ab690ddf0869af999cf0b4af6f598978790553f99db82e93cb06c",
+          "collision_occurred": 0,
+          "last_recorded_reason": "POSTPROPOSAL_MONITOR_ALARM"
+        }
+      ]
+    },
+    {
+      "navigation_force_method": "DIRECTION_PRESERVING_PEAK",
+      "recovery_steps_limit": 300,
+      "input_path": "results/research_development/dev/team_fresh_factorial_direction_300_v1.jsonl",
+      "input_sha256": "09ef447ce954aba20f9d1d3da01484ca8560097eb5605a8b13ec3057ccc09281",
+      "ledger_state": "FINALIZED",
+      "assigned": 8,
+      "execution_counts": {
+        "COMPLETED": 8
+      },
+      "outcome_counts": {
+        "true_success": 1,
+        "false_arrival": 0,
+        "abstained": 7,
+        "timeout": 0
+      },
+      "assignments": [
+        {
+          "id": "nominal:2256000:0.0:AEGIS_3D_ANCHOR_RECOVERY",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "decision_state_action_record_count": 139,
+          "decision_state_action_sha256": "4788e42c8fa4746f7d728a438580d136d6c317dd183802fdccf4617118a20c01",
+          "collision_occurred": 0,
+          "last_recorded_reason": "ANCHOR_OUTSIDE_CONFIRMATION_MARGIN"
+        },
+        {
+          "id": "nominal:2256000:0.0:AEGIS_3D_RECOVERY_MONITOR",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "decision_state_action_record_count": 86,
+          "decision_state_action_sha256": "bbc0a94f9d699fc57461d98d28a90c5fb4c7669bb3f756919cac2582532d5e13",
+          "collision_occurred": 0,
+          "last_recorded_reason": "POSTPROPOSAL_RANGE_UNAVAILABLE"
+        },
+        {
+          "id": "nominal:2256000:0.8:AEGIS_3D_ANCHOR_RECOVERY",
+          "execution_status": "COMPLETED",
+          "outcome": "true_success",
+          "post_stop": {
+            "decision_distance": 0.15626421924981365,
+            "decision_speed": 0.08263212681745916,
+            "post_samples": 50,
+            "post_distance_min": 0.15615385074475951,
+            "post_distance_max": 0.1590219229966703,
+            "post_speed_min": 0.010732739362099427,
+            "post_speed_max": 0.0793268417447608,
+            "post_collision_observed": false
+          },
+          "decision_state_action_record_count": 252,
+          "decision_state_action_sha256": "ba3ebefb103fbaf0582aa86c7f2c5082f895decc67147fb173210f1822fdf720",
+          "collision_occurred": 0,
+          "last_recorded_reason": "EXPLORATORY_STABILIZED_ANCHOR_CONFIRMED"
+        },
+        {
+          "id": "nominal:2256000:0.8:AEGIS_3D_RECOVERY_MONITOR",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "decision_state_action_record_count": 222,
+          "decision_state_action_sha256": "f052035d7fa0db418d2fcb1fe5d14b31759e04d55aaf43ee9011aff63e0bdeb5",
+          "collision_occurred": 0,
+          "last_recorded_reason": "POSTPROPOSAL_MONITOR_ALARM"
+        },
+        {
+          "id": "nominal:2256001:0.0:AEGIS_3D_ANCHOR_RECOVERY",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "decision_state_action_record_count": 331,
+          "decision_state_action_sha256": "497e796c677fec11912b5a3af37086963b6d00ba4b3887971aed2ce0ee9a969e",
+          "collision_occurred": 0,
+          "last_recorded_reason": "ANCHOR_OUTSIDE_CONFIRMATION_MARGIN"
+        },
+        {
+          "id": "nominal:2256001:0.0:AEGIS_3D_RECOVERY_MONITOR",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "decision_state_action_record_count": 331,
+          "decision_state_action_sha256": "497e796c677fec11912b5a3af37086963b6d00ba4b3887971aed2ce0ee9a969e",
+          "collision_occurred": 0,
+          "last_recorded_reason": "ANCHOR_OUTSIDE_CONFIRMATION_MARGIN"
+        },
+        {
+          "id": "nominal:2256001:0.8:AEGIS_3D_ANCHOR_RECOVERY",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "decision_state_action_record_count": 297,
+          "decision_state_action_sha256": "48b4569472dbb12a9a43363f1c57db8a2262d70c03a14108b63a45f847a3fc3e",
+          "collision_occurred": 0,
+          "last_recorded_reason": "ANCHOR_OUTSIDE_CONFIRMATION_MARGIN"
+        },
+        {
+          "id": "nominal:2256001:0.8:AEGIS_3D_RECOVERY_MONITOR",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "decision_state_action_record_count": 227,
+          "decision_state_action_sha256": "1efd35ad7b8ab690ddf0869af999cf0b4af6f598978790553f99db82e93cb06c",
+          "collision_occurred": 0,
+          "last_recorded_reason": "POSTPROPOSAL_MONITOR_ALARM"
+        }
+      ]
+    }
+  ],
+  "decision_trace_comparisons": [
+    {
+      "left": [
+        "AXIS_CLIP",
+        100
+      ],
+      "right": [
+        "AXIS_CLIP",
+        300
+      ],
+      "assignments": [
+        {
+          "id": "nominal:2256000:0.0:AEGIS_3D_ANCHOR_RECOVERY",
+          "recorded_decision_states_actions_equal": true
+        },
+        {
+          "id": "nominal:2256000:0.0:AEGIS_3D_RECOVERY_MONITOR",
+          "recorded_decision_states_actions_equal": true
+        },
+        {
+          "id": "nominal:2256000:0.8:AEGIS_3D_ANCHOR_RECOVERY",
+          "recorded_decision_states_actions_equal": true
+        },
+        {
+          "id": "nominal:2256000:0.8:AEGIS_3D_RECOVERY_MONITOR",
+          "recorded_decision_states_actions_equal": true
+        },
+        {
+          "id": "nominal:2256001:0.0:AEGIS_3D_ANCHOR_RECOVERY",
+          "recorded_decision_states_actions_equal": true
+        },
+        {
+          "id": "nominal:2256001:0.0:AEGIS_3D_RECOVERY_MONITOR",
+          "recorded_decision_states_actions_equal": true
+        },
+        {
+          "id": "nominal:2256001:0.8:AEGIS_3D_ANCHOR_RECOVERY",
+          "recorded_decision_states_actions_equal": true
+        },
+        {
+          "id": "nominal:2256001:0.8:AEGIS_3D_RECOVERY_MONITOR",
+          "recorded_decision_states_actions_equal": true
+        }
+      ]
+    },
+    {
+      "left": [
+        "AXIS_CLIP",
+        100
+      ],
+      "right": [
+        "DIRECTION_PRESERVING_PEAK",
+        100
+      ],
+      "assignments": [
+        {
+          "id": "nominal:2256000:0.0:AEGIS_3D_ANCHOR_RECOVERY",
+          "recorded_decision_states_actions_equal": false
+        },
+        {
+          "id": "nominal:2256000:0.0:AEGIS_3D_RECOVERY_MONITOR",
+          "recorded_decision_states_actions_equal": false
+        },
+        {
+          "id": "nominal:2256000:0.8:AEGIS_3D_ANCHOR_RECOVERY",
+          "recorded_decision_states_actions_equal": false
+        },
+        {
+          "id": "nominal:2256000:0.8:AEGIS_3D_RECOVERY_MONITOR",
+          "recorded_decision_states_actions_equal": false
+        },
+        {
+          "id": "nominal:2256001:0.0:AEGIS_3D_ANCHOR_RECOVERY",
+          "recorded_decision_states_actions_equal": false
+        },
+        {
+          "id": "nominal:2256001:0.0:AEGIS_3D_RECOVERY_MONITOR",
+          "recorded_decision_states_actions_equal": false
+        },
+        {
+          "id": "nominal:2256001:0.8:AEGIS_3D_ANCHOR_RECOVERY",
+          "recorded_decision_states_actions_equal": false
+        },
+        {
+          "id": "nominal:2256001:0.8:AEGIS_3D_RECOVERY_MONITOR",
+          "recorded_decision_states_actions_equal": false
+        }
+      ]
+    },
+    {
+      "left": [
+        "AXIS_CLIP",
+        100
+      ],
+      "right": [
+        "DIRECTION_PRESERVING_PEAK",
+        300
+      ],
+      "assignments": [
+        {
+          "id": "nominal:2256000:0.0:AEGIS_3D_ANCHOR_RECOVERY",
+          "recorded_decision_states_actions_equal": false
+        },
+        {
+          "id": "nominal:2256000:0.0:AEGIS_3D_RECOVERY_MONITOR",
+          "recorded_decision_states_actions_equal": false
+        },
+        {
+          "id": "nominal:2256000:0.8:AEGIS_3D_ANCHOR_RECOVERY",
+          "recorded_decision_states_actions_equal": false
+        },
+        {
+          "id": "nominal:2256000:0.8:AEGIS_3D_RECOVERY_MONITOR",
+          "recorded_decision_states_actions_equal": false
+        },
+        {
+          "id": "nominal:2256001:0.0:AEGIS_3D_ANCHOR_RECOVERY",
+          "recorded_decision_states_actions_equal": false
+        },
+        {
+          "id": "nominal:2256001:0.0:AEGIS_3D_RECOVERY_MONITOR",
+          "recorded_decision_states_actions_equal": false
+        },
+        {
+          "id": "nominal:2256001:0.8:AEGIS_3D_ANCHOR_RECOVERY",
+          "recorded_decision_states_actions_equal": false
+        },
+        {
+          "id": "nominal:2256001:0.8:AEGIS_3D_RECOVERY_MONITOR",
+          "recorded_decision_states_actions_equal": false
+        }
+      ]
+    },
+    {
+      "left": [
+        "AXIS_CLIP",
+        300
+      ],
+      "right": [
+        "DIRECTION_PRESERVING_PEAK",
+        100
+      ],
+      "assignments": [
+        {
+          "id": "nominal:2256000:0.0:AEGIS_3D_ANCHOR_RECOVERY",
+          "recorded_decision_states_actions_equal": false
+        },
+        {
+          "id": "nominal:2256000:0.0:AEGIS_3D_RECOVERY_MONITOR",
+          "recorded_decision_states_actions_equal": false
+        },
+        {
+          "id": "nominal:2256000:0.8:AEGIS_3D_ANCHOR_RECOVERY",
+          "recorded_decision_states_actions_equal": false
+        },
+        {
+          "id": "nominal:2256000:0.8:AEGIS_3D_RECOVERY_MONITOR",
+          "recorded_decision_states_actions_equal": false
+        },
+        {
+          "id": "nominal:2256001:0.0:AEGIS_3D_ANCHOR_RECOVERY",
+          "recorded_decision_states_actions_equal": false
+        },
+        {
+          "id": "nominal:2256001:0.0:AEGIS_3D_RECOVERY_MONITOR",
+          "recorded_decision_states_actions_equal": false
+        },
+        {
+          "id": "nominal:2256001:0.8:AEGIS_3D_ANCHOR_RECOVERY",
+          "recorded_decision_states_actions_equal": false
+        },
+        {
+          "id": "nominal:2256001:0.8:AEGIS_3D_RECOVERY_MONITOR",
+          "recorded_decision_states_actions_equal": false
+        }
+      ]
+    },
+    {
+      "left": [
+        "AXIS_CLIP",
+        300
+      ],
+      "right": [
+        "DIRECTION_PRESERVING_PEAK",
+        300
+      ],
+      "assignments": [
+        {
+          "id": "nominal:2256000:0.0:AEGIS_3D_ANCHOR_RECOVERY",
+          "recorded_decision_states_actions_equal": false
+        },
+        {
+          "id": "nominal:2256000:0.0:AEGIS_3D_RECOVERY_MONITOR",
+          "recorded_decision_states_actions_equal": false
+        },
+        {
+          "id": "nominal:2256000:0.8:AEGIS_3D_ANCHOR_RECOVERY",
+          "recorded_decision_states_actions_equal": false
+        },
+        {
+          "id": "nominal:2256000:0.8:AEGIS_3D_RECOVERY_MONITOR",
+          "recorded_decision_states_actions_equal": false
+        },
+        {
+          "id": "nominal:2256001:0.0:AEGIS_3D_ANCHOR_RECOVERY",
+          "recorded_decision_states_actions_equal": false
+        },
+        {
+          "id": "nominal:2256001:0.0:AEGIS_3D_RECOVERY_MONITOR",
+          "recorded_decision_states_actions_equal": false
+        },
+        {
+          "id": "nominal:2256001:0.8:AEGIS_3D_ANCHOR_RECOVERY",
+          "recorded_decision_states_actions_equal": false
+        },
+        {
+          "id": "nominal:2256001:0.8:AEGIS_3D_RECOVERY_MONITOR",
+          "recorded_decision_states_actions_equal": false
+        }
+      ]
+    },
+    {
+      "left": [
+        "DIRECTION_PRESERVING_PEAK",
+        100
+      ],
+      "right": [
+        "DIRECTION_PRESERVING_PEAK",
+        300
+      ],
+      "assignments": [
+        {
+          "id": "nominal:2256000:0.0:AEGIS_3D_ANCHOR_RECOVERY",
+          "recorded_decision_states_actions_equal": true
+        },
+        {
+          "id": "nominal:2256000:0.0:AEGIS_3D_RECOVERY_MONITOR",
+          "recorded_decision_states_actions_equal": true
+        },
+        {
+          "id": "nominal:2256000:0.8:AEGIS_3D_ANCHOR_RECOVERY",
+          "recorded_decision_states_actions_equal": true
+        },
+        {
+          "id": "nominal:2256000:0.8:AEGIS_3D_RECOVERY_MONITOR",
+          "recorded_decision_states_actions_equal": true
+        },
+        {
+          "id": "nominal:2256001:0.0:AEGIS_3D_ANCHOR_RECOVERY",
+          "recorded_decision_states_actions_equal": true
+        },
+        {
+          "id": "nominal:2256001:0.0:AEGIS_3D_RECOVERY_MONITOR",
+          "recorded_decision_states_actions_equal": true
+        },
+        {
+          "id": "nominal:2256001:0.8:AEGIS_3D_ANCHOR_RECOVERY",
+          "recorded_decision_states_actions_equal": true
+        },
+        {
+          "id": "nominal:2256001:0.8:AEGIS_3D_RECOVERY_MONITOR",
+          "recorded_decision_states_actions_equal": true
+        }
+      ]
+    }
+  ],
+  "trace_comparison_scope": "Exact equality of recorded pre-physics state/action/decision fields only; excludes force method labels and budget metadata, not a complete physics-trajectory equivalence proof. Equal outcome counts need not imply equal traces."
+}

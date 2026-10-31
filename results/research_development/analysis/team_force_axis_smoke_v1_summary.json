@@ -1,0 +1,99 @@
+{
+  "input_sha256": "a8a96233912157c48d4cf35f54d1fb0dcaa94f025867f53239fae4121aa51ad6",
+  "ledger_state": "FINALIZED",
+  "integrity": "VALID_SELF_REPORTED_CHAIN",
+  "summary": [
+    {
+      "case": "nominal",
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "assigned": 2,
+      "completed": 2,
+      "error": 0,
+      "incomplete": 0,
+      "true_success": 0,
+      "false_arrival": 0,
+      "abstained": 1,
+      "timeout": 1,
+      "collision_occurred": 0,
+      "monitor_steps": 0,
+      "monitor_alarm_episodes": 0,
+      "vector_fault_triggered_episodes": 0,
+      "vector_fault_then_stop": 0,
+      "vector_fault_then_abstain": 0
+    },
+    {
+      "case": "nominal",
+      "bias_xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controller": "AEGIS_3D_RECOVERY_MONITOR",
+      "assigned": 2,
+      "completed": 2,
+      "error": 0,
+      "incomplete": 0,
+      "true_success": 0,
+      "false_arrival": 0,
+      "abstained": 1,
+      "timeout": 1,
+      "collision_occurred": 0,
+      "monitor_steps": 188,
+      "monitor_alarm_episodes": 0,
+      "vector_fault_triggered_episodes": 0,
+      "vector_fault_then_stop": 0,
+      "vector_fault_then_abstain": 0
+    },
+    {
+      "case": "nominal",
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_ANCHOR_RECOVERY",
+      "assigned": 2,
+      "completed": 2,
+      "error": 0,
+      "incomplete": 0,
+      "true_success": 0,
+      "false_arrival": 0,
+      "abstained": 1,
+      "timeout": 1,
+      "collision_occurred": 0,
+      "monitor_steps": 0,
+      "monitor_alarm_episodes": 0,
+      "vector_fault_triggered_episodes": 0,
+      "vector_fault_then_stop": 0,
+      "vector_fault_then_abstain": 0
+    },
+    {
+      "case": "nominal",
+      "bias_xyz": [
+        0.8,
+        0.8,
+        -0.3
+      ],
+      "controller": "AEGIS_3D_RECOVERY_MONITOR",
+      "assigned": 2,
+      "completed": 2,
+      "error": 0,
+      "incomplete": 0,
+      "true_success": 0,
+      "false_arrival": 0,
+      "abstained": 1,
+      "timeout": 1,
+      "collision_occurred": 0,
+      "monitor_steps": 1,
+      "monitor_alarm_episodes": 0,
+      "vector_fault_triggered_episodes": 0,
+      "vector_fault_then_stop": 0,
+      "vector_fault_then_abstain": 0
+    }
+  ]
+}

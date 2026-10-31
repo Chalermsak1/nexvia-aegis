@@ -1,0 +1,379 @@
+{
+  "classification": "EXPLORATORY_MATCHED_RECOVERY_FACTORIAL",
+  "interpretation": "Descriptive counts over all assigned cases. No probability, statistical acceptance or real-robot claim. Decision-time STOP and post-STOP observations remain separate; absent post evidence is null.",
+  "matched_assignments_per_cell": 8,
+  "budgets": [
+    100,
+    300
+  ],
+  "cells": [
+    {
+      "navigation_force_method": "AXIS_CLIP",
+      "recovery_steps_limit": 100,
+      "input_path": "results/research_development/dev/team_fresh_factorial_axis_100_v1.jsonl",
+      "input_sha256": "18a8acd28a80e354cadf336bc1ace425750a55346629d8813ffff2978e1be6db",
+      "ledger_state": "FINALIZED",
+      "assigned": 8,
+      "execution_counts": {
+        "COMPLETED": 8
+      },
+      "outcome_counts": {
+        "true_success": 1,
+        "false_arrival": 0,
+        "abstained": 7,
+        "timeout": 0
+      },
+      "assignments": [
+        {
+          "id": "nominal:2256000:0.0:AEGIS_3D_ANCHOR_RECOVERY",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "collision_occurred": 0,
+          "last_recorded_reason": "ANCHOR_OUTSIDE_CONFIRMATION_MARGIN"
+        },
+        {
+          "id": "nominal:2256000:0.0:AEGIS_3D_RECOVERY_MONITOR",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "collision_occurred": 0,
+          "last_recorded_reason": "POSTPROPOSAL_RANGE_UNAVAILABLE"
+        },
+        {
+          "id": "nominal:2256000:0.8:AEGIS_3D_ANCHOR_RECOVERY",
+          "execution_status": "COMPLETED",
+          "outcome": "true_success",
+          "post_stop": {
+            "decision_distance": 0.15305639729961137,
+            "decision_speed": 0.06967574288935234,
+            "post_samples": 50,
+            "post_distance_min": 0.15034148681286838,
+            "post_distance_max": 0.15280122329434814,
+            "post_speed_min": 0.009049889154421098,
+            "post_speed_max": 0.06688871317377823,
+            "post_collision_observed": false
+          },
+          "collision_occurred": 0,
+          "last_recorded_reason": "EXPLORATORY_STABILIZED_ANCHOR_CONFIRMED"
+        },
+        {
+          "id": "nominal:2256000:0.8:AEGIS_3D_RECOVERY_MONITOR",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "collision_occurred": 0,
+          "last_recorded_reason": "POSTPROPOSAL_MONITOR_ALARM"
+        },
+        {
+          "id": "nominal:2256001:0.0:AEGIS_3D_ANCHOR_RECOVERY",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "collision_occurred": 0,
+          "last_recorded_reason": "ANCHOR_OUTSIDE_CONFIRMATION_MARGIN"
+        },
+        {
+          "id": "nominal:2256001:0.0:AEGIS_3D_RECOVERY_MONITOR",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "collision_occurred": 0,
+          "last_recorded_reason": "ANCHOR_OUTSIDE_CONFIRMATION_MARGIN"
+        },
+        {
+          "id": "nominal:2256001:0.8:AEGIS_3D_ANCHOR_RECOVERY",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "collision_occurred": 0,
+          "last_recorded_reason": "ANCHOR_OUTSIDE_CONFIRMATION_MARGIN"
+        },
+        {
+          "id": "nominal:2256001:0.8:AEGIS_3D_RECOVERY_MONITOR",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "collision_occurred": 0,
+          "last_recorded_reason": "POSTPROPOSAL_MONITOR_ALARM"
+        }
+      ]
+    },
+    {
+      "navigation_force_method": "AXIS_CLIP",
+      "recovery_steps_limit": 300,
+      "input_path": "results/research_development/dev/team_fresh_factorial_axis_300_v1.jsonl",
+      "input_sha256": "eb2280addca946bb57557d4ab8a69682af0d22b266e5dce5e953969ac61266e6",
+      "ledger_state": "FINALIZED",
+      "assigned": 8,
+      "execution_counts": {
+        "COMPLETED": 8
+      },
+      "outcome_counts": {
+        "true_success": 1,
+        "false_arrival": 0,
+        "abstained": 7,
+        "timeout": 0
+      },
+      "assignments": [
+        {
+          "id": "nominal:2256000:0.0:AEGIS_3D_ANCHOR_RECOVERY",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "collision_occurred": 0,
+          "last_recorded_reason": "ANCHOR_OUTSIDE_CONFIRMATION_MARGIN"
+        },
+        {
+          "id": "nominal:2256000:0.0:AEGIS_3D_RECOVERY_MONITOR",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "collision_occurred": 0,
+          "last_recorded_reason": "POSTPROPOSAL_RANGE_UNAVAILABLE"
+        },
+        {
+          "id": "nominal:2256000:0.8:AEGIS_3D_ANCHOR_RECOVERY",
+          "execution_status": "COMPLETED",
+          "outcome": "true_success",
+          "post_stop": {
+            "decision_distance": 0.15305639729961137,
+            "decision_speed": 0.06967574288935234,
+            "post_samples": 50,
+            "post_distance_min": 0.15034148681286838,
+            "post_distance_max": 0.15280122329434814,
+            "post_speed_min": 0.009049889154421098,
+            "post_speed_max": 0.06688871317377823,
+            "post_collision_observed": false
+          },
+          "collision_occurred": 0,
+          "last_recorded_reason": "EXPLORATORY_STABILIZED_ANCHOR_CONFIRMED"
+        },
+        {
+          "id": "nominal:2256000:0.8:AEGIS_3D_RECOVERY_MONITOR",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "collision_occurred": 0,
+          "last_recorded_reason": "POSTPROPOSAL_MONITOR_ALARM"
+        },
+        {
+          "id": "nominal:2256001:0.0:AEGIS_3D_ANCHOR_RECOVERY",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "collision_occurred": 0,
+          "last_recorded_reason": "ANCHOR_OUTSIDE_CONFIRMATION_MARGIN"
+        },
+        {
+          "id": "nominal:2256001:0.0:AEGIS_3D_RECOVERY_MONITOR",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "collision_occurred": 0,
+          "last_recorded_reason": "ANCHOR_OUTSIDE_CONFIRMATION_MARGIN"
+        },
+        {
+          "id": "nominal:2256001:0.8:AEGIS_3D_ANCHOR_RECOVERY",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "collision_occurred": 0,
+          "last_recorded_reason": "ANCHOR_OUTSIDE_CONFIRMATION_MARGIN"
+        },
+        {
+          "id": "nominal:2256001:0.8:AEGIS_3D_RECOVERY_MONITOR",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "collision_occurred": 0,
+          "last_recorded_reason": "POSTPROPOSAL_MONITOR_ALARM"
+        }
+      ]
+    },
+    {
+      "navigation_force_method": "DIRECTION_PRESERVING_PEAK",
+      "recovery_steps_limit": 100,
+      "input_path": "results/research_development/dev/team_fresh_factorial_direction_100_v1.jsonl",
+      "input_sha256": "c5fb46c66d412b8b2f73a58e992571e05fbfc69c2418876b7da819b43adce8e3",
+      "ledger_state": "FINALIZED",
+      "assigned": 8,
+      "execution_counts": {
+        "COMPLETED": 8
+      },
+      "outcome_counts": {
+        "true_success": 1,
+        "false_arrival": 0,
+        "abstained": 7,
+        "timeout": 0
+      },
+      "assignments": [
+        {
+          "id": "nominal:2256000:0.0:AEGIS_3D_ANCHOR_RECOVERY",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "collision_occurred": 0,
+          "last_recorded_reason": "ANCHOR_OUTSIDE_CONFIRMATION_MARGIN"
+        },
+        {
+          "id": "nominal:2256000:0.0:AEGIS_3D_RECOVERY_MONITOR",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "collision_occurred": 0,
+          "last_recorded_reason": "POSTPROPOSAL_RANGE_UNAVAILABLE"
+        },
+        {
+          "id": "nominal:2256000:0.8:AEGIS_3D_ANCHOR_RECOVERY",
+          "execution_status": "COMPLETED",
+          "outcome": "true_success",
+          "post_stop": {
+            "decision_distance": 0.15626421924981365,
+            "decision_speed": 0.08263212681745916,
+            "post_samples": 50,
+            "post_distance_min": 0.15615385074475951,
+            "post_distance_max": 0.1590219229966703,
+            "post_speed_min": 0.010732739362099427,
+            "post_speed_max": 0.0793268417447608,
+            "post_collision_observed": false
+          },
+          "collision_occurred": 0,
+          "last_recorded_reason": "EXPLORATORY_STABILIZED_ANCHOR_CONFIRMED"
+        },
+        {
+          "id": "nominal:2256000:0.8:AEGIS_3D_RECOVERY_MONITOR",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "collision_occurred": 0,
+          "last_recorded_reason": "POSTPROPOSAL_MONITOR_ALARM"
+        },
+        {
+          "id": "nominal:2256001:0.0:AEGIS_3D_ANCHOR_RECOVERY",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "collision_occurred": 0,
+          "last_recorded_reason": "ANCHOR_OUTSIDE_CONFIRMATION_MARGIN"
+        },
+        {
+          "id": "nominal:2256001:0.0:AEGIS_3D_RECOVERY_MONITOR",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "collision_occurred": 0,
+          "last_recorded_reason": "ANCHOR_OUTSIDE_CONFIRMATION_MARGIN"
+        },
+        {
+          "id": "nominal:2256001:0.8:AEGIS_3D_ANCHOR_RECOVERY",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "collision_occurred": 0,
+          "last_recorded_reason": "ANCHOR_OUTSIDE_CONFIRMATION_MARGIN"
+        },
+        {
+          "id": "nominal:2256001:0.8:AEGIS_3D_RECOVERY_MONITOR",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "collision_occurred": 0,
+          "last_recorded_reason": "POSTPROPOSAL_MONITOR_ALARM"
+        }
+      ]
+    },
+    {
+      "navigation_force_method": "DIRECTION_PRESERVING_PEAK",
+      "recovery_steps_limit": 300,
+      "input_path": "results/research_development/dev/team_fresh_factorial_direction_300_v1.jsonl",
+      "input_sha256": "09ef447ce954aba20f9d1d3da01484ca8560097eb5605a8b13ec3057ccc09281",
+      "ledger_state": "FINALIZED",
+      "assigned": 8,
+      "execution_counts": {
+        "COMPLETED": 8
+      },
+      "outcome_counts": {
+        "true_success": 1,
+        "false_arrival": 0,
+        "abstained": 7,
+        "timeout": 0
+      },
+      "assignments": [
+        {
+          "id": "nominal:2256000:0.0:AEGIS_3D_ANCHOR_RECOVERY",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "collision_occurred": 0,
+          "last_recorded_reason": "ANCHOR_OUTSIDE_CONFIRMATION_MARGIN"
+        },
+        {
+          "id": "nominal:2256000:0.0:AEGIS_3D_RECOVERY_MONITOR",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "collision_occurred": 0,
+          "last_recorded_reason": "POSTPROPOSAL_RANGE_UNAVAILABLE"
+        },
+        {
+          "id": "nominal:2256000:0.8:AEGIS_3D_ANCHOR_RECOVERY",
+          "execution_status": "COMPLETED",
+          "outcome": "true_success",
+          "post_stop": {
+            "decision_distance": 0.15626421924981365,
+            "decision_speed": 0.08263212681745916,
+            "post_samples": 50,
+            "post_distance_min": 0.15615385074475951,
+            "post_distance_max": 0.1590219229966703,
+            "post_speed_min": 0.010732739362099427,
+            "post_speed_max": 0.0793268417447608,
+            "post_collision_observed": false
+          },
+          "collision_occurred": 0,
+          "last_recorded_reason": "EXPLORATORY_STABILIZED_ANCHOR_CONFIRMED"
+        },
+        {
+          "id": "nominal:2256000:0.8:AEGIS_3D_RECOVERY_MONITOR",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "collision_occurred": 0,
+          "last_recorded_reason": "POSTPROPOSAL_MONITOR_ALARM"
+        },
+        {
+          "id": "nominal:2256001:0.0:AEGIS_3D_ANCHOR_RECOVERY",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "collision_occurred": 0,
+          "last_recorded_reason": "ANCHOR_OUTSIDE_CONFIRMATION_MARGIN"
+        },
+        {
+          "id": "nominal:2256001:0.0:AEGIS_3D_RECOVERY_MONITOR",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "collision_occurred": 0,
+          "last_recorded_reason": "ANCHOR_OUTSIDE_CONFIRMATION_MARGIN"
+        },
+        {
+          "id": "nominal:2256001:0.8:AEGIS_3D_ANCHOR_RECOVERY",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "collision_occurred": 0,
+          "last_recorded_reason": "ANCHOR_OUTSIDE_CONFIRMATION_MARGIN"
+        },
+        {
+          "id": "nominal:2256001:0.8:AEGIS_3D_RECOVERY_MONITOR",
+          "execution_status": "COMPLETED",
+          "outcome": "abstained",
+          "post_stop": null,
+          "collision_occurred": 0,
+          "last_recorded_reason": "POSTPROPOSAL_MONITOR_ALARM"
+        }
+      ]
+    }
+  ]
+}
