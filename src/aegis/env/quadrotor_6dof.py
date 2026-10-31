@@ -209,6 +209,7 @@ class UnderactuatedCBF6DOF:
         desired_force: np.ndarray,
         obstacles: list[Obstacle3D],
         current_tilt: float,
+        adaptive_gammas: tuple[float, float] | None = None,
     ) -> tuple[np.ndarray, bool]:
         """
         Filters desired outer-loop force F_des to satisfy CBF constraints.
@@ -217,7 +218,8 @@ class UnderactuatedCBF6DOF:
         m = self.cfg.mass
         r_quad = self.cfg.robot_collision_radius
         margin = self.cfg.safety_margin
-        alpha1, alpha2 = self.gamma1, self.gamma2
+        alpha1 = adaptive_gammas[0] if adaptive_gammas is not None else self.gamma1
+        alpha2 = adaptive_gammas[1] if adaptive_gammas is not None else self.gamma2
 
         constraints: list[tuple[np.ndarray, float]] = []
 
