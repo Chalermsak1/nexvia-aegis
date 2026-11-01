@@ -1,0 +1,148 @@
+{
+  "timestamp": "2026-11-01T04:16:32Z",
+  "milestone": "V9-M14",
+  "description": "Prospective 100 Fresh Unseen Worlds Factorial Benchmark (Actuator Delay + Robust Tube-CLBF)",
+  "summary": {
+    "naive_baseline": {
+      "total_worlds": 100,
+      "collision_count": 100,
+      "collision_rate_pct": 100.0,
+      "goal_reached_count": 0,
+      "safe_abstain_count": 0,
+      "stall_count": 0,
+      "solvable_success_rate_pct": 0.0,
+      "dead_end_safety_rate_pct": 0.0,
+      "selective_risk_pct": 100.0,
+      "mean_min_clearance_m": 0.759137162370684,
+      "avg_goal_time_s": 0.0
+    },
+    "standard_cbf": {
+      "total_worlds": 100,
+      "collision_count": 0,
+      "collision_rate_pct": 0.0,
+      "goal_reached_count": 96,
+      "safe_abstain_count": 3,
+      "stall_count": 1,
+      "solvable_success_rate_pct": 98.50746268656717,
+      "dead_end_safety_rate_pct": 100.0,
+      "selective_risk_pct": 0.0,
+      "mean_min_clearance_m": 1.4396703334044612,
+      "avg_goal_time_s": 14.845416666666665
+    },
+    "aegis_delay_tube": {
+      "total_worlds": 100,
+      "collision_count": 0,
+      "collision_rate_pct": 0.0,
+      "goal_reached_count": 92,
+      "safe_abstain_count": 7,
+      "stall_count": 1,
+      "solvable_success_rate_pct": 98.50746268656717,
+      "dead_end_safety_rate_pct": 100.0,
+      "selective_risk_pct": 0.0,
+      "mean_min_clearance_m": 1.4374056486148945,
+      "avg_goal_time_s": 14.570869565217393
+    }
+  },
+  "raw_episodes_sample": [
+    {
+      "world_id": 0,
+      "arm": "AEGIS_DELAY_TUBE",
+      "topology": "CORRIDOR",
+      "outcome": "GOAL_REACHED",
+      "min_clearance_m": 1.2039135171074977,
+      "final_ek_j": 0.02814457353874407,
+      "time_s": 10.92,
+      "is_safe": true
+    },
+    {
+      "world_id": 1,
+      "arm": "AEGIS_DELAY_TUBE",
+      "topology": "CUL_DE_SAC",
+      "outcome": "SAFE_ABSTAIN",
+      "min_clearance_m": 1.3715496140895405,
+      "final_ek_j": 0.0004277972745791905,
+      "time_s": 7.88,
+      "is_safe": true
+    },
+    {
+      "world_id": 2,
+      "arm": "AEGIS_DELAY_TUBE",
+      "topology": "SLALOM",
+      "outcome": "GOAL_REACHED",
+      "min_clearance_m": 1.6856280436519888,
+      "final_ek_j": 0.02981097489125991,
+      "time_s": 19.96,
+      "is_safe": true
+    },
+    {
+      "world_id": 3,
+      "arm": "AEGIS_DELAY_TUBE",
+      "topology": "CORRIDOR",
+      "outcome": "GOAL_REACHED",
+      "min_clearance_m": 1.3324030982920434,
+      "final_ek_j": 0.027704182019345852,
+      "time_s": 9.64,
+      "is_safe": true
+    },
+    {
+      "world_id": 4,
+      "arm": "AEGIS_DELAY_TUBE",
+      "topology": "CUL_DE_SAC",
+      "outcome": "GOAL_REACHED",
+      "min_clearance_m": 1.359603987841466,
+      "final_ek_j": 0.024768547825873878,
+      "time_s": 13.6,
+      "is_safe": true
+    },
+    {
+      "world_id": 5,
+      "arm": "AEGIS_DELAY_TUBE",
+      "topology": "SLALOM",
+      "outcome": "GOAL_REACHED",
+      "min_clearance_m": 1.7345783940489041,
+      "final_ek_j": 0.025510277350463288,
+      "time_s": 17.88,
+      "is_safe": true
+    },
+    {
+      "world_id": 6,
+      "arm": "AEGIS_DELAY_TUBE",
+      "topology": "CORRIDOR",
+      "outcome": "GOAL_REACHED",
+      "min_clearance_m": 1.1594327124721853,
+      "final_ek_j": 0.028387288939126905,
+      "time_s": 11.32,
+      "is_safe": true
+    },
+    {
+      "world_id": 7,
+      "arm": "AEGIS_DELAY_TUBE",
+      "topology": "CUL_DE_SAC",
+      "outcome": "GOAL_REACHED",
+      "min_clearance_m": 1.3674923293008712,
+      "final_ek_j": 0.02979683306815163,
+      "time_s": 14.120000000000001,
+      "is_safe": true
+    },
+    {
+      "world_id": 8,
+      "arm": "AEGIS_DELAY_TUBE",
+      "topology": "SLALOM",
+      "outcome": "GOAL_REACHED",
+      "min_clearance_m": 1.7156957912809936,
+      "final_ek_j": 0.028141184876170143,
+      "time_s": 17.48,
+      "is_safe": true
+    },
+    {
+      "world_id": 9,
+      "arm": "AEGIS_DELAY_TUBE",
+      "topology": "CORRIDOR",
+      "outcome": "GOAL_REACHED",
+      "min_clearance_m": 1.1806613596259368,
+      "final_ek_j": 0.02617287103641229,
+      "time_s": 11.72,
+      "is_safe": true
+    }
+  ]
+}

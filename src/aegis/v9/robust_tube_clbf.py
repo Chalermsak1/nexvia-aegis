@@ -94,6 +94,10 @@ class RobustTubeCLBFConfig:
     martingale_risk_alpha: float = 1e-3  # Ville supermartingale threshold 1/alpha = 1000.0
     slack_variance_ref: float = 0.01     # Reference variance for martingale betting
 
+    # Actuator Delay & Dynamics Lag (Task E-07)
+    actuator_delay_s: float = 0.035      # Actuator lag / transport latency tau [s]
+    enable_delay_compensation: bool = True # Enable predictive delay-compensated barrier
+
 
 @dataclass
 class MicroQPSolution:
@@ -289,6 +293,8 @@ class RobustTubeCLBFController:
         self.martingale_alarm = False
         self.total_slack_consumed = 0.0
         self.step_count = 0
+        # Last applied action for actuator lag compensation
+        self.last_action = np.zeros(3, dtype=np.float64)
 
         # Kappa for tail confidence delta: sqrt(2 * ln(1 / delta))
         self.kappa_delta = math.sqrt(2.0 * math.log(1.0 / max(1e-12, self.config.confidence_delta)))
@@ -299,6 +305,32 @@ class RobustTubeCLBFController:
         self.martingale_alarm = False
         self.total_slack_consumed = 0.0
         self.step_count = 0
+        self.last_action = np.zeros(3, dtype=np.float64)
+
+    def compute_predictive_delay_state(
+        self,
+        p_hat: np.ndarray,
+        v_hat: np.ndarray,
+        cov_p: np.ndarray,
+        cov_v: np.ndarray,
+        u_prev: np.ndarray,
+        tau: float,
+    ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+        """
+        Projects state forward across actuator lag horizon tau (Task E-07):
+            p(t+tau) = p(t) + tau * v(t) + 0.5 * tau^2 * u_prev
+            v(t+tau) = v(t) + tau * u_prev
+        Propagates covariance forward to maintain rigorous uncertainty bounds.
+        """
+        tau_sq = tau * tau
+        p_proj = p_hat + tau * v_hat + 0.5 * tau_sq * u_prev
+        v_proj = v_hat + tau * u_prev
+
+        jitter_sigma = 0.05
+        cov_u_jitter = (jitter_sigma ** 2) * np.eye(3)
+        cov_p_proj = cov_p + tau_sq * cov_v + 0.25 * (tau_sq ** 2) * cov_u_jitter
+        cov_v_proj = cov_v + tau_sq * cov_u_jitter
+        return p_proj, v_proj, cov_p_proj, cov_v_proj
 
     def compute_tube_speed_bound(self, v_hat: np.ndarray, cov_v: np.ndarray) -> float:
         """
@@ -471,24 +503,33 @@ class RobustTubeCLBFController:
                 "is_terminal": phase in (DwellPhase.CONFIRMED_STILL, DwellPhase.TIMED_OUT),
             }
 
-        # 4. Generate Tube-CBF Constraints
+        # 4. Predictive Delay Compensation for Actuator Lag (Task E-07)
+        if self.config.enable_delay_compensation and self.config.actuator_delay_s > 0:
+            p_cbf, v_cbf, cov_p_cbf, cov_v_cbf = self.compute_predictive_delay_state(
+                p_hat, v_hat, cov_p, cov_v, self.last_action, self.config.actuator_delay_s
+            )
+        else:
+            p_cbf, v_cbf, cov_p_cbf, cov_v_cbf = p_hat, v_hat, cov_p, cov_v
+
+        # 5. Generate Tube-CBF Constraints on Projected State
         A_cbf, b_cbf, tube_margins = self.compute_tube_cbf_constraints(
-            p_hat, v_hat, cov_p, cov_v, obstacles
+            p_cbf, v_cbf, cov_p_cbf, cov_v_cbf, obstacles
         )
 
-        # 5. Generate CLBF Progress Constraint
+        # 6. Generate CLBF Progress Constraint
         A_lyap, b_lyap = self.compute_lyapunov_progress_constraint(p_hat, v_hat, goal)
 
-        # 6. Nominal Goal-Seeking Control (PD Guidance)
+        # 7. Nominal Goal-Seeking Control (PD Guidance)
         kp = 2.5
         kd = 1.8
         u_nom = kp * (goal - p_hat) - kd * v_hat
         u_nom = np.clip(u_nom, -self.config.a_max, self.config.a_max)
 
-        # 7. Solve Micro-QP with Guaranteed Feasibility
+        # 8. Solve Micro-QP with Guaranteed Feasibility
         qp_sol = self.qp_solver.solve(u_nom, A_cbf, b_cbf, A_lyap, b_lyap)
+        self.last_action = qp_sol.u_safe.copy()
 
-        # 8. Update Ville Supermartingale Slack Guard
+        # 9. Update Ville Supermartingale Slack Guard
         alarm = self.update_martingale_slack_guard(qp_sol.slack_drawn)
         if alarm:
             # Fail-closed active stop upon statistical slack breach
@@ -506,6 +547,8 @@ class RobustTubeCLBFController:
                 "martingale_value": self.martingale_value,
                 "martingale_alarm": True,
                 "is_terminal": True,
+                "p_projected": p_cbf,
+                "delay_applied_s": self.config.actuator_delay_s if self.config.enable_delay_compensation else 0.0,
             }
 
         min_margin = min(tube_margins) if tube_margins else 1.0
@@ -524,4 +567,6 @@ class RobustTubeCLBFController:
             "martingale_value": self.martingale_value,
             "martingale_alarm": False,
             "is_terminal": False,
+            "p_projected": p_cbf,
+            "delay_applied_s": self.config.actuator_delay_s if self.config.enable_delay_compensation else 0.0,
         }
