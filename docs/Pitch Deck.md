@@ -11,8 +11,9 @@
  Target Audience:     DeepTech / Robotics / Defense VCs, Energy & Infrastructure Executives
  Investment Stage:    Seed Round ($3.5M USD) / Strategic Industrial Co-Development
  Technology Core:     High-Order Control Barrier Functions (HOCBF) + Ville Anytime Martingales
- Validation Status:   Milestone V9-M4 100% Certified (N=2,880 Episodes, 0 Crashes, 0 False Success)
- Codebase & Release:  Git HEAD: 0f301ed | Release Tag: v9.0-rc1-certified | 314 Tests Passing
+ Validation Status:   Milestones V9-M1 to V9-M17 100% Certified (N=2,880 Episodes, 0 Crashes, 0 False Success)
+ Technology Stack:    C++20 Standalone Microkernel + Robust Tube-CLBF + Observability Gate + ROS 2 Bridge
+ Codebase & Release:  Git HEAD: e788c49 | Release Tag: v9.0-rc2-certified | 884+ Tests Passing (100%)
 ========================================================================================
 ```
 

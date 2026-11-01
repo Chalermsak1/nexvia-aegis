@@ -23,3 +23,7 @@ wheels/
 *.blg
 *.synctex.gz
 *.toc
+
+# Scratch directories
+scratch/
+
