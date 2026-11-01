@@ -98,6 +98,10 @@ class RobustTubeCLBFConfig:
     actuator_delay_s: float = 0.035      # Actuator lag / transport latency tau [s]
     enable_delay_compensation: bool = True # Enable predictive delay-compensated barrier
 
+    # Parametric Mass & Model Uncertainty (Task E-08)
+    mass_uncertainty_pct: float = 0.30   # Relative mass variation Delta_m (+/- 30%)
+    enable_parametric_invariance: bool = False # Enforce worst-case mass derating in Tube-CLBF
+
 
 @dataclass
 class MicroQPSolution:
@@ -240,8 +244,10 @@ class TerminalPhysicalStillnessMonitor:
             self.phase = DwellPhase.TIMED_OUT
             return np.zeros(3), self.phase, "DWELL_VERIFICATION_TIMEOUT"
 
-        # Compute physical kinetic energy from robust upper bound
+        # Compute physical kinetic energy from robust upper bound (Task E-08)
         mass = self.config.vehicle_mass_kg
+        if self.config.enable_parametric_invariance:
+            mass = mass * (1.0 + self.config.mass_uncertainty_pct)
         e_kinetic = 0.5 * mass * (v_upper_bound ** 2)
         drift = float(np.linalg.norm(pos_obs - self.anchor_position))
         self.total_drift_m = drift
@@ -323,11 +329,21 @@ class RobustTubeCLBFController:
         Propagates covariance forward to maintain rigorous uncertainty bounds.
         """
         tau_sq = tau * tau
-        p_proj = p_hat + tau * v_hat + 0.5 * tau_sq * u_prev
-        v_proj = v_hat + tau * u_prev
+        beta_eff = (
+            1.0 / (1.0 + self.config.mass_uncertainty_pct)
+            if self.config.enable_parametric_invariance
+            else 1.0
+        )
+        u_eff = beta_eff * u_prev
+        p_proj = p_hat + tau * v_hat + 0.5 * tau_sq * u_eff
+        v_proj = v_hat + tau * u_eff
 
         jitter_sigma = 0.05
         cov_u_jitter = (jitter_sigma ** 2) * np.eye(3)
+        if self.config.enable_parametric_invariance:
+            param_sigma = (1.0 - beta_eff) * self.config.a_max
+            cov_u_jitter += (param_sigma ** 2) * np.eye(3)
+
         cov_p_proj = cov_p + tau_sq * cov_v + 0.25 * (tau_sq ** 2) * cov_u_jitter
         cov_v_proj = cov_v + tau_sq * cov_u_jitter
         return p_proj, v_proj, cov_p_proj, cov_v_proj
@@ -401,6 +417,15 @@ class RobustTubeCLBFController:
             # => 2 * diff^T * a >= -2 * ||v_hat||^2 - alpha_1 * h_dot_tube - alpha_2 * psi_1
             A_row = 2.0 * diff
             b_val = float(-2.0 * np.dot(v_hat, v_hat) - alpha_1 * h_dot_tube - alpha_2 * psi_1)
+
+            # Parametric Mass Invariance derating (Task E-08)
+            if self.config.enable_parametric_invariance:
+                beta_min = 1.0 / (1.0 + self.config.mass_uncertainty_pct)
+                beta_max = 1.0 / max(0.1, 1.0 - self.config.mass_uncertainty_pct)
+                if b_val >= 0:
+                    b_val = b_val / beta_min
+                else:
+                    b_val = b_val / beta_max
 
             A_list.append(A_row)
             b_list.append(b_val)

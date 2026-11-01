@@ -1,10 +1,10 @@
 # NEXVIA AEGIS — Master Project Status & Complete Inventory Report
 
 **Document ID:** `AEGIS-MASTER-STATUS-2026-11-01`  
-**Current Milestone:** Milestone V9-M14 (Phase 1 Decision-Making, Phase 2 3D Physical AI, Phase 3 Decentralized Swarm Resilience, Phase 4 6-DOF SE(3) Dynamics, Phase 5 Deep Aerodynamics, Phase 6 Safe Reinforcement Learning, Phase 7 Active Vision & LiDAR SLAM under Occlusion, Phase 8 Sim2Real Deployment & ROS 2 / PX4 Hardware Bridge, Phase 9 NMPC-CBF Receding Horizon Lookahead Trajectory Optimization, Phase 10 Autonomous Vehicles (AV) & Connected Cyber-Resilient Platooning Stack, Phase 11 Air-Ground Heterogeneous Collaborative Teaming, Phase 12 Multi-Vehicle Collaborative Platooning & Dual Aerial Scout Handover Architecture, Phase 13 Robust Tube-CLBF & Physical Stillness Architecture, Phase 14 Actuator Delay Compensation Tube-CLBF & Prospective 100 Fresh Unseen Worlds Factorial Benchmark)  
-**Governance State:** **`PHASE_1_TO_14_CONFIRMATORY_VERIFIED — FRESH_WORLDS_AND_DELAY_COMPENSATION_INTEGRATED`**  
+**Current Milestone:** Milestone V9-M15 (Phase 1 Decision-Making, Phase 2 3D Physical AI, Phase 3 Decentralized Swarm Resilience, Phase 4 6-DOF SE(3) Dynamics, Phase 5 Deep Aerodynamics, Phase 6 Safe Reinforcement Learning, Phase 7 Active Vision & LiDAR SLAM under Occlusion, Phase 8 Sim2Real Deployment & ROS 2 / PX4 Hardware Bridge, Phase 9 NMPC-CBF Receding Horizon Lookahead Trajectory Optimization, Phase 10 Autonomous Vehicles (AV) & Connected Cyber-Resilient Platooning Stack, Phase 11 Air-Ground Heterogeneous Collaborative Teaming, Phase 12 Multi-Vehicle Collaborative Platooning & Dual Aerial Scout Handover Architecture, Phase 13 Robust Tube-CLBF & Physical Stillness Architecture, Phase 14 Actuator Delay Compensation Tube-CLBF & Prospective 100 Fresh Unseen Worlds Factorial Benchmark, Phase 15 Parametric Model Mismatch, Mass/Friction Invariance & Worst-Case Control Authority Derating)  
+**Governance State:** **`PHASE_1_TO_15_CONFIRMATORY_VERIFIED — PARAMETRIC_MASS_INVARIANCE_INTEGRATED`**  
 **Repository Remote:** [`https://github.com/Chalermsak1/nexvia-aegis.git`](https://github.com/Chalermsak1/nexvia-aegis.git)  
-**Automated Test Suite:** **860 / 860 passed (100% pass rate in ~62s)**  
+**Automated Test Suite:** **864 / 864 passed (100% pass rate in ~62s)**  
 **Certified Policy:** `V9_CAND_1_TIER1_STRICTEST` (SHA-256: `5a89d6061b379f1b34ab47be0deef8d63180d3e4c21d18c478bc7e451f5c84e2`)  
 **Timestamp:** November 1, 2026 (Bangkok / UTC)  
 
@@ -12,11 +12,11 @@
 
 ## 1. สถานะโครงการปัจจุบัน (Executive Project Status)
 
-โครงการ **NEXVIA AEGIS** ได้บรรลุเป้าหมายการวิจัยระดับแกนกลาง (AI Research Core) ครบทั้ง 14 เฟสอย่างสมบูรณ์ 100%:
+โครงการ **NEXVIA AEGIS** ได้บรรลุเป้าหมายการวิจัยระดับแกนกลาง (AI Research Core) ครบทั้ง 15 เฟสอย่างสมบูรณ์ 100%:
 
 ```
-[Phase 1..9: Aerial Core] -> [Phase 10: Ground AV] -> [Phase 11..12: Air-Ground Platoon] -> [Phase 13: 4-Bottleneck Tube-CLBF] -> [Phase 14: 100 Fresh Worlds + Delay Comp]
-       (VERIFIED)                   (VERIFIED)                     (VERIFIED)                             (VERIFIED)                                (VERIFIED)
+[Phase 1..9: Aerial Core] -> [Phase 10: Ground AV] -> [Phase 11..12: Air-Ground Platoon] -> [Phase 13: 4-Bottleneck Tube-CLBF] -> [Phase 14: 100 Fresh Worlds + Delay Comp] -> [Phase 15: Parametric Mass Invariance]
+       (VERIFIED)                   (VERIFIED)                     (VERIFIED)                             (VERIFIED)                                (VERIFIED)                                   (VERIFIED)
 ```
 
 - **Phase 1 (Trustworthy Decision-Making):** ปิด Audit A3/A4 loopholes, รัน matched benchmark 1,800 episodes บน $D_{\text{dev}}$, พิสูจน์ Ville Martingale Sequential Risk Control (Type-I False Alarm $\le \alpha$ พร้อม $95\%$ Clopper-Pearson UCB $\le 0.0034$) และ Active Probing gain (+39.17% TSR).
@@ -32,10 +32,12 @@
 - **Phase 11 (Air-Ground Heterogeneous Collaborative Teaming & Safety Architecture):** ขจัดข้อจำกัดทางกายภาพของการตรวจจับมุมอับสายตาบนโค้งถนนแคบ ($R = 80\,$m) และทางลื่นหิมะ/น้ำแข็ง ($\mu = 0.28$) ด้วยการบูรณาการโดรนลาดตระเวนทางอากาศ 6-DOF ("Eye-in-the-Sky" Quadrotor Scout บินนำหน้าขบวน $65\,$m ที่ความสูง $18\,$m พร้อมแบบจำลอง Deep Aerodynamics Drag & Gust), ระบบ V2A Wireless Telemetry ตรวจจับและรายงานสถานีสิ่งกีดขวาง $s_{\text{haz}}$ และสัมประสิทธิ์แรงเสียดทานถนน $\mu_{\text{est}}$ ล่วงหน้าถึง $150\,$m, เสริมด้วย Anytime-Valid Ville Supermartingale V2A Anomaly Guard ($W_t \ge 1000, p \le 0.001$) สกัดกั้น Adversarial Phantom Hazard Spoofing ได้สมบูรณ์แบบ ขจัดปัญหาการเบรกหลอกเหลือ 0.0%, และเกราะนิรภัย Cross-Domain Lookahead Frenet CBF Shield สั่งการชะลอความเร็วล่วงหน้าอย่างนุ่มนวล (Stopping Margin $+10.21\,$m ก่อนถึงสิ่งกีดขวาง).
 - **Phase 12 (Multi-Vehicle Heterogeneous Collaborative Platooning & Dual Aerial Scout Handover Architecture):** แก้ปัญหาคอขวดจุดอับสายตาระหว่างโดรนตัวเดียวแบตเตอรี่หมด ($SoC \le 35\%$) ด้วยระบบ Dual Aerial Scout Handover State Machine (Scout A $\to$ Launch $\to$ Dual Sync $\to$ Return $\to$ Scout B) พร้อมช่องทางบินแยกด้านข้าง (Lateral Flight Corridors $d = -5.0\,$m และ $+5.5\,$m) รับประกันระยะห่าง 3 มิติ $\ge 10.5\,$m ($>6.0\,$m Barrier), รักษาระดับการตรวจจับล่วงหน้าต่อเนื่อง $>90.2\%$, ผสานเกราะนิรภัย V2A-to-V2V Multi-Hop Cascading Platoon CBF Shield ควบคุมขบวนรถยนต์ 5 คันบนโค้งถนนน้ำแข็ง ($\mu = 0.25$) ให้ชะลอความเร็วพร้อมกันอย่างนุ่มนวล รักษาระดับ String Stability สมบูรณ์แบบ ($\|G(j\omega)\|_\infty = 1.000$) ไม่เกิดคลื่นกระแทกการเบรกสะท้อนท้ายแถว (เทียบกับ Unshielded Blind ที่อัตราขยายพุ่งสูงถึง 1.887), ขจัดการชนท้ายกันเองในขบวนและสิ่งกีดขวางเป็น 0.0% พร้อมระบบ Ville Supermartingale ขจัดโหนดรีเลย์ V2V ที่ถูกโจมตี (Byzantine Relay).
 - **Phase 13 (Robust Tube-CLBF & Physical Stillness Architecture — Resolving All 4 Core Bottlenecks):** แก้ไข 4 คอขวดสำคัญระดับรากฐานตามรายงานพัฒนาการฉบับรวม (Section 11 & 14): CLBF Conservatism Elimination, Sensor Uncertainty Tube Speed Gate, Physical Dwell & Terminal Stillness ($E_k \le 0.005\,$J), และ Always-Feasible Micro-QP.
-- **Phase 14 (Actuator Delay Compensation Tube-CLBF & Prospective 100 Fresh Unseen Worlds Factorial Benchmark):**
-  1. *Actuator Delay Compensation (Task E-07):* พัฒนา Exact Kinematic & Covariance Forward Projection ขจัดปัญหาการเจาะทะลุ Barrier จากความหน่วงของมอเตอร์ $\tau \in [15, 60]\,$ms พร้อม Zero-Order Hold (ZOH) discrete-time integration.
-  2. *Prospective 100 Fresh Unseen Worlds Factorial Benchmark (Task R-06):* ทดสอบบน 100 โลกจำลองใหม่ที่ไม่เคยเห็นมาก่อน (Seeds 2000-2099) ข้าม 3 Topologies $\times$ 3 Noise Regimes $\times$ 3 Actuator Lag Regimes โดย Naive ชน 100/100 (100% collision) ขณะที่ AEGIS ทำสถิติการชน **0/100 (0.0% Collision Rate)**, **Selective Risk 0.0%**, **Dead-End Safe Abstention 100.0%** (33/33 กับดักถอย/หยุดปลอดภัย ไม่ฝืนชน), และ **Solvable Mission Completion 98.5% (66/67 โลก)** บรรลุหลักการ "act when sufficiently safe and abstain when uncertainty or risk is too high" สมบูรณ์แบบ.
-- **สถานะการทำงานของโค้ด:** รันการทดสอบผ่าน 100% (860/860 tests) ไม่มี Failure, ไม่มี Broken Invariant.
+- **Phase 14 (Actuator Delay Compensation Tube-CLBF & Prospective 100 Fresh Unseen Worlds Factorial Benchmark):** Exact Kinematic & Covariance Forward Projection ขจัดปัญหาการเจาะทะลุ Barrier จากความหน่วงของมอเตอร์ $\tau \in [15, 60]\,$ms พร้อม Zero-Order Hold (ZOH) integration และทดสอบบน 100 โลกจำลองใหม่ที่ไม่เคยเห็นมาก่อน (Seeds 2000-2099) โดย Naive ชน 100/100 ขณะที่ AEGIS ชน 0/100 (0.0% Collision Rate) และ Selective Risk 0.0%.
+- **Phase 15 (Parametric Model Mismatch, Mass/Friction Invariance & Worst-Case Control Authority Derating — Task E-08):**
+  1. *Worst-Case Control Authority Scaling:* คำนวณขอบเขตการเบรกชดเชยการสูญเสียกำลังควบคุมจากน้ำหนักบรรทุกที่หนักกว่าปกติ $\pm 30\%$ ($\beta_{\min} = \frac{1}{1 + \Delta_m} \approx 0.769$) และ derating ขอบเขตของ Barrier $b_{\text{param}} = b_{\text{cbf}} / \beta_{\min}$ รับประกันความปลอดภัยทางกายภาพ 100%.
+  2. *Worst-Case Kinetic Energy Stillness Verification:* คำนวณพลังงานจลน์ด้วยมวลสูงสุดที่เป็นไปได้ $m_{\max} = m_{\text{nom}}(1 + \Delta_m)$ ป้องกันการแอบยืนยันการหยุดนิ่งขณะมีน้ำหนักบรรทุกหนัก.
+  3. *100 Fresh Parametric Worlds Factorial Benchmark:* ทดสอบบน 100 โลกใหม่ (Seeds 3000-3099) ข้าม 3 Topologies $\times$ 3 Mass Regimes ($0.75\times, 1.00\times, 1.30\times$) $\times$ 3 Actuator Lags $\times$ 3 Noise Regimes: Naive ชน 100/100 (100% crash), ขณะที่ AEGIS Parametric Invariant ชน 0/100 (0.0% collision), รักษาระยะห่างปลอดภัยเมื่อบรรทุกหนักเพิ่มขึ้นเป็น **1.653 m** (+21.5 cm extra margin) และ Safe Abstain 100% ในกับดักทางตัน.
+- **สถานะการทำงานของโค้ด:** รันการทดสอบผ่าน 100% (864/864 tests) ไม่มี Failure, ไม่มี Broken Invariant.
 
 ---
 
