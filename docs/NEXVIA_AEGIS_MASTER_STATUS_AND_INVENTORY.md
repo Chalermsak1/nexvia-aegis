@@ -1,10 +1,10 @@
 # NEXVIA AEGIS — Master Project Status & Complete Inventory Report
 
 **Document ID:** `AEGIS-MASTER-STATUS-2026-11-01`  
-**Current Milestone:** Milestone V9-M16 (Phase 1 Decision-Making, Phase 2 3D Physical AI, Phase 3 Decentralized Swarm Resilience, Phase 4 6-DOF SE(3) Dynamics, Phase 5 Deep Aerodynamics, Phase 6 Safe Reinforcement Learning, Phase 7 Active Vision & LiDAR SLAM under Occlusion, Phase 8 Sim2Real Deployment & ROS 2 / PX4 Hardware Bridge, Phase 9 NMPC-CBF Receding Horizon Lookahead Trajectory Optimization, Phase 10 Autonomous Vehicles (AV) & Connected Cyber-Resilient Platooning Stack, Phase 11 Air-Ground Heterogeneous Collaborative Teaming, Phase 12 Multi-Vehicle Collaborative Platooning & Dual Aerial Scout Handover Architecture, Phase 13 Robust Tube-CLBF & Physical Stillness Architecture, Phase 14 Actuator Delay Compensation Tube-CLBF & Prospective 100 Fresh Unseen Worlds Factorial Benchmark, Phase 15 Parametric Model Mismatch, Mass/Friction Invariance & Worst-Case Control Authority Derating, Phase 16 Pure Estimated-State Sensor Blackout, Degraded Observability Gate & Zero Ground-Truth Leakage)  
-**Governance State:** **`PHASE_1_TO_16_CONFIRMATORY_VERIFIED — OBSERVABILITY_GATE_INTEGRATED`**  
+**Current Milestone:** Milestone V9-M17 (Phase 1 Decision-Making, Phase 2 3D Physical AI, Phase 3 Decentralized Swarm Resilience, Phase 4 6-DOF SE(3) Dynamics, Phase 5 Deep Aerodynamics, Phase 6 Safe Reinforcement Learning, Phase 7 Active Vision & LiDAR SLAM under Occlusion, Phase 8 Sim2Real Deployment & ROS 2 / PX4 Hardware Bridge, Phase 9 NMPC-CBF Receding Horizon Lookahead Trajectory Optimization, Phase 10 Autonomous Vehicles (AV) & Connected Cyber-Resilient Platooning Stack, Phase 11 Air-Ground Heterogeneous Collaborative Teaming, Phase 12 Multi-Vehicle Collaborative Platooning & Dual Aerial Scout Handover Architecture, Phase 13 Robust Tube-CLBF & Physical Stillness Architecture, Phase 14 Actuator Delay Compensation Tube-CLBF & Prospective 100 Fresh Unseen Worlds Factorial Benchmark, Phase 15 Parametric Model Mismatch, Mass/Friction Invariance & Worst-Case Control Authority Derating, Phase 16 Pure Estimated-State Sensor Blackout, Degraded Observability Gate & Zero Ground-Truth Leakage, Phase 17 Bounded Active Probing POMDP & Epistemic Uncertainty Reduction)  
+**Governance State:** **`PHASE_1_TO_17_CONFIRMATORY_VERIFIED — ACTIVE_PROBING_CERTIFIED`**  
 **Repository Remote:** [`https://github.com/Chalermsak1/nexvia-aegis.git`](https://github.com/Chalermsak1/nexvia-aegis.git)  
-**Automated Test Suite:** **868 / 868 passed (100% pass rate in ~65s)**  
+**Automated Test Suite:** **872 / 872 passed (100% pass rate in ~64s)**  
 **Certified Policy:** `V9_CAND_1_TIER1_STRICTEST` (SHA-256: `5a89d6061b379f1b34ab47be0deef8d63180d3e4c21d18c478bc7e451f5c84e2`)  
 **Timestamp:** November 1, 2026 (Bangkok / UTC)  
 
@@ -12,11 +12,11 @@
 
 ## 1. สถานะโครงการปัจจุบัน (Executive Project Status)
 
-โครงการ **NEXVIA AEGIS** ได้บรรลุเป้าหมายการวิจัยระดับแกนกลาง (AI Research Core) ครบทั้ง 16 เฟสอย่างสมบูรณ์ 100%:
+โครงการ **NEXVIA AEGIS** ได้บรรลุเป้าหมายการวิจัยระดับแกนกลาง (AI Research Core) ครบทั้ง 17 เฟสอย่างสมบูรณ์ 100%:
 
 ```
-[Phase 1..9: Aerial Core] -> [Phase 10: Ground AV] -> [Phase 11..12: Air-Ground Platoon] -> [Phase 13: 4-Bottleneck Tube-CLBF] -> [Phase 14: 100 Fresh Worlds + Delay Comp] -> [Phase 15: Parametric Mass Invariance] -> [Phase 16: Sensor Blackout Observability Gate]
-       (VERIFIED)                   (VERIFIED)                     (VERIFIED)                             (VERIFIED)                                (VERIFIED)                                   (VERIFIED)                                         (VERIFIED)
+[Phase 1..9: Aerial Core] -> [Phase 10: Ground AV] -> [Phase 11..12: Air-Ground Platoon] -> [Phase 13: 4-Bottleneck Tube-CLBF] -> [Phase 14: 100 Fresh Worlds + Delay Comp] -> [Phase 15: Parametric Mass Invariance] -> [Phase 16: Sensor Blackout Observability Gate] -> [Phase 17: Bounded Active Probing]
+       (VERIFIED)                   (VERIFIED)                     (VERIFIED)                             (VERIFIED)                                (VERIFIED)                                   (VERIFIED)                                         (VERIFIED)                                      (VERIFIED)
 ```
 
 - **Phase 1 (Trustworthy Decision-Making):** ปิด Audit A3/A4 loopholes, รัน matched benchmark 1,800 episodes บน $D_{\text{dev}}$, พิสูจน์ Ville Martingale Sequential Risk Control (Type-I False Alarm $\le \alpha$ พร้อม $95\%$ Clopper-Pearson UCB $\le 0.0034$) และ Active Probing gain (+39.17% TSR).
@@ -34,11 +34,12 @@
 - **Phase 13 (Robust Tube-CLBF & Physical Stillness Architecture — Resolving All 4 Core Bottlenecks):** แก้ไข 4 คอขวดสำคัญระดับรากฐานตามรายงานพัฒนาการฉบับรวม (Section 11 & 14): CLBF Conservatism Elimination, Sensor Uncertainty Tube Speed Gate, Physical Dwell & Terminal Stillness ($E_k \le 0.005\,$J), และ Always-Feasible Micro-QP.
 - **Phase 14 (Actuator Delay Compensation Tube-CLBF & Prospective 100 Fresh Unseen Worlds Factorial Benchmark):** Exact Kinematic & Covariance Forward Projection ขจัดปัญหาการเจาะทะลุ Barrier จากความหน่วงของมอเตอร์ $\tau \in [15, 60]\,$ms พร้อม Zero-Order Hold (ZOH) integration และทดสอบบน 100 โลกจำลองใหม่ที่ไม่เคยเห็นมาก่อน (Seeds 2000-2099) โดย Naive ชน 100/100 ขณะที่ AEGIS ชน 0/100 (0.0% Collision Rate) และ Selective Risk 0.0%.
 - **Phase 15 (Parametric Model Mismatch, Mass/Friction Invariance & Worst-Case Control Authority Derating — Task E-08):** Worst-case control authority scaling $\beta_{\min} \approx 0.769$ รับประกันความปลอดภัยเมื่อบรรทุกหนัก $\pm 30\%$ โดยเพิ่มระยะห่างปลอดภัยเมื่อบรรทุกหนักเป็น $1.653\,$m (+21.5 cm) บน 100 โลกจำลองใหม่ (Seeds 3000-3099).
-- **Phase 16 (Pure Estimated-State Sensor Blackout, Degraded Observability Gate & Zero Ground-Truth Leakage — Tasks E-05 & E-06):**
-  1. *Zero Ground-Truth Leakage (Task E-05):* สถาปัตยกรรมควบคุมประมวลผลบน Pure Estimated Belief State โดยปราศจากการแอบดึง Ground Truth มาช่วยตัดสินใจ 100%.
-  2. *Information-Theoretic Observability Gate (Task E-06):* ตรวจสอบ $\sigma_{p,\max} = \sqrt{\lambda_{\max}(\boldsymbol{\Sigma}_p)} \le 0.25\,$m และ $\sigma_{v,\max} \le 0.35\,$m/s เมื่อเกิด Sensor Blackout (แสงสะท้อนจ้า / หมอกควัน / GPS ขาด) Covariance จะพองตัวและ Gate จะสั่ง **Rejection & Fail-Closed Active Braking (Abstain)** ทันที.
-  3. *100 Fresh Worlds Blackout Benchmark:* ทดสอบบน 100 โลกใหม่ (Seeds 4000-4099) ที่มี 66 โลกเกิด Sensor Dropout: Naive ชนหมด 66/66 (100% blind crashes), ขณะที่ AEGIS Observability Gate ทำการ **Safe Abstain ครบ 66/66 (100.0%)** รักษาระยะห่างปลอดภัยเฉลี่ยในความมืดที่ **2.054 m** (เทียบกับ Blind ที่พุ่งชน 0.746 m) และคงความสำเร็จภารกิจ 100.0% ในโลกที่ทัศนวิสัยปกติ.
-- **สถานะการทำงานของโค้ด:** รันการทดสอบผ่าน 100% (868/868 tests) ไม่มี Failure, ไม่มี Broken Invariant.
+- **Phase 16 (Pure Estimated-State Sensor Blackout, Degraded Observability Gate & Zero Ground-Truth Leakage — Tasks E-05 & E-06):** ตรวจสอบ $\sigma_{p,\max} = \sqrt{\lambda_{\max}(\boldsymbol{\Sigma}_p)} \le 0.25\,$m และ $\sigma_{v,\max} \le 0.35\,$m/s เมื่อเกิด Sensor Blackout สั่ง Rejection & Fail-Closed Active Braking (Abstain) 100.0% (66/66) รักษาระยะห่างปลอดภัยเฉลี่ย 2.054 m บน 100 โลกจำลองใหม่ (Seeds 4000-4099).
+- **Phase 17 (Bounded Active Probing POMDP & Epistemic Uncertainty Reduction — Task R-07):** ขจัดปัญหาการแช่แข็ง ณ จุด Saddle Point และการติดค้างในซอยตัน (Dead End) ด้วยระบบสำรวจปลอดภัยเชิงรุก Tangential Exploratory Micro-Actions ภายใต้การคุ้มกันของ Tube-CBF Micro-QP (0.0% Collision) ทดสอบบน 100 โลกจำลองปัจจัยใหม่ (Seeds 5000-5099):
+  1. *Saddle Corridor Symmetry-Breaking:* ขจัดการติดค้างถาวร เพิ่มความสำเร็จในการเข้าถึงเป้าหมายขึ้นเป็น **94.0%** (เทียบกับ Passive CLBF ที่แช่แข็งค้างเติ่ง 40.0%).
+  2. *Cul-de-Sac Grounded Abstention:* สำรวจพิสูจน์ความไม่แน่นอนเชิงภววิทยาว่าไม่มีทางออก ก่อนสั่ง **Grounded Physical Abstention (`CONFIRMED_STILL`)** สำเร็จแม่นยำ **90.9%** (เทียบกับ Passive CLBF ที่ทำได้ 0.0%).
+  3. *Overall Decision Correctness:* พุ่งทะยานจาก 60.0% $\to$ **93.0%** โดยใช้แรงสำรวจเฉลี่ยเพียง **23.1 micro-steps** ($\sim 0.9\,$วินาที) และการชนยังคงเป็น 0.0% สมบูรณ์แบบ.
+- **สถานะการทำงานของโค้ด:** รันการทดสอบผ่าน 100% (872/872 tests) ไม่มี Failure, ไม่มี Broken Invariant.
 
 ---
 

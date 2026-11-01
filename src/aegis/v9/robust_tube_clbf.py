@@ -40,6 +40,7 @@ import numpy as np
 class DwellPhase(enum.Enum):
     """Terminal dwell and physical stillness lifecycle phases."""
     CRUISING = "CRUISING"
+    ACTIVE_PROBING = "ACTIVE_PROBING"
     ACTIVE_BRAKING = "ACTIVE_BRAKING"
     DWELLING = "DWELLING"
     CONFIRMED_STILL = "CONFIRMED_STILL"
@@ -106,6 +107,15 @@ class RobustTubeCLBFConfig:
     enable_observability_gate: bool = False     # Reject actions when observations are unreliable
     max_position_uncertainty_m: float = 0.25   # Maximum position std dev before blackout rejection [m]
     max_velocity_uncertainty_mps: float = 0.35 # Maximum velocity std dev before blackout rejection [m/s]
+
+    # Bounded Active Probing & Epistemic Uncertainty Reduction (Task R-07)
+    enable_active_probing: bool = False        # Enable active exploratory probing near stagnation
+    probing_accel: float = 2.0                 # Tangential exploratory micro-probe acceleration [m/s^2]
+    stall_detection_steps: int = 15            # Consecutive steps of stagnation before probing triggers
+    stagnation_speed_thresh: float = 0.15      # Upper velocity threshold for stagnation detection [m/s]
+    stagnation_dist_thresh: float = 2.2        # Obstacle clearance threshold for stagnation detection [m]
+    max_probing_steps: int = 35                # Maximum consecutive steps to probe before switching direction
+    probing_budget_total: int = 70             # Maximum cumulative probing steps allowed before grounded abstention
 
 
 @dataclass
@@ -257,17 +267,25 @@ class TerminalPhysicalStillnessMonitor:
         drift = float(np.linalg.norm(pos_obs - self.anchor_position))
         self.total_drift_m = drift
 
-        # Compute active maximum friction-bounded deceleration
+        # Compute active maximum friction-bounded deceleration with deadbeat damping
         a_max = self.config.a_max
         v_norm = float(np.linalg.norm(vel_obs))
-        if v_norm > 0.02:
-            a_brake = -a_max * (vel_obs / v_norm)
-        elif v_norm > 1e-4:
-            a_brake = -a_max * (vel_obs / 0.02)
+        dt_ref = 0.04  # standard discrete time step
+        if v_norm > 1e-4:
+            a_mag = min(a_max, v_norm / dt_ref)
+            a_brake = -a_mag * (vel_obs / v_norm)
         else:
             a_brake = np.zeros(3)
 
         self.peak_braking_accel = max(self.peak_braking_accel, float(np.linalg.norm(a_brake)))
+
+        # When entering low kinetic energy, anchor position for dwell verification
+        if e_kinetic <= self.config.kinetic_energy_thresh:
+            if self.dwell_steps == 0:
+                self.anchor_position = np.asarray(pos_obs, dtype=np.float64).copy()
+
+        drift = float(np.linalg.norm(pos_obs - self.anchor_position))
+        self.total_drift_m = drift
 
         # Evaluate stillness criteria
         is_still = (e_kinetic <= self.config.kinetic_energy_thresh) and (drift <= self.config.drift_tolerance_m)
@@ -307,6 +325,13 @@ class RobustTubeCLBFController:
         # Last applied action for actuator lag compensation
         self.last_action = np.zeros(3, dtype=np.float64)
 
+        # Bounded Active Probing State (Task R-07)
+        self.stagnation_counter = 0
+        self.probing_steps = 0
+        self.total_probes_used = 0
+        self.probing_direction = 1.0  # +1.0 for lateral left, -1.0 for lateral right
+        self.probing_phase_active = False
+
         # Kappa for tail confidence delta: sqrt(2 * ln(1 / delta))
         self.kappa_delta = math.sqrt(2.0 * math.log(1.0 / max(1e-12, self.config.confidence_delta)))
 
@@ -317,6 +342,11 @@ class RobustTubeCLBFController:
         self.total_slack_consumed = 0.0
         self.step_count = 0
         self.last_action = np.zeros(3, dtype=np.float64)
+        self.stagnation_counter = 0
+        self.probing_steps = 0
+        self.total_probes_used = 0
+        self.probing_direction = 1.0
+        self.probing_phase_active = False
 
     def compute_predictive_delay_state(
         self,
@@ -569,6 +599,82 @@ class RobustTubeCLBFController:
                 "is_terminal": phase in (DwellPhase.CONFIRMED_STILL, DwellPhase.TIMED_OUT),
             }
 
+        # 3.5 Bounded Active Probing & Epistemic Uncertainty Reduction (Task R-07)
+        probing_mode_active = False
+        diff_obs_probe = np.zeros(3, dtype=np.float64)
+        if self.config.enable_active_probing and len(obstacles) > 0:
+            obs_dists = [float(np.linalg.norm(p_hat - np.asarray(obs, dtype=np.float64).reshape(3))) for obs in obstacles]
+            min_obs_dist = min(obs_dists)
+            nearest_obs = np.asarray(obstacles[int(np.argmin(obs_dists))], dtype=np.float64).reshape(3)
+            v_measured = float(np.linalg.norm(v_hat))
+
+            # Detect stagnation near obstacle (saddle point or blocked passage)
+            is_stagnant = (
+                (v_measured < self.config.stagnation_speed_thresh)
+                and (min_obs_dist < self.config.stagnation_dist_thresh)
+                and (dist_to_goal > self.config.arrival_radius)
+            )
+
+            if is_stagnant:
+                self.stagnation_counter += 1
+            else:
+                self.stagnation_counter = max(0, self.stagnation_counter - 1)
+
+            # Trigger probing when stagnation persists
+            if self.stagnation_counter >= self.config.stall_detection_steps:
+                self.probing_phase_active = True
+
+            if self.probing_phase_active:
+                # Check if total probe budget exhausted (epistemic uncertainty resolved -> confirmed dead end)
+                if self.total_probes_used >= self.config.probing_budget_total:
+                    self.probing_phase_active = False
+                    self.stillness_monitor.trigger_braking(p_hat)
+                    a_brake, phase, _ = self.stillness_monitor.step(p_hat, v_hat, v_upper_bound)
+                    return {
+                        "action": a_brake,
+                        "phase": phase.value,
+                        "reason": "GROUNDED_ABSTAIN_IMPASSE_PROBE_EXHAUSTED",
+                        "v_upper_bound": v_upper_bound,
+                        "v_measured": v_measured,
+                        "dist_to_goal": dist_to_goal,
+                        "tube_margin_min": 1.0,
+                        "slack_drawn": 0.0,
+                        "martingale_value": self.martingale_value,
+                        "martingale_alarm": self.martingale_alarm,
+                        "is_terminal": phase in (DwellPhase.CONFIRMED_STILL, DwellPhase.TIMED_OUT),
+                    }
+
+                diff_obs_probe = p_hat - nearest_obs
+                diff_goal = goal - p_hat
+                dist_goal = float(np.linalg.norm(diff_goal))
+                if dist_goal > 1e-4:
+                    goal_unit = diff_goal / dist_goal
+                    v_to_obs = nearest_obs - p_hat
+                    t_proj = float(np.dot(v_to_obs, goal_unit))
+                    if t_proj > 0:
+                        p_proj = t_proj * goal_unit
+                        perp_dist = float(np.linalg.norm(v_to_obs - p_proj))
+                        corridor_open = (perp_dist >= self.config.safe_distance * 1.25)
+                    else:
+                        corridor_open = True
+                else:
+                    corridor_open = True
+
+                if corridor_open and self.probing_steps > 4:
+                    # Corridor opened! Exit probing and resume nominal cruising towards goal
+                    self.probing_phase_active = False
+                    self.stagnation_counter = 0
+                    self.probing_steps = 0
+                else:
+                    self.probing_steps += 1
+                    self.total_probes_used += 1
+                    probing_mode_active = True
+
+                    # Switch lateral direction if reached max probing steps in current direction
+                    if self.probing_steps >= self.config.max_probing_steps:
+                        self.probing_direction = -self.probing_direction
+                        self.probing_steps = 0
+
         # 4. Predictive Delay Compensation for Actuator Lag (Task E-07)
         if self.config.enable_delay_compensation and self.config.actuator_delay_s > 0:
             p_cbf, v_cbf, cov_p_cbf, cov_v_cbf = self.compute_predictive_delay_state(
@@ -582,14 +688,30 @@ class RobustTubeCLBFController:
             p_cbf, v_cbf, cov_p_cbf, cov_v_cbf, obstacles
         )
 
-        # 6. Generate CLBF Progress Constraint
-        A_lyap, b_lyap = self.compute_lyapunov_progress_constraint(p_hat, v_hat, goal)
+        # 6. Generate CLBF Progress or Active Probing Guidance
+        if probing_mode_active:
+            diff_xy = np.array([diff_obs_probe[0], diff_obs_probe[1], 0.0], dtype=np.float64)
+            norm_xy = float(np.linalg.norm(diff_xy))
+            if norm_xy > 1e-4:
+                tangent = np.array([-diff_xy[1], diff_xy[0], 0.0], dtype=np.float64) / norm_xy
+            else:
+                tangent = np.array([0.0, 1.0, 0.0], dtype=np.float64)
 
-        # 7. Nominal Goal-Seeking Control (PD Guidance)
-        kp = 2.5
-        kd = 1.8
-        u_nom = kp * (goal - p_hat) - kd * v_hat
-        u_nom = np.clip(u_nom, -self.config.a_max, self.config.a_max)
+            u_nom = (self.config.probing_accel * self.probing_direction) * tangent - 1.2 * v_hat
+            u_nom = np.clip(u_nom, -self.config.a_max, self.config.a_max)
+
+            # Relax Lyapunov constraint so QP is purely safety-invariance governed
+            A_lyap = np.zeros(3, dtype=np.float64)
+            b_lyap = 0.0
+        else:
+            # 6. Generate CLBF Progress Constraint
+            A_lyap, b_lyap = self.compute_lyapunov_progress_constraint(p_hat, v_hat, goal)
+
+            # 7. Nominal Goal-Seeking Control (PD Guidance)
+            kp = 2.5
+            kd = 1.8
+            u_nom = kp * (goal - p_hat) - kd * v_hat
+            u_nom = np.clip(u_nom, -self.config.a_max, self.config.a_max)
 
         # 8. Solve Micro-QP with Guaranteed Feasibility
         qp_sol = self.qp_solver.solve(u_nom, A_cbf, b_cbf, A_lyap, b_lyap)
@@ -618,11 +740,17 @@ class RobustTubeCLBFController:
             }
 
         min_margin = min(tube_margins) if tube_margins else 1.0
+        phase_str = DwellPhase.ACTIVE_PROBING.value if probing_mode_active else DwellPhase.CRUISING.value
+        reason_str = (
+            f"BOUNDED_ACTIVE_PROBING_DIR_{'POS' if self.probing_direction > 0 else 'NEG'}"
+            if probing_mode_active
+            else "ACTIVE_CLBF_GUIDANCE"
+        )
 
         return {
             "action": qp_sol.u_safe,
-            "phase": DwellPhase.CRUISING.value,
-            "reason": "ACTIVE_CLBF_GUIDANCE",
+            "phase": phase_str,
+            "reason": reason_str,
             "v_upper_bound": v_upper_bound,
             "v_measured": float(np.linalg.norm(v_hat)),
             "dist_to_goal": dist_to_goal,
@@ -635,4 +763,7 @@ class RobustTubeCLBFController:
             "is_terminal": False,
             "p_projected": p_cbf,
             "delay_applied_s": self.config.actuator_delay_s if self.config.enable_delay_compensation else 0.0,
+            "is_probing": probing_mode_active,
+            "probing_direction": self.probing_direction if probing_mode_active else 0.0,
+            "total_probes_used": self.total_probes_used,
         }
