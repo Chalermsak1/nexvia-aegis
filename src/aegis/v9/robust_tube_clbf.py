@@ -102,6 +102,11 @@ class RobustTubeCLBFConfig:
     mass_uncertainty_pct: float = 0.30   # Relative mass variation Delta_m (+/- 30%)
     enable_parametric_invariance: bool = False # Enforce worst-case mass derating in Tube-CLBF
 
+    # Observation Reliability & Degraded Observability Gate (Tasks E-05 & E-06)
+    enable_observability_gate: bool = False     # Reject actions when observations are unreliable
+    max_position_uncertainty_m: float = 0.25   # Maximum position std dev before blackout rejection [m]
+    max_velocity_uncertainty_mps: float = 0.35 # Maximum velocity std dev before blackout rejection [m/s]
+
 
 @dataclass
 class MicroQPSolution:
@@ -500,6 +505,42 @@ class RobustTubeCLBFController:
         v_hat = state.v_hat
         cov_p = state.cov_p
         cov_v = state.cov_v
+
+        # 0. Observation Reliability Verification Gate (Tasks E-05 & E-06)
+        # Verify the reliability of observations BEFORE taking goal-seeking actions.
+        # If sensor blackout / degraded observability causes covariance to swell beyond safety limits,
+        # refuse action and abstain immediately via fail-closed physical active braking.
+        if self.config.enable_observability_gate:
+            eig_p = np.linalg.eigvalsh(cov_p)
+            eig_v = np.linalg.eigvalsh(cov_v)
+            sigma_p_max = math.sqrt(max(0.0, float(np.max(eig_p)))) if len(eig_p) > 0 else 0.0
+            sigma_v_max = math.sqrt(max(0.0, float(np.max(eig_v)))) if len(eig_v) > 0 else 0.0
+
+            if (sigma_p_max > self.config.max_position_uncertainty_m) or (sigma_v_max > self.config.max_velocity_uncertainty_mps):
+                self.stillness_monitor.phase = DwellPhase.EMERGENCY_STOP
+                v_norm = float(np.linalg.norm(v_hat))
+                if v_norm > 0.02:
+                    a_safe = -self.config.a_max * (v_hat / v_norm)
+                elif v_norm > 1e-4:
+                    a_safe = -self.config.a_max * (v_hat / 0.02)
+                else:
+                    a_safe = np.zeros(3)
+
+                return {
+                    "action": a_safe,
+                    "phase": DwellPhase.EMERGENCY_STOP.value,
+                    "reason": "OBSERVATION_UNRELIABLE_BLACKOUT_GATE_REJECTED",
+                    "v_upper_bound": self.compute_tube_speed_bound(v_hat, cov_v),
+                    "v_measured": v_norm,
+                    "dist_to_goal": float(np.linalg.norm(p_hat - goal)),
+                    "tube_margin_min": 0.0,
+                    "slack_drawn": 0.0,
+                    "martingale_value": self.martingale_value,
+                    "martingale_alarm": True,
+                    "is_terminal": True,
+                    "sigma_p_max": sigma_p_max,
+                    "sigma_v_max": sigma_v_max,
+                }
 
         # 1. Robust Upper Bound on Speed
         v_upper_bound = self.compute_tube_speed_bound(v_hat, cov_v)
