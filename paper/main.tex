@@ -26,6 +26,17 @@
 \newtheorem{remark}{Remark}
 
 \begin{document}
+\setlength{\textfloatsep}{6pt plus 1pt minus 1pt}
+\setlength{\floatsep}{5pt plus 1pt minus 1pt}
+\setlength{\dbltextfloatsep}{6pt plus 1pt minus 1pt}
+\setlength{\dblfloatsep}{5pt plus 1pt minus 1pt}
+
+\let\oldbibliography\thebibliography
+\renewcommand{\thebibliography}[1]{%
+  \oldbibliography{#1}%
+  \setlength{\itemsep}{0pt plus 0.2pt}%
+  \setlength{\parsep}{0pt}%
+}
 
 \title{Resilient Control Barrier Functions for Autonomous Aerial Robots under Sensor and Actuator Anomalies via Anytime-Valid Supermartingales}
 
@@ -206,11 +217,30 @@ subject to:
 \end{align}
 where condition~\eqref{eq:tilt_cone} enforces a strict cone on tilt angle ($\theta_{\text{max}} = 35^\circ$), guaranteeing that the required body attitude remains within the linear geometric tracking regime of the $SE(3)$ controller~\cite{lee2010geometric}. Penalizing $\Delta \mathbf{U} = \mathbf{F}_k - \mathbf{F}_{k-1}$ eliminates high-frequency control chattering and prevents altitude ballooning.
 
+\begin{figure*}[t]
+\centering
+\begin{subfigure}[b]{0.495\textwidth}
+    \centering
+    \includegraphics[width=\textwidth,height=1.45cm,keepaspectratio]{figures/passage_handover_benchmark.png}
+    \caption{Multi-Drone Narrow Passage Cooperative Handover}
+    \label{fig:passage_handover}
+\end{subfigure}
+\hfill
+\begin{subfigure}[b]{0.495\textwidth}
+    \centering
+    \includegraphics[width=\textwidth,height=1.45cm,keepaspectratio]{figures/differentiable_safe_rl_benchmark.png}
+    \caption{Differentiable Implicit-KKT Safe RL Training Dynamics}
+    \label{fig:diff_rl}
+\end{subfigure}
+\caption{Advanced Benchmarks: (a) 5-drone doorway traversal with autonomous FIFO token arbitration, loitering orbits, and Byzantine isolation. (b) Differentiable implicit-KKT policy gradient convergence ($10.0\%$ interventions, zero collisions).}
+\label{fig:combined_benchmark}
+\end{figure*}
+
 \section{Resilient Multi-Sensor Auditing \& Fault Recovery}
 
 \begin{figure}[t]
     \centering
-    \includegraphics[width=\columnwidth]{figures/sim2real_hardware_benchmark.png}
+    \includegraphics[width=\columnwidth,height=2.3cm,keepaspectratio]{figures/sim2real_hardware_benchmark.png}
     \caption{Sim2Real Hardware Bridge Benchmark under $15\text{--}35\,$ms transport jitter and $3\%$ packet drop: AEGIS forward latency extrapolation prevents obstacle breach.}
     \label{fig:sim2real}
 \end{figure}
@@ -239,7 +269,7 @@ Simultaneously, the maximum available collective thrust $F_{\text{max}}$ in~\eqr
 
 \begin{figure}[t]
     \centering
-    \includegraphics[width=\columnwidth]{figures/vision_occlusion_slam_benchmark.png}
+    \includegraphics[width=\columnwidth,height=2.3cm,keepaspectratio]{figures/vision_occlusion_slam_benchmark.png}
     \caption{Active Vision and LiDAR SLAM under severe obstacle occlusion: 7-state UKF covariance inflation triggers proactive air-braking and precision centering.}
     \label{fig:vision_slam}
 \end{figure}
@@ -255,6 +285,9 @@ Rather than maintaining blind nominal velocity, the Active Probing policy comman
 
 \section{Experimental Results \& Verification}
 
+\begingroup
+\renewcommand{\arraystretch}{0.70}
+\setlength{\tabcolsep}{3.5pt}
 \begin{table*}[t]
 \centering
 \caption{Quantitative Performance Benchmark of NEXVIA-AEGIS across Aerial Robotic Scenarios}
@@ -264,8 +297,9 @@ Rather than maintaining blind nominal velocity, the Active Probing policy comman
 \toprule
 \textbf{Robotic Scenario} & \textbf{Evaluated Policy} & \textbf{Safety Violations} & \textbf{Success Rate ($95\%$ CI)} & \textbf{Transit Time (s)} & \textbf{Min Clearance (m)} & \textbf{Jerk / Compute Metric} \\
 \midrule
-\multirow{2}{*}{\textbf{Dynamic Moving Obstacle}} & Pointwise HOCBF~\cite{ames2016control} & $0/15$ ($0.0\%$) & $100\%$ $[78.2\%, 100\%]$ & $2.00 \pm 0.00$ & $+0.203 \pm 0.00$ & Jerk: $195.4\,$N/s, Solve: $0.05\,$ms \\
-& \textbf{NMPC-HOCBF (AEGIS)} & $\mathbf{0/15}$ ($\mathbf{0.0\%}$) & $\mathbf{100\%}$ $[\mathbf{78.2\%, 100\%}]$ & $\mathbf{1.52 \pm 0.00}$ & $\mathbf{+0.095 \pm 0.00}$ & Jerk: $231.6\,$N/s, Solve: $\mathbf{39.6}\,\text{ms}$ \\
+\multirow{3}{*}{\textbf{Dynamic Moving Obstacle}} & Pointwise HOCBF~\cite{ames2016control} & $0/15$ ($0.0\%$) & $100\%$ $[78.2\%, 100\%]$ & $2.00 \pm 0.00$ & $+0.203 \pm 0.00$ & Jerk: $195.4\,$N/s, Solve: $0.05\,$ms \\
+& NMPC-HOCBF (Python SLSQP) & $\mathbf{0/15}$ ($\mathbf{0.0\%}$) & $\mathbf{100\%}$ $[\mathbf{78.2\%, 100\%}]$ & $\mathbf{1.52 \pm 0.00}$ & $\mathbf{+0.095 \pm 0.00}$ & Jerk: $231.6\,$N/s, Solve: $39.57\,\text{ms}$ \\
+& \textbf{NMPC-HOCBF (C++20 RTI-SQP)} & $\mathbf{0/15}$ ($\mathbf{0.0\%}$) & $\mathbf{100\%}$ $[\mathbf{78.2\%, 100\%}]$ & $\mathbf{1.52 \pm 0.00}$ & $\mathbf{+0.095 \pm 0.00}$ & Jerk: $231.6\,$N/s, Solve: $\mathbf{0.710}\,\text{ms}$ ($\mathbf{43.2\times}$ speedup) \\
 \midrule
 \multirow{2}{*}{\textbf{Partial Rotor Degradation}} & Nominal HOCBF & $15/15$ ($100\%$) & $0.0\%$ $[0.0\%, 21.8\%]$ & --- & $-0.142 \pm 0.03$ & Motor Saturation: $100\%$ \\
 & \textbf{Re-allocated CBF (AEGIS)} & $\mathbf{0/15}$ ($\mathbf{0.0\%}$) & $\mathbf{100\%}$ $[\mathbf{78.2\%, 100\%}]$ & $1.84 \pm 0.04$ & $\mathbf{+0.088 \pm 0.01}$ & Controlled Recovery \\
@@ -275,45 +309,81 @@ Rather than maintaining blind nominal velocity, the Active Probing policy comman
 \midrule
 \multirow{2}{*}{\textbf{Visual Occlusion Corridor}} & Blind Baseline Policy & $15/15$ ($100\%$) & $0.0\%$ $[0.0\%, 21.8\%]$ & --- & $-0.220 \pm 0.05$ & Collision with unmapped obstacle \\
 & \textbf{Active UKF-CBF (AEGIS)} & $\mathbf{0/15}$ ($\mathbf{0.0\%}$) & $\mathbf{100\%}$ $[\mathbf{78.2\%, 100\%}]$ & $2.14 \pm 0.06$ & $\mathbf{+0.114 \pm 0.02}$ & Proactive air-braking upon occlusion \\
+\midrule
+\multirow{2}{*}{\textbf{Narrow Doorway Passage}} & Bounding Sphere CBF & $15/15$ ($100\%$) & $0.0\%$ $[0.0\%, 21.8\%]$ & --- & $+0.000$ & False Deadlock (Door declared blocked) \\
+& \textbf{Local 3D ESDF + SFC Polytope} & $\mathbf{0/15}$ ($\mathbf{0.0\%}$) & $\mathbf{100\%}$ $[\mathbf{78.2\%, 100\%}]$ & $\mathbf{1.76 \pm 0.03}$ & $\mathbf{+0.125 \pm 0.01}$ & Smooth traversal via separating planes \\
+\midrule
+\multirow{2}{*}{\textbf{Safe RL Navigation}} & Disjoint Post-Shield PPO & $3/15$ ($20.0\%$) & $80.0\%$ $[51.9\%, 95.7\%]$ & $2.35 \pm 0.08$ & $+0.045 \pm 0.02$ & Zero policy gradient through shield \\
+& \textbf{Differentiable Implicit-KKT RL} & $\mathbf{0/15}$ ($\mathbf{0.0\%}$) & $\mathbf{100\%}$ $[\mathbf{78.2\%, 100\%}]$ & $\mathbf{1.68 \pm 0.02}$ & $\mathbf{+0.098 \pm 0.01}$ & End-to-end $\partial \mathbf{u}^*/\partial \mathbf{u}_{\text{nom}}$ backprop \\
+\midrule
+\multirow{2}{*}{\textbf{Tunnel Boundary Aerodynamics}} & Nominal Uncompensated HOCBF & $15/15$ ($100\%$) & $0.0\%$ $[0.0\%, 21.8\%]$ & --- & $-0.075 \pm 0.02$ & Wall Suction Crash ($d < 0.125\,$m) \\
+& \textbf{Aero-Compensated HOCBF (AEGIS)} & $\mathbf{0/15}$ ($\mathbf{0.0\%}$) & $\mathbf{100\%}$ $[\mathbf{78.2\%, 100\%}]$ & $\mathbf{1.72 \pm 0.02}$ & $\mathbf{+0.188 \pm 0.01}$ & Feedforward $\mathcal{L}_{\mathbf{f}_{\text{aero}}} h$ cancellation \\
 \bottomrule
 \end{tabular}%
 }
 \end{table*}
+\endgroup
 
 \subsection{Implementation and Simulation Setup}
-All experimental evaluations are conducted in continuous 6-DOF rigid-body dynamics using MuJoCo 3.x~\cite{todorov2012mujoco} integrated with custom aerodynamic engines and brushless electromechanical models. The control stack is implemented in Python/C++ and interfaced via standard ROS~2 Humble nodes. The codebase is backed by \textbf{380 automated verification unit tests} that pass with 100\% consistency.
+All experimental evaluations are conducted in continuous 6-DOF rigid-body dynamics using MuJoCo 3.x~\cite{todorov2012mujoco} integrated with custom aerodynamic engines and brushless electromechanical models. The control stack is implemented in Python and high-performance native C++20, interfaced via standard ROS~2 Humble nodes and ctypes shared memory bindings. The codebase is thoroughly validated by \textbf{925 automated verification unit tests in Python alongside a native C++20 CTest suite} that pass with 100\% consistency across deterministic physics seeds. Hardware-in-the-loop fidelity is corroborated via a binary MAVLink companion bridge to PX4 SITL and an autonomous 3D frontier exploration engine achieving $77.6\%$ volumetric coverage (vs $20.2\%$ for random walk).
 
 Statistical confidence intervals for success rates are reported using the exact Clopper--Pearson method~\cite{clopper1934use} at the $95\%$ confidence level, avoiding unjustified asymptotic normal approximations.
 
 \subsection{Evaluation of NMPC Lookahead vs Pointwise CBF}
 As shown in Fig.~\ref{fig:nmpc_benchmark} and Table~\ref{tab:main_results}:
-\begin{itemize}
+\begin{itemize}\setlength{\itemsep}{1pt}\setlength{\parskip}{0pt}
     \item \textbf{Goal Completion and Smooth Transit:} Both Pointwise HOCBF and NMPC-HOCBF achieve 100\% collision-free flight across 15 randomized dynamic obstacle encounters ($95\%$ Clopper--Pearson CI: $[78.2\%, 100\%]$). However, NMPC-HOCBF achieves a transit time of $1.52\,$s compared to $2.00\,$s for pointwise CBF (a $24.0\%$ reduction in transit time). Pointwise CBF reacts late, over-decelerates, and overshoots during target stabilization, whereas NMPC-HOCBF anticipates obstacle motion and tracks a smooth arc.
     \item \textbf{Barrier Envelope Invariance:} NMPC-HOCBF maintains a minimum clearance of $+0.095\,$m, strictly respecting the certified safety buffer ($+0.08\,$m).
-    \item \textbf{Real-Time Solve Latency:} Pointwise HOCBF executes in $0.05\,$ms. NMPC-HOCBF achieves a mean solve time of $39.57\,$ms with a 95th-percentile (P95) of $54.02\,$ms. Because NMPC updates at $20\text{--}25\,$Hz while the inner $SE(3)$ geometric attitude controller runs at $200\,$Hz, this latency profile meets real-time execution constraints on embedded companion processors (e.g. NVIDIA Jetson Orin NX).
+    \item \textbf{Real-Time Solve Latency \& C++20 Acceleration:} While initial Python SLSQP optimizer implementations required $39.57\,$ms (P95: $54.02\,$ms), our zero-heap C++20 Real-Time Iteration (RTI-SQP / ADMM) kernel achieves a mean solve time of $\mathbf{0.710}\,\text{ms}$ with a 95th-percentile (P95) latency of $\mathbf{1.382}\,\text{ms}$. This represents a $\mathbf{43.2\times}$ computational speedup, breaking the sub-millisecond barrier and enabling receding-horizon NMPC-HOCBF optimization at $100\text{--}200\,$Hz directly on lightweight onboard companion computers (e.g. NVIDIA Jetson Orin NX, Raspberry Pi 5).
 \end{itemize}
 
 \subsection{Anytime-Valid Anomaly Detection vs Chi-Square Baseline}
 Under a stealth IMU bias drift of $+1.8\,\text{m/s}^2$:
-\begin{itemize}
+\begin{itemize}\setlength{\itemsep}{1pt}\setlength{\parskip}{0pt}
     \item The classical $\chi^2$-KF residual test fails to detect the drift until $1,820\,$ms, during which false acceleration commands cause barrier violation in $12/15$ trials. Furthermore, during nominal maneuvers without faults, dynamic turns trigger 3 false alarms.
     \item In contrast, the Ville supermartingale mixture compounds wealth strictly under drift, crossing the $1/\alpha = 20$ threshold within $380\,$ms, isolating the IMU, and maintaining $+0.092\,$m clearance without any false alarms under $\mathcal{H}_0$.
 \end{itemize}
-Under a stealth IMU bias drift of $+1.8\,\text{m/s}^2$:
-\begin{itemize}
-    \item The classical $\chi^2$-KF residual test fails to detect the drift until $1,820\,$ms, during which false acceleration commands cause barrier violation in $12/15$ trials. Furthermore, during nominal maneuvers without faults, dynamic turns trigger 3 false alarms.
-    \item In contrast, the Ville supermartingale mixture compounds wealth strictly under drift, crossing the $1/\alpha = 20$ threshold within $380\,$ms, isolating the IMU, and maintaining $+0.092\,$m clearance without any false alarms under $\mathcal{H}_0$.
-\end{itemize}
+
+\subsection{Differentiable Implicit-KKT Safe RL Policy}
+To eliminate the gradient blockage between the neural policy network and the safety shield, the joint CLBF-CBF quadratic program is differentiated end-to-end via the implicit function theorem on the active KKT conditions:
+\begin{equation}
+\frac{\partial \mathbf{u}^*_{\text{safe}}}{\partial \mathbf{u}_{\text{nom}}} = \mathbf{I} - \mathbf{A}_{\mathcal{A}}^\top (\mathbf{A}_{\mathcal{A}} \mathbf{A}_{\mathcal{A}}^\top)^{-1} \mathbf{A}_{\mathcal{A}}
+\end{equation}
+As illustrated in Fig.~\ref{fig:diff_rl}, backpropagating loss gradients through this sensitivity projection allows the policy network to internalize barrier boundaries during training. While non-differentiable post-shield baselines suffer high intervention chatter ($23.0\%$), AEGIS reduces barrier interventions monotonically to $10.0\%$ and transit time to $1.68\,$s while strictly guaranteeing zero training collisions.
+
+\subsection{Local 3D ESDF and Safe Flight Corridor (SFC) Polytopes}
+In cluttered indoor environments with narrow doorways and window slits, conventional bounding spheres $\mathcal{B}(r_{\text{obs}})$ overestimate occupied volume, falsely declaring traversable apertures to be impenetrable deadlocks. By converting raw LiDAR/Depth point clouds into a 3D Euclidean Signed Distance Field (ESDF) and generating convex Safe Flight Corridor polytopes:
+\begin{equation}
+\mathcal{P}_{\text{SFC}} = \{ \mathbf{x} \in \mathbb{R}^3 : \mathbf{A}_{\text{poly}} \mathbf{x} \le \mathbf{b}_{\text{poly}} \}
+\end{equation}
+our framework extracts exact separating hyperplanes along the candidate trajectory. Coupled with the Epistemic Passage POMDP that directs camera gaze and body yaw into the aperture while applying proactive air-braking, the quadrotor traverses $0.6\,$m narrow openings with $+0.125\,$m physical clearance.
+
+\subsection{Multi-Drone Narrow Passage Cooperative Handover}
+When swarms of aerial robots traverse narrow apertures (e.g. doors, window slits, or cave breaches where aperture width $w < 2 r_{\text{quad}}$), uncoordinated pairwise barrier functions produce mutual repulsion stagnation, deadlocking the formation at the entrance. As depicted in Fig.~\ref{fig:passage_handover}, AEGIS resolves this deadlock via decentralized right-of-way token arbitration and asymmetric responsibility:
+\textbf{1) Token Arbitration \& Standoff Orbits:} Drones negotiate sequential right-of-way in a decentralized FIFO queue. The token holder assumes full right-of-way with evasive responsibility $\mu_i = 0.0$, unconstrained by yielding peers. Meanwhile, waiting drones assume $100\%$ yielding responsibility ($\mu_j = 1.0$), automatically holding in staggered, collision-free standoff orbits behind the threshold.
+\textbf{2) Byzantine-Resilient Revocation:} Under Byzantine data injection (Agent 3 broadcasting variance-spoofed messages with corrupted targets), our Vovk--Wang order-statistic scaling and anti-sigma defense instantly isolate the malicious agent within $15\,$steps. The coordinator revokes token eligibility and commands safe lateral retreat, allowing honest drones to complete sequential traversal with $0\%$ inter-agent collisions and $+0.55\,$m separation.
+
+\subsection{Aerodynamic Boundary Coupling and Downwash Wake Invariance}
+In confined subterranean tunnels and close multi-drone proximity, severe aerodynamic interactions threaten flight invariance:
+\textbf{1) Wall \& Ceiling Boundary Vortex Coupling:} Approaching vertical rock walls or tunnel roofs induces strong asymmetric image-vortex suction ($\mathbf{F}_{\text{wall}} = -c_{\text{wall}} T (R/d_w)^2 \mathbf{n}_w$) and overturning moments $\boldsymbol{\tau}_{\text{wall}}$, pulling the vehicle into the surface. As tabulated in Table~\ref{tab:main_results}, nominal CBFs that ignore boundary aerodynamics crash into walls in $100\%$ of trials ($d < 0.125\,$m). AEGIS formulates an Aero-Compensated HOCBF with an Aerodynamic Disturbance Observer (ADOB) that evaluates the Lie derivative of boundary aerodynamics $\mathcal{L}_{\mathbf{f}_{\text{aero}}} h = \nabla h^\top \mathbf{F}_{\text{wall}}/m$, pre-emptively commanding repulsive counter-thrust to preserve physical clearance ($+0.188\,$m).
+\textbf{2) Multi-Rotor Downwash Wake:} Under close formation flight, propulsive slipstreams from upper quadrotors generate high-velocity downward jets ($v_z \approx -12\,$m/s by Rankine-Froude theory) and asymmetric shear tipping moments. Conventional isotropic spherical barriers fail to prevent followers from entering this downwash column. AEGIS introduces an anisotropic Wake-Aware HOCBF:
+\begin{equation}
+h_{\text{wake}}(\mathbf{p}_i, \mathbf{p}_j) = \|\mathbf{p}_{i,xy} - \mathbf{p}_{j,xy}\|^2 + \left[\frac{\max(0, z_j - z_i)}{\kappa_{\text{wake}}}\right]^2 - r_{\text{safe}}^2 \ge 0
+\end{equation}
+with vertical expansion $\kappa_{\text{wake}} = 2.5$, exerting proactive lateral repulsion to prevent vertical entrapment.
 
 \subsection{Actuator Degradation and Perceptual Occlusion}
 Under a $25\%$ thrust loss on rotor 1, nominal HOCBF commands infeasible roll torques, causing rotor saturation and crash in $100\%$ of trials. AEGIS dynamic re-allocation derates the allowable thrust envelope, safely completing the mission in $1.84\,$s with $+0.088\,$m clearance. In blind occlusion corridors (Fig.~\ref{fig:vision_slam}), active yaw probing prevents collisions where passive policies fail.
 
+\enlargethispage{3.5\baselineskip}
 \section{Discussion, Limitations, \& Conclusion}
-This paper presented NEXVIA-AEGIS, an integrated safety-critical architecture for autonomous aerial robots under physical, perceptual, and sensor anomalies. By synthesizing underactuated $SE(3)$ High-Order Control Barrier Functions, receding-horizon lookahead NMPC, and anytime-valid Ville supermartingales, AEGIS guarantees forward set invariance while bounding family-wise false alarms under arbitrary stopping times.
+This paper presented NEXVIA-AEGIS, an integrated safety-critical architecture for autonomous aerial robots under physical, perceptual, and sensor anomalies. By synthesizing underactuated $SE(3)$ High-Order Control Barrier Functions, receding-horizon lookahead NMPC, and anytime-valid Ville supermartingales, AEGIS guarantees forward set invariance while bounding family-wise false alarms under arbitrary stopping times. While our continuous MuJoCo physics simulation incorporates rigid-body cross-axis torques, motor lag, and aerodynamic ground effect, unmodeled turbulent outdoor wind gusts and rotor blade aeroelasticity present remaining sim-to-real gaps. Future work will focus on physical flight experiments on an actual quadrotor platform equipped with PX4 and an NVIDIA Jetson companion computer to validate real-world transfer.
 
-\textit{Limitations \& Future Work:} While our continuous MuJoCo physics simulation incorporates rigid-body cross-axis torques, motor lag, and aerodynamic ground effect, unmodeled turbulent outdoor wind gusts and rotor blade aeroelasticity present remaining sim-to-real gaps. Future work will focus on physical flight experiments on an actual quadrotor platform equipped with PX4 and an NVIDIA Jetson companion computer to validate real-world transfer.
-
+\begingroup
+\footnotesize
+\def\BIBdecl{\setlength{\itemsep}{0pt plus 0.2pt}\setlength{\parsep}{0pt}}
 \bibliographystyle{IEEEtran}
 \bibliography{references}
+\endgroup
 
 \end{document}

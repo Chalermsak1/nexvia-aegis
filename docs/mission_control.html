@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEXVIA AEGIS — Autonomous 3D Mission Control & Telemetry HUD</title>
+  <style>
+    :root {
+      --bg-primary: #070a12;
+      --bg-panel: rgba(13, 20, 36, 0.85);
+      --border-panel: rgba(0, 229, 255, 0.25);
+      --accent-cyan: #00e5ff;
+      --accent-green: #00ff9d;
+      --accent-amber: #ffaa00;
+      --accent-crimson: #ff3366;
+      --accent-purple: #b388ff;
+      --text-main: #f0f4fc;
+      --text-dim: #7a8ba8;
+      --font-mono: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+      --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    #viewport {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    /* Scanline & Grid Background FX */
+    .overlay-fx {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 2;
+      background: radial-gradient(circle at center, transparent 60%, rgba(5, 8, 15, 0.8) 100%),
+                  linear-gradient(rgba(0, 229, 255, 0.03) 1px, transparent 1px),
+                  linear-gradient(90deg, rgba(0, 229, 255, 0.03) 1px, transparent 1px);
+      background-size: 100% 100%, 40px 40px, 40px 40px;
+    }
+
+    /* Header Bar */
+    header {
+      position: absolute;
+      top: 16px;
+      left: 20px;
+      right: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    .brand {
+      pointer-events: auto;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--bg-panel);
+      padding: 10px 18px;
+      border-radius: 8px;
+      border: 1px solid var(--border-panel);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+    }
+
+    .brand-logo {
+      width: 24px;
+      height: 24px;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-green));
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .brand-title {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: var(--accent-cyan);
+      text-transform: uppercase;
+    }
+
+    .brand-subtitle {
+      font-size: 10px;
+      font-family: var(--font-mono);
+      color: var(--text-dim);
+      letter-spacing: 0.8px;
+    }
+
+    .sys-status-badge {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 20px;
+      background: rgba(0, 255, 157, 0.15);
+      border: 1px solid var(--accent-green);
+      color: var(--accent-green);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      box-shadow: 0 0 12px rgba(0, 255, 157, 0.3);
+      transition: all 0.3s ease;
+      pointer-events: auto;
+    }
+
+    .status-pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+      box-shadow: 0 0 8px currentColor;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.8); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    /* Left Control Sidebar */
+    .side-panel {
+      position: absolute;
+      top: 80px;
+      bottom: 20px;
+      width: 320px;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      pointer-events: none;
+    }
+
+    .side-panel-left { left: 20px; }
+    .side-panel-right { right: 20px; width: 340px; }
+
+    .hud-card {
+      pointer-events: auto;
+      background: var(--bg-panel);
+      border: 1px solid var(--border-panel);
+      border-radius: 8px;
+      padding: 14px 16px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: border-color 0.3s ease;
+    }
+
+    .hud-card:hover {
+      border-color: rgba(0, 229, 255, 0.5);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      padding-bottom: 6px;
+      border-bottom: 1px solid rgba(0, 229, 255, 0.15);
+    }
+
+    .card-tag {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--text-dim);
+      font-weight: 500;
+    }
+
+    /* CBF Margin Gauge */
+    .cbf-gauge-container {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .gauge-circle {
+      position: relative;
+      width: 72px;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .gauge-circle svg {
+      transform: rotate(-90deg);
+      width: 72px;
+      height: 72px;
+    }
+
+    .gauge-circle circle {
+      fill: none;
+      stroke-width: 6;
+      stroke-linecap: round;
+    }
+
+    .gauge-bg {
+      stroke: rgba(255, 255, 255, 0.1);
+    }
+
+    .gauge-fill {
+      stroke: var(--accent-green);
+      stroke-dasharray: 188.5;
+      stroke-dashoffset: 40;
+      transition: stroke-dashoffset 0.3s ease, stroke 0.3s ease;
+    }
+
+    .gauge-val {
+      position: absolute;
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .cbf-details {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex: 1;
+    }
+
+    .cbf-metric-row {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 11px;
+    }
+
+    .metric-label { color: var(--text-dim); }
+    .metric-val { font-weight: 600; color: var(--text-main); }
+
+    /* Martingale Wealth Chart */
+    .chart-container {
+      position: relative;
+      width: 100%;
+      height: 80px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      overflow: hidden;
+    }
+
+    #martingaleCanvas {
+      width: 100%;
+      height: 100%;
+    }
+
+    .chart-legend {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-dim);
+    }
+
+    /* Motor Thrust Bars */
+    .rotor-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .rotor-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .rotor-bar-wrapper {
+      position: relative;
+      width: 18px;
+      height: 60px;
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 3px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: flex-end;
+      overflow: hidden;
+    }
+
+    .rotor-bar-fill {
+      width: 100%;
+      height: 48%;
+      background: linear-gradient(to top, var(--accent-cyan), var(--accent-green));
+      border-radius: 2px;
+      transition: height 0.15s ease, background 0.3s ease;
+    }
+
+    .rotor-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--text-dim);
+    }
+
+    .rotor-thrust-val {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    /* Interactive Buttons */
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .action-btn {
+      background: rgba(0, 229, 255, 0.08);
+      border: 1px solid var(--accent-cyan);
+      color: var(--accent-cyan);
+      padding: 9px 12px;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.2s ease;
+    }
+
+    .action-btn:hover {
+      background: rgba(0, 229, 255, 0.25);
+      box-shadow: 0 0 14px rgba(0, 229, 255, 0.4);
+      transform: translateY(-1px);
+    }
+
+    .action-btn.btn-warn {
+      border-color: var(--accent-amber);
+      color: var(--accent-amber);
+      background: rgba(255, 170, 0, 0.08);
+    }
+    .action-btn.btn-warn:hover {
+      background: rgba(255, 170, 0, 0.25);
+      box-shadow: 0 0 14px rgba(255, 170, 0, 0.4);
+    }
+
+    .action-btn.btn-danger {
+      border-color: var(--accent-crimson);
+      color: var(--accent-crimson);
+      background: rgba(255, 51, 102, 0.08);
+    }
+    .action-btn.btn-danger:hover {
+      background: rgba(255, 51, 102, 0.25);
+      box-shadow: 0 0 14px rgba(255, 51, 102, 0.4);
+    }
+
+    /* Bottom Telemetry Bar */
+    .bottom-bar {
+      position: absolute;
+      bottom: 20px;
+      left: 360px;
+      right: 380px;
+      background: var(--bg-panel);
+      border: 1px solid var(--border-panel);
+      border-radius: 8px;
+      padding: 10px 18px;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      backdrop-filter: blur(12px);
+      font-family: var(--font-mono);
+      font-size: 11px;
+    }
+
+    .telemetry-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .telemetry-title {
+      font-size: 9px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .telemetry-data {
+      font-weight: 600;
+      color: var(--accent-cyan);
+    }
+
+    /* Camera Preset Buttons */
+    .cam-presets {
+      display: flex;
+      gap: 6px;
+    }
+
+    .cam-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: var(--text-dim);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .cam-btn.active, .cam-btn:hover {
+      background: rgba(0, 229, 255, 0.15);
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
+    }
+
+    /* Alert Banner */
+    #alertBanner {
+      position: absolute;
+      top: 75px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-100px);
+      background: rgba(255, 51, 102, 0.95);
+      border: 1px solid #ff6688;
+      border-radius: 6px;
+      padding: 10px 24px;
+      color: white;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      box-shadow: 0 0 30px rgba(255, 51, 102, 0.8);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: transform 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+    }
+
+    #alertBanner.visible {
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+  <!-- Three.js & OrbitControls from CDN with fallback -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+</head>
+<body>
+  <div class="overlay-fx"></div>
+  <div id="viewport"></div>
+
+  <!-- Header -->
+  <header>
+    <div class="brand">
+      <div class="brand-logo">▲</div>
+      <div>
+        <div class="brand-title">NEXVIA AEGIS // MISSION CONTROL 3D</div>
+        <div class="brand-subtitle">PX4 SITL HIL AUTONOMOUS RESILIENCE PLATFORM</div>
+      </div>
+    </div>
+    <div id="statusBadge" class="sys-status-badge">
+      <div class="status-pulse"></div>
+      <span id="statusText">OFFBOARD ACTIVE</span>
+    </div>
+  </header>
+
+  <!-- Alert Banner -->
+  <div id="alertBanner">
+    <span>⚠️</span>
+    <span id="alertMsg">VILLE MARTINGALE EXCEEDED (M_t ≥ 20.0) -> EMERGENCY FAILSAFE TRIPPED!</span>
+  </div>
+
+  <!-- Left Side Panel: Safety & Dynamic Flight Controls -->
+  <div class="side-panel side-panel-left">
+    <!-- CBF Safety Gauge Card -->
+    <div class="hud-card">
+      <div class="card-header">
+        <span>Control Barrier Function</span>
+        <span class="card-tag">TUBE-CBF</span>
+      </div>
+      <div class="cbf-gauge-container">
+        <div class="gauge-circle">
+          <svg>
+            <circle class="gauge-bg" cx="36" cy="36" r="30"></circle>
+            <circle id="cbfFill" class="gauge-fill" cx="36" cy="36" r="30"></circle>
+          </svg>
+          <div id="cbfVal" class="gauge-val">+0.84m</div>
+        </div>
+        <div class="cbf-details">
+          <div class="cbf-metric-row">
+            <span class="metric-label">Safety Barrier h(x):</span>
+            <span id="hMetric" class="metric-val">+0.84 m</span>
+          </div>
+          <div class="cbf-metric-row">
+            <span class="metric-label">Tube Invariant Bound:</span>
+            <span class="metric-val">0.30 m</span>
+          </div>
+          <div class="cbf-metric-row">
+            <span class="metric-label">Intervention State:</span>
+            <span id="cbfIntervention" class="metric-val" style="color:var(--accent-green);">NOMINAL</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ville Martingale Supermartingale Anomaly Detector -->
+    <div class="hud-card">
+      <div class="card-header">
+        <span>Ville Supermartingale M_t</span>
+        <span class="card-tag">α = 0.05</span>
+      </div>
+      <div class="chart-container">
+        <canvas id="martingaleCanvas"></canvas>
+      </div>
+      <div class="chart-legend">
+        <span>Wealth M_t: <b id="wealthVal" style="color:var(--accent-cyan)">1.00</b></span>
+        <span>Threshold: <b style="color:var(--accent-crimson)">20.0 (1/α)</b></span>
+      </div>
+    </div>
+
+    <!-- 4-Motor Thrust Allocation -->
+    <div class="hud-card">
+      <div class="card-header">
+        <span>Actuator Thrust Allocation</span>
+        <span class="card-tag">6-DoF MATRIX</span>
+      </div>
+      <div class="rotor-grid">
+        <div class="rotor-col">
+          <div class="rotor-bar-wrapper">
+            <div id="barRotor1" class="rotor-bar-fill"></div>
+          </div>
+          <span class="rotor-label">M1 (CW)</span>
+          <span id="valRotor1" class="rotor-thrust-val">1.84N</span>
+        </div>
+        <div class="rotor-col">
+          <div class="rotor-bar-wrapper">
+            <div id="barRotor2" class="rotor-bar-fill"></div>
+          </div>
+          <span class="rotor-label">M2 (CCW)</span>
+          <span id="valRotor2" class="rotor-thrust-val">1.84N</span>
+        </div>
+        <div class="rotor-col">
+          <div class="rotor-bar-wrapper">
+            <div id="barRotor3" class="rotor-bar-fill"></div>
+          </div>
+          <span class="rotor-label">M3 (CW)</span>
+          <span id="valRotor3" class="rotor-thrust-val">1.84N</span>
+        </div>
+        <div class="rotor-col">
+          <div class="rotor-bar-wrapper">
+            <div id="barRotor4" class="rotor-bar-fill"></div>
+          </div>
+          <span class="rotor-label">M4 (CCW)</span>
+          <span id="valRotor4" class="rotor-thrust-val">1.84N</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Aerodynamic Boundary Coupling & ADOB Observer -->
+    <div class="hud-card">
+      <div class="card-header">
+        <span>Boundary Aero Coupling</span>
+        <span class="card-tag">AERO-HOCBF</span>
+      </div>
+      <div class="cbf-details">
+        <div class="cbf-metric-row">
+          <span class="metric-label">Wall Vortex Suction:</span>
+          <span id="wallSuctionVal" class="metric-val" style="color:var(--accent-amber);">0.00 N</span>
+        </div>
+        <div class="cbf-metric-row">
+          <span class="metric-label">Ceiling Bernoulli Pull:</span>
+          <span id="ceilSuctionVal" class="metric-val" style="color:var(--accent-purple);">0.00 N</span>
+        </div>
+        <div class="cbf-metric-row">
+          <span class="metric-label">ADOB Momentum Residual:</span>
+          <span id="adobResidualVal" class="metric-val" style="color:var(--accent-cyan);">±0.04 N</span>
+        </div>
+        <div class="cbf-metric-row">
+          <span class="metric-label">Feedforward Cancellation:</span>
+          <span id="aeroCompStatus" class="metric-val" style="color:var(--accent-green);">L_{f,aero} ACTIVE</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Side Panel: Exploration & Autonomous Scenarios -->
+  <div class="side-panel side-panel-right">
+    <!-- Autonomous 3D Frontier Exploration -->
+    <div class="hud-card">
+      <div class="card-header">
+        <span>3D Frontier Exploration</span>
+        <span class="card-tag">IPP ENGINE</span>
+      </div>
+      <div class="cbf-details">
+        <div class="cbf-metric-row">
+          <span class="metric-label">Map Volumetric Coverage:</span>
+          <span id="covPct" class="metric-val" style="color:var(--accent-green);">77.6% (12,416 voxels)</span>
+        </div>
+        <div class="cbf-metric-row">
+          <span class="metric-label">Angular Sector Clusters:</span>
+          <span class="metric-val">8 Sectors (45° Partitions)</span>
+        </div>
+        <div class="cbf-metric-row">
+          <span class="metric-label">Target Sector Frontier:</span>
+          <span id="frontierCoord" class="metric-val">[+4.2, -1.8, +0.6]m</span>
+        </div>
+        <div class="cbf-metric-row">
+          <span class="metric-label">Downwash Wake Model:</span>
+          <span class="metric-val" style="color:var(--accent-purple);">Rankine-Froude (κ=2.5)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Interactive Hardware-in-the-Loop Mission Injection Console -->
+    <div class="hud-card">
+      <div class="card-header">
+        <span>Hardware-in-the-Loop Scenarios</span>
+        <span class="card-tag">PX4 SITL</span>
+      </div>
+      <div class="btn-group">
+        <button id="btnExplore" class="action-btn">
+          <span>▶ Run Autonomous IPP Exploration</span>
+          <span>⚡</span>
+        </button>
+        <button id="btnTransit" class="action-btn">
+          <span>⇄ Multi-Drone Doorway Transit</span>
+          <span>👥</span>
+        </button>
+        <button id="btnWallAero" class="action-btn btn-warn">
+          <span>🌀 Test Wall Vortex Suction</span>
+          <span>⚡</span>
+        </button>
+        <button id="btnBias" class="action-btn btn-warn">
+          <span>⚡ Inject IMU Bias (+1.8 m/s²)</span>
+          <span>⚠</span>
+        </button>
+        <button id="btnDegrade" class="action-btn btn-warn">
+          <span>💥 Motor 1 Degradation (-25%)</span>
+          <span>⚙</span>
+        </button>
+        <button id="btnReset" class="action-btn btn-danger">
+          <span>↺ Reset Mission & Clear Anomaly</span>
+          <span>✓</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Camera Viewport Control -->
+    <div class="hud-card">
+      <div class="card-header">
+        <span>Camera View Presets</span>
+        <span class="card-tag">3D VIEW</span>
+      </div>
+      <div class="cam-presets">
+        <button id="camOrbit" class="cam-btn active">Orbit 3D</button>
+        <button id="camChase" class="cam-btn">Chase Cam</button>
+        <button id="camTop" class="cam-btn">Top Down</button>
+        <button id="camDoorway" class="cam-btn">Doorway Transit</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Telemetry HUD Bar -->
+  <div class="bottom-bar">
+    <div class="telemetry-item">
+      <span class="telemetry-title">Position NED (X, Y, Z)</span>
+      <span id="posNED" class="telemetry-data">+1.24, -0.85, -1.50 m</span>
+    </div>
+    <div class="telemetry-item">
+      <span class="telemetry-title">Velocity (Vx, Vy, Vz)</span>
+      <span id="velNED" class="telemetry-data">+0.45, +0.12, -0.05 m/s</span>
+    </div>
+    <div class="telemetry-item">
+      <span class="telemetry-title">Attitude (R, P, Y)</span>
+      <span id="attEuler" class="telemetry-data">+1.2°, -2.4°, +42.0°</span>
+    </div>
+    <div class="telemetry-item">
+      <span class="telemetry-title">Battery SoC</span>
+      <span id="batSoC" class="telemetry-data">16.6V (94%)</span>
+    </div>
+    <div class="telemetry-item">
+      <span class="telemetry-title">MAVLink Stream Rate</span>
+      <span class="telemetry-data">50.0 Hz (2.4 ms delay)</span>
+    </div>
+  </div>
+
+  <!-- Main WebGL & Simulation Logic -->
+  <script>
+    // --- State Management ---
+    const state = {
+      dronePos: new THREE.Vector3(0, 0, 0),
+      droneVel: new THREE.Vector3(0, 0, 0),
+      droneRot: new THREE.Euler(0, 0, 0),
+      cbfMargin: 0.84,
+      martingaleWealth: 1.0,
+      wealthHistory: new Array(50).fill(1.0),
+      rotors: [1.84, 1.84, 1.84, 1.84],
+      flightState: "OFFBOARD_ACTIVE",
+      failsafeTriggered: false,
+      motor1Degraded: false,
+      wallAeroActive: false,
+      explorationActive: true,
+      multiDroneMode: false,
+      drone2Pos: new THREE.Vector3(-4.0, 0, 0),
+      camMode: "orbit"
+    };
+
+    // --- Three.js Scene Setup ---
+    const container = document.getElementById("viewport");
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x070a12);
+    scene.fog = new THREE.FogExp2(0x070a12, 0.035);
+
+    const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.position.set(5.5, 4.2, 6.5);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    container.appendChild(renderer.domElement);
+
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.maxPolarAngle = Math.PI / 2 + 0.1;
+
+    // --- Lighting ---
+    const ambientLight = new THREE.AmbientLight(0x223344, 1.2);
+    scene.add(ambientLight);
+
+    const dirLight = new THREE.DirectionalLight(0x00e5ff, 1.8);
+    dirLight.position.set(10, 20, 10);
+    dirLight.castShadow = true;
+    scene.add(dirLight);
+
+    const accentLight = new THREE.PointLight(0x00ff9d, 2.0, 15);
+    accentLight.position.set(-4, 3, -2);
+    scene.add(accentLight);
+
+    // --- Subterranean Tunnel & Maze Environment ---
+    // Ground Grid
+    const gridHelper = new THREE.GridHelper(30, 30, 0x00e5ff, 0x112233);
+    gridHelper.position.y = -1.5;
+    scene.add(gridHelper);
+
+    // Cavern Pillars & Obstacles
+    const pillarMat = new THREE.MeshStandardMaterial({
+      color: 0x1a2638,
+      roughness: 0.7,
+      metalness: 0.3,
+      wireframe: false
+    });
+    const pillarWireMat = new THREE.MeshBasicMaterial({ color: 0x00e5ff, wireframe: true });
+
+    const obstaclePositions = [
+      [-2.5, 1.5], [2.5, 2.0], [-1.8, -2.5], [3.0, -1.8], [0.0, 3.5]
+    ];
+    const obstacles = [];
+
+    obstaclePositions.forEach(([x, z]) => {
+      const colGeom = new THREE.CylinderGeometry(0.55, 0.55, 5, 16);
+      const pillar = new THREE.Mesh(colGeom, pillarMat);
+      pillar.position.set(x, 1.0, z);
+      scene.add(pillar);
+
+      const wire = new THREE.Mesh(colGeom, pillarWireMat);
+      wire.position.copy(pillar.position);
+      wire.scale.set(1.02, 1.02, 1.02);
+      scene.add(wire);
+
+      obstacles.push(pillar);
+    });
+
+    // Narrow Passage Doorway (Passage Handover)
+    const doorWallMat = new THREE.MeshStandardMaterial({ color: 0x162233, roughness: 0.8 });
+    const wallLeft = new THREE.Mesh(new THREE.BoxGeometry(4, 4, 0.4), doorWallMat);
+    wallLeft.position.set(-2.8, 0.5, 0);
+    scene.add(wallLeft);
+
+    const wallRight = new THREE.Mesh(new THREE.BoxGeometry(4, 4, 0.4), doorWallMat);
+    wallRight.position.set(2.8, 0.5, 0);
+    scene.add(wallRight);
+
+    // Safe Flight Corridor (SFC) Polyhedral Wireframe Tube
+    const sfcCurve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(-4.5, 0.2, 0),
+      new THREE.Vector3(-2.0, 0.0, 0),
+      new THREE.Vector3(0.0, 0.0, 0),
+      new THREE.Vector3(2.5, 0.4, 1.2),
+      new THREE.Vector3(4.5, 0.2, 2.5)
+    ]);
+    const sfcGeom = new THREE.TubeGeometry(sfcCurve, 32, 0.85, 8, false);
+    const sfcMat = new THREE.MeshBasicMaterial({
+      color: 0x00e5ff,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.25
+    });
+    const sfcMesh = new THREE.Mesh(sfcGeom, sfcMat);
+    scene.add(sfcMesh);
+
+    // --- Drone 3D Procedural Model ---
+    function createDroneModel(colorHex = 0x00e5ff) {
+      const droneGroup = new THREE.Group();
+
+      // Carbon Core Fuselage
+      const bodyGeom = new THREE.CylinderGeometry(0.22, 0.26, 0.12, 8);
+      const bodyMat = new THREE.MeshStandardMaterial({ color: 0x111111, metalness: 0.8, roughness: 0.2 });
+      const body = new THREE.Mesh(bodyGeom, bodyMat);
+      droneGroup.add(body);
+
+      // LiDAR Dome on top
+      const lidarGeom = new THREE.CylinderGeometry(0.08, 0.08, 0.06, 12);
+      const lidarMat = new THREE.MeshStandardMaterial({ color: colorHex, emissive: colorHex, emissiveIntensity: 0.8 });
+      const lidar = new THREE.Mesh(lidarGeom, lidarMat);
+      lidar.position.y = 0.09;
+      droneGroup.add(lidar);
+
+      // 4 Arms (X-Configuration)
+      const armGeom = new THREE.CylinderGeometry(0.02, 0.02, 0.65, 8);
+      const armMat = new THREE.MeshStandardMaterial({ color: 0x333333 });
+
+      const arm1 = new THREE.Mesh(armGeom, armMat);
+      arm1.rotation.z = Math.PI / 2;
+      arm1.rotation.y = Math.PI / 4;
+      droneGroup.add(arm1);
+
+      const arm2 = new THREE.Mesh(armGeom, armMat);
+      arm2.rotation.z = Math.PI / 2;
+      arm2.rotation.y = -Math.PI / 4;
+      droneGroup.add(arm2);
+
+      // 4 Propellers
+      const propDiscs = [];
+      const propPositions = [
+        [0.23, 0.06, 0.23],
+        [-0.23, 0.06, 0.23],
+        [-0.23, 0.06, -0.23],
+        [0.23, 0.06, -0.23]
+      ];
+
+      propPositions.forEach(([px, py, pz]) => {
+        const propGeom = new THREE.CylinderGeometry(0.12, 0.12, 0.005, 16);
+        const propMat = new THREE.MeshBasicMaterial({
+          color: colorHex,
+          transparent: true,
+          opacity: 0.65
+        });
+        const prop = new THREE.Mesh(propGeom, propMat);
+        prop.position.set(px, py, pz);
+        droneGroup.add(prop);
+        propDiscs.push(prop);
+      });
+
+      // Downwash Wake Slipstream Cone (Rankine-Froude model)
+      const wakeGeom = new THREE.ConeGeometry(0.55, 1.8, 16, 1, true);
+      const wakeMat = new THREE.MeshBasicMaterial({
+        color: 0xb388ff,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.35
+      });
+      const wakeCone = new THREE.Mesh(wakeGeom, wakeMat);
+      wakeCone.position.y = -0.9;
+      wakeCone.rotation.x = Math.PI; // Expand downwards
+      droneGroup.add(wakeCone);
+
+      // Forward Nose Pointer
+      const noseGeom = new THREE.ConeGeometry(0.04, 0.12, 8);
+      const noseMat = new THREE.MeshBasicMaterial({ color: 0x00ff9d });
+      const nose = new THREE.Mesh(noseGeom, noseMat);
+      nose.position.set(0, 0, 0.26);
+      nose.rotation.x = Math.PI / 2;
+      droneGroup.add(nose);
+
+      return { group: droneGroup, props: propDiscs, wake: wakeCone };
+    }
+
+    const drone1 = createDroneModel(0x00e5ff);
+    scene.add(drone1.group);
+
+    const drone2 = createDroneModel(0xffaa00);
+    drone2.group.position.set(-4.0, 0.2, 0);
+    drone2.group.visible = false;
+    scene.add(drone2.group);
+
+    // --- Ville Martingale Wealth Canvas Chart ---
+    const chartCanvas = document.getElementById("martingaleCanvas");
+    const chartCtx = chartCanvas.getContext("2d");
+
+    function resizeChartCanvas() {
+      chartCanvas.width = chartCanvas.clientWidth * 2;
+      chartCanvas.height = chartCanvas.clientHeight * 2;
+    }
+    resizeChartCanvas();
+    window.addEventListener("resize", resizeChartCanvas);
+
+    function drawMartingaleChart() {
+      const w = chartCanvas.width;
+      const h = chartCanvas.height;
+      chartCtx.clearRect(0, 0, w, h);
+
+      // Horizontal threshold line at M_t = 20.0
+      // Map range: 0 to 25
+      const yThresh = h - (20.0 / 25.0) * h;
+      chartCtx.strokeStyle = "rgba(255, 51, 102, 0.6)";
+      chartCtx.lineWidth = 2;
+      chartCtx.setLineDash([6, 6]);
+      chartCtx.beginPath();
+      chartCtx.moveTo(0, yThresh);
+      chartCtx.lineTo(w, yThresh);
+      chartCtx.stroke();
+      chartCtx.setLineDash([]);
+
+      // Wealth line
+      chartCtx.strokeStyle = state.martingaleWealth >= 20.0 ? "#ff3366" : "#00e5ff";
+      chartCtx.lineWidth = 3;
+      chartCtx.beginPath();
+
+      const step = w / (state.wealthHistory.length - 1);
+      state.wealthHistory.forEach((val, i) => {
+        const clamped = Math.min(25.0, Math.max(0.0, val));
+        const y = h - (clamped / 25.0) * h;
+        if (i === 0) chartCtx.moveTo(0, y);
+        else chartCtx.lineTo(i * step, y);
+      });
+      chartCtx.stroke();
+    }
+
+    // --- Interactive Simulation Step ---
+    let simTime = 0;
+    const clock = new THREE.Clock();
+
+    function updateSimulation(dt) {
+      simTime += dt;
+
+      // 1. Autonomous Exploration / Trajectory
+      if (state.explorationActive && !state.failsafeTriggered) {
+        // Parametric exploratory lemniscate trajectory through corridor
+        const t = simTime * 0.45;
+        const targetX = Math.sin(t) * 2.8;
+        const targetZ = Math.sin(t * 2) * 1.2;
+        const targetY = 0.2 + Math.cos(t * 1.5) * 0.15;
+
+        state.dronePos.lerp(new THREE.Vector3(targetX, targetY, targetZ), dt * 3.0);
+        state.droneRot.y = Math.atan2(Math.cos(t * 2) * 2.4, Math.cos(t) * 2.8);
+        state.droneRot.z = -Math.sin(t) * 0.15;
+        state.droneRot.x = Math.cos(t * 2) * 0.1;
+      } else if (state.failsafeTriggered) {
+        // RTL Mode: Elevate to safe altitude and return to origin
+        state.dronePos.lerp(new THREE.Vector3(0, 1.2, 0), dt * 2.0);
+        state.droneRot.set(0, 0, 0);
+      }
+
+      drone1.group.position.copy(state.dronePos);
+      drone1.group.rotation.copy(state.droneRot);
+
+      // Rotate Propellers
+      const propSpeed = (state.failsafeTriggered ? 25 : 55) * dt;
+      drone1.props.forEach((p, idx) => {
+        p.rotation.y += (idx % 2 === 0 ? 1 : -1) * propSpeed;
+      });
+
+      // 2. Control Barrier Function Calculation
+      // Find closest obstacle
+      let minDist = 999.0;
+      obstacles.forEach(obs => {
+        const d = Math.hypot(state.dronePos.x - obs.position.x, state.dronePos.z - obs.position.z) - 0.55;
+        if (d < minDist) minDist = d;
+      });
+      state.cbfMargin = Math.max(0.02, minDist);
+
+      // 3. Ville Martingale Dynamics
+      if (state.failsafeTriggered) {
+        // In failsafe
+      } else {
+        // Natural small Brownian noise around H0
+        state.martingaleWealth = Math.max(0.8, state.martingaleWealth + (Math.random() - 0.5) * 0.08);
+      }
+      state.wealthHistory.push(state.martingaleWealth);
+      if (state.wealthHistory.length > 50) state.wealthHistory.shift();
+
+      // 4. Actuator Allocation
+      if (state.motor1Degraded) {
+        state.rotors[0] = 1.38; // 25% loss
+        state.rotors[1] = 1.99; // Compensate
+        state.rotors[2] = 1.99;
+        state.rotors[3] = 1.99;
+      } else {
+        const nominal = state.failsafeTriggered ? 1.45 : 1.84;
+        state.rotors = [nominal, nominal, nominal, nominal];
+      }
+
+      // 5. Aerodynamic Boundary Suction (Wall & Ceiling Effect)
+      let wallSuction = 0.0;
+      let ceilSuction = 0.0;
+      if (state.wallAeroActive) {
+        const dWall = Math.max(0.12, 2.5 - Math.abs(state.dronePos.z));
+        wallSuction = 0.28 * 14.715 * Math.pow(0.09 / dWall, 2);
+        ceilSuction = 0.30 * 14.715 * Math.pow(0.09 / Math.max(0.15, 3.5 - state.dronePos.y), 2);
+        // Tilt drone slightly towards wall
+        state.droneRot.x += Math.sin(simTime * 2.0) * 0.08;
+      }
+      state.wallSuction = wallSuction;
+      state.ceilSuction = ceilSuction;
+
+      // 6. Multi-Drone Mode
+      if (state.multiDroneMode) {
+        drone2.group.visible = true;
+        // Follower trailing through doorway
+        const trailT = (simTime - 1.2) * 0.45;
+        drone2.group.position.set(
+          Math.sin(trailT) * 2.8,
+          0.3,
+          Math.sin(trailT * 2) * 1.2
+        );
+        drone2.props.forEach(p => p.rotation.y += propSpeed);
+      } else {
+        drone2.group.visible = false;
+      }
+
+      // Camera Tracking
+      if (state.camMode === "chase") {
+        const offset = new THREE.Vector3(0, 0.8, -2.2).applyEuler(state.droneRot);
+        camera.position.lerp(state.dronePos.clone().add(offset), 0.1);
+        camera.lookAt(state.dronePos);
+      }
+    }
+
+    // --- UI Synchronizer ---
+    function updateHUD() {
+      // CBF Gauge
+      const cbfFill = document.getElementById("cbfFill");
+      const cbfVal = document.getElementById("cbfVal");
+      const hMetric = document.getElementById("hMetric");
+      const cbfIntervention = document.getElementById("cbfIntervention");
+
+      const margin = state.cbfMargin;
+      cbfVal.textContent = (margin >= 0 ? "+" : "") + margin.toFixed(2) + "m";
+      hMetric.textContent = cbfVal.textContent;
+
+      // Circle stroke dash: 188.5 is full circumference
+      const pct = Math.min(1.0, Math.max(0.0, margin / 1.5));
+      cbfFill.style.strokeDashoffset = 188.5 * (1.0 - pct);
+
+      if (margin > 0.4) {
+        cbfFill.style.stroke = "var(--accent-green)";
+        cbfIntervention.textContent = "NOMINAL (UNRESTRICTED)";
+        cbfIntervention.style.color = "var(--accent-green)";
+      } else if (margin > 0.15) {
+        cbfFill.style.stroke = "var(--accent-amber)";
+        cbfIntervention.textContent = "TUBE-CBF ACTIVE BRAKING";
+        cbfIntervention.style.color = "var(--accent-amber)";
+      } else {
+        cbfFill.style.stroke = "var(--accent-crimson)";
+        cbfIntervention.textContent = "BARRIER INTERVENTION HIT";
+        cbfIntervention.style.color = "var(--accent-crimson)";
+      }
+
+      // Wealth Metric
+      document.getElementById("wealthVal").textContent = state.martingaleWealth.toFixed(2);
+      drawMartingaleChart();
+
+      // Boundary Aero Coupling Update
+      const wallVal = document.getElementById("wallSuctionVal");
+      const ceilVal = document.getElementById("ceilSuctionVal");
+      const adobVal = document.getElementById("adobResidualVal");
+      if (wallVal && ceilVal && adobVal) {
+        wallVal.textContent = (state.wallSuction || 0.0).toFixed(2) + " N";
+        ceilVal.textContent = (state.ceilSuction || 0.0).toFixed(2) + " N";
+        const adobEst = (state.wallSuction || 0.0) * 0.98 + (Math.random() - 0.5) * 0.03;
+        adobVal.textContent = (state.wallSuction > 0 ? "±" + adobEst.toFixed(2) : "0.00") + " N";
+      }
+
+      // Rotor Bars
+      for (let i = 0; i < 4; i++) {
+        const bar = document.getElementById(`barRotor${i + 1}`);
+        const val = document.getElementById(`valRotor${i + 1}`);
+        const t = state.rotors[i];
+        bar.style.height = `${(t / 3.0) * 100}%`;
+        val.textContent = `${t.toFixed(2)}N`;
+        if (i === 0 && state.motor1Degraded) {
+          bar.style.background = "var(--accent-crimson)";
+        } else {
+          bar.style.background = "linear-gradient(to top, var(--accent-cyan), var(--accent-green))";
+        }
+      }
+
+      // Bottom Telemetry Bar
+      document.getElementById("posNED").textContent =
+        `${(state.dronePos.x >= 0 ? "+" : "")}${state.dronePos.x.toFixed(2)}, ` +
+        `${(state.dronePos.z >= 0 ? "+" : "")}${state.dronePos.z.toFixed(2)}, ` +
+        `${(-state.dronePos.y >= 0 ? "+" : "")}${(-state.dronePos.y).toFixed(2)} m`;
+
+      document.getElementById("attEuler").textContent =
+        `${(state.droneRot.x * 57.3).toFixed(1)}°, ${(state.droneRot.z * 57.3).toFixed(1)}°, ${(state.droneRot.y * 57.3).toFixed(1)}°`;
+    }
+
+    // --- Interactive Scenario Handlers ---
+    const alertBanner = document.getElementById("alertBanner");
+    const statusBadge = document.getElementById("statusBadge");
+    const statusText = document.getElementById("statusText");
+
+    // Scenario 1: Inject IMU Bias (Ville Martingale Fail-Safe)
+    document.getElementById("btnBias").addEventListener("click", () => {
+      state.martingaleWealth = 24.8;
+      state.failsafeTriggered = true;
+      state.flightState = "FAILSAFE_TRIGGERED";
+
+      statusBadge.style.borderColor = "var(--accent-crimson)";
+      statusBadge.style.color = "var(--accent-crimson)";
+      statusBadge.style.background = "rgba(255, 51, 102, 0.2)";
+      statusText.textContent = "FAILSAFE TRIGGERED -> RTL";
+
+      alertBanner.classList.add("visible");
+    });
+
+    // Scenario 2: Degrade Motor 1 (-25%)
+    document.getElementById("btnDegrade").addEventListener("click", () => {
+      state.motor1Degraded = !state.motor1Degraded;
+      const btn = document.getElementById("btnDegrade");
+      btn.style.borderColor = state.motor1Degraded ? "var(--accent-crimson)" : "var(--accent-amber)";
+    });
+
+    // Scenario 3: Autonomous IPP Exploration
+    document.getElementById("btnExplore").addEventListener("click", () => {
+      state.explorationActive = true;
+      state.failsafeTriggered = false;
+      state.martingaleWealth = 1.0;
+      alertBanner.classList.remove("visible");
+
+      statusBadge.style.borderColor = "var(--accent-green)";
+      statusBadge.style.color = "var(--accent-green)";
+      statusBadge.style.background = "rgba(0, 255, 157, 0.15)";
+      statusText.textContent = "OFFBOARD ACTIVE";
+    });
+
+    // Scenario 4: Multi-Drone Doorway Transit
+    document.getElementById("btnTransit").addEventListener("click", () => {
+      state.multiDroneMode = !state.multiDroneMode;
+      const btn = document.getElementById("btnTransit");
+      btn.style.background = state.multiDroneMode ? "rgba(0, 229, 255, 0.3)" : "rgba(0, 229, 255, 0.08)";
+    });
+
+    // Scenario 4b: Test Wall Vortex Suction
+    document.getElementById("btnWallAero").addEventListener("click", () => {
+      state.wallAeroActive = !state.wallAeroActive;
+      const btn = document.getElementById("btnWallAero");
+      btn.style.background = state.wallAeroActive ? "rgba(255, 170, 0, 0.35)" : "rgba(255, 170, 0, 0.08)";
+      if (state.wallAeroActive) {
+        document.getElementById("cbfIntervention").textContent = "AERO-HOCBF ACTIVE SUCTION CANCELLATION";
+        document.getElementById("cbfIntervention").style.color = "var(--accent-cyan)";
+      }
+    });
+
+    // Scenario 5: Reset Mission
+    document.getElementById("btnReset").addEventListener("click", () => {
+      state.failsafeTriggered = false;
+      state.martingaleWealth = 1.0;
+      state.wealthHistory = new Array(50).fill(1.0);
+      state.motor1Degraded = false;
+      state.multiDroneMode = false;
+      alertBanner.classList.remove("visible");
+
+      statusBadge.style.borderColor = "var(--accent-green)";
+      statusBadge.style.color = "var(--accent-green)";
+      statusBadge.style.background = "rgba(0, 255, 157, 0.15)";
+      statusText.textContent = "OFFBOARD ACTIVE";
+    });
+
+    // Camera Preset Handlers
+    const camButtons = {
+      camOrbit: () => {
+        state.camMode = "orbit";
+        camera.position.set(5.5, 4.2, 6.5);
+        controls.target.set(0, 0, 0);
+      },
+      camChase: () => {
+        state.camMode = "chase";
+      },
+      camTop: () => {
+        state.camMode = "top";
+        camera.position.set(0, 10, 0);
+        controls.target.set(0, 0, 0);
+      },
+      camDoorway: () => {
+        state.camMode = "doorway";
+        camera.position.set(0, 1.2, 4.5);
+        controls.target.set(0, 0.2, 0);
+      }
+    };
+
+    Object.entries(camButtons).forEach(([id, handler]) => {
+      document.getElementById(id).addEventListener("click", (e) => {
+        document.querySelectorAll(".cam-btn").forEach(b => b.classList.remove("active"));
+        e.target.classList.add("active");
+        handler();
+      });
+    });
+
+    // Window Resize Handler
+    window.addEventListener("resize", () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // --- Main Animation Loop ---
+    function animate() {
+      requestAnimationFrame(animate);
+      const dt = clock.getDelta();
+      updateSimulation(dt);
+      controls.update();
+      renderer.render(scene, camera);
+      updateHUD();
+    }
+    animate();
+  </script>
+</body>
+</html>

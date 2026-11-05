@@ -650,11 +650,15 @@ class PX4MavlinkBridge:
         psi_des: float = 0.0,
         now_s: Optional[float] = None,
         output_mode: Optional[str] = None,
+        use_nmpc: bool = False,
+        corridor_planes: Optional[Sequence[Tuple[Sequence[float], float]]] = None,
+        target_pos: Optional[Sequence[float]] = None,
     ) -> BridgeStepResult:
         """
         1. Polls incoming MAVLink telemetry (`HEARTBEAT`, `LOCAL_POSITION_NED`, `ODOMETRY`).
         2. Evaluates > 100 ms heartbeat disconnect detector.
         3. Filters command via `AegisSafetyBox` (or engages deadbeat braking on disconnect).
+           Supports both single-step CLBF-QP and receding horizon NMPC-HOCBF with corridor polytopes.
         4. Maps safe acceleration through `QuadrotorFlatnessConverter`.
         5. Transmits `SET_ATTITUDE_TARGET` or `SET_POSITION_TARGET_LOCAL_NED` over UDP.
         """
@@ -680,12 +684,22 @@ class PX4MavlinkBridge:
             failsafe_disconnect = True
         else:
             self.failsafe_active = False
-            safety_out = self.safety_box.process_command(
-                untrusted_accel=np.asarray(untrusted_accel, dtype=np.float64),
-                telemetry=self.latest_telemetry,
-                obstacles=obs_list,
-                current_time_s=t_now,
-            )
+            if use_nmpc:
+                safety_out = self.safety_box.process_command_nmpc(
+                    untrusted_accel=np.asarray(untrusted_accel, dtype=np.float64),
+                    telemetry=self.latest_telemetry,
+                    obstacles=obs_list,
+                    corridor_planes=corridor_planes,
+                    target_pos=target_pos,
+                    current_time_s=t_now,
+                )
+            else:
+                safety_out = self.safety_box.process_command(
+                    untrusted_accel=np.asarray(untrusted_accel, dtype=np.float64),
+                    telemetry=self.latest_telemetry,
+                    obstacles=obs_list,
+                    current_time_s=t_now,
+                )
             failsafe_disconnect = False
 
         flatness_sp = self.flatness.convert(safety_out.safe_accel, psi_des=psi_des)

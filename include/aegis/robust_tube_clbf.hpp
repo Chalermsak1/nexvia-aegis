@@ -14,6 +14,7 @@
 #include <algorithm>
 #include <array>
 #include <chrono>
+#include "aegis/nmpc_hocbf_rti.hpp"
 
 namespace aegis {
 
@@ -406,6 +407,42 @@ AegisCResult aegis_micro_kernel_solve(
     double sigma_v,
     int force_probe,
     int probe_step
+);
+
+struct AegisNmpcObstacle {
+    double cx, cy, cz;
+    double radius;
+    double vx, vy, vz;
+};
+
+struct AegisNmpcCorridorPlane {
+    double nx, ny, nz;
+    double d;
+};
+
+struct AegisNmpcResult {
+    double f0_x, f0_y, f0_z;
+    double traj_p[16][3];
+    double traj_v[16][3];
+    double traj_f[15][3];
+    int success;
+    int iterations;
+    double solve_time_us;
+    double min_barrier_margin;
+    int fallback_activated;
+};
+
+AegisNmpcResult aegis_nmpc_cbf_solve(
+    const double current_pos[3],
+    const double current_vel[3],
+    const double target_pos[3],
+    const double target_vel[3],
+    const double last_applied_force[3],
+    const double warm_forces[45],
+    const AegisNmpcObstacle* obstacles,
+    int num_obstacles,
+    const AegisNmpcCorridorPlane* corridor_planes,
+    int num_corridor_planes
 );
 
 } // extern "C"

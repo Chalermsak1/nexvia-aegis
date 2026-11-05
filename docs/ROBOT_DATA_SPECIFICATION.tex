@@ -1,0 +1,242 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[margin=18mm]{geometry}
+\setlength{\headheight}{15pt}
+\addtolength{\topmargin}{-3pt}
+
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{listings}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{enumitem}
+
+% Setup Fonts with Thai script line breaking
+\setmainfont{Sarabun}[Script=Thai]
+\setmonofont{Ayuthaya}[Scale=0.88]
+
+% Colors
+\definecolor{primary}{RGB}{18, 52, 86}
+\definecolor{accent}{RGB}{30, 144, 255}
+\definecolor{darkslate}{RGB}{35, 47, 62}
+\definecolor{lightbg}{RGB}{245, 247, 250}
+\definecolor{codegreen}{RGB}{46, 139, 87}
+\definecolor{codeblue}{RGB}{25, 118, 210}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=accent,
+    urlcolor=accent,
+    citecolor=primary
+}
+
+% Header & Footer
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textcolor{primary}{\textbf{NEXVIA-AEGIS}} \textbar\ Robot Telemetry \& Data Specification}
+\rhead{\thepage}
+\renewcommand{\headrulewidth}{0.6pt}
+
+% Code Listing Style
+\lstset{
+    backgroundcolor=\color{lightbg},
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,
+    captionpos=b,
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{codeblue}\bfseries,
+    frame=single,
+    rulecolor=\color{gray!30},
+    tabsize=4,
+    showstringspaces=false
+}
+
+\begin{document}
+\sloppy
+
+% Title Box
+\begin{tcolorbox}[colback=primary,coltext=white,boxrule=0pt,arc=3mm,boxsep=5mm]
+    \begin{center}
+        {\LARGE \textbf{NEXVIA-AEGIS: เอกสารข้อกำหนดข้อมูลของหุ่นยนต์}}\\[2mm]
+        {\large Robot Telemetry, Perception \& Multi-Agent Data Specification}\\[2mm]
+        \textbf{โครงการวิจัยและพัฒนาสถาปัตยกรรมความปลอดภัยอากาศยานไร้คนขับ 6-DOF และฝูงบิน}\\
+        \textsl{เวอร์ชัน 1.0 (พฤศจิกายน 2026) --- สำหรับทีมวิศวกรรมระบบและปัญญาประดิษฐ์}
+    \end{center}
+\end{tcolorbox}
+
+\vspace{3mm}
+
+\section{บทนำและสถาปัตยกรรมการไหลของข้อมูล (System Data Flow)}
+ในระบบอากาศยานไร้คนขับ 6-DOF Quadrotor และระบบฝูงบิน Multi-Agent ของ \textbf{NEXVIA-AEGIS} ข้อมูลทุกตัวแปรถูกออกแบบขึ้นตามหลักฟิสิกส์การเคลื่อนที่ และทฤษฎีความปลอดภัยทางคณิตศาสตร์อย่างเคร่งครัด ผังการไหลของข้อมูลหลักในระบบสรุปได้ดังนี้:
+
+\begin{tcolorbox}[colback=lightbg,colframe=primary,arc=2mm,title=\textbf{แผนผังขั้นตอนการประมวลผลข้อมูล (Data Pipeline)}]
+\begin{enumerate}[leftmargin=5mm,itemsep=1.5mm]
+    \item \textbf{Sensor Suite (IMU, RTK-GPS, Depth Camera, LiDAR):} บันทึกสัญญาณดิบระดับความถี่สูง (100--500 Hz)
+    \item \textbf{State Estimation \& Perception (EKF / UKF / Point Cloud):}
+    \begin{itemize}[leftmargin=5mm]
+        \item \textsl{Robot Kinematics:} พิกัด $\mathbf{p}$, ความเร็ว $\mathbf{v}$, การวางตัว $R \in SO(3)$, ความเร็วเชิงมุม $\boldsymbol{\omega}$
+        \item \textsl{Sensor Integrity:} ความแปรปรวน $\sigma_p, \sigma_v$, ค่าความมั่งคั่งมาร์ติงเกล $M_t$ (Ville e-Process)
+        \item \textsl{Obstacle Geometry:} พิกัด $\mathbf{c}_{\text{obs}}$, รัศมี $r_{\text{obs}}$, ความเร็ว $\mathbf{v}_{\text{obs}}$ และ 3D ESDF / Safe Corridor Polytopes
+    \end{itemize}
+    \item \textbf{Byzantine Swarm Consensus (BRMC):} แลกเปลี่ยนแพ็กเกจข้อมูลระหว่างโดรนเพื่อนในฝูง พร้อมคัดกรองโหนดอันธพาล
+    \item \textbf{Safe RL Policy (PPO Actor-Critic):} รับเวกเตอร์สังเกตการณ์ 20 มิติ คำนวณแรงขับตามเป้าหมายภารกิจ
+    \item \textbf{Real-Time C++20 RTI-SQP NMPC-HOCBF Core:} คำนวณเกราะความปลอดภัยและแรงขับที่ปลอดภัย $\mathbf{F}^*_{\text{safe}}$ ภายในเวลา $< 0.1\text{ ms}$
+    \item \textbf{Actuators / Motor Mixer:} แปลงแรงขับรวมเป็นรอบหมุนมอเตอร์ไร้แปรงถ่านทั้ง 4 ตัว
+\end{enumerate}
+\end{tcolorbox}
+
+\vspace{2mm}
+
+\section{พจนานุกรมข้อมูลหลัก (Core Data Dictionary)}
+ตารางแสดงรายการข้อมูลที่ระบบต้องใช้งาน แหล่งที่มา และโมดูลที่นำไปประมวลผล:
+
+\vspace{2mm}
+\noindent
+\footnotesize
+\begin{tabularx}{\textwidth}{l p{2.0cm} p{1.4cm} p{2.2cm} X}
+\toprule
+\textbf{ตัวแปร (Variable)} & \textbf{มิติ (Shape)} & \textbf{หน่วย} & \textbf{แหล่งเซนเซอร์} & \textbf{บทบาทและเหตุผลการใช้งาน (Purpose \& Rationale)} \\
+\midrule
+\texttt{pos} ($\mathbf{p}$) & \texttt{float64[3]} & เมตร ($m$) & GPS / UWB / VIO & พิกัดตำแหน่ง $(x, y, z)$ ในพิกัดโลก เพื่อนำทางและตรวจวัดระยะห่างสิ่งกีดขวาง \\
+\texttt{vel} ($\mathbf{v}$) & \texttt{float64[3]} & $m/s$ & EKF Estimator & เวกเตอร์ความเร็ว เพื่อคำนวณพลังงานจลน์และระยะเบรกหยุดนิ่ง (Deadbeat Braking) \\
+\texttt{rot} ($R$) & \texttt{float64[3,3]} & ไร้หน่วย & IMU / AHRS & เมทริกซ์การวางตัว $SO(3)$ ชี้ทิศทางเวกเตอร์แรงยกของมอเตอร์ \\
+\texttt{omega} ($\boldsymbol{\omega}$) & \texttt{float64[3]} & $rad/s$ & ไจโรสโคป (IMU) & ความเร็วเชิงมุม เพื่อคุมเสถียรภาพไม่ให้โดรนหมุนควงสว่าน \\
+\texttt{tilt\_angle} ($\theta$) & \texttt{float64} & เรเดียน & คำนวณจาก $R$ & ควบคุมมุมเอียงไม่ให้เกิน $35^\circ$ เพื่อป้องกันการสูญเสียแรงยกแนวดิ่ง \\
+\texttt{sigma\_p, sigma\_v} & \texttt{float64} & $m, m/s$ & EKF Covariance & ค่าความไม่แน่นอนของเซนเซอร์ ใช้ขยายระยะขอบเขตความปลอดภัย (Robust Tube) \\
+\texttt{martingale} ($M_t$) & \texttt{float64} & $\ge 0$ & Ville e-Process & ตรวจจับการถูกสปูฟพิกัด (Sensor Spoofing) ถ้าเกินเกณฑ์จะสั่งเบรกฉุกเฉินทันที \\
+\texttt{obs\_pos} ($\mathbf{c}_{\text{obs}}$) & \texttt{float64[3]} & เมตร ($m$) & Depth / LiDAR & จุดกึ่งกลางสิ่งกีดขวาง เพื่อคำนวณฟังก์ชันบาเรีย $h(\mathbf{p}) \ge 0$ \\
+\texttt{obs\_radius} ($r_{\text{obs}}$) & \texttt{float64} & เมตร ($m$) & Object Tracker & รัศมีพื้นที่ปลอดภัยของสิ่งกีดขวาง \\
+\texttt{obs\_vel} ($\mathbf{v}_{\text{obs}}$) & \texttt{float64[3]} & $m/s$ & Tracking Filter & ความเร็วสิ่งกีดขวาง เพื่อหลบหลีกวัตถุที่กำลังพุ่งสวนมาแบบไดนามิก \\
+\texttt{corridor\_planes} & \texttt{list[(n, d)]} & $\mathbf{n} \in \mathbb{R}^3, d \in \mathbb{R}$ & Convex Decomp & ระนาบระบุขอบเขตช่องทางบิน $\mathbf{n}^\top \mathbf{p} \le d$ เพื่อลอดช่องแคบ/ประตู \\
+\texttt{battery\_soc} & \texttt{float64} & $[0.0, 1.0]$ & Smart BMS & พลังงานคงเหลือในแบตเตอรี่ ป้องกันการตกเพราะแรงดันตกฮวบ (Voltage Sag) \\
+\bottomrule
+\end{tabularx}
+\normalsize
+
+\newpage
+
+\section{เจาะลึกเหตุผลทางฟิสิกส์และความปลอดภัย (Physics \& Safety Rationale)}
+
+\subsection{ทำไมต้องมีตำแหน่ง ความเร็ว และมุมเอียง? (6-DOF Underactuated Dynamics)}
+โดรน 4 ใบพัดเป็นระบบที่มีตัวกระทำแรงน้อยกว่าองศาความอิสระ (Underactuated System):
+\begin{itemize}[leftmargin=6mm]
+    \item โดรนไม่มีใบพัดที่ดันไปทางซ้ายหรือขวาโดยตรง การจะบินไปข้างหน้าหรือเลี้ยว จำเป็นต้อง \textbf{"เอียงตัว" (Tilt)} เพื่อแบ่งสัดส่วนแรงขับมอเตอร์
+    \item หากไม่มีการตรวจวัด $\boldsymbol{\omega}$ (Angular Velocity) และ $R$ โดรนจะไม่สามารถทรงตัวได้และคว่ำตกทันที
+    \item ในระบบ NMPC-CBF เรากำหนดข้อจำกัด \textbf{Tilt Cone Constraint}:
+    \begin{equation}
+        \sqrt{F_x^2 + F_y^2} \le F_z \tan(\theta_{\max}), \quad \theta_{\max} = 35^\circ
+    \end{equation}
+    เพื่อรับประกันว่าโดรนจะมีแรงยก $F_z$ เพียงพอต่อสู้กับแรงโน้มถ่วง $mg$ เสมอ
+\end{itemize}
+
+\subsection{ทำไมต้องใช้ความแปรปรวน ($\sigma$) และ Martingale Wealth ($M_t$)? (Epistemic Safety)}
+ในภารกิจจริง เซนเซอร์มีโอกาสผิดพลาด หลุด หรือถูกสัญญาณลวง (GPS Spoofing):
+\begin{enumerate}[leftmargin=6mm]
+    \item \textbf{ขยายเกราะคุ้มกันตามความจริง (Robust Tube Expansion):} หากเซนเซอร์มีความคลาดเคลื่อน $\sigma_p$ สูง เกราะความปลอดภัยของโดรนจะถูกขยายรัศมีออกไปอัตโนมัติด้วยอัตรา $r_{\text{safe}} = r_{\text{drone}} + r_{\text{obs}} + \kappa_\delta \sigma_p$
+    \item \textbf{การตรวจจับด้วยทฤษฎีมาร์ติงเกลของ Ville (Ville Supermartingale Invariant):}
+    \begin{equation}
+        \mathbb{P}_{\mathcal{H}_0}\left(\exists t \ge 1 : M_t \ge \frac{1}{\alpha}\right) \le \alpha
+    \end{equation}
+    หากสัญญาณเซนเซอร์เกิดความคลาดเคลื่อนผิดรูปอย่างต่อเนื่อง ค่า $M_t$ จะทวีคูณสูงขึ้นจนทะลุ $1/\alpha$ โดรนจะตัดเข้าสู่สถานะ \textbf{Observability Abstain} เพื่อสั่งเบรกหยุดนิ่งกลางอากาศทันที (0.0\% False Arrival)
+\end{enumerate}
+
+\subsection{ทำไมต้องมี Corridor Polytopes แทนที่จะใช้ทรงกลมอย่างเดียว?}
+เมื่อโดรนต้องบินผ่านประตูห้อง หน้าต่าง หรือช่องแคบระหว่างกำแพง:
+\begin{itemize}[leftmargin=6mm]
+    \item หากมองสิ่งกีดขวางเป็น \textbf{"ก้อนทรงกลม" (Sphere)} รัศมีของทรงกลมจะบวมทับกันจนปิดช่องประตู ทำให้โดรนประเมินว่าช่องทางนั้นตัน
+    \item ระบบจึงแปลงข้อมูลกลุ่มจุด (Point Cloud) เป็น \textbf{3D Euclidean Signed Distance Field (ESDF)} และขยายเป็น \textbf{Convex Corridor Polytopes} กำหนดเป็นชุดอสมการเชิงระนาบ:
+    \begin{equation}
+        \mathcal{P} = \{\mathbf{x} \in \mathbb{R}^3 : \mathbf{a}_k^\top \mathbf{x} \le b_k, \quad k = 1, \dots, K\}
+    \end{equation}
+    ช่วยให้โดรนสามารถบินผ่านช่องประตูได้อย่างแม่นยำและปลอดภัย 100\%
+\end{itemize}
+
+\subsection{ทำไมข้อมูลที่ป้อนเข้าสมอง AI (Safe RL) ต้องมี 20 มิติพอดี?}
+โมเดล Actor-Critic ได้รับการปรับแต่งให้ใช้ชุดข้อมูลแบบ \textbf{Minimal Sufficient State (ข้อมูลน้อยที่สุดที่เพียงพอทางกายภาพ)}:
+\begin{itemize}[leftmargin=6mm]
+    \item \textbf{Error ตำแหน่ง (3 มิติ):} ชี้เป้าหมายที่ต้องบินไป
+    \item \textbf{ความเร็ว (3 มิติ) + ความเร็วเชิงมุม (3 มิติ):} คำนวณความเฉื่อยและแรงหน่วง
+    \item \textbf{เวกเตอร์แกน Z ของลำตัว (3 มิติ) + มุมเอียงรวม (1 มิติ):} ท่าทางการบิน
+    \item \textbf{เวกเตอร์ระยะสิ่งกีดขวาง (3 มิติ) + ความเร็วสัมพัทธ์ (3 มิติ):} ระยะเวลาเตรียมตัวก่อนชน
+    \item \textbf{ระดับแบตเตอรี่ (1 มิติ):} บริหารจัดการอัตราการใช้พลังงาน
+\end{itemize}
+หากข้อมูลน้อยกว่านี้ AI จะขาดข้อมูลเชิงฟิสิกส์ (Partial Observability) แต่หากข้อมูลเยอะกว่านี้ AI จะเรียนรู้ได้ช้ามาก
+
+\newpage
+
+\section{โค้ดโครงสร้างข้อมูลมาตรฐาน (Python Data Schema)}
+
+ทีมงานสามารถนำโค้ดภาษา Python ต่อไปนี้ไปอิมพอร์ตเพื่อส่งผ่านข้อมูลระหว่างโมดูลได้โดยตรง:
+
+\begin{lstlisting}[language=Python]
+from dataclasses import dataclass, field
+import numpy as np
+
+@dataclass
+class DroneKinematicState:
+    timestamp_s: float
+    position: np.ndarray             # [x, y, z] in world frame (m)
+    velocity: np.ndarray             # [vx, vy, vz] in world frame (m/s)
+    rotation_matrix: np.ndarray      # 3x3 SO(3) Attitude Rotation Matrix
+    angular_velocity: np.ndarray     # [wx, wy, wz] body angular rates (rad/s)
+    tilt_angle_rad: float            # Body tilt angle relative to vertical
+    sigma_pos: float = 0.05          # Position uncertainty std (m)
+    sigma_vel: float = 0.08          # Velocity uncertainty std (m/s)
+    battery_soc: float = 1.0         # Battery State of Charge [0.0, 1.0]
+
+@dataclass
+class ObstacleTarget:
+    obstacle_id: int
+    center: np.ndarray               # [x, y, z] center position (m)
+    radius: float                    # Clearance radius (m)
+    velocity: np.ndarray = field(default_factory=lambda: np.zeros(3))
+
+@dataclass
+class CorridorPlane:
+    normal: np.ndarray               # Outward unit normal [nx, ny, nz]
+    distance: float                  # Plane offset (normal . p <= distance)
+
+@dataclass
+class SwarmAgentPacket:
+    agent_id: int
+    step: int
+    pos_estimate: np.ndarray         # Measured position
+    sigma: float                     # Sensor reported uncertainty
+    martingale_wealth: float         # Ville Martingale wealth
+    valid: bool = True
+\end{lstlisting}
+
+\vspace{4mm}
+
+\section{การจัดโครงสร้างใน C++20 Microkernel (Zero-Allocation)}
+สำหรับเคอร์เนลคำนวณแรงขับความเร็วสูง (\texttt{libaegis\_kernel.dylib}) ที่ทำงานระดับ $< 0.1\text{ ms}$ ข้อมูลจะถูกจัดวางเป็น C-struct เพื่อให้ส่งผ่านหน่วยความจำได้โดยไม่ต้องคัดลอก (Zero Heap Allocation):
+
+\begin{lstlisting}[language=C++]
+struct AegisCState {
+    double px, py, pz;    // World frame position [m]
+    double vx, vy, vz;    // Linear velocity [m/s]
+};
+
+struct AegisCObstacle {
+    double cx, cy, cz;    // Obstacle center [m]
+    double radius;        // Geometric radius [m]
+    double vx, vy, vz;    // Linear velocity [m/s]
+};
+
+struct AegisNmpcCorridorPlane {
+    double nx, ny, nz;    // Outward hyperplane normal
+    double d;             // Plane scalar bound: nx*x + ny*y + nz*z <= d
+};
+\end{lstlisting}
+
+\vspace{5mm}
+\begin{center}
+    \rule{0.6\textwidth}{0.4pt}\\[2mm]
+    \small \textbf{NEXVIA-AEGIS Engineering Team} --- สถาปัตยกรรมความปลอดภัยอัตโนมัติระดับอุตสาหกรรม
+\end{center}
+
+\end{document}

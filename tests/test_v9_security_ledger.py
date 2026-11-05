@@ -813,7 +813,9 @@ except Exception:
     sys.exit(99)
 """
         env = os.environ.copy()
-        env["PYTHONPATH"] = f"{str(Path.cwd())}:{str(Path.cwd() / 'src')}"
+        existing_pp = os.environ.get("PYTHONPATH", "")
+        venv_sp = str(Path.cwd() / ".venv" / "lib" / f"python{sys.version_info.major}.{sys.version_info.minor}" / "site-packages")
+        env["PYTHONPATH"] = f"{str(Path.cwd())}:{str(Path.cwd() / 'src')}:{venv_sp}:{existing_pp}".strip(":")
 
         cmd1 = [sys.executable, "-c", worker_script, str(sec_dir), nonce, "mixture"]
         cmd2 = [sys.executable, "-c", worker_script, str(sec_dir), nonce, "mixture"]
@@ -861,7 +863,9 @@ except Exception:
     sys.exit(99)
 """
         env = os.environ.copy()
-        env["PYTHONPATH"] = f"{str(Path.cwd())}:{str(Path.cwd() / 'src')}"
+        existing_pp = os.environ.get("PYTHONPATH", "")
+        venv_sp = str(Path.cwd() / ".venv" / "lib" / f"python{sys.version_info.major}.{sys.version_info.minor}" / "site-packages")
+        env["PYTHONPATH"] = f"{str(Path.cwd())}:{str(Path.cwd() / 'src')}:{venv_sp}:{existing_pp}".strip(":")
 
         cmd1 = [sys.executable, "-c", worker_script, str(sec_dir), nonce, "mixture"]
         cmd2 = [sys.executable, "-c", worker_script, str(sec_dir), nonce, "scenario"]

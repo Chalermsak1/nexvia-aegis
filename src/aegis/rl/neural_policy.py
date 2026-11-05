@@ -68,6 +68,7 @@ class ActorCritic6DOF(nn.Module):
         x: torch.Tensor,
         action: torch.Tensor | None = None,
         deterministic: bool = False,
+        reparameterize: bool = False,
     ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
         """
         Computes action, log probability, entropy, and value estimate for input state x.
@@ -83,6 +84,8 @@ class ActorCritic6DOF(nn.Module):
         if action is None:
             if deterministic:
                 action = action_mean
+            elif reparameterize:
+                action = probs.rsample()
             else:
                 action = probs.sample()
 

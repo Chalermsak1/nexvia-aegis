@@ -236,3 +236,36 @@ def test_safety_box_cpp_backend_benchmark_under_100us():
 
     assert avg_wall_us < 100.0, f"Expected < 100 us C++ solve latency, got {avg_wall_us:.2f} us"
     assert median_us < 100.0, f"Expected < 100 us median latency, got {median_us:.2f} us"
+
+
+def test_safety_box_nmpc_receding_horizon_and_corridor():
+    """Validates receding-horizon lookahead NMPC filter with corridor awareness."""
+    box = AegisSafetyBox(use_cpp_backend=True)
+
+    telem = VehicleTelemetry(
+        timestamp_s=100.0,
+        position=np.array([0.0, 0.0, 1.0]),
+        velocity=np.array([1.2, 0.0, 0.0]),
+        sigma_p=0.05,
+        sigma_v=0.08,
+    )
+    target_pos = np.array([1.6, 0.0, 1.0])
+    obs = [ObstacleEstimate(center=np.array([0.5, 0.04, 1.0]), radius=0.18)]
+    corridor_planes = [(np.array([0.0, 1.0, 0.0]), 0.50)]  # Y <= 0.5
+
+    cmd = np.array([2.0, 0.0, 0.0])
+
+    out = box.process_command_nmpc(
+        untrusted_accel=cmd,
+        telemetry=telem,
+        target_pos=target_pos,
+        obstacles=obs,
+        corridor_planes=corridor_planes,
+        current_time_s=100.0,
+    )
+
+    assert out.status == SafetyBoxStatus.BARRIER_INTERVENTION
+    assert out.intervened
+    assert out.min_margin >= 0.05, f"Expected safe barrier margin, got {out.min_margin}"
+    # NMPC RTI-SQP latency should be well under 2.5 ms (typically ~700-1200 us)
+    assert out.latency_us < 2500.0, f"Expected sub-2.5ms latency, got {out.latency_us:.1f} us"

@@ -1,0 +1,12 @@
+{
+  "baseline": {
+    "collisions": 97,
+    "min_clearance_m": 0.12495113971965782,
+    "min_h": -0.07504886028034219
+  },
+  "aegis_aero_hocbf": {
+    "collisions": 0,
+    "min_clearance_m": 0.1881189699890332,
+    "min_h": -0.011881030010966798
+  }
+}

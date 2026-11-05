@@ -2,6 +2,13 @@
 NEXVIA AEGIS — Vision & LiDAR SLAM under Occlusion Package.
 """
 
+from aegis.vision.active_pomdp_gaze import (
+    ActiveGazeDecision,
+    ActiveVisionConfig,
+    ActiveVisionPOMDPController,
+    EpistemicPassageDecision,
+    EpistemicPassagePOMDP,
+)
 from aegis.vision.depth_lidar_sensor import (
     DepthCameraConfig,
     Lidar3DConfig,
@@ -9,15 +16,19 @@ from aegis.vision.depth_lidar_sensor import (
     SensorObservation,
     SimulatedPerceptionSuite,
 )
+from aegis.vision.flight_corridor import (
+    ConvexPolytope,
+    SafeFlightCorridor,
+    SafeFlightCorridorGenerator,
+)
+from aegis.vision.local_esdf import (
+    ESDFConfig,
+    Local3DESDF,
+)
 from aegis.vision.ukf_obstacle_tracker import (
     MultiObstacleUKFTracker,
     TrackedObstacle3D,
     UKFTrackerConfig,
-)
-from aegis.vision.active_pomdp_gaze import (
-    ActiveGazeDecision,
-    ActiveVisionConfig,
-    ActiveVisionPOMDPController,
 )
 
 __all__ = [
@@ -32,4 +43,11 @@ __all__ = [
     "ActiveGazeDecision",
     "ActiveVisionConfig",
     "ActiveVisionPOMDPController",
+    "EpistemicPassageDecision",
+    "EpistemicPassagePOMDP",
+    "Local3DESDF",
+    "ESDFConfig",
+    "ConvexPolytope",
+    "SafeFlightCorridor",
+    "SafeFlightCorridorGenerator",
 ]

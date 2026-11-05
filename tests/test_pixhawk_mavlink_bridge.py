@@ -204,3 +204,41 @@ def test_px4_bridge_corrupted_crc_rejected():
 
     with pytest.raises(ValueError, match="CRC mismatch"):
         PX4MavlinkBridge.decode_mavlink_packet(bytes(pkt))
+
+
+def test_px4_bridge_nmpc_corridor_step():
+    """Verify PX4MavlinkBridge routes through NMPC-HOCBF receding horizon and corridor planes."""
+    mock_sock = MockUDPSocket()
+    bridge = PX4MavlinkBridge(sock=mock_sock)
+    fcu_encoder = PX4MavlinkBridge(sysid=1, compid=1, sock=MockUDPSocket())
+
+    # Feed valid heartbeat + position
+    mock_sock.push_rx(fcu_encoder.encode_heartbeat(base_mode=0x80))
+    mock_sock.push_rx(
+        fcu_encoder.encode_local_position_ned(
+            time_boot_ms=2000, x=0.0, y=0.0, z=-1.5, vx=2.0, vy=0.0, vz=0.0
+        )
+    )
+
+    # Wall ahead at x = 2.0 (normal = [1, 0, 0], d = 2.0)
+    corridor_planes = [([1.0, 0.0, 0.0], 2.0)]
+    obs = [ObstacleEstimate(center=np.array([1.5, 0.0, 1.5]), radius=0.4)]
+
+    res = bridge.step(
+        untrusted_accel=[3.0, 0.0, 0.0],
+        obstacles=obs,
+        use_nmpc=True,
+        corridor_planes=corridor_planes,
+        target_pos=[3.0, 0.0, 1.5],
+        now_s=10.0,
+    )
+
+    assert bridge.connected is True
+    assert res.failsafe_disconnect is False
+    assert res.safety_output.status in (SafetyBoxStatus.BARRIER_INTERVENTION, SafetyBoxStatus.NOMINAL_PASSTHROUGH)
+    assert res.safety_output.safe_accel[0] < 3.0  # Decelerates or turns to respect obstacle and corridor
+    assert res.outbound_msg_id == MSG_ID_SET_ATTITUDE_TARGET
+    assert len(mock_sock.tx_packets) == 1
+    decoded = bridge.decode_mavlink_packet(mock_sock.tx_packets[0][0])
+    assert decoded.msg_name == "SET_ATTITUDE_TARGET"
+

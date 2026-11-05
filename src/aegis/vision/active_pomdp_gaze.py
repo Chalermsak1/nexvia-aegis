@@ -198,3 +198,137 @@ class ActiveVisionPOMDPController:
             effective_clearance_margins=clearance_margins,
             information_entropy_bits=total_entropy,
         )
+
+
+@dataclass
+class EpistemicPassageDecision:
+    """Action outputs from unified Epistemic Passage POMDP controller."""
+    nominal_force: np.ndarray                 # shape (3,) desired world navigation force
+    safe_force: np.ndarray                    # shape (3,) shielded safe world force
+    desired_pan_deg: float                    # Gimbal pan angle in degrees
+    desired_tilt_deg: float                   # Gimbal tilt angle in degrees
+    desired_yaw_deg: float                    # Desired body yaw angle in degrees
+    is_actively_probing: bool                 # True if actively inspecting passage
+    is_passing_narrow_corridor: bool          # True if traversing narrow bottleneck
+    passage_clearance_m: float                # Bottleneck clearance distance (m)
+    information_entropy_bits: float           # Estimated epistemic entropy
+    active_polytope: Any | None = None        # ConvexPolytope enclosing drone
+
+
+class EpistemicPassagePOMDP(ActiveVisionPOMDPController):
+    """
+    Unified Active Vision & Epistemic Passage POMDP Controller.
+    Unifies camera pan/tilt gimbal, 6-DOF drone body yaw, 3D ESDF passage bottleneck
+    clearance detection, and Safe Flight Corridor (SFC) polytope shielding.
+    """
+
+    def __init__(
+        self,
+        cfg: ActiveVisionConfig | None = None,
+        passage_threshold_m: float = 0.85,
+        air_braking_gain: float = 2.8,
+    ) -> None:
+        super().__init__(cfg)
+        self.passage_threshold_m = passage_threshold_m
+        self.air_braking_gain = air_braking_gain
+
+    def plan_passage_step(
+        self,
+        drone_pos: np.ndarray,
+        drone_vel: np.ndarray,
+        drone_yaw_deg: float,
+        target_pos: np.ndarray,
+        tracked_obstacles: List[TrackedObstacle3D] | None = None,
+        esdf: Any | None = None,
+        corridor: Any | None = None,
+    ) -> EpistemicPassageDecision:
+        """
+        Executes unified active gaze, passage orientation, and corridor safety shielding.
+        """
+        obstacles = tracked_obstacles or []
+        base_decision = self.plan_step(
+            drone_pos=drone_pos,
+            drone_vel=drone_vel,
+            drone_yaw_deg=drone_yaw_deg,
+            target_pos=target_pos,
+            tracked_obstacles=obstacles,
+        )
+
+        desired_pan = base_decision.desired_pan_deg
+        desired_tilt = base_decision.desired_tilt_deg
+        desired_yaw = base_decision.desired_yaw_deg
+        is_probing = base_decision.is_actively_probing
+        nominal_force = base_decision.nominal_force.copy()
+        safe_force = base_decision.safe_force.copy()
+        total_entropy = base_decision.information_entropy_bits
+
+        is_narrow_corridor = False
+        min_clearance = float("inf")
+        active_poly = None
+
+        # 1. 3D ESDF Passage Analysis
+        if esdf is not None and hasattr(esdf, "check_corridor_clearance"):
+            clr, bottleneck = esdf.check_corridor_clearance(drone_pos, target_pos, num_samples=15)
+            min_clearance = clr
+            if clr < self.passage_threshold_m:
+                is_narrow_corridor = True
+                # Direct both body yaw and camera gaze at the passage opening
+                los_passage = bottleneck - drone_pos
+                horiz_dist = math.hypot(los_passage[0], los_passage[1])
+                desired_yaw = math.degrees(math.atan2(los_passage[1], los_passage[0]))
+                desired_pan = 0.0  # Align camera forward with drone nose
+                desired_tilt = math.degrees(math.atan2(los_passage[2], max(1e-3, horiz_dist)))
+
+                # Proactive air braking if passage is narrow and vehicle is moving fast
+                speed = float(np.linalg.norm(drone_vel))
+                if speed > 0.40:
+                    is_probing = True
+                    brake = -self.air_braking_gain * drone_vel
+                    brake[2] = max(0.0, brake[2])
+                    safe_force += brake
+
+        # 2. Safe Flight Corridor Polytope Halfspace Constraints
+        if corridor is not None and hasattr(corridor, "get_active_polytope"):
+            active_poly = corridor.get_active_polytope(drone_pos)
+            if active_poly is not None:
+                # Enforce A_poly x <= b_poly via active halfspace projection
+                # Tube safety margin: drone_radius
+                r_drone = self.cfg.drone_radius
+                for i in range(len(active_poly.b)):
+                    normal = active_poly.A[i]
+                    d_bound = active_poly.b[i] - r_drone
+                    # Constraint on future position p + v * dt + 0.5 * (F / m) * dt^2
+                    # In force space: normal^T F <= b_f
+                    dt = 0.02
+                    m = self.cfg.robot_mass
+                    p_pred = drone_pos + drone_vel * dt
+                    viol = float(np.dot(normal, p_pred)) - d_bound
+                    if viol > 0:
+                        # Project safe force to push away from boundary
+                        proj = float(np.dot(normal, safe_force))
+                        if proj > 0:
+                            safe_force -= (proj + viol / dt) * normal
+
+        # 3. Physical tilt limit clamping (<= 35 deg)
+        F_z = max(0.5 * self.cfg.robot_mass * self.cfg.gravity, safe_force[2])
+        max_lateral = F_z * math.tan(math.radians(self.cfg.max_tilt_deg))
+        lateral_norm = math.hypot(safe_force[0], safe_force[1])
+        if lateral_norm > max_lateral:
+            scale = max_lateral / lateral_norm
+            safe_force[0] *= scale
+            safe_force[1] *= scale
+        safe_force[2] = F_z
+
+        return EpistemicPassageDecision(
+            nominal_force=nominal_force,
+            safe_force=safe_force,
+            desired_pan_deg=desired_pan,
+            desired_tilt_deg=desired_tilt,
+            desired_yaw_deg=desired_yaw,
+            is_actively_probing=is_probing,
+            is_passing_narrow_corridor=is_narrow_corridor,
+            passage_clearance_m=min_clearance,
+            information_entropy_bits=total_entropy,
+            active_polytope=active_poly,
+        )
+

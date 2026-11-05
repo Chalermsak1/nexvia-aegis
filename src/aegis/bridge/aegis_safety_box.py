@@ -98,6 +98,44 @@ class _AegisCResult(ctypes.Structure):
     ]
 
 
+class _AegisNmpcObstacle(ctypes.Structure):
+    _fields_ = [
+        ("cx", ctypes.c_double),
+        ("cy", ctypes.c_double),
+        ("cz", ctypes.c_double),
+        ("radius", ctypes.c_double),
+        ("vx", ctypes.c_double),
+        ("vy", ctypes.c_double),
+        ("vz", ctypes.c_double),
+    ]
+
+
+class _AegisNmpcCorridorPlane(ctypes.Structure):
+    _fields_ = [
+        ("nx", ctypes.c_double),
+        ("ny", ctypes.c_double),
+        ("nz", ctypes.c_double),
+        ("d", ctypes.c_double),
+    ]
+
+
+class _AegisNmpcResult(ctypes.Structure):
+    _fields_ = [
+        ("f0_x", ctypes.c_double),
+        ("f0_y", ctypes.c_double),
+        ("f0_z", ctypes.c_double),
+        ("traj_p", (ctypes.c_double * 3) * 16),
+        ("traj_v", (ctypes.c_double * 3) * 16),
+        ("traj_f", (ctypes.c_double * 3) * 15),
+        ("success", ctypes.c_int),
+        ("iterations", ctypes.c_int),
+        ("solve_time_us", ctypes.c_double),
+        ("min_barrier_margin", ctypes.c_double),
+        ("fallback_activated", ctypes.c_int),
+    ]
+
+
+
 _PREALLOC_MAX_OBSTACLES = 64
 _PreallocObstacleBuffer = _AegisCObstacle * _PREALLOC_MAX_OBSTACLES
 _LOADED_LIBS: Dict[str, ctypes.CDLL] = {}
@@ -160,6 +198,21 @@ def _load_cpp_microkernel(explicit_path: Optional[str] = None) -> Optional[ctype
                     ctypes.c_double,
                 ]
                 lib.aegis_micro_kernel_configure.restype = None
+
+            if hasattr(lib, "aegis_nmpc_cbf_solve"):
+                lib.aegis_nmpc_cbf_solve.argtypes = [
+                    ctypes.POINTER(ctypes.c_double),
+                    ctypes.POINTER(ctypes.c_double),
+                    ctypes.POINTER(ctypes.c_double),
+                    ctypes.POINTER(ctypes.c_double),
+                    ctypes.POINTER(ctypes.c_double),
+                    ctypes.POINTER(ctypes.c_double),
+                    ctypes.POINTER(_AegisNmpcObstacle),
+                    ctypes.c_int,
+                    ctypes.POINTER(_AegisNmpcCorridorPlane),
+                    ctypes.c_int,
+                ]
+                lib.aegis_nmpc_cbf_solve.restype = _AegisNmpcResult
 
             # Warm up dyld / libffi trampoline once at load time to avoid first-tick jitter
             lib.aegis_micro_kernel_solve(
@@ -504,6 +557,147 @@ class AegisSafetyBox:
         if self._solve_fn is not None:
             return self._process_command_cpp(untrusted_accel, telemetry, obstacles, t_start)
         return self._process_command_python(untrusted_accel, telemetry, obstacles, t_start)
+
+    def process_command_nmpc(
+        self,
+        untrusted_accel: np.ndarray,
+        telemetry: VehicleTelemetry,
+        target_pos: np.ndarray,
+        target_vel: Optional[np.ndarray] = None,
+        obstacles: Optional[List[ObstacleEstimate]] = None,
+        corridor_planes: Optional[List[Tuple[np.ndarray, float]]] = None,
+        current_time_s: Optional[float] = None,
+    ) -> SafetyBoxOutput:
+        """
+        Receding-Horizon Lookahead NMPC-HOCBF safety filter with corridor polytope awareness.
+        Routes through C++20 `aegis_nmpc_cbf_solve` for sub-millisecond optimization,
+        falling back gracefully to Micro-QP if lookahead fails.
+        """
+        t_start = time.perf_counter()
+        now = current_time_s if current_time_s is not None else time.time()
+
+        # 1. Watchdog Check
+        if self.last_heartbeat_time is not None:
+            time_since_hb_ms = (now - self.last_heartbeat_time) * 1000.0
+            if time_since_hb_ms > self.watchdog_timeout_ms:
+                self.dwell_active = True
+                safe_a = self.compute_deadbeat_braking(telemetry.velocity)
+                latency_us = (time.perf_counter() - t_start) * 1e6
+                return SafetyBoxOutput(
+                    safe_accel=safe_a,
+                    status=SafetyBoxStatus.WATCHDOG_TIMEOUT_FAILSAFE,
+                    intervened=True,
+                    min_margin=-1.0,
+                    latency_us=latency_us,
+                    dwell_active=True,
+                )
+
+        self.last_heartbeat_time = now
+
+        # 2. Observability Gate
+        if (
+            not math.isfinite(telemetry.sigma_p)
+            or not math.isfinite(telemetry.sigma_v)
+            or telemetry.sigma_p > self.sigma_p_thresh
+            or telemetry.sigma_v > self.sigma_v_thresh
+        ):
+            self.dwell_active = True
+            safe_a = self.compute_deadbeat_braking(telemetry.velocity)
+            latency_us = (time.perf_counter() - t_start) * 1e6
+            return SafetyBoxOutput(
+                safe_accel=safe_a,
+                status=SafetyBoxStatus.OBSERVABILITY_ABSTAIN,
+                intervened=True,
+                min_margin=0.0,
+                latency_us=latency_us,
+                dwell_active=True,
+            )
+
+        self.dwell_active = False
+        obs_list = obstacles or []
+        corr_list = corridor_planes or []
+
+        # If C++ NMPC function is available, run receding horizon lookahead
+        nmpc_fn = getattr(self._c_lib, "aegis_nmpc_cbf_solve", None) if self._c_lib else None
+        if nmpc_fn is not None:
+            c_pos = (ctypes.c_double * 3)(float(telemetry.position[0]), float(telemetry.position[1]), float(telemetry.position[2]))
+            c_vel = (ctypes.c_double * 3)(float(telemetry.velocity[0]), float(telemetry.velocity[1]), float(telemetry.velocity[2]))
+            c_tgt = (ctypes.c_double * 3)(float(target_pos[0]), float(target_pos[1]), float(target_pos[2]))
+            t_vel = target_vel if target_vel is not None else np.zeros(3)
+            c_tvel = (ctypes.c_double * 3)(float(t_vel[0]), float(t_vel[1]), float(t_vel[2]))
+
+            mass = 1.25  # Nominal drone mass
+            last_f = (ctypes.c_double * 3)(
+                float(untrusted_accel[0] * mass),
+                float(untrusted_accel[1] * mass),
+                float((untrusted_accel[2] + 9.81) * mass),
+            )
+
+            # Convert obstacles to C-ABI buffer
+            n_obs = len(obs_list)
+            if n_obs > 0:
+                obs_buf = (_AegisNmpcObstacle * n_obs)()
+                for idx, obs in enumerate(obs_list):
+                    obs_buf[idx].cx = float(obs.center[0])
+                    obs_buf[idx].cy = float(obs.center[1])
+                    obs_buf[idx].cz = float(obs.center[2])
+                    obs_buf[idx].radius = float(obs.radius)
+                    obs_buf[idx].vx = float(obs.velocity[0])
+                    obs_buf[idx].vy = float(obs.velocity[1])
+                    obs_buf[idx].vz = float(obs.velocity[2])
+                obs_ptr = obs_buf
+            else:
+                obs_ptr = None
+
+            # Convert corridor planes to C-ABI buffer
+            n_corr = len(corr_list)
+            if n_corr > 0:
+                corr_buf = (_AegisNmpcCorridorPlane * n_corr)()
+                for idx, (normal, d_val) in enumerate(corr_list):
+                    corr_buf[idx].nx = float(normal[0])
+                    corr_buf[idx].ny = float(normal[1])
+                    corr_buf[idx].nz = float(normal[2])
+                    corr_buf[idx].d = float(d_val)
+                corr_ptr = corr_buf
+            else:
+                corr_ptr = None
+
+            nmpc_res = nmpc_fn(
+                c_pos, c_vel, c_tgt, c_tvel,
+                last_f, None,
+                obs_ptr, n_obs,
+                corr_ptr, n_corr
+            )
+
+            if nmpc_res.success and not nmpc_res.fallback_activated:
+                # Convert optimal force back to acceleration
+                safe_a = np.array([
+                    nmpc_res.f0_x / mass,
+                    nmpc_res.f0_y / mass,
+                    (nmpc_res.f0_z / mass) - 9.81,
+                ], dtype=np.float64)
+
+                dx = safe_a[0] - untrusted_accel[0]
+                dy = safe_a[1] - untrusted_accel[1]
+                dz = safe_a[2] - untrusted_accel[2]
+                intervened = (dx * dx + dy * dy + dz * dz) > 1e-4
+                status = (
+                    SafetyBoxStatus.BARRIER_INTERVENTION
+                    if intervened
+                    else SafetyBoxStatus.NOMINAL_PASSTHROUGH
+                )
+                latency_us = (time.perf_counter() - t_start) * 1e6
+                return SafetyBoxOutput(
+                    safe_accel=safe_a,
+                    status=status,
+                    intervened=intervened,
+                    min_margin=float(nmpc_res.min_barrier_margin),
+                    latency_us=latency_us,
+                    dwell_active=False,
+                )
+
+        # Fallback to single-step Micro-QP
+        return self.process_command(untrusted_accel, telemetry, obs_list, current_time_s=now)
 
     def reset(self):
         self.last_heartbeat_time = None

@@ -123,4 +123,85 @@ AegisCResult aegis_micro_kernel_solve(
     return res;
 }
 
+AegisNmpcResult aegis_nmpc_cbf_solve(
+    const double current_pos[3],
+    const double current_vel[3],
+    const double target_pos[3],
+    const double target_vel[3],
+    const double last_applied_force[3],
+    const double warm_forces[45],
+    const AegisNmpcObstacle* obstacles,
+    int num_obstacles,
+    const AegisNmpcCorridorPlane* corridor_planes,
+    int num_corridor_planes
+) {
+    static thread_local aegis::nmpc::RtiNmpcHocbfSolver solver{};
+
+    aegis::nmpc::ObstacleInfo cpp_obs[aegis::nmpc::MAX_OBSTACLES];
+    const int n_obs = std::min(num_obstacles, aegis::nmpc::MAX_OBSTACLES);
+    if (obstacles != nullptr && n_obs > 0) {
+        for (int i = 0; i < n_obs; ++i) {
+            cpp_obs[i].cx = obstacles[i].cx;
+            cpp_obs[i].cy = obstacles[i].cy;
+            cpp_obs[i].cz = obstacles[i].cz;
+            cpp_obs[i].radius = obstacles[i].radius;
+            cpp_obs[i].vx = obstacles[i].vx;
+            cpp_obs[i].vy = obstacles[i].vy;
+            cpp_obs[i].vz = obstacles[i].vz;
+        }
+    }
+
+    aegis::nmpc::CorridorPlaneInfo cpp_planes[aegis::nmpc::MAX_CORRIDOR_PLANES];
+    const int n_planes = std::min(num_corridor_planes, aegis::nmpc::MAX_CORRIDOR_PLANES);
+    if (corridor_planes != nullptr && n_planes > 0) {
+        for (int i = 0; i < n_planes; ++i) {
+            cpp_planes[i].nx = corridor_planes[i].nx;
+            cpp_planes[i].ny = corridor_planes[i].ny;
+            cpp_planes[i].nz = corridor_planes[i].nz;
+            cpp_planes[i].d  = corridor_planes[i].d;
+        }
+    }
+
+    const auto sol = solver.solve(
+        current_pos,
+        current_vel,
+        target_pos,
+        target_vel,
+        last_applied_force,
+        warm_forces,
+        (n_obs > 0) ? cpp_obs : nullptr,
+        n_obs,
+        (n_planes > 0) ? cpp_planes : nullptr,
+        n_planes
+    );
+
+    AegisNmpcResult out{};
+    out.f0_x = sol.f0[0];
+    out.f0_y = sol.f0[1];
+    out.f0_z = sol.f0[2];
+    out.success = sol.success ? 1 : 0;
+    out.iterations = sol.iterations;
+    out.solve_time_us = sol.solve_time_us;
+    out.min_barrier_margin = sol.min_barrier_margin;
+    out.fallback_activated = sol.fallback_activated ? 1 : 0;
+
+    for (int k = 0; k <= aegis::nmpc::HORIZON_N; ++k) {
+        out.traj_p[k][0] = sol.trajectory[k].px;
+        out.traj_p[k][1] = sol.trajectory[k].py;
+        out.traj_p[k][2] = sol.trajectory[k].pz;
+
+        out.traj_v[k][0] = sol.trajectory[k].vx;
+        out.traj_v[k][1] = sol.trajectory[k].vy;
+        out.traj_v[k][2] = sol.trajectory[k].vz;
+
+        if (k < aegis::nmpc::HORIZON_N) {
+            out.traj_f[k][0] = sol.trajectory[k].fx;
+            out.traj_f[k][1] = sol.trajectory[k].fy;
+            out.traj_f[k][2] = sol.trajectory[k].fz;
+        }
+    }
+
+    return out;
+}
+
 } // extern "C"
