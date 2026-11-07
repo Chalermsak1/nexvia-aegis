@@ -230,29 +230,17 @@ When rotor 1 incurs partial failure (e.g. $25\%$ thrust loss due to blade chippi
 simultaneously derating maximum collective thrust $F_{\text{max},\text{eff}} = \sum_{i=1}^4 \hat{\gamma}_i T_{\text{max}, i}$ in~\eqref{eq:nmpc_cbf} to prevent rotor saturation.
 
 \begin{figure*}[t]
-\centering
-\begin{subfigure}[b]{0.495\textwidth}
     \centering
-    \includegraphics[width=\textwidth,height=1.55cm,keepaspectratio]{figures/passage_handover_benchmark.png}
-    \caption{Multi-Drone Narrow Passage Cooperative Handover}
-    \label{fig:passage_handover}
-\end{subfigure}
-\hfill
-\begin{subfigure}[b]{0.495\textwidth}
-    \centering
-    \includegraphics[width=\textwidth,height=1.55cm,keepaspectratio]{figures/differentiable_safe_rl_benchmark.png}
-    \caption{Differentiable Implicit-KKT Safe RL Training Dynamics}
-    \label{fig:diff_rl}
-\end{subfigure}
-\caption{Advanced Verification Benchmarks: (a) 5-drone doorway traversal with autonomous FIFO token arbitration, standoff loitering orbits, and Byzantine isolation. (b) Differentiable implicit-KKT policy gradient convergence ($10.0\%$ interventions, zero collisions during learning).}
-\label{fig:combined_benchmark}
+    \includegraphics[width=0.98\textwidth]{figures/autonomous_exploration_benchmark.png}
+    \caption{Pillar 4 Autonomous 3D Sector Frontier Exploration Benchmark: (a) 3D volumetric maze exploration trajectories comparing AEGIS active sector-based information path planning (IPP) against baseline random-walk navigation; (b) Volumetric mapped coverage progression over time, achieving $77.6\%$ exploration efficiency within $60\,$s without frontier collapse.}
+    \label{fig:exploration_benchmark}
 \end{figure*}
 
 \section{Pillar 4: Exploration \& Multi-Agent Swarm Handover}
 \label{sec:pillar4_swarm}
 
 \subsection{Autonomous 3D Sector Frontier Exploration}
-In unknown subterranean mazes, unconstrained Euclidean clustering of 360-degree LiDAR frontiers links voxels into a circular ring whose centroid collapses back onto the drone position. AEGIS partitions the 3D voxel grid into 8 discrete angular sectors ($45^\circ$). For each cluster $C$, the information utility balances volume, distance, heading, and forward camera alignment:
+In unknown subterranean mazes, unconstrained Euclidean clustering of 360-degree LiDAR frontiers links voxels into a circular ring whose centroid collapses back onto the drone position. As illustrated in Fig.~\ref{fig:exploration_benchmark}, AEGIS partitions the 3D voxel grid into 8 discrete angular sectors ($45^\circ$). For each cluster $C$, the information utility balances volume, distance, heading, and forward camera alignment:
 \begin{equation}
 \begin{aligned}
 U(C) &= \frac{\text{Vol}(C)^{\gamma}}{(d(\mathbf{p}, \mathbf{c}_C) + \epsilon)^{w_d} \left(1 + w_h \frac{|\Delta \psi|}{\pi}\right)} \\
@@ -262,7 +250,7 @@ U(C) &= \frac{\text{Vol}(C)^{\gamma}}{(d(\mathbf{p}, \mathbf{c}_C) + \epsilon)^{
 boosting volumetric maze coverage from $20.2\%$ to $77.6\%$ in $60\,$s.
 
 \subsection{Decentralized FIFO Passage Handover \& Byzantine Defense}
-When drone swarms traverse narrow apertures ($w < 2 r_{\text{quad}}$), mutual repulsion deadlocks the formation. As illustrated in Fig.~\ref{fig:passage_handover}, AEGIS arbitrates right-of-way via decentralized FIFO tokens:
+When drone swarms traverse narrow apertures ($w < 2 r_{\text{quad}}$), mutual repulsion deadlocks the formation. AEGIS arbitrates right-of-way via decentralized FIFO tokens:
 \begin{enumerate}[leftmargin=12pt]
     \item \textbf{Token Arbitration:} The token holder assumes right-of-way with evasive responsibility $\mu_i = 0.0$. Waiting peers assume $\mu_j = 1.0$, automatically holding in staggered standoff orbits behind the door.
     \item \textbf{Byzantine-Resilient Revocation:} If a corrupted drone broadcasts spoofed targets, Vovk--Wang order-statistic scoring isolates the agent within 15 steps, revoking its token and commanding a safe lateral retreat ($0\%$ inter-agent collisions, $+0.55\,$m separation).
@@ -273,7 +261,7 @@ To avoid gradient blockage between neural policies and the barrier filter, the j
 \begin{equation}
 \frac{\partial \mathbf{u}^*_{\text{safe}}}{\partial \mathbf{u}_{\text{nom}}} = \mathbf{I} - \mathbf{A}_{\mathcal{A}}^\top (\mathbf{A}_{\mathcal{A}} \mathbf{A}_{\mathcal{A}}^\top)^{-1} \mathbf{A}_{\mathcal{A}}
 \end{equation}
-As shown in Fig.~\ref{fig:diff_rl}, backpropagating through this projection allows the neural network to internalize barrier geometry, reducing interventions from $23.0\%$ to $10.0\%$ with zero training collisions.
+Backpropagating through this projection allows the neural network to internalize barrier geometry, reducing interventions from $23.0\%$ to $10.0\%$ with zero training collisions.
 
 \section{Experimental Results \& Comparative Benchmark}
 \label{sec:results}
