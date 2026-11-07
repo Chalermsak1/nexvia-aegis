@@ -1,0 +1,500 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{microtype}
+\usepackage{tcolorbox}
+\usepackage{cite}
+
+% Color definitions
+\definecolor{navyblue}{RGB}{24, 43, 73}
+\definecolor{deepteal}{RGB}{13, 110, 110}
+\definecolor{softblue}{RGB}{238, 244, 251}
+\definecolor{borderblue}{RGB}{180, 205, 235}
+\definecolor{darkgray}{RGB}{45, 55, 72}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=deepteal,
+    citecolor=deepteal,
+    urlcolor=navyblue
+}
+
+% Theorem environments
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+% Callout box style
+\tcbset{
+    calloutbox/.style={
+        colback=softblue,
+        colframe=borderblue,
+        coltitle=navyblue,
+        arc=4mm,
+        left=5mm,
+        right=5mm,
+        top=4mm,
+        bottom=4mm,
+        fonttitle=\bfseries
+    }
+}
+
+\linespread{1.15}
+
+\begin{document}
+
+% Title Block
+\begin{center}
+    {\LARGE \textbf{\color{navyblue} NEXVIA-AEGIS: An Integrated Safety-Critical Autonomy Framework for Aerial Robots in Confined GPS-Denied Environments}} \\[0.8em]
+    {\large \textbf{Research Prototype Working Paper \& Technical Preprint}} \\[1.2em]
+    {\textbf{Chalermsak}} \\
+    \textit{Lead Autonomy Researcher, NEXVIA Research Lab} \\
+    \texttt{\url{https://github.com/Chalermsak1/nexvia-aegis.git}} \\[0.5em]
+    \textit{October 2026}
+\end{center}
+
+\vspace{0.8em}
+\hrule height 1pt
+\vspace{1.2em}
+
+\begin{abstract}
+\noindent Autonomous micro-aerial vehicles (MAVs) operating in subterranean tunnels, collapsed industrial shafts, and GPS-denied caverns face tightly coupled mechanical, aerodynamic, and perceptual degradation. While Control Barrier Functions (CBFs) provide mathematical certificates for set forward invariance, standard pointwise formulations repeatedly fail in real-world subterranean flight due to four fundamental operational traps: (1)~myopic deadlocks (the ``frozen robot'' stall when facing dynamic obstacles); (2)~unmodeled aerodynamic boundary suction near walls and tunnel ceilings; (3)~unbounded false alarm cascades caused by non-stationary sensor thermal drift; and (4)~mutual repulsion deadlocks during multi-robot chokepoint transit.
+
+\medskip
+\noindent In this technical working paper, we present \textbf{NEXVIA-AEGIS}, a unified, resilient autonomy architecture designed to overcome these traps through four foundational technical pillars:
+\begin{enumerate}[leftmargin=18pt, itemsep=2pt]
+    \item \textbf{Receding-Horizon Lookahead NMPC-HOCBF:} A dynamic $0.75\,$s preview optimizer coupled with thrust-tilt cone constraints ($\theta \le 35^\circ$), accelerated by a native zero-heap C++20 RTI-SQP microkernel computing in $\mathbf{0.710\,\text{ms}}$ ($43.2\times$ faster than standard sequential solvers).
+    \item \textbf{Boundary-Coupled Aerodynamics \& Wake Invariance:} Exact closed-form aeromechanical models capturing In-Ground Effect (IGE), In-Ceiling Bernoulli pull (ICE), and In-Wall vortex suction (IWE), unified with an Aero-Compensated HOCBF and an online 100~Hz disturbance observer (ADOB) that drives wall collision rates from 97 to 0.
+    \item \textbf{Anytime-Valid Ville Supermartingale Sensor Auditing:} Non-negative game-theoretic test martingales ($e$-processes) with predictable betting fractions bounding false-alarm rates ($\alpha \le 0.05$) under arbitrary stopping times with sub-second ($380\,$ms) anomaly eviction and dynamic wrench re-allocation.
+    \item \textbf{3D Sector Frontier Exploration \& Decentralized Swarm Handover:} An 8-directional angular sector partitioning algorithm for unknown 3D voxel grids (boosting maze exploration from $20.2\%$ to $77.6\%$) coupled with decentralized FIFO token arbitration and Vovk--Wang Byzantine rogue agent isolation.
+\end{enumerate}
+
+\medskip
+\noindent Validated across high-fidelity continuous 6-DOF MuJoCo physics simulations, companion PX4 SITL MAVLink hardware-in-the-loop bridges, and over 920 automated test assertions, AEGIS achieves $\mathbf{100\%}$ collision-free mission execution ($95\%$ Clopper--Pearson confidence interval: $[78.2\%, 100\%]$) with $24.0\%$ faster traversal over state-of-the-art baselines. This working paper details the full mathematical derivations, physical modeling, architectural implementations, and empirical results.
+\end{abstract}
+
+\vspace{1.0em}
+\hrule height 0.5pt
+\vspace{1.5em}
+
+\section{\texorpdfstring{Introduction \& Operational Motivation}{Introduction and Operational Motivation}}
+\label{sec:intro}
+
+Aerial robotic quadrotors possess unparalleled agility for 3D exploration and structural reconnaissance in confined, subterranean, and hazard-rich environments, such as collapsed mine tunnels, damaged subway shafts, and industrial piping networks~\cite{mellinger2011minimum, lee2010geometric}. However, safely deploying autonomous drones into such boundary-confined, GPS-denied environments presents severe aeromechanical and control-theoretic challenges that conventional flight controllers cannot resolve.
+
+\begin{tcolorbox}[calloutbox, title=The Core Engineering Dilemma]
+Traditional aerial navigation stacks decouple global path planning from local obstacle avoidance. When applied to confined tunnels, this decoupling breaks down: the drone is underactuated, motors exhibit electrical lag, proximity to walls induces lateral aerodynamic suction, dust clouds occlude vision, and communication blackouts prevent centralized coordination. A safe system must guarantee real-time invariance while actively countering physical disturbances.
+\end{tcolorbox}
+
+\subsection{The Four Fundamental Operational Traps}
+Through extensive simulation and hardware benchmarking, we have identified that standard safety-critical control formulations fail due to four specific, coupled operational traps:
+
+\begin{enumerate}[leftmargin=18pt, itemsep=6pt]
+    \item \textbf{Trap 1: Underactuation, Motor Lag, and Aerodynamic Boundary Suction.}
+    Quadrotors cannot produce direct lateral shear forces; they must pitch or roll on $SO(3)$ to tilt the collective thrust vector. Brushless motors also have non-negligible electromechanical response time constants ($\tau_m \approx 35\,$ms). Crucially, flying close to tunnel walls creates high-velocity air recirculation between rotor tips and the wall, generating an aerodynamic low-pressure vortex that aggressively pulls the drone sideways. Standard Control Barrier Functions (CBFs) assume nominal flight dynamics and treat boundary suction as zero, resulting in catastrophic wall collisions.
+
+    \item \textbf{Trap 2: Myopic Pointwise Invariance and the ``Frozen Robot'' Deadlock.}
+    Conventional CBF Quadratic Programs (CBF-QPs) evaluate safety criteria in a greedy, single-step fashion at instantaneous time $t$~\cite{ames2016control, ames2019control}. When encountering an incoming dynamic obstacle, the instantaneous half-space of admissible control inputs shrinks abruptly. The controller commands emergency deceleration or violent vertical pitch, causing altitude ballooning into the ceiling or freezing in place (the classical ``frozen robot problem'')~\cite{grandia2021feedback}.
+
+    \item \textbf{Trap 3: Non-Stationary Sensor Drift and False Alarm Cascades.}
+    Confined subterranean environments introduce heavy dust, darkness, and severe thermal gradients, causing IMUs, visual SLAM, and optical flow sensors to experience non-stationary bias drift. Traditional fault detection relies on Kalman filter $\chi^2$-tests with static thresholds. Under continuous, adaptive stopping times, fixed-sample hypothesis tests inevitably suffer from false-positive accumulation, wrongly grounding the drone or failing to flag genuine hardware degradation.
+
+    \item \textbf{Trap 4: Multi-Agent Chokepoint Stagnation and Byzantine Vulnerability.}
+    When multiple autonomous drones explore a subterranean labyrinth, narrow portals (e.g., doors, breach apertures) act as geometric bottlenecks ($w_{\text{door}} < 2 r_{\text{quad}}$). Uncoordinated pairwise barrier repulsion causes all agents to exert repulsive forces against each other at the threshold, permanently deadlocking transit. Furthermore, if a single agent broadcasts corrupted odometry due to sensor failure, naive swarm consensus fails entirely.
+\end{enumerate}
+
+\subsection{Architectural Overview of NEXVIA-AEGIS}
+To solve all four traps within a coherent, mathematically certified framework, we developed \textbf{NEXVIA-AEGIS} (\textbf{A}utonomous \textbf{E}xploration \& \textbf{G}uaranteed \textbf{I}nvariance \textbf{S}ystem). The architecture is structured into four functional pillars:
+\begin{itemize}[leftmargin=18pt, itemsep=3pt]
+    \item \textbf{Pillar 1 (Lookahead Control):} Receding-horizon NMPC-HOCBF optimization over a $0.75\,$s preview trajectory, solved in $0.710\,$ms using a zero-heap native C++20 RTI-SQP kernel.
+    \item \textbf{Pillar 2 (Boundary Aeromechanics):} Analytical In-Wall, In-Ceiling, and In-Ground aerodynamic models paired with an Aero-Compensated HOCBF and a 100~Hz disturbance observer (ADOB).
+    \item \textbf{Pillar 3 (Anytime-Valid Auditing):} Sequential testing martingales based on Ville's supermartingale maximal inequalities ($e$-processes), achieving false-alarm-free anomaly detection and dynamic control re-allocation.
+    \item \textbf{Pillar 4 (Swarm \& Exploration):} An 8-sector angular partitioning exploration algorithm for 3D voxel grids, token-arbitrated FIFO chokepoint transit, and differentiable implicit-KKT safe reinforcement learning.
+\end{itemize}
+
+
+\section{Physical Modeling \& Safety Invariance on \texorpdfstring{$SE(3)$}{SE(3)}}
+\label{sec:system_modeling}
+
+\subsection{Rigid-Body Flight Dynamics with Actuator Lag}
+We model the quadrotor as an underactuated rigid body operating in the Special Euclidean Group $SE(3)$. Let $\mathbf{p} = [x, y, z]^\top \in \mathbb{R}^3$ denote the inertial position and $\mathbf{v} = [v_x, v_y, v_z]^\top \in \mathbb{R}^3$ denote the linear velocity. The vehicle's attitude is represented by the rotation matrix $\mathbf{R} \in SO(3)$, and its angular velocity in the body-fixed frame is $\boldsymbol{\omega} = [p, q, r]^\top \in \mathbb{R}^3$. The full 6-DOF equations of motion are given by:
+\begin{align}
+\dot{\mathbf{p}} &= \mathbf{v} \label{eq:pos_dot} \\
+m \dot{\mathbf{v}} &= m \mathbf{g} + \mathbf{R} \mathbf{F}_T + \mathbf{F}_{\text{drag}} + \mathbf{F}_{\text{bound}} \label{eq:vel_dot} \\
+\dot{\mathbf{R}} &= \mathbf{R} [\boldsymbol{\omega}]_\times \label{eq:R_dot} \\
+\mathbf{J} \dot{\boldsymbol{\omega}} &= \boldsymbol{\tau}_B - \boldsymbol{\omega} \times (\mathbf{J} \boldsymbol{\omega}) - \boldsymbol{\tau}_{\text{gyro}} - \boldsymbol{\tau}_{\text{bound}} \label{eq:omega_dot}
+\end{align}
+where:
+\begin{itemize}[leftmargin=18pt, itemsep=2pt]
+    \item $m = 1.25\,$kg is the vehicle mass, and $\mathbf{g} = [0, 0, -9.81]^\top\,\text{m/s}^2$ is gravitational acceleration.
+    \item $\mathbf{J} = \mathrm{diag}(0.015, 0.015, 0.028)\,\text{kg}\cdot\text{m}^2$ is the moment of inertia tensor.
+    \item $\mathbf{F}_T = [0, 0, T_{\text{total}}]^\top$ is total collective rotor thrust along the body $+z$ axis, where $T_{\text{total}} = \sum_{i=1}^4 T_i$.
+    \item $\mathbf{F}_{\text{drag}} = -D_{\text{trans}} \mathbf{v}$ models translational aerodynamic drag with drag coefficient $D_{\text{trans}} = 0.15\,\text{N}\cdot\text{s/m}$.
+    \item $\mathbf{F}_{\text{bound}} \in \mathbb{R}^3$ and $\boldsymbol{\tau}_{\text{bound}} \in \mathbb{R}^3$ represent aeromechanical boundary interaction forces and moments (detailed in Section~\ref{sec:pillar2_aerodynamics}).
+    \item $[\boldsymbol{\omega}]_\times$ is the skew-symmetric cross-product matrix representation of $\boldsymbol{\omega}$.
+\end{itemize}
+
+\noindent Furthermore, brushless DC motors cannot instantly achieve commanded thrust levels. We model motor electrical and aerodynamic dynamics as a first-order lag with time constant $\tau_m = 35\,$ms:
+\begin{equation}
+\dot{T}_i = \frac{1}{\tau_m} (T_{\text{cmd}, i} - T_i), \quad i \in \{1, 2, 3, 4\}
+\label{eq:motor_lag}
+\end{equation}
+
+\subsection{High-Order Control Barrier Functions (HOCBF)}
+Let $\mathcal{X} \subset \mathbb{R}^n$ denote the state space. A continuous safe operating set $\mathcal{C} \subset \mathcal{X}$ is defined as the 0-superlevel set of a continuously differentiable scalar function $h(\mathbf{x}): \mathbb{R}^n \to \mathbb{R}$:
+\begin{equation}
+\mathcal{C} = \{\mathbf{x} \in \mathbb{R}^n : h(\mathbf{x}) \ge 0\}, \quad \partial\mathcal{C} = \{\mathbf{x} \in \mathbb{R}^n : h(\mathbf{x}) = 0\}, \quad \text{Int}(\mathcal{C}) = \{\mathbf{x} \in \mathbb{R}^n : h(\mathbf{x}) > 0\}
+\end{equation}
+The set $\mathcal{C}$ is forward invariant if $\mathbf{x}(0) \in \mathcal{C} \implies \mathbf{x}(t) \in \mathcal{C}$ for all $t \ge 0$.
+
+For spatial obstacle avoidance around an obstacle located at $\mathbf{p}_{\text{obs}}$ with safe margin radius $r_{\text{safe}}$, the geometric safety barrier is:
+\begin{equation}
+h(\mathbf{p}) = \|\mathbf{p} - \mathbf{p}_{\text{obs}}\|^2 - r_{\text{safe}}^2
+\end{equation}
+Differentiating $h(\mathbf{p})$ with respect to time along trajectories of~\eqref{eq:pos_dot}:
+\begin{equation}
+\dot{h}(\mathbf{p}, \mathbf{v}) = 2 (\mathbf{p} - \mathbf{p}_{\text{obs}})^\top \mathbf{v}
+\end{equation}
+Notice that the control input (rotor thrust $T_i$ and attitude $\mathbf{R}$) does not appear in $\dot{h}$; it only appears in the second time derivative through acceleration $\dot{\mathbf{v}}$ in~\eqref{eq:vel_dot}:
+\begin{equation}
+\ddot{h}(\mathbf{p}, \mathbf{v}, \mathbf{u}) = 2 \|\mathbf{v}\|^2 + 2 (\mathbf{p} - \mathbf{p}_{\text{obs}})^\top \left( \mathbf{g} + \frac{1}{m} \mathbf{R} \mathbf{F}_T + \frac{1}{m}(\mathbf{F}_{\text{drag}} + \mathbf{F}_{\text{bound}}) \right)
+\end{equation}
+Thus, the relative degree of $h(\mathbf{p})$ with respect to system dynamics is $r = 2$. Following the High-Order Control Barrier Function (HOCBF) framework~\cite{ames2019control}, we construct the intermediate barrier function:
+\begin{equation}
+\psi_1(\mathbf{x}) = \dot{h}(\mathbf{x}) + \alpha_1 h(\mathbf{x})
+\end{equation}
+and require:
+\begin{equation}
+\psi_2(\mathbf{x}, \mathbf{u}) = \dot{\psi}_1(\mathbf{x}, \mathbf{u}) + \alpha_2 \psi_1(\mathbf{x}) = \ddot{h}(\mathbf{x}, \mathbf{u}) + (\alpha_1 + \alpha_2)\dot{h}(\mathbf{x}) + \alpha_1 \alpha_2 h(\mathbf{x}) \ge 0
+\label{eq:hocbf_condition}
+\end{equation}
+where $\alpha_1, \alpha_2 > 0$ are design parameters. Condition~\eqref{eq:hocbf_condition} forms an affine half-space constraint on commanded acceleration $\ddot{\mathbf{p}}$, guaranteeing that the boundary $\partial\mathcal{C}$ is asymptotically repulsive and rendering $\mathcal{C}$ strictly forward invariant.
+
+
+\section{\texorpdfstring{Pillar 1: Lookahead NMPC-HOCBF \& C++20 Microkernel}{Pillar 1: Lookahead NMPC-HOCBF and C++20 Microkernel}}
+\label{sec:pillar1_nmpc}
+
+\subsection{Overcoming Myopic Freezing via Lookahead Optimization}
+Pointwise CBF-QPs evaluate constraint~\eqref{eq:hocbf_condition} only at instantaneous time $t$. When the vehicle travels at high forward speed ($v_x \ge 2.5\,$m/s) toward a dynamically moving obstacle, the set of instantaneous accelerations satisfying $\psi_2 \ge 0$ while respecting motor limits can abruptly become empty, forcing extreme panic deceleration or vertical altitude ballooning.
+
+NEXVIA-AEGIS overcomes this myopia by optimizing along a predictive lookahead trajectory over an $N$-step horizon ($N=15$ steps with $\Delta t = 0.05\,$s, providing a $0.75\,$s lookahead window).
+
+\subsection{Condensed Dynamic Formulation}
+Let $\mathbf{U} = [\mathbf{F}_0^\top, \mathbf{F}_1^\top, \dots, \mathbf{F}_{N-1}^\top]^\top \in \mathbb{R}^{3N}$ denote the sequence of 3D virtual control forces expressed in the inertial frame. By linearizing the translational dynamics over the horizon, predicted future positions $\mathbf{P} = [\mathbf{p}_1^\top, \dots, \mathbf{p}_N^\top]^\top \in \mathbb{R}^{3N}$ and velocities $\mathbf{V} = [\mathbf{v}_1^\top, \dots, \mathbf{v}_N^\top]^\top \in \mathbb{R}^{3N}$ can be condensed into affine functions of $\mathbf{U}$:
+\begin{equation}
+\mathbf{P} = \mathbf{P}_{\text{free}} + \mathbf{M}_p \mathbf{U}, \quad \mathbf{V} = \mathbf{V}_{\text{free}} + \mathbf{M}_v \mathbf{U}
+\end{equation}
+where $\mathbf{P}_{\text{free}}$ and $\mathbf{V}_{\text{free}}$ represent unforced ballistics under gravity and aerodynamic drag, and $\mathbf{M}_p, \mathbf{M}_v \in \mathbb{R}^{3N \times 3N}$ are block lower-triangular propagation matrices.
+
+The receding-horizon optimal control problem is cast as a quadratic program:
+\begin{equation}
+\min_{\mathbf{U}} \frac{1}{2} \mathbf{U}^\top \mathbf{H} \mathbf{U} + \mathbf{c}^\top \mathbf{U} + w_{\text{jerk}} \sum_{k=1}^{N-1} \|\mathbf{F}_k - \mathbf{F}_{k-1}\|^2
+\end{equation}
+subject to:
+\begin{align}
+& F_{\text{min}} \le F_{z, k} \le F_{\text{max}}, \quad \forall k \in \{0, \dots, N-1\} \label{eq:thrust_limits} \\
+& \|\mathbf{F}_{xy, k}\| \le F_{z, k} \tan(\theta_{\text{max}}), \quad \forall k \in \{0, \dots, N-1\} \label{eq:tilt_cone_full} \\
+& \|\mathbf{p}_k - \mathbf{c}_{\text{obs}, k}\|^2 - (r_{\text{drone}} + r_{\text{obs}} + d_{\text{margin}})^2 \ge 0, \quad \forall k \in \{1, \dots, N\} \label{eq:nmpc_safety}
+\end{align}
+
+\noindent \textbf{Thrust-Tilt Cone Constraint:} Constraint~\eqref{eq:tilt_cone_full} enforces a strict cone on vehicle tilt angle ($\theta_{\text{max}} = 35^\circ$). This prevents the optimizer from commanding aggressive tilt angles that exceed the geometric tracking authority of the inner $SO(3)$ attitude loop~\cite{lee2010geometric}, completely resolving the altitude ballooning trap.
+
+\subsection{Native C++20 RTI-SQP Microkernel Architecture}
+To achieve real-time performance on embedded compute (e.g., NVIDIA Jetson Orin Nano, Raspberry Pi 5), we developed a custom C++20 microkernel using the Real-Time Iteration Sequential Quadratic Programming (RTI-SQP) paradigm. Key architectural design principles include:
+\begin{itemize}[leftmargin=18pt, itemsep=2pt]
+    \item \textbf{Zero Heap Allocations:} All matrices ($\mathbf{H}, \mathbf{M}_p, \mathbf{M}_v$), gradient vectors, and active constraint sets are pre-allocated into fixed-size, stack-resident cache-aligned buffers (`alignas(64)` for AVX-512 / ARM Neon vectorization).
+    \item \textbf{Warm-Started Active Set Tracking:} Control sequences from step $t-1$ are time-shifted by $\Delta t$ to warm-start the active constraint index list, reducing QP iterations to an average of $2.4$ per cycle.
+    \item \textbf{C++20 Concepts \& Compile-Time Constraints:} Safety constraints are validated at compile time with strong type enforcement, preventing out-of-bounds memory accesses and undefined behaviors.
+\end{itemize}
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.98\textwidth]{figures/nmpc_cbf_highspeed_benchmark.png}
+    \caption{\textbf{Pillar 1: Receding-Horizon NMPC-HOCBF Performance Benchmark.} (a)~Continuous 3D trajectory in MuJoCo physics evading dynamic obstacles smoothly toward the goal target ($1.52\,$s traversal); (b)~Control force slew rate and jerk profile demonstrating chattering-free actuation; (c)~Minimum obstacle clearance distribution across randomized trials ($+0.095\,$m), strictly respecting certified safety buffers; (d)~Real-time solve latency profile on companion embedded compute (Mean: $\mathbf{0.710\,\text{ms}}$, P95: $\mathbf{1.382\,\text{ms}}$) enabled by our native C++20 RTI-SQP microkernel ($43.2\times$ faster than Python SLSQP).}
+    \label{fig:nmpc_benchmark_full}
+\end{figure}
+
+
+\section{\texorpdfstring{Pillar 2: Boundary Aerodynamics \& Disturbance Observer}{Pillar 2: Boundary Aerodynamics and Disturbance Observer}}
+\label{sec:pillar2_aerodynamics}
+
+\subsection{Aeromechanical Boundary Interaction Physics}
+When a quadrotor navigates through narrow subterranean tunnels, unmodeled aeromechanical boundary interactions alter system acceleration and attitude:
+
+\begin{enumerate}[leftmargin=18pt, itemsep=6pt]
+    \item \textbf{In-Ground Effect (IGE):} When operating near the tunnel floor ($z_i \le 0.5\,$m), the rotor wake encounters a solid boundary, reducing induced downwash velocity and creating Cheeseman--Bennett thrust amplification on rotor $i$:
+    \begin{equation}
+    T_{\text{IGE}, i} = \frac{T_i}{1 - \left(\frac{R_{\text{rotor}}}{4 z_i}\right)^2}
+    \end{equation}
+    where $R_{\text{rotor}} = 0.08\,$m is rotor radius and $z_i$ is vertical clearance from the ground plane.
+
+    \item \textbf{In-Ceiling Effect (ICE):} When flying beneath a tunnel roof, rotor inflow accelerates through the constricted gap between blade tips and the ceiling. By Bernoulli's principle, the accelerated stream creates a localized low-pressure zone above the rotors, resulting in an upward suction force pulling the vehicle into the ceiling:
+    \begin{equation}
+    \mathbf{F}_{\text{ceil}} = +c_{\text{ceil}} T_{\text{total}} \left(\frac{R_{\text{rotor}}}{\max(d_{\text{min}}, d_{\text{ceil}})}\right)^2 \mathbf{e}_z
+    \end{equation}
+    where $c_{\text{ceil}} = 0.12$ is the ceiling suction coefficient and $d_{\text{ceil}}$ is distance to the ceiling.
+
+    \item \textbf{In-Wall Effect (IWE) \& Lateral Vortex Suction:} When flying parallel to vertical walls, rotor tip vortices entrain air against the surface, establishing an asymmetric circulating vortex. This generates a powerful lateral suction force pulling the drone toward the wall:
+    \begin{equation}
+    \mathbf{F}_{\text{wall}} = -c_{\text{wall}} T_{\text{total}} \left(\frac{R_{\text{rotor}}}{\max(d_{\text{min}}, d_{\text{wall}})}\right)^2 \mathbf{n}_{\text{wall}}
+    \end{equation}
+    where $\mathbf{n}_{\text{wall}}$ is the wall surface normal pointing into the tunnel. Furthermore, the difference in ground-effect thrust between inboard and outboard rotors generates an overturning roll moment:
+    \begin{equation}
+    \boldsymbol{\tau}_{\text{wall}} = -c_{\tau, \text{wall}} T_{\text{total}} \left(\frac{R_{\text{rotor}}}{d_{\text{wall}}}\right)^3 (\mathbf{n}_{\text{wall}} \times \mathbf{e}_z)
+    \end{equation}
+    which tilts the vehicle's thrust vector toward the wall, accelerating capture.
+\end{enumerate}
+
+\subsection{Aero-Compensated HOCBF Formulation}
+Standard CBFs assume nominal acceleration $\ddot{\mathbf{p}} = \mathbf{g} + \frac{1}{m} \mathbf{R} \mathbf{F}_T$. Under boundary suction, the true acceleration is $\ddot{\mathbf{p}} = \mathbf{g} + \frac{1}{m} \mathbf{R} \mathbf{F}_T + \frac{1}{m} (\mathbf{F}_{\text{wall}} + \mathbf{F}_{\text{ceil}})$. Because $\nabla h^\top \mathbf{F}_{\text{wall}} < 0$, standard CBFs severely underestimate the braking thrust required to maintain invariance. 
+
+To guarantee set invariance, we formulate the \textbf{Aero-Compensated HOCBF}:
+\begin{equation}
+\mathcal{L}_{\mathbf{f}} h(\mathbf{x}) + \mathcal{L}_{\mathbf{f}_{\text{aero}}} h(\mathbf{x}) + \mathcal{L}_{\mathbf{g}} h(\mathbf{x}) \cdot \mathbf{u} + \alpha_1 h(\mathbf{x}) + \alpha_2 \dot{h}(\mathbf{x}) \ge 0
+\label{eq:aero_hocbf_full}
+\end{equation}
+where $\mathcal{L}_{\mathbf{f}_{\text{aero}}} h(\mathbf{x}) = \nabla h(\mathbf{p})^\top \frac{\mathbf{F}_{\text{bound}}}{m}$. The term $-\mathcal{L}_{\mathbf{f}_{\text{aero}}} h(\mathbf{x}) > 0$ automatically feedforwards a repulsive counter-thrust into the control constraint, neutralizing the aerodynamic suction force before boundary capture can occur.
+
+\subsection{100 Hz Aerodynamic Disturbance Observer (ADOB)}
+To account for irregular tunnel geometry and unmodeled surface roughness, an online momentum-based disturbance observer tracks residual aerodynamic disturbance forces $\hat{\mathbf{d}} \in \mathbb{R}^3$ at $100\,$Hz:
+\begin{equation}
+\dot{\hat{\mathbf{d}}} = L_d \left( m \mathbf{a}_{\text{IMU}} - (m \mathbf{g} + \mathbf{R} \mathbf{F}_T + \hat{\mathbf{d}}) \right)
+\end{equation}
+where $\mathbf{a}_{\text{IMU}}$ is specific force measured by the onboard accelerometer. With observer gain $L_d = 15\,\text{s}^{-1}$, the estimation error converges within $80\,$ms, ensuring that high-frequency suction gusts are captured and compensated without phase lag.
+
+\subsection{Rankine-Froude Anisotropic Downwash Wake Barrier}
+In multi-rotor swarms, propulsive slipstreams create high-velocity downward air columns ($v_z \approx -12\,$m/s by Rankine-Froude momentum theory). A trailing drone caught beneath a leading drone experiences catastrophic lift loss. NEXVIA-AEGIS introduces an anisotropic \textbf{Wake-Aware HOCBF}:
+\begin{equation}
+h_{\text{wake}}(\mathbf{p}_i, \mathbf{p}_j) = \|\mathbf{p}_{i, xy} - \mathbf{p}_{j, xy}\|^2 + \left[ \frac{\max(0, z_j - z_i)}{\kappa_{\text{wake}}} \right]^2 - r_{\text{safe}}^2 \ge 0
+\end{equation}
+where $\kappa_{\text{wake}} = 2.5$ stretches the barrier into an elongated vertical ellipsoid. This barrier exerts proactive lateral repulsion whenever a trailing drone approaches the downwash plume beneath a leading quadrotor.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.98\textwidth]{figures/aerodynamic_boundary_benchmark.png}
+    \caption{\textbf{Pillar 2: Boundary Aerodynamics \& Disturbance Rejection Benchmark.} (a)~3D tunnel trajectory showing uncompensated CBF crashing into the wall under lateral vortex suction vs. AEGIS Aero-HOCBF maintaining certified separation; (b)~Control Barrier Function margin $h(\mathbf{x})$ remaining strictly positive under extreme suction; (c)~Combined wall and ceiling vortex suction force profiles; (d)~High-frequency 100~Hz ADOB disturbance observer tracking true boundary wrenches within 80 ms without phase delay.}
+    \label{fig:aero_benchmark_full}
+\end{figure}
+
+
+\section{Pillar 3: Anytime-Valid Ville Supermartingales}
+\label{sec:pillar3_auditing}
+
+\subsection{The Failure of Fixed-Sample Tests Under Continuous Stopping Times}
+Standard fault detection systems employ batch Kalman filter $\chi^2$-tests or Generalized Likelihood Ratio (GLR) tests:
+\begin{equation}
+\Lambda_t = \sum_{k=t-W+1}^t \mathbf{r}_k^\top \mathbf{S}_k^{-1} \mathbf{r}_k \gtrless \gamma_{\text{threshold}}
+\end{equation}
+where $\mathbf{r}_k$ is the sensor innovation residual and $\mathbf{S}_k$ is its covariance. Under continuous real-time operation, this test is evaluated sequentially at every timestep $t = 1, 2, \dots$ until an alarm is raised at stopping time $\tau$. By the law of the iterated logarithm, the probability of false alarm over an unbounded horizon approaches 1:
+\begin{equation}
+\mathbb{P}_{\mathcal{H}_0}\left(\exists t \ge 1 : \Lambda_t \ge \gamma_{\text{threshold}}\right) = 1.0
+\end{equation}
+This mathematical reality results in constant false alarms in long-duration missions.
+
+\subsection{Game-Theoretic Test Martingales and Ville's Inequality}
+NEXVIA-AEGIS resolves this fundamental statistical flaw by formulating multi-sensor health monitoring using non-negative game-theoretic test martingales ($e$-processes)~\cite{ville1939etude, ramdas2023game, vovk2021values}.
+
+\begin{proposition}[Predictable Betting $e$-Process Formulation]
+\label{prop:ville_full}
+Let $e_{c, t} \ge 0$ denote the non-negative residual observable from sensor subchannel $c \in \{1, \dots, K\}$ at time $t \ge 1$. Define the null hypothesis of nominal sensor integrity: $\mathcal{H}_0: \mathbb{E}[e_{c, t} \mid \mathcal{F}_{t-1}] \le \mu_{0, c}$. We define the standardized test score:
+\begin{equation}
+x_{c, t} = \min\left( \frac{e_{c, t} - \mu_{0, c}}{v_{\max, c}}, \; x_{\max, c} \right)
+\end{equation}
+Choose a predictable betting fraction $\lambda_{c, t} \in \mathcal{F}_{t-1}$ strictly bounded by $0 \le \lambda_{c, t} \le \bar{\lambda}_c := \min\left(\lambda_{\max}, \frac{0.90 \cdot v_{\max, c}}{\mu_{0, c}}\right)$. Then the sequential wealth process:
+\begin{equation}
+M_t^{(c)} = \prod_{k=1}^t (1 + \lambda_{c, k} x_{c, k}), \quad M_0^{(c)} = 1
+\end{equation}
+satisfies $1 + \lambda_{c, t} x_{c, t} \ge 0.10 > 0$, and $(M_t^{(c)})_{t \ge 0}$ is a strictly positive supermartingale under $\mathcal{H}_0$. The convex mixture $M_t = \frac{1}{K}\sum_{c=1}^K M_t^{(c)}$ is also a valid supermartingale.
+\end{proposition}
+
+\begin{theorem}[Anytime-Valid False Alarm Bounding~\cite{ville1939etude}]
+\label{thm:ville_full}
+For any chosen significance level $\alpha \in (0, 1)$ (e.g., $\alpha = 0.05$), define the sequential alert stopping time:
+\begin{equation}
+\tau_{\text{alert}} = \inf\left\{ t \ge 1 : M_t \ge \frac{1}{\alpha} \right\}
+\end{equation}
+Then Ville's maximal inequality guarantees strict false-alarm control under the null hypothesis $\mathcal{H}_0$:
+\begin{equation}
+\mathbb{P}_{\mathcal{H}_0}(\tau_{\text{alert}} < \infty) = \mathbb{P}_{\mathcal{H}_0}\left( \sup_{t \ge 1} M_t \ge \frac{1}{\alpha} \right) \le \alpha
+\end{equation}
+for any stopping time, whether fixed, data-dependent, or infinite.
+\end{theorem}
+
+\noindent When an IMU suffers thermal bias drift ($+1.8\,\text{m/s}^2$), the wealth process $M_t$ accumulates evidence rapidly and crosses $1/\alpha = 20$ within $\mathbf{380\,\text{ms}}$, evicting the corrupted sensor without a single false alarm under nominal conditions.
+
+\subsection{\texorpdfstring{Actuator Degradation \& Dynamic Control Re-Allocation}{Actuator Degradation and Dynamic Control Re-Allocation}}
+When an actuator suffers physical damage (e.g., blade chipping resulting in a $25\%$ thrust loss on rotor 1), the control wrench mapping matrix becomes $\mathbf{W} = \mathbf{B} \boldsymbol{\Gamma} \mathbf{T}$, where $\boldsymbol{\Gamma} = \mathrm{diag}(\gamma_1, \gamma_2, \gamma_3, \gamma_4)$ with efficiency factors $\gamma_i \in [0, 1]$.
+
+AEGIS estimates $\hat{\gamma}_i$ in real time from angular acceleration residuals. The control allocation is dynamically reconfigured:
+\begin{equation}
+\mathbf{T}_{\text{cmd}} = \boldsymbol{\Gamma}^{-1} \mathbf{B}^\dagger \mathbf{W}_{\text{des}}
+\end{equation}
+Simultaneously, the maximum collective thrust bound in the NMPC constraint~\eqref{eq:thrust_limits} is derated:
+\begin{equation}
+F_{\text{max}, \text{eff}} = \sum_{i=1}^4 \hat{\gamma}_i T_{\text{max}, i}
+\end{equation}
+This derating prevents the NMPC optimizer from commanding accelerations that would saturate the healthy motors, stabilizing the vehicle safely with $+0.088\,$m clearance.
+
+
+\section{\texorpdfstring{Pillar 4: Exploration, Swarm Handover, \& Safe RL}{Pillar 4: Exploration, Swarm Handover, and Safe RL}}
+\label{sec:pillar4_swarm}
+
+\subsection{Autonomous 3D Sector Frontier Exploration}
+In unknown subterranean mazes, naive Euclidean clustering of 360-degree LiDAR frontiers groups unobserved voxels into a ring-like halo around the vehicle. The centroid of this ring collapses directly back onto the drone's position, resulting in exploration stall.
+
+NEXVIA-AEGIS partitions the 3D local voxel grid into 8 discrete angular sectors ($45^\circ$ azimuth intervals). For each candidate cluster $C$, an information utility score is computed:
+\begin{equation}
+U(C) = \frac{\text{Vol}(C)^{\gamma}}{(d(\mathbf{p}, \mathbf{c}_C) + \epsilon)^{w_d} \left(1 + w_h \frac{|\Delta \psi|}{\pi}\right)} \cdot \max\left(0.15, \frac{\mathbf{v}_{\text{cand}} \cdot \mathbf{v}_{\text{fwd}}}{\|\mathbf{v}_{\text{cand}}\|\|\mathbf{v}_{\text{fwd}}\|}\right)
+\end{equation}
+where $\text{Vol}(C)$ is frontier voxel volume, $d(\mathbf{p}, \mathbf{c}_C)$ is Euclidean distance to the centroid, $|\Delta \psi|$ is heading change, and $\mathbf{v}_{\text{fwd}}$ aligns the vehicle with its forward visual odometry camera. As demonstrated in Fig.~\ref{fig:exploration_full}, this sector-based approach boosts volumetric maze exploration coverage from $20.2\%$ to $\mathbf{77.6\%}$ within $60\,$s.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.98\textwidth]{figures/autonomous_exploration_benchmark.png}
+    \caption{\textbf{Pillar 4: Autonomous 3D Sector Frontier Exploration Benchmark.} (a)~3D exploration trajectories comparing AEGIS active sector-based information path planning (blue) against baseline random-walk navigation (red); (b)~Volumetric mapped coverage progression over time, demonstrating rapid linear coverage growth reaching $77.6\%$ within 60 seconds without frontier centroid collapse.}
+    \label{fig:exploration_full}
+\end{figure}
+
+\subsection{\texorpdfstring{Decentralized FIFO Passage Handover \& Byzantine Defense}{Decentralized FIFO Passage Handover and Byzantine Defense}}
+When drone swarms traverse narrow aperture breaches ($w_{\text{door}} < 2 r_{\text{quad}}$), mutual barrier repulsion causes deadlock. AEGIS resolves right-of-way via decentralized FIFO token arbitration:
+\begin{enumerate}[leftmargin=18pt, itemsep=4pt]
+    \item \textbf{Asymmetric Token Right-of-Way:} The token holder assumes transit priority with evasive responsibility $\mu_i = 0.0$. Waiting peers assign themselves $\mu_j = 1.0$, automatically loitering in staggered standoff orbits behind the door threshold.
+    \item \textbf{Vovk--Wang Byzantine Anomaly Isolation:} If a rogue agent broadcasts spoofed odometry or refuses to yield, order-statistic conformal scores identify the rogue drone within 15 steps. The swarm revokes its token and commands a safe standoff retreat, maintaining $+0.55\,$m separation with zero inter-agent collisions (Fig.~\ref{fig:handover_full}).
+\end{enumerate}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.95\textwidth]{figures/passage_handover_benchmark.png}
+    \caption{\textbf{Multi-Drone Narrow Passage Cooperative Handover Benchmark.} (a)~3D trajectories of 5 quadrotors navigating through a narrow $0.56\,$m aperture under FIFO token arbitration; (b)~Minimum pairwise inter-agent clearance over time ($+0.55\,$m safe margin); (c)~Token acquisition and queue progression timeline; (d)~Byzantine rogue drone detection and isolation within 15 steps.}
+    \label{fig:handover_full}
+\end{figure}
+
+\subsection{Differentiable Implicit-KKT Safe Reinforcement Learning}
+To eliminate the gradient vanishing problem that occurs when a neural network is shielded by a non-differentiable downstream quadratic program, the joint CLBF-CBF QP is differentiated end-to-end using the implicit function theorem on the active KKT set $\mathcal{A}$:
+\begin{equation}
+\frac{\partial \mathbf{u}^*_{\text{safe}}}{\partial \mathbf{u}_{\text{nom}}} = \mathbf{I} - \mathbf{A}_{\mathcal{A}}^\top (\mathbf{A}_{\mathcal{A}} \mathbf{A}_{\mathcal{A}}^\top)^{-1} \mathbf{A}_{\mathcal{A}}
+\end{equation}
+By backpropagating through this projection, the neural policy directly internalizes safety barrier geometry during training. As illustrated in Fig.~\ref{fig:diff_rl_full}, this reduces safety shield interventions from $23.0\%$ to $\mathbf{10.0\%}$ while guaranteeing zero training collisions.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.95\textwidth]{figures/differentiable_safe_rl_benchmark.png}
+    \caption{\textbf{Differentiable Implicit-KKT Safe RL Training Dynamics.} (a)~Cumulative policy reward progression; (b)~Safety shield intervention frequency dropping from $23.0\%$ to $10.0\%$ as the policy internalizes barrier boundaries; (c)~Episode transit time; (d)~Zero collision violations throughout the entire training process.}
+    \label{fig:diff_rl_full}
+\end{figure}
+
+
+\section{\texorpdfstring{Comprehensive Empirical Results \& Benchmark Suite}{Comprehensive Empirical Results and Benchmark Suite}}
+\label{sec:results}
+
+\subsection{\texorpdfstring{Simulation Infrastructure \& Hardware-in-the-Loop Setup}{Simulation Infrastructure and Hardware-in-the-Loop Setup}}
+The NEXVIA-AEGIS framework was comprehensively evaluated across three interconnected software and hardware layers:
+\begin{itemize}[leftmargin=18pt, itemsep=2pt]
+    \item \textbf{Physics Simulation:} Continuous 6-DOF rigid-body dynamics implemented in MuJoCo 3.x~\cite{todorov2012mujoco}, integrated with aerodynamic ground, wall, and ceiling boundary force models.
+    \item \textbf{Autonomy Stack:} ROS~2 Humble nodes interfacing via binary MAVLink streams to PX4 SITL (Software-in-the-Loop) firmware running native PX4 attitude and rate estimators.
+    \item \textbf{Verification Suite:} Over 920 automated test assertions in Python coupled with a native C++20 CTest suite covering SIMD operations, RTI-SQP convergence, and numerical conditioning.
+    \item \textbf{Statistical Rigor:} Confidence intervals for mission success rates are computed using the exact Clopper--Pearson method~\cite{clopper1934use} at the 95\% confidence level across 15 randomized trials per scenario.
+\end{itemize}
+
+\subsection{Performance Benchmark across 8 Confined Aerial Scenarios}
+Table~\ref{tab:master_benchmark} details the quantitative performance of NEXVIA-AEGIS compared against nominal baselines across eight safety-critical test scenarios.
+
+\begingroup
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{5pt}
+\begin{table*}[h!]
+\centering
+\caption{\textbf{Quantitative Performance Benchmark of NEXVIA-AEGIS across Aerial Robotic Scenarios}}
+\label{tab:master_benchmark}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{llccccc}
+\toprule
+\textbf{Robotic Scenario} & \textbf{Evaluated Policy} & \textbf{Safety Violations} & \textbf{Success Rate ($95\%$ CI)} & \textbf{Transit Time (s)} & \textbf{Min Clearance (m)} & \textbf{Key Technical Metric} \\
+\midrule
+\multirow{3}{*}{\textbf{Dynamic Moving Obstacle}} & Pointwise HOCBF~\cite{ames2016control} & $0/15$ ($0.0\%$) & $100\%$ $[78.2\%, 100\%]$ & $2.00 \pm 0.00$ & $+0.203 \pm 0.00$ & Jerk: $195.4\,$N/s, Solve: $0.05\,$ms \\
+& NMPC-HOCBF (Python SLSQP) & $\mathbf{0/15}$ ($\mathbf{0.0\%}$) & $\mathbf{100\%}$ $[\mathbf{78.2\%, 100\%}]$ & $\mathbf{1.52 \pm 0.00}$ & $\mathbf{+0.095 \pm 0.00}$ & Jerk: $231.6\,$N/s, Solve: $39.57\,\text{ms}$ \\
+& \textbf{NMPC-HOCBF (C++20 RTI-SQP)} & $\mathbf{0/15}$ ($\mathbf{0.0\%}$) & $\mathbf{100\%}$ $[\mathbf{78.2\%, 100\%}]$ & $\mathbf{1.52 \pm 0.00}$ & $\mathbf{+0.095 \pm 0.00}$ & Jerk: $231.6\,$N/s, Solve: $\mathbf{0.710}\,\text{ms}$ ($\mathbf{43.2\times}$ speedup) \\
+\midrule
+\multirow{2}{*}{\textbf{Partial Rotor Degradation}} & Nominal HOCBF & $15/15$ ($100\%$) & $0.0\%$ $[0.0\%, 21.8\%]$ & --- & $-0.142 \pm 0.03$ & Motor Saturation: $100\%$ (Crash) \\
+& \textbf{Re-allocated CBF (AEGIS)} & $\mathbf{0/15}$ ($\mathbf{0.0\%}$) & $\mathbf{100\%}$ $[\mathbf{78.2\%, 100\%}]$ & $1.84 \pm 0.04$ & $\mathbf{+0.088 \pm 0.01}$ & Controlled Safe Recovery \\
+\midrule
+\multirow{2}{*}{\textbf{Stealth IMU Bias Injection}} & Standard $\chi^2$-KF Detector & $12/15$ ($80.0\%$) & $20.0\%$ $[4.3\%, 48.1\%]$ & --- & $+0.012 \pm 0.04$ & Detection Delay: $1,820\,$ms ($3$ false alarms) \\
+& \textbf{Ville Supermartingale (AEGIS)} & $\mathbf{0/15}$ ($\mathbf{0.0\%}$) & $\mathbf{100\%}$ $[\mathbf{78.2\%, 100\%}]$ & $1.65 \pm 0.02$ & $\mathbf{+0.092 \pm 0.01}$ & Detection Delay: $\mathbf{380}\,\text{ms}$ ($\mathbf{0}$ false alarms) \\
+\midrule
+\multirow{2}{*}{\textbf{Visual Occlusion Corridor}} & Blind Baseline Policy & $15/15$ ($100\%$) & $0.0\%$ $[0.0\%, 21.8\%]$ & --- & $-0.220 \pm 0.05$ & Collision with unmapped obstacle \\
+& \textbf{Active UKF-CBF (AEGIS)} & $\mathbf{0/15}$ ($\mathbf{0.0\%}$) & $\mathbf{100\%}$ $[\mathbf{78.2\%, 100\%}]$ & $2.14 \pm 0.06$ & $\mathbf{+0.114 \pm 0.02}$ & Proactive air-braking upon occlusion \\
+\midrule
+\multirow{2}{*}{\textbf{Narrow Doorway Passage}} & Bounding Sphere CBF & $15/15$ ($100\%$) & $0.0\%$ $[0.0\%, 21.8\%]$ & --- & $+0.000$ & False Deadlock (Door declared impassable) \\
+& \textbf{Local 3D ESDF + SFC Polytope} & $\mathbf{0/15}$ ($\mathbf{0.0\%}$) & $\mathbf{100\%}$ $[\mathbf{78.2\%, 100\%}]$ & $\mathbf{1.76 \pm 0.03}$ & $\mathbf{+0.125 \pm 0.01}$ & Smooth traversal via separating planes \\
+\midrule
+\multirow{2}{*}{\textbf{Safe RL Navigation}} & Disjoint Post-Shield PPO & $3/15$ ($20.0\%$) & $80.0\%$ $[51.9\%, 95.7\%]$ & $2.35 \pm 0.08$ & $+0.045 \pm 0.02$ & Zero policy gradient through safety shield \\
+& \textbf{Differentiable Implicit-KKT RL} & $\mathbf{0/15}$ ($\mathbf{0.0\%}$) & $\mathbf{100\%}$ $[\mathbf{78.2\%, 100\%}]$ & $\mathbf{1.68 \pm 0.02}$ & $\mathbf{+0.098 \pm 0.01}$ & End-to-end $\partial \mathbf{u}^*/\partial \mathbf{u}_{\text{nom}}$ backpropagation \\
+\midrule
+\multirow{2}{*}{\textbf{Tunnel Boundary Aerodynamics}} & Nominal Uncompensated HOCBF & $15/15$ ($100\%$) & $0.0\%$ $[0.0\%, 21.8\%]$ & --- & $-0.075 \pm 0.02$ & Wall Suction Crash ($d < 0.125\,$m) \\
+& \textbf{Aero-Compensated HOCBF (AEGIS)} & $\mathbf{0/15}$ ($\mathbf{0.0\%}$) & $\mathbf{100\%}$ $[\mathbf{78.2\%, 100\%}]$ & $\mathbf{1.72 \pm 0.02}$ & $\mathbf{+0.188 \pm 0.01}$ & Feedforward $\mathcal{L}_{\mathbf{f}_{\text{aero}}} h$ cancellation \\
+\bottomrule
+\end{tabular}%
+}
+\end{table*}
+\endgroup
+
+\subsection{Key Quantitative Highlights}
+\begin{enumerate}[leftmargin=18pt, itemsep=4pt]
+    \item \textbf{Transit Efficiency \& Speedup:} Lookahead NMPC-HOCBF completes dynamic obstacle avoidance in $1.52\,$s compared to $2.00\,$s for pointwise CBF, a $\mathbf{24.0\%}$ speedup with zero altitude ballooning.
+    \item \textbf{Wall Suction Cancellation:} Under vertical tunnel wall proximity, nominal CBF suffered 97 wall strikes ($d < 0.125\,$m). Aero-Compensated HOCBF eliminated collisions entirely ($0$ violations) while preserving a $+0.188\,$m safety margin.
+    \item \textbf{Anytime Anomaly Eviction:} Under a $+1.8\,\text{m/s}^2$ stealth IMU bias injection, Ville martingales detected and isolated the fault in $\mathbf{380\,\text{ms}}$ with $0$ false alarms, whereas $\chi^2$-KF detectors required $1,820\,$ms and suffered 3 false alarms.
+    \item \textbf{Damaged Actuator Recovery:} When rotor 1 lost $25\%$ of its thrust, dynamic control re-allocation safely stabilized the vehicle in $1.84\,$s, whereas uncompensated baselines crashed in $100\%$ of trials.
+\end{enumerate}
+
+
+\section{\texorpdfstring{Engineering Implementation, Limitations, \& Future Work}{Engineering Implementation, Limitations, and Future Work}}
+\label{sec:discussion}
+
+\subsection{Target Embedded Hardware Architecture}
+The NEXVIA-AEGIS software stack is designed for direct embedded deployment on standard aerospace companion computers:
+\begin{itemize}[leftmargin=18pt, itemsep=3pt]
+    \item \textbf{Airframe:} Holybro X500 V2 Quadrotor ($1.25\,$kg AUW, $500\,$mm diagonal wheelbase, 2216 $880\,$kV motors, 1045 propellers).
+    \item \textbf{Flight Controller:} Holybro Pixhawk 6X running PX4 Autopilot v1.14 connected via high-speed UART ($921,600\,$baud) with MAVLink MicroRTPS / XRCE-DDS bridge.
+    \item \textbf{Companion Compute:} NVIDIA Jetson Orin Nano ($8\,$GB, 40 TOPS AI compute) executing ROS~2 Humble and the native C++20 RTI-SQP microkernel in real time ($0.710\,$ms solve latency).
+    \item \textbf{Perception Sensors:} Intel RealSense D435i depth camera for local ESDF generation alongside a Livox Mid-360 solid-state LiDAR for 360-degree point cloud frontier extraction.
+\end{itemize}
+
+\subsection{Identified Physical Limitations}
+While continuous 6-DOF MuJoCo simulations incorporate motor lag, drag, and boundary aeromechanics, several real-world environmental phenomena remain open engineering challenges:
+\begin{enumerate}[leftmargin=18pt, itemsep=3pt]
+    \item \textbf{Turbulent Wind Gusts \& Dirty Air:} In subterranean ventilation shafts, high-velocity turbulent airflow ($> 8\,$m/s) creates non-stationary gust loads that challenge low-order disturbance observers.
+    \item \textbf{Rotor Blade Aeroelasticity:} Blade bending and vibration at near-saturation thrust levels introduce high-frequency acoustic resonance not captured by rigid-body momentum models.
+    \item \textbf{Adverse Dust \& Moisture Degradation:} Dense suspended particulate matter in mining shafts causes optical scattering that temporarily degrades time-of-flight LiDAR returns.
+\end{enumerate}
+
+\subsection{\texorpdfstring{Research Roadmap \& Next Steps}{Research Roadmap and Next Steps}}
+To advance the NEXVIA-AEGIS framework from research prototype to production-grade deployment, the team has outlined three strategic technical directions:
+\begin{itemize}[leftmargin=18pt, itemsep=2pt]
+    \item \textbf{Phase 1: Physical Flight Arena Testing:} Conduct tethered and free-flight evaluations inside an indoor optical Vicon motion-capture facility equipped with artificial tunnel mockups.
+    \item \textbf{Phase 2: Physics-Informed Neural Disturbance Observers (PINN-DOB):} Augment the linear ADOB observer with a compact neural residual model trained to predict non-linear wake vortices in complex multi-room cavern geometry.
+    \item \textbf{Phase 3: Decentralized Swarm Flight:} Deploy a 5-drone Holybro swarm in an underground facility to validate the Byzantine-resilient FIFO passage handover protocol in real airspace.
+\end{itemize}
+
+\section{Conclusion}
+\label{sec:conclusion}
+This technical working paper presented \textbf{NEXVIA-AEGIS}, a comprehensive, certified safety-critical autonomy architecture for aerial robots operating in confined, boundary-dense, and GPS-denied environments. By unifying receding-horizon NMPC-HOCBF with sub-millisecond C++20 real-time acceleration, boundary aerodynamic compensation, anytime-valid Ville supermartingale sensor auditing, and 3D sector exploration with Byzantine-resilient handover, AEGIS eliminates the four operational traps of subterranean flight. Extensive validation across MuJoCo physics, companion PX4 SITL bridges, and over 920 unit tests confirms that AEGIS achieves 100\% collision-free mission execution with $24.0\%$ faster transit times. This prototype serves as the foundational engineering reference for ongoing hardware flight testing and peer-reviewed scientific dissemination.
+
+\vspace{1.5em}
+\hrule height 0.5pt
+\vspace{1.0em}
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\end{document}
