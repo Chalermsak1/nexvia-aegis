@@ -12,6 +12,13 @@
 \usepackage{hyperref}
 \usepackage{subcaption}
 \usepackage{enumitem}
+\setlength{\dbltextfloatsep}{6pt plus 1pt minus 1pt}
+\setlength{\dblfloatsep}{6pt plus 1pt minus 1pt}
+\setlength{\textfloatsep}{6pt plus 1pt minus 1pt}
+\setlength{\abovedisplayskip}{3pt plus 1pt minus 1pt}
+\setlength{\belowdisplayskip}{3pt plus 1pt minus 1pt}
+\setlength{\abovedisplayshortskip}{1pt plus 1pt minus 1pt}
+\setlength{\belowdisplayshortskip}{1pt plus 1pt minus 1pt}
 
 \hypersetup{
     colorlinks=true,
@@ -70,7 +77,7 @@ Aerial Robotics, Safety-Critical Control, Control Barrier Functions, Nonlinear M
 
 \begin{figure*}[t]
     \centering
-    \includegraphics[width=0.98\textwidth]{figures/nmpc_cbf_highspeed_benchmark.png}
+    \includegraphics[width=0.92\textwidth]{figures/nmpc_cbf_highspeed_benchmark.png}
     \caption{NEXVIA-AEGIS Receding-Horizon NMPC-HOCBF Performance Benchmark: (a) Continuous 3D trajectory in MuJoCo physics smoothly evading dynamic obstacles toward the target goal ($1.52\,$s transit); (b) Control force slew rate / jerk profile demonstrating stable actuation without spiky chatter; (c) Minimum obstacle clearance distribution across randomized trials ($+0.095\,$m), strictly respecting the certified safety buffer ($+0.08\,$m); (d) Real-time solve latency profile on companion embedded compute (Mean: $0.710\,$ms, P95: $1.382\,$ms) enabled by our native C++20 RTI-SQP microkernel.}
     \label{fig:nmpc_benchmark}
 \end{figure*}
@@ -165,7 +172,7 @@ When an aerial robot navigates close to solid boundaries, unmodeled aeromechanic
 
 \begin{figure*}[t]
     \centering
-    \includegraphics[width=0.98\textwidth]{figures/aerodynamic_boundary_benchmark.png}
+    \includegraphics[width=0.92\textwidth]{figures/aerodynamic_boundary_benchmark.png}
     \caption{Pillar 2 Boundary Aerodynamics \& Disturbance Rejection Benchmark: (a) 3D tunnel flight trajectory showing nominal CBF wall crash under lateral suction vs. AEGIS Aero-HOCBF maintaining certified clearance; (b) Control Barrier Function margin $h(\mathbf{x})$ remaining strictly positive under extreme boundary suction; (c) Combined wall and ceiling vortex suction force profiles; (d) High-frequency 100 Hz ADOB disturbance observer tracking true boundary wrenches within 80 ms without phase delay.}
     \label{fig:aero_benchmark}
 \end{figure*}
@@ -231,16 +238,16 @@ simultaneously derating maximum collective thrust $F_{\text{max},\text{eff}} = \
 
 \begin{figure*}[t]
     \centering
-    \includegraphics[width=0.98\textwidth]{figures/autonomous_exploration_benchmark.png}
-    \caption{Pillar 4 Autonomous 3D Sector Frontier Exploration Benchmark: (a) 3D volumetric maze exploration trajectories comparing AEGIS active sector-based information path planning (IPP) against baseline random-walk navigation; (b) Volumetric mapped coverage progression over time, achieving $77.6\%$ exploration efficiency within $60\,$s without frontier collapse.}
-    \label{fig:exploration_benchmark}
+    \includegraphics[width=0.92\textwidth]{figures/rigorous_monte_carlo_benchmark.png}
+    \caption{Empirical 100-Run Randomized Monte-Carlo Benchmark under Aerodynamic Disturbances: (a) 3D flight trajectory bundles under randomized tunnel width and wall suction, contrasting uncompensated CBF barrier breaches against AEGIS certified clearance; (b) Empirical cumulative distribution (ECDF) of minimum barrier margin $\min h(\mathbf{x})$, verifying that AEGIS maintains strictly positive margins ($\min h = +0.0381\,$m) with zero penetrations; (c) Anytime-valid sensor auditing comparing Ville supermartingale wealth $M_t$ vs. sliding-window $\chi^2$ statistics; (d) Quantitative safety and statistical audit rates with exact $95\%$ Clopper--Pearson confidence intervals.}
+    \label{fig:rigorous_benchmark}
 \end{figure*}
 
 \section{Pillar 4: Exploration \& Multi-Agent Swarm Handover}
 \label{sec:pillar4_swarm}
 
 \subsection{Autonomous 3D Sector Frontier Exploration}
-In unknown subterranean mazes, unconstrained Euclidean clustering of 360-degree LiDAR frontiers links voxels into a circular ring whose centroid collapses back onto the drone position. As illustrated in Fig.~\ref{fig:exploration_benchmark}, AEGIS partitions the 3D voxel grid into 8 discrete angular sectors ($45^\circ$). For each cluster $C$, the information utility balances volume, distance, heading, and forward camera alignment:
+In unknown subterranean mazes, unconstrained Euclidean clustering of 360-degree LiDAR frontiers links voxels into a circular ring whose centroid collapses back onto the drone position. AEGIS partitions the 3D voxel grid into 8 discrete angular sectors ($45^\circ$). For each cluster $C$, the information utility balances volume, distance, heading, and forward camera alignment:
 \begin{equation}
 \begin{aligned}
 U(C) &= \frac{\text{Vol}(C)^{\gamma}}{(d(\mathbf{p}, \mathbf{c}_C) + \epsilon)^{w_d} \left(1 + w_h \frac{|\Delta \psi|}{\pi}\right)} \\
@@ -270,61 +277,54 @@ Backpropagating through this projection allows the neural network to internalize
 Evaluations are conducted in continuous 6-DOF rigid-body dynamics using MuJoCo 3.x~\cite{todorov2012mujoco} integrated with aerodynamic ground/wall boundary models. The stack interfaces via ROS~2 Humble and binary MAVLink streams to PX4 SITL. The codebase is validated across \textbf{over 920 automated verification unit tests in Python alongside a native C++20 CTest suite}. Statistical confidence intervals are computed using the exact Clopper--Pearson method~\cite{clopper1934use} at the 95\% level.
 
 \begingroup
-\renewcommand{\arraystretch}{0.72}
-\setlength{\tabcolsep}{3.5pt}
+\renewcommand{\arraystretch}{0.65}
+\setlength{\tabcolsep}{2.5pt}
 \begin{table*}[t]
 \centering
 \caption{Quantitative Performance Benchmark of NEXVIA-AEGIS across Aerial Robotic Scenarios}
 \label{tab:main_results}
-\resizebox{\textwidth}{!}{%
+\resizebox{0.92\textwidth}{!}{%
 \begin{tabular}{llccccc}
 \toprule
 \textbf{Robotic Scenario} & \textbf{Evaluated Policy} & \textbf{Safety Violations} & \textbf{Success Rate ($95\%$ CI)} & \textbf{Transit Time (s)} & \textbf{Min Clearance (m)} & \textbf{Jerk / Compute Metric} \\
 \midrule
-\multirow{3}{*}{\textbf{Dynamic Moving Obstacle}} & Pointwise HOCBF~\cite{ames2016control} & $0/15$ ($0.0\%$) & $100\%$ $[78.2\%, 100\%]$ & $2.00 \pm 0.00$ & $+0.203 \pm 0.00$ & Jerk: $195.4\,$N/s, Solve: $0.05\,$ms \\
-& NMPC-HOCBF (Python SLSQP) & $\mathbf{0/15}$ ($\mathbf{0.0\%}$) & $\mathbf{100\%}$ $[\mathbf{78.2\%, 100\%}]$ & $\mathbf{1.52 \pm 0.00}$ & $\mathbf{+0.095 \pm 0.00}$ & Jerk: $231.6\,$N/s, Solve: $39.57\,\text{ms}$ \\
+\multirow{3}{*}{\textbf{\shortstack[l]{Tunnel Aerodynamics\\(100 Randomized Runs)}}} & Uncompensated HOCBF & $45/100$ ($45.0\%$) & $55.0\%$ $[44.7\%, 65.0\%]$ & $1.74 \pm 0.02$ & $0.221 \pm 0.01$ (Min: $0.191$) & Margin: $\min h = \mathbf{-0.0287}\,\text{m}$ (Breach) \\
+& Robust Tube-CBF~\cite{gurriet2018towards} & $9/100$ ($9.0\%$) & $53.0\%$ $[42.8\%, 63.1\%]$ & --- & $0.318 \pm 0.07$ (Min: $0.097$) & $\mathbf{42.0\%}$ Freezing Stalls, $\mathbf{5.0\%}$ Crashes \\
+& \textbf{AEGIS Self-Auditing} & $\mathbf{0/100}$ ($\mathbf{0.0\%}$) & $\mathbf{100\%}$ $[\mathbf{96.4\%, 100\%}]$ & $\mathbf{1.72 \pm 0.02}$ & $\mathbf{0.284 \pm 0.01}$ (Min: $\mathbf{0.258}$) & Margin: $\min h = \mathbf{+0.0381\,\text{m}}$ ($0$ Stalls) \\
+\midrule
+\multirow{2}{*}{\textbf{Dynamic Moving Obstacle}} & Pointwise HOCBF~\cite{ames2016control} & $0/15$ ($0.0\%$) & $100\%$ $[78.2\%, 100\%]$ & $2.00 \pm 0.00$ & $+0.203 \pm 0.00$ & Jerk: $195.4\,$N/s, Solve: $0.05\,$ms \\
 & \textbf{NMPC-HOCBF (C++20 RTI-SQP)} & $\mathbf{0/15}$ ($\mathbf{0.0\%}$) & $\mathbf{100\%}$ $[\mathbf{78.2\%, 100\%}]$ & $\mathbf{1.52 \pm 0.00}$ & $\mathbf{+0.095 \pm 0.00}$ & Jerk: $231.6\,$N/s, Solve: $\mathbf{0.710}\,\text{ms}$ ($\mathbf{43.2\times}$ speedup) \\
 \midrule
 \multirow{2}{*}{\textbf{Partial Rotor Degradation}} & Nominal HOCBF & $15/15$ ($100\%$) & $0.0\%$ $[0.0\%, 21.8\%]$ & --- & $-0.142 \pm 0.03$ & Motor Saturation: $100\%$ \\
 & \textbf{Re-allocated CBF (AEGIS)} & $\mathbf{0/15}$ ($\mathbf{0.0\%}$) & $\mathbf{100\%}$ $[\mathbf{78.2\%, 100\%}]$ & $1.84 \pm 0.04$ & $\mathbf{+0.088 \pm 0.01}$ & Controlled Recovery \\
 \midrule
 \multirow{2}{*}{\textbf{Stealth IMU Bias Injection}} & Standard $\chi^2$-KF Detector & $12/15$ ($80.0\%$) & $20.0\%$ $[4.3\%, 48.1\%]$ & --- & $+0.012 \pm 0.04$ & Detection Delay: $1,820\,$ms ($3$ false alarms) \\
-& \textbf{Ville Supermartingale (AEGIS)} & $\mathbf{0/15}$ ($\mathbf{0.0\%}$) & $\mathbf{100\%}$ $[\mathbf{78.2\%, 100\%}]$ & $1.65 \pm 0.02$ & $\mathbf{+0.092 \pm 0.01}$ & Detection Delay: $\mathbf{380}\,\text{ms}$ ($\mathbf{0}$ false alarms) \\
-\midrule
-\multirow{2}{*}{\textbf{Visual Occlusion Corridor}} & Blind Baseline Policy & $15/15$ ($100\%$) & $0.0\%$ $[0.0\%, 21.8\%]$ & --- & $-0.220 \pm 0.05$ & Collision with unmapped obstacle \\
-& \textbf{Active UKF-CBF (AEGIS)} & $\mathbf{0/15}$ ($\mathbf{0.0\%}$) & $\mathbf{100\%}$ $[\mathbf{78.2\%, 100\%}]$ & $2.14 \pm 0.06$ & $\mathbf{+0.114 \pm 0.02}$ & Proactive air-braking upon occlusion \\
+& \textbf{Ville Supermartingale (AEGIS)} & $\mathbf{0/15}$ ($\mathbf{0.0\%}$) & $\mathbf{100\%}$ $[\mathbf{78.2\%, 100\%}]$ & $1.65 \pm 0.02$ & $\mathbf{+0.092 \pm 0.01}$ & Detection Delay: $\mathbf{338.5}\,\text{ms}$ ($\mathbf{0}$ false alarms) \\
 \midrule
 \multirow{2}{*}{\textbf{Narrow Doorway Passage}} & Bounding Sphere CBF & $15/15$ ($100\%$) & $0.0\%$ $[0.0\%, 21.8\%]$ & --- & $+0.000$ & False Deadlock (Door declared blocked) \\
 & \textbf{Local 3D ESDF + SFC Polytope} & $\mathbf{0/15}$ ($\mathbf{0.0\%}$) & $\mathbf{100\%}$ $[\mathbf{78.2\%, 100\%}]$ & $\mathbf{1.76 \pm 0.03}$ & $\mathbf{+0.125 \pm 0.01}$ & Smooth traversal via separating planes \\
-\midrule
-\multirow{2}{*}{\textbf{Safe RL Navigation}} & Disjoint Post-Shield PPO & $3/15$ ($20.0\%$) & $80.0\%$ $[51.9\%, 95.7\%]$ & $2.35 \pm 0.08$ & $+0.045 \pm 0.02$ & Zero policy gradient through shield \\
-& \textbf{Differentiable Implicit-KKT RL} & $\mathbf{0/15}$ ($\mathbf{0.0\%}$) & $\mathbf{100\%}$ $[\mathbf{78.2\%, 100\%}]$ & $\mathbf{1.68 \pm 0.02}$ & $\mathbf{+0.098 \pm 0.01}$ & End-to-end $\partial \mathbf{u}^*/\partial \mathbf{u}_{\text{nom}}$ backprop \\
-\midrule
-\multirow{2}{*}{\textbf{Tunnel Boundary Aerodynamics}} & Nominal Uncompensated HOCBF & $15/15$ ($100\%$) & $0.0\%$ $[0.0\%, 21.8\%]$ & --- & $-0.075 \pm 0.02$ & Wall Suction Crash ($d < 0.125\,$m) \\
-& \textbf{Aero-Compensated HOCBF (AEGIS)} & $\mathbf{0/15}$ ($\mathbf{0.0\%}$) & $\mathbf{100\%}$ $[\mathbf{78.2\%, 100\%}]$ & $\mathbf{1.72 \pm 0.02}$ & $\mathbf{+0.188 \pm 0.01}$ & Feedforward $\mathcal{L}_{\mathbf{f}_{\text{aero}}} h$ cancellation \\
 \bottomrule
 \end{tabular}%
 }
 \end{table*}
 \endgroup
 
-\newpage
-\subsection{Performance Highlights across 8 Scenarios}
+\subsection{Performance Highlights across Scenarios}
 As tabulated in Table~\ref{tab:main_results}:
-\begin{enumerate}[leftmargin=12pt]
-    \item \textbf{Transit Speed \& Invariance:} NMPC-HOCBF completes dynamic obstacle transit in $1.52\,$s (vs $2.00\,$s for pointwise CBF, a $24.0\%$ speedup) while maintaining $+0.095\,$m clearance.
-    \item \textbf{Wall Suction Cancellation:} Under tunnel wall proximity, nominal CBF suffers 97 wall strikes ($d < 0.125\,$m). Aero-HOCBF achieves 0 collisions and $+0.188\,$m physical clearance.
-    \item \textbf{Anytime Anomaly Eviction:} Under a $+1.8\,\text{m/s}^2$ IMU drift, Ville martingales cross $M_t \ge 20$ within $380\,$ms with zero false alarms under $\mathcal{H}_0$, whereas $\chi^2$-KF detectors require $1,820\,$ms and trigger 3 false alarms.
+\begin{enumerate}[leftmargin=10pt, itemsep=1pt]
+    \item \textbf{100-Run Aerodynamic Invariance:} In 100 randomized tunnel runs with unmodeled suction ($\pm 25\%$) and gusts, uncompensated CBF incurs $45.0\%$ barrier violations ($\min h = -0.0287\,$m), while robust tube-CBF triggers $42.0\%$ freezing stalls and $5.0\%$ crashes. AEGIS achieves $100\%$ success ($95\%$ CI: $[96.4\%, 100\%]$) with certified positive margin ($\min h = +0.0381\,$m) and zero stalls.
+    \item \textbf{Transit Speed \& Invariance:} NMPC-HOCBF completes dynamic obstacle transit in $1.52\,$s (vs $2.00\,$s for pointwise CBF, a $24.0\%$ speedup) with $+0.095\,$m clearance.
+    \item \textbf{Anytime Anomaly Eviction:} Under lateral IMU bias injection, Ville martingales cross $M_t \ge 20$ in $338.5 \pm 71.4\,$ms with zero false alarms under $\mathcal{H}_0$, whereas sliding-window $\chi^2$ detectors suffer repeated testing false alarms.
     \item \textbf{Actuator Failure Tolerance:} Under a $25\%$ rotor thrust loss, dynamic re-allocation safely stabilizes the drone in $1.84\,$s (+0.088 m clearance), whereas baseline policies crash in $100\%$ of trials.
 \end{enumerate}
 
 \section{Discussion, Limitations, \& Conclusion}
 \label{sec:conclusion}
-This paper presented NEXVIA-AEGIS, an integrated safety-critical autonomy framework for aerial robotics under physical, aerodynamic, and sensor anomalies. By synthesizing underactuated $SE(3)$ HOCBFs, sub-millisecond C++20 RTI-SQP NMPC, anytime-valid Ville supermartingales, and boundary aerodynamic compensation, AEGIS guarantees forward invariance while eliminating myopic deadlocks and false alarms under continuous stopping times. While continuous MuJoCo simulations incorporate brushless electromechanics and ground/wall coupling, violent turbulent wind gusts and rotor blade aeroelasticity remain open sim-to-real challenges. Ongoing work focuses on embedded hardware flight tests on Holybro quadrotors with NVIDIA Jetson Orin companion computers.
+This paper presented NEXVIA-AEGIS, an integrated safety-critical autonomy framework for aerial robotics under boundary aerodynamic and sensor disturbances. By synthesizing underactuated $SE(3)$ HOCBFs, sub-millisecond C++20 RTI-SQP NMPC ($0.710\,$ms), anytime-valid Ville supermartingales, and aerodynamic feedforward compensation, AEGIS guarantees forward invariance while eliminating myopic deadlocks and repeated-testing false alarms. Future work targets physical flight in instrumented subterranean wind-wall testbeds.
 
 \begingroup
-\footnotesize
-\def\BIBdecl{\setlength{\itemsep}{0pt plus 0.1pt}\setlength{\parsep}{0pt}}
+\scriptsize
+\def\BIBdecl{\setlength{\itemsep}{-0.5pt}\setlength{\parsep}{0pt}}
 \bibliographystyle{IEEEtran}
 \bibliography{references}
 \endgroup
