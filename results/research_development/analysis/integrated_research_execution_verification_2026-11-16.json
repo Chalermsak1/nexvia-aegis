@@ -1,0 +1,122 @@
+{
+  "classification": "EXPLORATORY_RESEARCH_PROGRAM_EXECUTION",
+  "parent_commit": "74b0bfab8e57cd450293e49de881207074df3141",
+  "source_sha256": {
+    "experiments/benchmark_physical_3d_cbf.py": "04bc31bf74423806200e39a44334e1dd0cf4063dde08797ef79dacb491b4323f",
+    "scripts/research/audit_bridge_v3.py": "1025c51aea610958b9f3e2c5c8510073edf8076805900885f906c7693efc2f95",
+    "scripts/research/configured_noise_pairing.py": "39ae97cdd3c8fc2d01c46e9827cf535619cf7b49613c10e486f2ecaef4ed0e8a",
+    "scripts/research/development_ledger.py": "254fe889557148110e458ed2cb6e3286837589a484d7a63e1ae3d2c34b645502",
+    "scripts/research/paired_recovery_study.py": "3db2e54fe09d97c67702f892bd845f89b5f3c083b16dfaf7fdb163e2abc62fea",
+    "scripts/research/recovery_execution_bridge_v3.py": "680ae82bd06e842aa497b5a5ed0fbaec5c91f5e5e1035f4fa47353ca01e1d3ed",
+    "scripts/research/recovery_noise_pairing.py": "adc3248ad81c9128be3171d349ef17dad396ea7dd08a098ed9b240c0e57268c5",
+    "src/aegis/env/mujoco_3d_cbf.py": "438b8ec89d1d40101586b0d888de7e8b5d73c9763cbae2603ccab01f04801433",
+    "src/aegis/env/mujoco_3d_synchronized.py": "f00625647ff9c56a86efba384a7149e94e149c922cce3ba5d45835aa0d9916e3",
+    "src/aegis/v9/anchor_recovery_candidate.py": "14234ba7efccecc28f639a0ecb6b390ea29b59eaccc3b82bd6f4360dccdf038a",
+    "src/aegis/v9/controller_3d.py": "4579219de9d9ab4269fa620e1962685e844f927ba00e6979d571aa47f73f6892",
+    "src/aegis/v9/recovery_monitor_candidate.py": "134b2f549fde1762e5d48b5505131a231634ddf77edcbd766e1bf00fd189819d",
+    "src/aegis/v9/stabilized_arrival_candidate.py": "3f93b0c736a924296c949466fbec502040ce1c65a19912a64564ff7ec5928cb8"
+  },
+  "runtime_versions": {
+    "python": "3.12.14",
+    "numpy": "2.5.3",
+    "mujoco": "3.14.0"
+  },
+  "test_suites": {
+    "integration": {
+      "tests": "48",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "timestamp": "2026-11-16T09:41:25.360419+07:00",
+      "time": "6.577"
+    },
+    "geometry_agent": {
+      "tests": "44",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "timestamp": "2026-11-16T09:40:23.769613+07:00",
+      "time": "3.184"
+    },
+    "references": {
+      "tests": "73",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "timestamp": "2026-11-16T09:46:44.707394+07:00",
+      "time": "0.061"
+    }
+  },
+  "commands": {
+    "integration_tests": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:. .venv/bin/python -m pytest -p no:cacheprovider -q tests/test_paired_recovery_study.py tests/test_integrated_bridge_v3.py tests/test_configured_noise_pairing.py tests/test_recovery_noise_pairing.py tests/test_recovery_noise_actual_trace.py --basetemp=/private/tmp/nexvia-integrated-20261116/pytest --junitxml=/private/tmp/nexvia-integrated-20261116/tests.xml",
+    "actual_study": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:. .venv/bin/python scripts/research/paired_recovery_study.py run /private/tmp/nexvia-integrated-20261116/study"
+  },
+  "pair_checks": [
+    {
+      "ids": [
+        "aegis_3d_anchor_recovery_nominal_legacy",
+        "aegis_3d_anchor_recovery_nominal_sync"
+      ],
+      "runtime_equal": true,
+      "reset_geometry_clear": true
+    },
+    {
+      "ids": [
+        "aegis_3d_anchor_recovery_heavy_legacy",
+        "aegis_3d_anchor_recovery_heavy_sync"
+      ],
+      "runtime_equal": true,
+      "reset_geometry_clear": true
+    },
+    {
+      "ids": [
+        "aegis_3d_recovery_monitor_nominal_legacy",
+        "aegis_3d_recovery_monitor_nominal_sync"
+      ],
+      "runtime_equal": true,
+      "reset_geometry_clear": true
+    },
+    {
+      "ids": [
+        "aegis_3d_recovery_monitor_heavy_legacy",
+        "aegis_3d_recovery_monitor_heavy_sync"
+      ],
+      "runtime_equal": true,
+      "reset_geometry_clear": true
+    }
+  ],
+  "study_artifact_sha256": {
+    "aegis_3d_anchor_recovery_heavy_legacy.jsonl": "b87822ba70ee6c808838e9d3819411f98cfb04f8392619f237bbaa12cf02fac9",
+    "aegis_3d_anchor_recovery_heavy_sync.jsonl": "d6827f7b8f1fe7739a2f9e5347b9a6a86cc337ec22333a98103411bec48cec6b",
+    "aegis_3d_anchor_recovery_nominal_legacy.jsonl": "2bd6aa574acc63b2b3fbe87ab99b676803f0500adf9fc4d13a4218b6afab5fef",
+    "aegis_3d_anchor_recovery_nominal_sync.jsonl": "ae0cb8e45833b3fe462c0ff731b66249dd389116b26851e91a9387036603503d",
+    "aegis_3d_recovery_monitor_heavy_legacy.jsonl": "1a8b5b280a0d8da5566b233540a0ba5ddaf0430c27e0d7ea72b08063f61dfae8",
+    "aegis_3d_recovery_monitor_heavy_sync.jsonl": "d5eff8bffe0d4b0a0c2d57d08a8710d37e6602d55a05100e9df11fa3795dfaa8",
+    "aegis_3d_recovery_monitor_nominal_legacy.jsonl": "ca8b3905529e14e51bf812f0a7d9632f92911090f7e4a3e31b5626554e379687",
+    "aegis_3d_recovery_monitor_nominal_sync.jsonl": "19f66db98df72b96771142e8a8f2597c24c2e5f4df43b1432209095bf9942d1a",
+    "batch.jsonl": "b753c2dec958d569b1617246033a39ca39a51e525122438c62f7d7ae30ff25ee",
+    "manifest.json": "f87b591ef5a2342bfe480cea4aef0f26fec441e86b3642c603e6c6aabd67da19",
+    "summary.json": "2b5bae3d0275a79ef78ef14068a199b9ccebeacc7781c9902b9593658c8d7d4b"
+  },
+  "checks": {
+    "source_matches_executed_manifest": true,
+    "summary_recomputed_identically": true,
+    "all_four_runtime_pairs_match": true,
+    "all_resets_geometrically_clear": true
+  },
+  "limitations": [
+    "Geometry and source/runtime are self-reported consistency evidence, not independent authentication.",
+    "Collision summary covers persisted PHYSICS; reset clearances checked separately.",
+    "No independent statistical/control/hardware approval."
+  ],
+  "governance": "GATE_B_NOT_AUTHORIZED",
+  "additional_artifact_sha256": {
+    "/private/tmp/nexvia-integrated-20261116/report.md": "32b3003e59dd7510956448bd8498a3a75cc18db10752355c43faa3d213266d9a",
+    "/private/tmp/nexvia-integrated-20261116/test-fixtures.zip": "020b6405e9eda0a928020be05d248ac59957c43900664e0fa658b48b3bf51027",
+    "/private/tmp/nexvia-integrated-20261116/tests.xml": "d3780015e09feaba24d880a416f0d1c1182f22d224c7b6b80dba30812c7d69db",
+    "/private/tmp/nexvia-integrated-20261116/reference-tests.xml": "cab756b3adf068cee2d950cae3431576a6902dd4c4b80bace2aa29e110b169e7",
+    "/private/tmp/nexvia-v3-geometry/horizon-tests.xml": "975998da92f25ab42ca4be6fe68e12cb9fa17d239a16b50ec04405c1948f7374",
+    "/private/tmp/nexvia-monitor-proof-review-20261116.md": "4c437c603973a31e3bd406fb3a20a1048900537a4062581bcb1e859803da6a70",
+    "/private/tmp/nexvia-monitor-counterexamples-20261116.json": "6320ba9832b6651019036ad9d6fdd18cc2e58e5b0c88b57ef5d91a814c0f0317"
+  }
+}

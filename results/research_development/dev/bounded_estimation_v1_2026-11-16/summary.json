@@ -1,0 +1,1039 @@
+{
+  "study": "V9-M5 bounded estimation braking diagnostic v1",
+  "ledger_state": "FINALIZED",
+  "assignment_counts": {
+    "ASSIGNED": 0,
+    "STARTED": 0,
+    "COMPLETED": 54,
+    "ERROR": 0
+  },
+  "source_metadata": {
+    "gate_b": "GATE_B_NOT_AUTHORIZED",
+    "not_confirmatory": true,
+    "parent_commit": "74b0bfab8e57cd450293e49de881207074df3141",
+    "sources": {
+      "scripts/research/bounded_estimation_study.py": "3abb7fd7d1fb2998957a0485ea6bbfc1fa6cca4228fb23512c2e744935377914",
+      "scripts/research/development_ledger.py": "254fe889557148110e458ed2cb6e3286837589a484d7a63e1ae3d2c34b645502",
+      "src/aegis/development/__init__.py": "afe5c415a90205d00220200b69b991a54a4741e1fa655a0ac9ed4f3ccbfc3043",
+      "src/aegis/development/bounded_braking.py": "6f34c760bebd07d91a8f08110a5ad50659bcd073a59077716476df1033f999e2",
+      "src/aegis/env/mujoco_3d_cbf.py": "438b8ec89d1d40101586b0d888de7e8b5d73c9763cbae2603ccab01f04801433"
+    },
+    "versions": {
+      "mujoco": "3.14.0",
+      "numpy": "2.5.3",
+      "python": "3.12.14"
+    }
+  },
+  "assignments": [
+    {
+      "id": "w0:nominal:POINT_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 80,
+        "no_command": 0,
+        "declared_bound_violations_for_scoring": 0,
+        "positive_power_samples_for_scoring": 0,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 32,
+        "final_sampled_speed_m_s": 0.018277422146004352,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:nominal:BOUNDED_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 12,
+        "no_command": 68,
+        "declared_bound_violations_for_scoring": 0,
+        "positive_power_samples_for_scoring": 0,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 0,
+        "final_sampled_speed_m_s": 0.006982490263165721,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:reversal_reported:POINT_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 80,
+        "no_command": 0,
+        "declared_bound_violations_for_scoring": 0,
+        "positive_power_samples_for_scoring": 74,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 74,
+        "final_sampled_speed_m_s": 3.198644610579235,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:reversal_reported:BOUNDED_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 6,
+        "no_command": 74,
+        "declared_bound_violations_for_scoring": 0,
+        "positive_power_samples_for_scoring": 0,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 0,
+        "final_sampled_speed_m_s": 0.23880716506735286,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:reversal_unreported:POINT_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 80,
+        "no_command": 0,
+        "declared_bound_violations_for_scoring": 74,
+        "positive_power_samples_for_scoring": 74,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 74,
+        "final_sampled_speed_m_s": 3.198644610579235,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:reversal_unreported:BOUNDED_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 80,
+        "no_command": 0,
+        "declared_bound_violations_for_scoring": 74,
+        "positive_power_samples_for_scoring": 74,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 74,
+        "final_sampled_speed_m_s": 3.198644610579235,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:underreported:POINT_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 80,
+        "no_command": 0,
+        "declared_bound_violations_for_scoring": 57,
+        "positive_power_samples_for_scoring": 9,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 35,
+        "final_sampled_speed_m_s": 0.03164481535886453,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:underreported:BOUNDED_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 10,
+        "no_command": 70,
+        "declared_bound_violations_for_scoring": 74,
+        "positive_power_samples_for_scoring": 0,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 0,
+        "final_sampled_speed_m_s": 0.08426518954135827,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:delayed:POINT_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 80,
+        "no_command": 0,
+        "declared_bound_violations_for_scoring": 0,
+        "positive_power_samples_for_scoring": 6,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 37,
+        "final_sampled_speed_m_s": 0.08759972276684608,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:delayed:BOUNDED_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 12,
+        "no_command": 68,
+        "declared_bound_violations_for_scoring": 0,
+        "positive_power_samples_for_scoring": 0,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 0,
+        "final_sampled_speed_m_s": 0.006128380187840167,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:stale:POINT_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 10,
+        "no_command": 70,
+        "declared_bound_violations_for_scoring": 0,
+        "positive_power_samples_for_scoring": 0,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 0,
+        "final_sampled_speed_m_s": 0.07889959082001292,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:stale:BOUNDED_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 10,
+        "no_command": 70,
+        "declared_bound_violations_for_scoring": 0,
+        "positive_power_samples_for_scoring": 0,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 0,
+        "final_sampled_speed_m_s": 0.07889959082001292,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:replay:POINT_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 6,
+        "no_command": 74,
+        "declared_bound_violations_for_scoring": 0,
+        "positive_power_samples_for_scoring": 0,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 0,
+        "final_sampled_speed_m_s": 0.23880716506735286,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:replay:BOUNDED_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 6,
+        "no_command": 74,
+        "declared_bound_violations_for_scoring": 0,
+        "positive_power_samples_for_scoring": 0,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 0,
+        "final_sampled_speed_m_s": 0.23880716506735286,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:missing:POINT_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 6,
+        "no_command": 74,
+        "declared_bound_violations_for_scoring": 0,
+        "positive_power_samples_for_scoring": 0,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 0,
+        "final_sampled_speed_m_s": 0.23880716506735286,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:missing:BOUNDED_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 6,
+        "no_command": 74,
+        "declared_bound_violations_for_scoring": 0,
+        "positive_power_samples_for_scoring": 0,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 0,
+        "final_sampled_speed_m_s": 0.23880716506735286,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:bounds_missing:POINT_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 6,
+        "no_command": 74,
+        "declared_bound_violations_for_scoring": 0,
+        "positive_power_samples_for_scoring": 0,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 0,
+        "final_sampled_speed_m_s": 0.23880716506735286,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:bounds_missing:BOUNDED_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 6,
+        "no_command": 74,
+        "declared_bound_violations_for_scoring": 0,
+        "positive_power_samples_for_scoring": 0,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 0,
+        "final_sampled_speed_m_s": 0.23880716506735286,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:nominal:POINT_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 80,
+        "no_command": 0,
+        "declared_bound_violations_for_scoring": 0,
+        "positive_power_samples_for_scoring": 0,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 35,
+        "final_sampled_speed_m_s": 0.021834362708177107,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:nominal:BOUNDED_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 13,
+        "no_command": 67,
+        "declared_bound_violations_for_scoring": 0,
+        "positive_power_samples_for_scoring": 0,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 0,
+        "final_sampled_speed_m_s": 0.011120827482961832,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:reversal_reported:POINT_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 80,
+        "no_command": 0,
+        "declared_bound_violations_for_scoring": 0,
+        "positive_power_samples_for_scoring": 74,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 74,
+        "final_sampled_speed_m_s": 3.235705576565291,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:reversal_reported:BOUNDED_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 6,
+        "no_command": 74,
+        "declared_bound_violations_for_scoring": 0,
+        "positive_power_samples_for_scoring": 0,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 0,
+        "final_sampled_speed_m_s": 0.27588890174296515,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:reversal_unreported:POINT_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 80,
+        "no_command": 0,
+        "declared_bound_violations_for_scoring": 74,
+        "positive_power_samples_for_scoring": 74,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 74,
+        "final_sampled_speed_m_s": 3.235705576565291,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:reversal_unreported:BOUNDED_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 80,
+        "no_command": 0,
+        "declared_bound_violations_for_scoring": 74,
+        "positive_power_samples_for_scoring": 74,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 74,
+        "final_sampled_speed_m_s": 3.235705576565291,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:underreported:POINT_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 80,
+        "no_command": 0,
+        "declared_bound_violations_for_scoring": 63,
+        "positive_power_samples_for_scoring": 9,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 33,
+        "final_sampled_speed_m_s": 0.013094132354853696,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:underreported:BOUNDED_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 11,
+        "no_command": 69,
+        "declared_bound_violations_for_scoring": 74,
+        "positive_power_samples_for_scoring": 0,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 0,
+        "final_sampled_speed_m_s": 0.08136281227477388,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:delayed:POINT_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 80,
+        "no_command": 0,
+        "declared_bound_violations_for_scoring": 0,
+        "positive_power_samples_for_scoring": 8,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 36,
+        "final_sampled_speed_m_s": 0.09480854556931255,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:delayed:BOUNDED_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 12,
+        "no_command": 68,
+        "declared_bound_violations_for_scoring": 0,
+        "positive_power_samples_for_scoring": 0,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 0,
+        "final_sampled_speed_m_s": 0.036250179931519216,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:stale:POINT_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 10,
+        "no_command": 70,
+        "declared_bound_violations_for_scoring": 0,
+        "positive_power_samples_for_scoring": 0,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 0,
+        "final_sampled_speed_m_s": 0.11599735874379696,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:stale:BOUNDED_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 10,
+        "no_command": 70,
+        "declared_bound_violations_for_scoring": 0,
+        "positive_power_samples_for_scoring": 0,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 0,
+        "final_sampled_speed_m_s": 0.11599735874379696,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:replay:POINT_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 6,
+        "no_command": 74,
+        "declared_bound_violations_for_scoring": 0,
+        "positive_power_samples_for_scoring": 0,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 0,
+        "final_sampled_speed_m_s": 0.27588890174296515,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:replay:BOUNDED_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 6,
+        "no_command": 74,
+        "declared_bound_violations_for_scoring": 0,
+        "positive_power_samples_for_scoring": 0,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 0,
+        "final_sampled_speed_m_s": 0.27588890174296515,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:missing:POINT_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 6,
+        "no_command": 74,
+        "declared_bound_violations_for_scoring": 0,
+        "positive_power_samples_for_scoring": 0,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 0,
+        "final_sampled_speed_m_s": 0.27588890174296515,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:missing:BOUNDED_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 6,
+        "no_command": 74,
+        "declared_bound_violations_for_scoring": 0,
+        "positive_power_samples_for_scoring": 0,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 0,
+        "final_sampled_speed_m_s": 0.27588890174296515,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:bounds_missing:POINT_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 6,
+        "no_command": 74,
+        "declared_bound_violations_for_scoring": 0,
+        "positive_power_samples_for_scoring": 0,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 0,
+        "final_sampled_speed_m_s": 0.27588890174296515,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:bounds_missing:BOUNDED_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 6,
+        "no_command": 74,
+        "declared_bound_violations_for_scoring": 0,
+        "positive_power_samples_for_scoring": 0,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 0,
+        "final_sampled_speed_m_s": 0.27588890174296515,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:nominal:POINT_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 80,
+        "no_command": 0,
+        "declared_bound_violations_for_scoring": 0,
+        "positive_power_samples_for_scoring": 0,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 34,
+        "final_sampled_speed_m_s": 0.035966004401054366,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:nominal:BOUNDED_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 10,
+        "no_command": 70,
+        "declared_bound_violations_for_scoring": 0,
+        "positive_power_samples_for_scoring": 0,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 0,
+        "final_sampled_speed_m_s": 0.022975287568818864,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:reversal_reported:POINT_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 80,
+        "no_command": 0,
+        "declared_bound_violations_for_scoring": 0,
+        "positive_power_samples_for_scoring": 74,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 74,
+        "final_sampled_speed_m_s": 3.1403190869771462,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:reversal_reported:BOUNDED_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 6,
+        "no_command": 74,
+        "declared_bound_violations_for_scoring": 0,
+        "positive_power_samples_for_scoring": 0,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 0,
+        "final_sampled_speed_m_s": 0.18061296934788554,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:reversal_unreported:POINT_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 80,
+        "no_command": 0,
+        "declared_bound_violations_for_scoring": 74,
+        "positive_power_samples_for_scoring": 74,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 74,
+        "final_sampled_speed_m_s": 3.1403190869771462,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:reversal_unreported:BOUNDED_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 80,
+        "no_command": 0,
+        "declared_bound_violations_for_scoring": 74,
+        "positive_power_samples_for_scoring": 74,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 74,
+        "final_sampled_speed_m_s": 3.1403190869771462,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:underreported:POINT_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 80,
+        "no_command": 0,
+        "declared_bound_violations_for_scoring": 55,
+        "positive_power_samples_for_scoring": 9,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 36,
+        "final_sampled_speed_m_s": 0.03503723708965141,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:underreported:BOUNDED_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 8,
+        "no_command": 72,
+        "declared_bound_violations_for_scoring": 74,
+        "positive_power_samples_for_scoring": 0,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 0,
+        "final_sampled_speed_m_s": 0.10485627185773107,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:delayed:POINT_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 80,
+        "no_command": 0,
+        "declared_bound_violations_for_scoring": 0,
+        "positive_power_samples_for_scoring": 8,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 35,
+        "final_sampled_speed_m_s": 0.09260727405640755,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:delayed:BOUNDED_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 10,
+        "no_command": 70,
+        "declared_bound_violations_for_scoring": 0,
+        "positive_power_samples_for_scoring": 0,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 0,
+        "final_sampled_speed_m_s": 0.02176114650139527,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:stale:POINT_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 10,
+        "no_command": 70,
+        "declared_bound_violations_for_scoring": 0,
+        "positive_power_samples_for_scoring": 0,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 0,
+        "final_sampled_speed_m_s": 0.021699529902369213,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:stale:BOUNDED_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 10,
+        "no_command": 70,
+        "declared_bound_violations_for_scoring": 0,
+        "positive_power_samples_for_scoring": 0,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 0,
+        "final_sampled_speed_m_s": 0.021699529902369213,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:replay:POINT_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 6,
+        "no_command": 74,
+        "declared_bound_violations_for_scoring": 0,
+        "positive_power_samples_for_scoring": 0,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 0,
+        "final_sampled_speed_m_s": 0.18061296934788554,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:replay:BOUNDED_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 6,
+        "no_command": 74,
+        "declared_bound_violations_for_scoring": 0,
+        "positive_power_samples_for_scoring": 0,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 0,
+        "final_sampled_speed_m_s": 0.18061296934788554,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:missing:POINT_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 6,
+        "no_command": 74,
+        "declared_bound_violations_for_scoring": 0,
+        "positive_power_samples_for_scoring": 0,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 0,
+        "final_sampled_speed_m_s": 0.18061296934788554,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:missing:BOUNDED_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 6,
+        "no_command": 74,
+        "declared_bound_violations_for_scoring": 0,
+        "positive_power_samples_for_scoring": 0,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 0,
+        "final_sampled_speed_m_s": 0.18061296934788554,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:bounds_missing:POINT_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 6,
+        "no_command": 74,
+        "declared_bound_violations_for_scoring": 0,
+        "positive_power_samples_for_scoring": 0,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 0,
+        "final_sampled_speed_m_s": 0.18061296934788554,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:bounds_missing:BOUNDED_ESTIMATE",
+      "state": "COMPLETED",
+      "summary": {
+        "controls": 80,
+        "physics_steps": 80,
+        "commands_proposed": 6,
+        "no_command": 74,
+        "declared_bound_violations_for_scoring": 0,
+        "positive_power_samples_for_scoring": 0,
+        "collision_samples": 0,
+        "positive_kinetic_energy_increments_for_scoring": 0,
+        "final_sampled_speed_m_s": 0.18061296934788554,
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NO_SAFETY_PASS"
+      }
+    }
+  ],
+  "pair_checks": [
+    {
+      "world": 0,
+      "case": "nominal",
+      "status": "MATCHED_RESET_RUNTIME_INNOVATIONS_ONLY"
+    },
+    {
+      "world": 0,
+      "case": "reversal_reported",
+      "status": "MATCHED_RESET_RUNTIME_INNOVATIONS_ONLY"
+    },
+    {
+      "world": 0,
+      "case": "reversal_unreported",
+      "status": "MATCHED_RESET_RUNTIME_INNOVATIONS_ONLY"
+    },
+    {
+      "world": 0,
+      "case": "underreported",
+      "status": "MATCHED_RESET_RUNTIME_INNOVATIONS_ONLY"
+    },
+    {
+      "world": 0,
+      "case": "delayed",
+      "status": "MATCHED_RESET_RUNTIME_INNOVATIONS_ONLY"
+    },
+    {
+      "world": 0,
+      "case": "stale",
+      "status": "MATCHED_RESET_RUNTIME_INNOVATIONS_ONLY"
+    },
+    {
+      "world": 0,
+      "case": "replay",
+      "status": "MATCHED_RESET_RUNTIME_INNOVATIONS_ONLY"
+    },
+    {
+      "world": 0,
+      "case": "missing",
+      "status": "MATCHED_RESET_RUNTIME_INNOVATIONS_ONLY"
+    },
+    {
+      "world": 0,
+      "case": "bounds_missing",
+      "status": "MATCHED_RESET_RUNTIME_INNOVATIONS_ONLY"
+    },
+    {
+      "world": 1,
+      "case": "nominal",
+      "status": "MATCHED_RESET_RUNTIME_INNOVATIONS_ONLY"
+    },
+    {
+      "world": 1,
+      "case": "reversal_reported",
+      "status": "MATCHED_RESET_RUNTIME_INNOVATIONS_ONLY"
+    },
+    {
+      "world": 1,
+      "case": "reversal_unreported",
+      "status": "MATCHED_RESET_RUNTIME_INNOVATIONS_ONLY"
+    },
+    {
+      "world": 1,
+      "case": "underreported",
+      "status": "MATCHED_RESET_RUNTIME_INNOVATIONS_ONLY"
+    },
+    {
+      "world": 1,
+      "case": "delayed",
+      "status": "MATCHED_RESET_RUNTIME_INNOVATIONS_ONLY"
+    },
+    {
+      "world": 1,
+      "case": "stale",
+      "status": "MATCHED_RESET_RUNTIME_INNOVATIONS_ONLY"
+    },
+    {
+      "world": 1,
+      "case": "replay",
+      "status": "MATCHED_RESET_RUNTIME_INNOVATIONS_ONLY"
+    },
+    {
+      "world": 1,
+      "case": "missing",
+      "status": "MATCHED_RESET_RUNTIME_INNOVATIONS_ONLY"
+    },
+    {
+      "world": 1,
+      "case": "bounds_missing",
+      "status": "MATCHED_RESET_RUNTIME_INNOVATIONS_ONLY"
+    },
+    {
+      "world": 2,
+      "case": "nominal",
+      "status": "MATCHED_RESET_RUNTIME_INNOVATIONS_ONLY"
+    },
+    {
+      "world": 2,
+      "case": "reversal_reported",
+      "status": "MATCHED_RESET_RUNTIME_INNOVATIONS_ONLY"
+    },
+    {
+      "world": 2,
+      "case": "reversal_unreported",
+      "status": "MATCHED_RESET_RUNTIME_INNOVATIONS_ONLY"
+    },
+    {
+      "world": 2,
+      "case": "underreported",
+      "status": "MATCHED_RESET_RUNTIME_INNOVATIONS_ONLY"
+    },
+    {
+      "world": 2,
+      "case": "delayed",
+      "status": "MATCHED_RESET_RUNTIME_INNOVATIONS_ONLY"
+    },
+    {
+      "world": 2,
+      "case": "stale",
+      "status": "MATCHED_RESET_RUNTIME_INNOVATIONS_ONLY"
+    },
+    {
+      "world": 2,
+      "case": "replay",
+      "status": "MATCHED_RESET_RUNTIME_INNOVATIONS_ONLY"
+    },
+    {
+      "world": 2,
+      "case": "missing",
+      "status": "MATCHED_RESET_RUNTIME_INNOVATIONS_ONLY"
+    },
+    {
+      "world": 2,
+      "case": "bounds_missing",
+      "status": "MATCHED_RESET_RUNTIME_INNOVATIONS_ONLY"
+    }
+  ],
+  "classification": "DEVELOPMENT_ONLY_NOT_A_SAFETY_OR_CONFIRMATORY_PASS",
+  "limitations": [
+    "Caller bounds are assumptions, not authenticated truth.",
+    "Zero force plus ideal gravity compensation is a diagnostic, not a physical fallback.",
+    "No obstacle-avoidance filter or recovery/stopping guarantee.",
+    "Dependent trajectories: three development worlds, shared innovations.",
+    "Hash chains and replayed arithmetic are not independent simulator authentication."
+  ],
+  "gate_b": "GATE_B_NOT_AUTHORIZED"
+}

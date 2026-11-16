@@ -1,0 +1,62 @@
+{
+  "classification": "EXPLORATORY_PHYSICS_EVIDENCE",
+  "input_sha256": "48136174812afb4e852732d314b88bbd1b8e87dd4f860cec98c85902dd72fecf",
+  "ledger_state": "FINALIZED",
+  "assignments": [
+    {
+      "id": "2256000:0.0:AEGIS_3D_ANCHOR_RECOVERY",
+      "execution_status": "COMPLETED",
+      "decision_events": 139,
+      "physics_events": 164,
+      "stage_counts": {
+        "MAIN": 138,
+        "ABSTAIN_BRAKE": 1,
+        "POST_ABSTAIN_BRAKE": 25
+      },
+      "post_stop_collision_observed": false,
+      "post_abstain_collision_observed": false,
+      "limitation": "Post-action observations; crash between physics and persistence can leave an unrecorded step. Active truth-state braking is not a safe-stop claim."
+    },
+    {
+      "id": "2256000:0.0:AEGIS_3D_RECOVERY_MONITOR",
+      "execution_status": "COMPLETED",
+      "decision_events": 86,
+      "physics_events": 111,
+      "stage_counts": {
+        "MAIN": 85,
+        "ABSTAIN_BRAKE": 1,
+        "POST_ABSTAIN_BRAKE": 25
+      },
+      "post_stop_collision_observed": false,
+      "post_abstain_collision_observed": false,
+      "limitation": "Post-action observations; crash between physics and persistence can leave an unrecorded step. Active truth-state braking is not a safe-stop claim."
+    },
+    {
+      "id": "2256000:0.8:AEGIS_3D_ANCHOR_RECOVERY",
+      "execution_status": "COMPLETED",
+      "decision_events": 252,
+      "physics_events": 301,
+      "stage_counts": {
+        "MAIN": 251,
+        "POST_STOP_BRAKE": 50
+      },
+      "post_stop_collision_observed": false,
+      "post_abstain_collision_observed": false,
+      "limitation": "Post-action observations; crash between physics and persistence can leave an unrecorded step. Active truth-state braking is not a safe-stop claim."
+    },
+    {
+      "id": "2256000:0.8:AEGIS_3D_RECOVERY_MONITOR",
+      "execution_status": "COMPLETED",
+      "decision_events": 222,
+      "physics_events": 247,
+      "stage_counts": {
+        "MAIN": 221,
+        "ABSTAIN_BRAKE": 1,
+        "POST_ABSTAIN_BRAKE": 25
+      },
+      "post_stop_collision_observed": false,
+      "post_abstain_collision_observed": false,
+      "limitation": "Post-action observations; crash between physics and persistence can leave an unrecorded step. Active truth-state braking is not a safe-stop claim."
+    }
+  ]
+}

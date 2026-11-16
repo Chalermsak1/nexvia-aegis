@@ -1,0 +1,733 @@
+{
+  "study": "V9-M5 conditional recovery contract synthetic fixtures v1",
+  "ledger_state": "FINALIZED",
+  "counts": {
+    "ASSIGNED": 0,
+    "STARTED": 0,
+    "COMPLETED": 39,
+    "ERROR": 0
+  },
+  "metadata": {
+    "gate_b": "GATE_B_NOT_AUTHORIZED",
+    "parent_commit": "74b0bfab8e57cd450293e49de881207074df3141",
+    "sources": {
+      "scripts/research/development_ledger.py": "254fe889557148110e458ed2cb6e3286837589a484d7a63e1ae3d2c34b645502",
+      "scripts/research/freshness_lease_study.py": "dd7218147d8671aeb2e222e8527e8302655024ee469a3eb57f6ecdd63efd33ae",
+      "scripts/research/physical_reference_study.py": "0bfa4abe4d66a4c298d219ab1fb6d05ee1ed339c6fb0537e4c1c4b5530615ef6",
+      "scripts/research/recovery_contract_study.py": "a3ae5578bdf3ea98b028813ed509143557332ac0c28dd5772b4a55667c9c7365",
+      "scripts/research/streaming_ledger.py": "65fb737d771731fd7e0a9c5baf5ce6624f1e636d9ae925e9ff11bdba75358282",
+      "src/aegis/development/__init__.py": "afe5c415a90205d00220200b69b991a54a4741e1fa655a0ac9ed4f3ccbfc3043",
+      "src/aegis/development/assurance_gateway.py": "e810f11d21cca2ef50b02d3454c1934d9382251eab004ffc352dc32cb84e8119",
+      "src/aegis/development/bounded_braking.py": "6f34c760bebd07d91a8f08110a5ad50659bcd073a59077716476df1033f999e2",
+      "src/aegis/development/dual_source_braking.py": "4f189658d8a830619e1e8fe7ba4af25348905ae22ca68d9aef0d5bd4b134eb33",
+      "src/aegis/development/physical_reference.py": "d713b47a8c7426ea2dc2bfa7f545e00c7bc4b6b6a190e121b93fbea1c3692c05",
+      "src/aegis/development/recovery_contract.py": "493a82be59975207ebd4beb7523706f197116d34ae824b818edb91b59572ca79",
+      "src/aegis/development/sampled_motion_reference.py": "1180350e5dc47e1bbd5b461a7a5a7d22ffe4fd1263e4e1c86e44b64962d4f8aa",
+      "src/aegis/env/mujoco_3d_cbf.py": "438b8ec89d1d40101586b0d888de7e8b5d73c9763cbae2603ccab01f04801433",
+      "src/aegis/env/mujoco_lease_brake.py": "069727193b93c290a0c5e192f35931da3d6b44a69e9a5673ad63aa1b4e3414d4"
+    },
+    "versions": {
+      "mujoco": "3.14.0",
+      "numpy": "2.5.3",
+      "python": "3.12.14"
+    }
+  },
+  "assignments": [
+    {
+      "id": "h0:nominal",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "FINITE_SYNTHETIC_RECOVERY_FIXTURE",
+        "physics_steps": 133,
+        "design_status": "WITHIN_ASSERTED_RECOVERY_DESIGN",
+        "model_evaluation": "CONDITIONAL_SAMPLED_COMPARISON",
+        "force_budget_violated": false,
+        "brake_availability_violated": false,
+        "contact_or_geometry_violation": false,
+        "terminal_speed_band_and_dwell_observed": true,
+        "maximum_terminal_dwell_speed_m_s": 0.007164373856770184,
+        "terminal_dwell_samples": 26,
+        "residual_speed_m_s": 0.002582016816323393,
+        "sampled_path_m": 0.2779766319281638,
+        "observed_kinetic_energy_increase_j": 0.0,
+        "path_exceeds_design_bound": false,
+        "energy_exceeds_design_bound": false,
+        "empirical_post_horizon_containment": "NOT_ESTABLISHED_BY_FINITE_TRAJECTORY",
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "h0:finite_disturbance",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "FINITE_SYNTHETIC_RECOVERY_FIXTURE",
+        "physics_steps": 141,
+        "design_status": "WITHIN_ASSERTED_RECOVERY_DESIGN",
+        "model_evaluation": "CONDITIONAL_SAMPLED_COMPARISON",
+        "force_budget_violated": false,
+        "brake_availability_violated": false,
+        "contact_or_geometry_violation": false,
+        "terminal_speed_band_and_dwell_observed": true,
+        "maximum_terminal_dwell_speed_m_s": 0.015082345684570148,
+        "terminal_dwell_samples": 26,
+        "residual_speed_m_s": 0.0118316606986566,
+        "sampled_path_m": 0.3018235228646451,
+        "observed_kinetic_energy_increase_j": 0.0006007199999999435,
+        "path_exceeds_design_bound": false,
+        "energy_exceeds_design_bound": false,
+        "empirical_post_horizon_containment": "NOT_ESTABLISHED_BY_FINITE_TRAJECTORY",
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "h0:infinite_disturbance_declined",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "DESIGN_DECLINED_NO_EXECUTION",
+        "physics_steps": 0,
+        "design_status": "UNSUPPORTED_INFINITE_CONTAINMENT_WITH_DISTURBANCE",
+        "model_evaluation": "UNEVALUABLE_DESIGN",
+        "terminal_speed_band_and_dwell_observed": null,
+        "sampled_path_m": null,
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "h0:terminal_authority_declined",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "DESIGN_DECLINED_NO_EXECUTION",
+        "physics_steps": 0,
+        "design_status": "UNSUPPORTED_TERMINAL_AUTHORITY",
+        "model_evaluation": "UNEVALUABLE_DESIGN",
+        "terminal_speed_band_and_dwell_observed": null,
+        "sampled_path_m": null,
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "h0:cap_authority_declined",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "DESIGN_DECLINED_NO_EXECUTION",
+        "physics_steps": 0,
+        "design_status": "UNSUPPORTED_TERMINAL_AUTHORITY",
+        "model_evaluation": "UNEVALUABLE_DESIGN",
+        "terminal_speed_band_and_dwell_observed": null,
+        "sampled_path_m": null,
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "h0:availability_declined",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "DESIGN_DECLINED_NO_EXECUTION",
+        "physics_steps": 0,
+        "design_status": "UNSUPPORTED_BRAKE_AVAILABILITY",
+        "model_evaluation": "UNEVALUABLE_DESIGN",
+        "terminal_speed_band_and_dwell_observed": null,
+        "sampled_path_m": null,
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "h0:near_wall_declined",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "DESIGN_DECLINED_NO_EXECUTION",
+        "physics_steps": 0,
+        "design_status": "DECLINED_COMPOSED_CLEARANCE",
+        "model_evaluation": "UNEVALUABLE_DESIGN",
+        "terminal_speed_band_and_dwell_observed": null,
+        "sampled_path_m": null,
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "h0:energy_declined",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "DESIGN_DECLINED_NO_EXECUTION",
+        "physics_steps": 0,
+        "design_status": "DECLINED_ENERGY_BUDGET",
+        "model_evaluation": "UNEVALUABLE_DESIGN",
+        "terminal_speed_band_and_dwell_observed": null,
+        "sampled_path_m": null,
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "h0:horizon_declined",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "DESIGN_DECLINED_NO_EXECUTION",
+        "physics_steps": 0,
+        "design_status": "DECLINED_HORIZON_BUDGET",
+        "model_evaluation": "UNEVALUABLE_DESIGN",
+        "terminal_speed_band_and_dwell_observed": null,
+        "sampled_path_m": null,
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "h0:wrong_sign_probe",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "FINITE_SYNTHETIC_RECOVERY_FIXTURE",
+        "physics_steps": 133,
+        "design_status": "WITHIN_ASSERTED_RECOVERY_DESIGN",
+        "model_evaluation": "CONDITIONAL_SAMPLED_COMPARISON",
+        "force_budget_violated": false,
+        "brake_availability_violated": false,
+        "contact_or_geometry_violation": false,
+        "terminal_speed_band_and_dwell_observed": true,
+        "maximum_terminal_dwell_speed_m_s": 0.008300197124554034,
+        "terminal_dwell_samples": 26,
+        "residual_speed_m_s": 0.002991363792963638,
+        "sampled_path_m": 0.3164041453793789,
+        "observed_kinetic_energy_increase_j": 0.016512000000000027,
+        "path_exceeds_design_bound": false,
+        "energy_exceeds_design_bound": false,
+        "empirical_post_horizon_containment": "NOT_ESTABLISHED_BY_FINITE_TRAJECTORY",
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "h0:over_budget_probe",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "FINITE_SYNTHETIC_RECOVERY_FIXTURE",
+        "physics_steps": 133,
+        "design_status": "WITHIN_ASSERTED_RECOVERY_DESIGN",
+        "model_evaluation": "UNEVALUABLE_PREMISE_VIOLATION",
+        "force_budget_violated": true,
+        "brake_availability_violated": false,
+        "contact_or_geometry_violation": false,
+        "terminal_speed_band_and_dwell_observed": true,
+        "maximum_terminal_dwell_speed_m_s": 0.009931352025991406,
+        "terminal_dwell_samples": 26,
+        "residual_speed_m_s": 0.0035792266641285317,
+        "sampled_path_m": 0.370281971201218,
+        "observed_kinetic_energy_increase_j": 0.06720000000000007,
+        "path_exceeds_design_bound": null,
+        "energy_exceeds_design_bound": null,
+        "empirical_post_horizon_containment": "NOT_ESTABLISHED_BY_FINITE_TRAJECTORY",
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "h0:brake_loss",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "FINITE_SYNTHETIC_RECOVERY_FIXTURE",
+        "physics_steps": 133,
+        "design_status": "WITHIN_ASSERTED_RECOVERY_DESIGN",
+        "model_evaluation": "UNEVALUABLE_PREMISE_VIOLATION",
+        "force_budget_violated": false,
+        "brake_availability_violated": true,
+        "contact_or_geometry_violation": false,
+        "terminal_speed_band_and_dwell_observed": false,
+        "maximum_terminal_dwell_speed_m_s": 0.4608,
+        "terminal_dwell_samples": 26,
+        "residual_speed_m_s": 0.4608,
+        "sampled_path_m": 1.2284639999999887,
+        "observed_kinetic_energy_increase_j": 0.0,
+        "path_exceeds_design_bound": null,
+        "energy_exceeds_design_bound": null,
+        "empirical_post_horizon_containment": "NOT_ESTABLISHED_BY_FINITE_TRAJECTORY",
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "h0:late_brake_loss",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "FINITE_SYNTHETIC_RECOVERY_FIXTURE",
+        "physics_steps": 133,
+        "design_status": "WITHIN_ASSERTED_RECOVERY_DESIGN",
+        "model_evaluation": "UNEVALUABLE_PREMISE_VIOLATION",
+        "force_budget_violated": false,
+        "brake_availability_violated": true,
+        "contact_or_geometry_violation": false,
+        "terminal_speed_band_and_dwell_observed": true,
+        "maximum_terminal_dwell_speed_m_s": 0.007164373856770184,
+        "terminal_dwell_samples": 26,
+        "residual_speed_m_s": 0.007164373856770184,
+        "sampled_path_m": 0.27935928747713556,
+        "observed_kinetic_energy_increase_j": 0.0,
+        "path_exceeds_design_bound": null,
+        "energy_exceeds_design_bound": null,
+        "empirical_post_horizon_containment": "NOT_ESTABLISHED_BY_FINITE_TRAJECTORY",
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "h1:nominal",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "FINITE_SYNTHETIC_RECOVERY_FIXTURE",
+        "physics_steps": 133,
+        "design_status": "WITHIN_ASSERTED_RECOVERY_DESIGN",
+        "model_evaluation": "CONDITIONAL_SAMPLED_COMPARISON",
+        "force_budget_violated": false,
+        "brake_availability_violated": false,
+        "contact_or_geometry_violation": false,
+        "terminal_speed_band_and_dwell_observed": true,
+        "maximum_terminal_dwell_speed_m_s": 0.007164373856770184,
+        "terminal_dwell_samples": 26,
+        "residual_speed_m_s": 0.002582016816323393,
+        "sampled_path_m": 0.2779766319281638,
+        "observed_kinetic_energy_increase_j": 0.0,
+        "path_exceeds_design_bound": false,
+        "energy_exceeds_design_bound": false,
+        "empirical_post_horizon_containment": "NOT_ESTABLISHED_BY_FINITE_TRAJECTORY",
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "h1:finite_disturbance",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "FINITE_SYNTHETIC_RECOVERY_FIXTURE",
+        "physics_steps": 141,
+        "design_status": "WITHIN_ASSERTED_RECOVERY_DESIGN",
+        "model_evaluation": "CONDITIONAL_SAMPLED_COMPARISON",
+        "force_budget_violated": false,
+        "brake_availability_violated": false,
+        "contact_or_geometry_violation": false,
+        "terminal_speed_band_and_dwell_observed": true,
+        "maximum_terminal_dwell_speed_m_s": 0.015082345684570148,
+        "terminal_dwell_samples": 26,
+        "residual_speed_m_s": 0.0118316606986566,
+        "sampled_path_m": 0.3018235228646451,
+        "observed_kinetic_energy_increase_j": 0.0006007199999999435,
+        "path_exceeds_design_bound": false,
+        "energy_exceeds_design_bound": false,
+        "empirical_post_horizon_containment": "NOT_ESTABLISHED_BY_FINITE_TRAJECTORY",
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "h1:infinite_disturbance_declined",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "DESIGN_DECLINED_NO_EXECUTION",
+        "physics_steps": 0,
+        "design_status": "UNSUPPORTED_INFINITE_CONTAINMENT_WITH_DISTURBANCE",
+        "model_evaluation": "UNEVALUABLE_DESIGN",
+        "terminal_speed_band_and_dwell_observed": null,
+        "sampled_path_m": null,
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "h1:terminal_authority_declined",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "DESIGN_DECLINED_NO_EXECUTION",
+        "physics_steps": 0,
+        "design_status": "UNSUPPORTED_TERMINAL_AUTHORITY",
+        "model_evaluation": "UNEVALUABLE_DESIGN",
+        "terminal_speed_band_and_dwell_observed": null,
+        "sampled_path_m": null,
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "h1:cap_authority_declined",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "DESIGN_DECLINED_NO_EXECUTION",
+        "physics_steps": 0,
+        "design_status": "UNSUPPORTED_TERMINAL_AUTHORITY",
+        "model_evaluation": "UNEVALUABLE_DESIGN",
+        "terminal_speed_band_and_dwell_observed": null,
+        "sampled_path_m": null,
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "h1:availability_declined",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "DESIGN_DECLINED_NO_EXECUTION",
+        "physics_steps": 0,
+        "design_status": "UNSUPPORTED_BRAKE_AVAILABILITY",
+        "model_evaluation": "UNEVALUABLE_DESIGN",
+        "terminal_speed_band_and_dwell_observed": null,
+        "sampled_path_m": null,
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "h1:near_wall_declined",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "DESIGN_DECLINED_NO_EXECUTION",
+        "physics_steps": 0,
+        "design_status": "DECLINED_COMPOSED_CLEARANCE",
+        "model_evaluation": "UNEVALUABLE_DESIGN",
+        "terminal_speed_band_and_dwell_observed": null,
+        "sampled_path_m": null,
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "h1:energy_declined",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "DESIGN_DECLINED_NO_EXECUTION",
+        "physics_steps": 0,
+        "design_status": "DECLINED_ENERGY_BUDGET",
+        "model_evaluation": "UNEVALUABLE_DESIGN",
+        "terminal_speed_band_and_dwell_observed": null,
+        "sampled_path_m": null,
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "h1:horizon_declined",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "DESIGN_DECLINED_NO_EXECUTION",
+        "physics_steps": 0,
+        "design_status": "DECLINED_HORIZON_BUDGET",
+        "model_evaluation": "UNEVALUABLE_DESIGN",
+        "terminal_speed_band_and_dwell_observed": null,
+        "sampled_path_m": null,
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "h1:wrong_sign_probe",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "FINITE_SYNTHETIC_RECOVERY_FIXTURE",
+        "physics_steps": 133,
+        "design_status": "WITHIN_ASSERTED_RECOVERY_DESIGN",
+        "model_evaluation": "CONDITIONAL_SAMPLED_COMPARISON",
+        "force_budget_violated": false,
+        "brake_availability_violated": false,
+        "contact_or_geometry_violation": false,
+        "terminal_speed_band_and_dwell_observed": true,
+        "maximum_terminal_dwell_speed_m_s": 0.008300197124554034,
+        "terminal_dwell_samples": 26,
+        "residual_speed_m_s": 0.002991363792963638,
+        "sampled_path_m": 0.3164041453793789,
+        "observed_kinetic_energy_increase_j": 0.016512000000000027,
+        "path_exceeds_design_bound": false,
+        "energy_exceeds_design_bound": false,
+        "empirical_post_horizon_containment": "NOT_ESTABLISHED_BY_FINITE_TRAJECTORY",
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "h1:over_budget_probe",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "FINITE_SYNTHETIC_RECOVERY_FIXTURE",
+        "physics_steps": 133,
+        "design_status": "WITHIN_ASSERTED_RECOVERY_DESIGN",
+        "model_evaluation": "UNEVALUABLE_PREMISE_VIOLATION",
+        "force_budget_violated": true,
+        "brake_availability_violated": false,
+        "contact_or_geometry_violation": false,
+        "terminal_speed_band_and_dwell_observed": true,
+        "maximum_terminal_dwell_speed_m_s": 0.009931352025991406,
+        "terminal_dwell_samples": 26,
+        "residual_speed_m_s": 0.0035792266641285317,
+        "sampled_path_m": 0.370281971201218,
+        "observed_kinetic_energy_increase_j": 0.06720000000000007,
+        "path_exceeds_design_bound": null,
+        "energy_exceeds_design_bound": null,
+        "empirical_post_horizon_containment": "NOT_ESTABLISHED_BY_FINITE_TRAJECTORY",
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "h1:brake_loss",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "FINITE_SYNTHETIC_RECOVERY_FIXTURE",
+        "physics_steps": 133,
+        "design_status": "WITHIN_ASSERTED_RECOVERY_DESIGN",
+        "model_evaluation": "UNEVALUABLE_PREMISE_VIOLATION",
+        "force_budget_violated": false,
+        "brake_availability_violated": true,
+        "contact_or_geometry_violation": false,
+        "terminal_speed_band_and_dwell_observed": false,
+        "maximum_terminal_dwell_speed_m_s": 0.4608,
+        "terminal_dwell_samples": 26,
+        "residual_speed_m_s": 0.4608,
+        "sampled_path_m": 1.2284639999999887,
+        "observed_kinetic_energy_increase_j": 0.0,
+        "path_exceeds_design_bound": null,
+        "energy_exceeds_design_bound": null,
+        "empirical_post_horizon_containment": "NOT_ESTABLISHED_BY_FINITE_TRAJECTORY",
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "h1:late_brake_loss",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "FINITE_SYNTHETIC_RECOVERY_FIXTURE",
+        "physics_steps": 133,
+        "design_status": "WITHIN_ASSERTED_RECOVERY_DESIGN",
+        "model_evaluation": "UNEVALUABLE_PREMISE_VIOLATION",
+        "force_budget_violated": false,
+        "brake_availability_violated": true,
+        "contact_or_geometry_violation": false,
+        "terminal_speed_band_and_dwell_observed": true,
+        "maximum_terminal_dwell_speed_m_s": 0.007164373856770184,
+        "terminal_dwell_samples": 26,
+        "residual_speed_m_s": 0.007164373856770184,
+        "sampled_path_m": 0.27935928747713556,
+        "observed_kinetic_energy_increase_j": 0.0,
+        "path_exceeds_design_bound": null,
+        "energy_exceeds_design_bound": null,
+        "empirical_post_horizon_containment": "NOT_ESTABLISHED_BY_FINITE_TRAJECTORY",
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "h2:nominal",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "FINITE_SYNTHETIC_RECOVERY_FIXTURE",
+        "physics_steps": 133,
+        "design_status": "WITHIN_ASSERTED_RECOVERY_DESIGN",
+        "model_evaluation": "CONDITIONAL_SAMPLED_COMPARISON",
+        "force_budget_violated": false,
+        "brake_availability_violated": false,
+        "contact_or_geometry_violation": false,
+        "terminal_speed_band_and_dwell_observed": true,
+        "maximum_terminal_dwell_speed_m_s": 0.007164373856770166,
+        "terminal_dwell_samples": 26,
+        "residual_speed_m_s": 0.0025820168163233443,
+        "sampled_path_m": 0.2779766319281668,
+        "observed_kinetic_energy_increase_j": 0.0,
+        "path_exceeds_design_bound": false,
+        "energy_exceeds_design_bound": false,
+        "empirical_post_horizon_containment": "NOT_ESTABLISHED_BY_FINITE_TRAJECTORY",
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "h2:finite_disturbance",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "FINITE_SYNTHETIC_RECOVERY_FIXTURE",
+        "physics_steps": 141,
+        "design_status": "WITHIN_ASSERTED_RECOVERY_DESIGN",
+        "model_evaluation": "CONDITIONAL_SAMPLED_COMPARISON",
+        "force_budget_violated": false,
+        "brake_availability_violated": false,
+        "contact_or_geometry_violation": false,
+        "terminal_speed_band_and_dwell_observed": true,
+        "maximum_terminal_dwell_speed_m_s": 0.015081828854106319,
+        "terminal_dwell_samples": 26,
+        "residual_speed_m_s": 0.011831474434654399,
+        "sampled_path_m": 0.3017986906713665,
+        "observed_kinetic_energy_increase_j": 0.000600719999999999,
+        "path_exceeds_design_bound": false,
+        "energy_exceeds_design_bound": false,
+        "empirical_post_horizon_containment": "NOT_ESTABLISHED_BY_FINITE_TRAJECTORY",
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "h2:infinite_disturbance_declined",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "DESIGN_DECLINED_NO_EXECUTION",
+        "physics_steps": 0,
+        "design_status": "UNSUPPORTED_INFINITE_CONTAINMENT_WITH_DISTURBANCE",
+        "model_evaluation": "UNEVALUABLE_DESIGN",
+        "terminal_speed_band_and_dwell_observed": null,
+        "sampled_path_m": null,
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "h2:terminal_authority_declined",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "DESIGN_DECLINED_NO_EXECUTION",
+        "physics_steps": 0,
+        "design_status": "UNSUPPORTED_TERMINAL_AUTHORITY",
+        "model_evaluation": "UNEVALUABLE_DESIGN",
+        "terminal_speed_band_and_dwell_observed": null,
+        "sampled_path_m": null,
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "h2:cap_authority_declined",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "DESIGN_DECLINED_NO_EXECUTION",
+        "physics_steps": 0,
+        "design_status": "UNSUPPORTED_TERMINAL_AUTHORITY",
+        "model_evaluation": "UNEVALUABLE_DESIGN",
+        "terminal_speed_band_and_dwell_observed": null,
+        "sampled_path_m": null,
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "h2:availability_declined",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "DESIGN_DECLINED_NO_EXECUTION",
+        "physics_steps": 0,
+        "design_status": "UNSUPPORTED_BRAKE_AVAILABILITY",
+        "model_evaluation": "UNEVALUABLE_DESIGN",
+        "terminal_speed_band_and_dwell_observed": null,
+        "sampled_path_m": null,
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "h2:near_wall_declined",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "DESIGN_DECLINED_NO_EXECUTION",
+        "physics_steps": 0,
+        "design_status": "DECLINED_COMPOSED_CLEARANCE",
+        "model_evaluation": "UNEVALUABLE_DESIGN",
+        "terminal_speed_band_and_dwell_observed": null,
+        "sampled_path_m": null,
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "h2:energy_declined",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "DESIGN_DECLINED_NO_EXECUTION",
+        "physics_steps": 0,
+        "design_status": "DECLINED_ENERGY_BUDGET",
+        "model_evaluation": "UNEVALUABLE_DESIGN",
+        "terminal_speed_band_and_dwell_observed": null,
+        "sampled_path_m": null,
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "h2:horizon_declined",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "DESIGN_DECLINED_NO_EXECUTION",
+        "physics_steps": 0,
+        "design_status": "DECLINED_HORIZON_BUDGET",
+        "model_evaluation": "UNEVALUABLE_DESIGN",
+        "terminal_speed_band_and_dwell_observed": null,
+        "sampled_path_m": null,
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "h2:wrong_sign_probe",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "FINITE_SYNTHETIC_RECOVERY_FIXTURE",
+        "physics_steps": 133,
+        "design_status": "WITHIN_ASSERTED_RECOVERY_DESIGN",
+        "model_evaluation": "CONDITIONAL_SAMPLED_COMPARISON",
+        "force_budget_violated": false,
+        "brake_availability_violated": false,
+        "contact_or_geometry_violation": false,
+        "terminal_speed_band_and_dwell_observed": true,
+        "maximum_terminal_dwell_speed_m_s": 0.00827136912283364,
+        "terminal_dwell_samples": 26,
+        "residual_speed_m_s": 0.0029809742757900327,
+        "sampled_path_m": 0.31552913234762164,
+        "observed_kinetic_energy_increase_j": 0.016512000000000027,
+        "path_exceeds_design_bound": false,
+        "energy_exceeds_design_bound": false,
+        "empirical_post_horizon_containment": "NOT_ESTABLISHED_BY_FINITE_TRAJECTORY",
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "h2:over_budget_probe",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "FINITE_SYNTHETIC_RECOVERY_FIXTURE",
+        "physics_steps": 133,
+        "design_status": "WITHIN_ASSERTED_RECOVERY_DESIGN",
+        "model_evaluation": "UNEVALUABLE_PREMISE_VIOLATION",
+        "force_budget_violated": true,
+        "brake_availability_violated": false,
+        "contact_or_geometry_violation": false,
+        "terminal_speed_band_and_dwell_observed": true,
+        "maximum_terminal_dwell_speed_m_s": 0.009639565519091835,
+        "terminal_dwell_samples": 26,
+        "residual_speed_m_s": 0.003474067765018448,
+        "sampled_path_m": 0.3619324474727917,
+        "observed_kinetic_energy_increase_j": 0.06720000000000001,
+        "path_exceeds_design_bound": null,
+        "energy_exceeds_design_bound": null,
+        "empirical_post_horizon_containment": "NOT_ESTABLISHED_BY_FINITE_TRAJECTORY",
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "h2:brake_loss",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "FINITE_SYNTHETIC_RECOVERY_FIXTURE",
+        "physics_steps": 133,
+        "design_status": "WITHIN_ASSERTED_RECOVERY_DESIGN",
+        "model_evaluation": "UNEVALUABLE_PREMISE_VIOLATION",
+        "force_budget_violated": false,
+        "brake_availability_violated": true,
+        "contact_or_geometry_violation": false,
+        "terminal_speed_band_and_dwell_observed": false,
+        "maximum_terminal_dwell_speed_m_s": 0.4608000000000001,
+        "terminal_dwell_samples": 26,
+        "residual_speed_m_s": 0.4608000000000001,
+        "sampled_path_m": 1.2284640000000118,
+        "observed_kinetic_energy_increase_j": 0.0,
+        "path_exceeds_design_bound": null,
+        "energy_exceeds_design_bound": null,
+        "empirical_post_horizon_containment": "NOT_ESTABLISHED_BY_FINITE_TRAJECTORY",
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "h2:late_brake_loss",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "FINITE_SYNTHETIC_RECOVERY_FIXTURE",
+        "physics_steps": 133,
+        "design_status": "WITHIN_ASSERTED_RECOVERY_DESIGN",
+        "model_evaluation": "UNEVALUABLE_PREMISE_VIOLATION",
+        "force_budget_violated": false,
+        "brake_availability_violated": true,
+        "contact_or_geometry_violation": false,
+        "terminal_speed_band_and_dwell_observed": true,
+        "maximum_terminal_dwell_speed_m_s": 0.007164373856770166,
+        "terminal_dwell_samples": 26,
+        "residual_speed_m_s": 0.007164373856770166,
+        "sampled_path_m": 0.27935928747713434,
+        "observed_kinetic_energy_increase_j": 0.0,
+        "path_exceeds_design_bound": null,
+        "energy_exceeds_design_bound": null,
+        "empirical_post_horizon_containment": "NOT_ESTABLISHED_BY_FINITE_TRAJECTORY",
+        "operational_authorization": false
+      }
+    }
+  ],
+  "peak_buffered_episode_events": 283,
+  "gate_b": "GATE_B_NOT_AUTHORIZED",
+  "classification": "SYNTHETIC_DEVELOPMENT_NOT_CONFIRMATORY_OR_ROBOT_VALIDATION",
+  "limitations": [
+    "Declared initial-error, geometry and actuator bounds lack physical calibration.",
+    "Floating arithmetic is not interval verified. Finite samples do not prove future brake availability.",
+    "Nominal 1 kg plant and perfect gravity compensation only; no rotation/contact dynamics validation.",
+    "Speed, dwell, energy and horizon settings are synthetic; not approved operational criteria."
+  ]
+}

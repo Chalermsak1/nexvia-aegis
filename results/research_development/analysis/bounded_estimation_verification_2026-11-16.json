@@ -1,0 +1,101 @@
+{
+  "classification": "EXPLORATORY_SIMULATION_NOT_CONFIRMATORY",
+  "branch": "codex/research-hardening",
+  "parent_commit": "74b0bfab8e57cd450293e49de881207074df3141",
+  "source_sha256": {
+    "scripts/research/bounded_estimation_study.py": "3abb7fd7d1fb2998957a0485ea6bbfc1fa6cca4228fb23512c2e744935377914",
+    "scripts/research/development_ledger.py": "254fe889557148110e458ed2cb6e3286837589a484d7a63e1ae3d2c34b645502",
+    "src/aegis/development/__init__.py": "afe5c415a90205d00220200b69b991a54a4741e1fa655a0ac9ed4f3ccbfc3043",
+    "src/aegis/development/bounded_braking.py": "6f34c760bebd07d91a8f08110a5ad50659bcd073a59077716476df1033f999e2",
+    "src/aegis/env/mujoco_3d_cbf.py": "438b8ec89d1d40101586b0d888de7e8b5d73c9763cbae2603ccab01f04801433"
+  },
+  "test_source_sha256": {
+    "tests/test_bounded_braking.py": "9de542a31df5fc0f519aa69b7153cd8cbe09493305745b67c7b3791ad0d5a10a",
+    "tests/test_bounded_estimation_study.py": "ad10422c26d9f69e4a061139b368968c44b7a18ff60bb98f921d19fbe8bd9390",
+    "tests/test_no_oracle_control.py": "752422a47983ead6d7ba6c0aac4dbf5222287ef33610d74229b284eb9f995399",
+    "tests/test_velocity_freshness_candidate.py": "0ea1913370e45fe4461a4bba29161df95ec72311637257921294b23d058e3f74",
+    "tests/test_development_ledger.py": "0574aaa21272111b0bbc1e1cf0a14e033a33210d8f92e124ba7e5162b5cd9cec",
+    "tests/test_study_estimated_braking.py": "f6b2061cdbcb2d1324ff4fb4327e5367ec5cec1514ecffd2fbe261e858b1f93c",
+    "tests/test_analyze_estimated_braking_ledger_v3.py": "7577faccd8b7a91c0aa62f7a31e306b89e02f9d81934f07d85057509362099ab"
+  },
+  "runtime_versions": {
+    "mujoco": "3.14.0",
+    "numpy": "2.5.3",
+    "python": "3.12.14"
+  },
+  "checks": {
+    "assignments_completed": 54,
+    "control_events": 4320,
+    "physics_events": 4320,
+    "paired_checks": 27,
+    "local_readonly_reanalysis_matches": true,
+    "executed_source_bytes_unchanged": true,
+    "preexisting_dirty_benchmark_sha256": "04bc31bf74423806200e39a44334e1dd0cf4063dde08797ef79dacb491b4323f",
+    "preexisting_benchmark_matches_prior_integrated_receipt": true
+  },
+  "regression": {
+    "passed": 102,
+    "reported_duration_seconds": 23.05,
+    "full_repository_suite": false,
+    "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:. .venv/bin/python -m pytest -q -x -p no:cacheprovider tests/test_bounded_braking.py tests/test_bounded_estimation_study.py tests/test_no_oracle_control.py tests/test_velocity_freshness_candidate.py tests/test_development_ledger.py tests/test_study_estimated_braking.py tests/test_analyze_estimated_braking_ledger_v3.py --basetemp=/private/tmp/nexvia-bounded-release-tests-20261116 --junitxml=/private/tmp/nexvia-bounded-release-tests-20261116.xml"
+  },
+  "execution_command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:. .venv/bin/python scripts/research/bounded_estimation_study.py run /private/tmp/nexvia-bounded-actual-20261116.jsonl --output /private/tmp/nexvia-bounded-actual-summary-20261116.json",
+  "audit_command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:. .venv/bin/python scripts/research/bounded_estimation_study.py audit /private/tmp/nexvia-bounded-actual-20261116.jsonl --output /private/tmp/nexvia-bounded-reaudit-20261116.json",
+  "earlier_attempts": [
+    {
+      "label": "initial unit suite",
+      "passed": 41
+    },
+    {
+      "label": "initial integration, tuple serialization rejected before physics",
+      "passed": 1,
+      "setup_errors": 9,
+      "partial_ledger_preserved": true,
+      "original_source_snapshot_preserved": true
+    },
+    {
+      "label": "serialization correction integration",
+      "passed": 10
+    },
+    {
+      "label": "finite hold regression",
+      "passed": 96
+    },
+    {
+      "label": "numeric and paired-check regression",
+      "passed": 101
+    }
+  ],
+  "earlier_counts_overlap": true,
+  "intentional_failures": [
+    "sink failure",
+    "simulator failure",
+    "rehashed contradictions",
+    "missing evidence"
+  ],
+  "limitations": [
+    "Caller bounds are assumptions, not authenticated truth.",
+    "Zero force plus ideal gravity compensation is a diagnostic, not a physical fallback.",
+    "No obstacle-avoidance filter or recovery/stopping guarantee.",
+    "Dependent trajectories: three development worlds, shared innovations.",
+    "Hash chains and replayed arithmetic are not independent simulator authentication.",
+    "No independent source authentication, statistical review, calibrated physical bounds, collision-avoidance controller or executable operational fallback.",
+    "Not every intermediate successful code revision has an independent full source snapshot."
+  ],
+  "governance": {
+    "gate_b": "GATE_B_NOT_AUTHORIZED",
+    "reserved_data_files_accessed": false,
+    "confirmatory_evaluation_executed": false,
+    "production_ticket_created_or_signed": false,
+    "frozen_artifacts_modified": false,
+    "commit_or_push_or_merge_performed": false,
+    "real_robot_validation": false
+  },
+  "artifact_sha256": {
+    "docs/research/V9_M5_BOUNDED_ESTIMATION_EXECUTION_2026-11-16.md": "c7f995542f47ac341fd41b4fca40564590b726d418393afd5449087a811f7124",
+    "results/research_development/analysis/bounded_estimation_tests_2026-11-16.xml": "0e479f968ad5068b1925afd52f57b2740a1a9af0d76f6d30866ee0cd7468ad59",
+    "results/research_development/dev/bounded_estimation_test_fixtures_2026-11-16.zip": "d9ffe3cdfea76dbfe1eed93d4da5b7839b85bfc4eba7df7c7673a3fad8185faa",
+    "results/research_development/dev/bounded_estimation_v1_2026-11-16/assignments.jsonl": "d4e49173281b5dd2ce604556d617a87f52698c6027efa45fc3604be529cce74d",
+    "results/research_development/dev/bounded_estimation_v1_2026-11-16/summary.json": "e208d6be35e9a59543b737d986ddba15c2156b2f1adaf2d1ae3d618d069fc95b"
+  }
+}

@@ -1,0 +1,13 @@
+# Bridge observation arithmetic and outcome-label audit — 2026-11-15
+
+**Development only; `GATE_B_NOT_AUTHORIZED`.** Inspected current branch `codex/research-hardening`, changes and research-team charter. Preserved existing user changes, runners/readers and historical evidence. No reserved seeds/outcomes, Holdout runs, tickets, frozen rules/artifacts, commit/push or real-robot validation involved.
+
+Added `scripts/research/audit_bridge_observations.py` and its test file. The new read-only layer first applies the v2 runtime/timing checks, verifies both reads used the same input bytes, then checks finite three-vectors, position/target distance arithmetic, collision flag type and residual type. COMPLETED episode outcome flags must be exclusive and agree with the final STOP/ABSTAIN/nonterminal label. final_distance retains historical scope: decision distance for STOP, first-brake distance for ABSTAIN, last physical distance for timeout, rounded as in the current benchmark.
+
+This is consistency checking, not new scientific decision logic. It does not independently classify true_success versus false_arrival by a new threshold, certify collision absence, reconstruct unlogged motion or evaluate safe stopping. Error/incomplete evidence is not promoted to completed outcome evidence.
+
+**Validation: 34 targeted tests passed in 1.85 s**, including nine new observation tests and 25 adjacent runtime/timing tests. Normal legacy/synchronized three-step timeout fixtures pass. Seven valid-rehashed-chain defects reject: inconsistent distance, malformed vector, non-boolean collision, nonnumeric residual, multiple outcomes, wrong outcome label and wrong final distance. No unexpected failures occurred. This is not the full repository suite. The new actual fixtures exercise timeout behavior; dedicated STOP/ABSTAIN and extended-horizon coverage for this new layer remains required before the planned batch comparison. Existing synthetic drift/error fixtures remain preserved in the archive, not reported as successful research executions.
+
+Verification JSON/XML and raw fixture archive preserve selected current source identities, parent commit and exact test command/results. These hashes are not independent authentication or before/after test-process attestation. `git diff --check` passed.
+
+Remaining: terminal-horizon integration cases for this layer, stronger contact/geometry evidence (the current physics record does not independently establish contact truth), complete eight-assignment/counterpart/noise validation and the batch study runner. The eight-assignment study has not run; no release blocker is marked resolved and no Final Release Commit was created. Gate B remains `GATE_B_NOT_AUTHORIZED`.

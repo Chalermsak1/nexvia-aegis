@@ -1,0 +1,203 @@
+{
+  "classification": "EXPLORATORY_POST_ACTION_MOTION",
+  "input_sha256": "359ae6f7e6f1de3fd99609c21cf9cdfa3d440f39a5234d8cfb45addeaafeaa2f",
+  "ledger_state": "FINALIZED",
+  "assignments": [
+    {
+      "id": "2256000:0.0:AEGIS_3D_ANCHOR_RECOVERY",
+      "execution_status": "COMPLETED",
+      "last_decision": "ABSTAIN",
+      "windows": {
+        "STOP": {
+          "window_status": "NOT_REACHED",
+          "requested_samples": 50,
+          "observed_samples": 0,
+          "collision_observed": null,
+          "anchor_available": false,
+          "anchor_speed_m_s": null,
+          "anchor_distance_m": null,
+          "last_speed_m_s": null,
+          "last_distance_m": null,
+          "min_sample_speed_m_s": null,
+          "max_sample_speed_m_s": null,
+          "distance_change_from_anchor_m": null,
+          "sampled_polyline_from_anchor_m": null,
+          "cbf_residual_observed_samples": 0,
+          "min_observed_cbf_residual": null,
+          "elapsed_seconds": null,
+          "elapsed_seconds_reason": "timestep not recorded in assignment; no inference from current source",
+          "physical_rest_classification": "NOT_EVALUATED_NO_APPROVED_CRITERION"
+        },
+        "ABSTAIN": {
+          "window_status": "NOT_REQUESTED",
+          "requested_samples": 0,
+          "observed_samples": 0,
+          "collision_observed": null,
+          "anchor_available": true,
+          "anchor_speed_m_s": 0.05702816458279216,
+          "anchor_distance_m": 0.20179728779725006,
+          "last_speed_m_s": null,
+          "last_distance_m": null,
+          "min_sample_speed_m_s": null,
+          "max_sample_speed_m_s": null,
+          "distance_change_from_anchor_m": null,
+          "sampled_polyline_from_anchor_m": null,
+          "cbf_residual_observed_samples": 0,
+          "min_observed_cbf_residual": null,
+          "elapsed_seconds": null,
+          "elapsed_seconds_reason": "timestep not recorded in assignment; no inference from current source",
+          "physical_rest_classification": "NOT_EVALUATED_NO_APPROVED_CRITERION"
+        }
+      }
+    },
+    {
+      "id": "2256000:0.0:AEGIS_3D_RECOVERY_MONITOR",
+      "execution_status": "COMPLETED",
+      "last_decision": "ABSTAIN",
+      "windows": {
+        "STOP": {
+          "window_status": "NOT_REACHED",
+          "requested_samples": 50,
+          "observed_samples": 0,
+          "collision_observed": null,
+          "anchor_available": false,
+          "anchor_speed_m_s": null,
+          "anchor_distance_m": null,
+          "last_speed_m_s": null,
+          "last_distance_m": null,
+          "min_sample_speed_m_s": null,
+          "max_sample_speed_m_s": null,
+          "distance_change_from_anchor_m": null,
+          "sampled_polyline_from_anchor_m": null,
+          "cbf_residual_observed_samples": 0,
+          "min_observed_cbf_residual": null,
+          "elapsed_seconds": null,
+          "elapsed_seconds_reason": "timestep not recorded in assignment; no inference from current source",
+          "physical_rest_classification": "NOT_EVALUATED_NO_APPROVED_CRITERION"
+        },
+        "ABSTAIN": {
+          "window_status": "NOT_REQUESTED",
+          "requested_samples": 0,
+          "observed_samples": 0,
+          "collision_observed": null,
+          "anchor_available": true,
+          "anchor_speed_m_s": 0.4972121503606997,
+          "anchor_distance_m": 0.0190110101896599,
+          "last_speed_m_s": null,
+          "last_distance_m": null,
+          "min_sample_speed_m_s": null,
+          "max_sample_speed_m_s": null,
+          "distance_change_from_anchor_m": null,
+          "sampled_polyline_from_anchor_m": null,
+          "cbf_residual_observed_samples": 0,
+          "min_observed_cbf_residual": null,
+          "elapsed_seconds": null,
+          "elapsed_seconds_reason": "timestep not recorded in assignment; no inference from current source",
+          "physical_rest_classification": "NOT_EVALUATED_NO_APPROVED_CRITERION"
+        }
+      }
+    },
+    {
+      "id": "2256000:0.8:AEGIS_3D_ANCHOR_RECOVERY",
+      "execution_status": "COMPLETED",
+      "last_decision": "STOP",
+      "windows": {
+        "STOP": {
+          "window_status": "COMPLETE_OBSERVATION_WINDOW",
+          "requested_samples": 50,
+          "observed_samples": 50,
+          "collision_observed": false,
+          "anchor_available": true,
+          "anchor_speed_m_s": 0.08263212681745916,
+          "anchor_distance_m": 0.15626421924981365,
+          "last_speed_m_s": 0.010732739362099427,
+          "last_distance_m": 0.1590219229966703,
+          "min_sample_speed_m_s": 0.010732739362099427,
+          "max_sample_speed_m_s": 0.0793268417447608,
+          "distance_change_from_anchor_m": 0.00275770374685666,
+          "sampled_polyline_from_anchor_m": 0.03594969372768101,
+          "cbf_residual_observed_samples": 50,
+          "min_observed_cbf_residual": 0.0,
+          "elapsed_seconds": null,
+          "elapsed_seconds_reason": "timestep not recorded in assignment; no inference from current source",
+          "physical_rest_classification": "NOT_EVALUATED_NO_APPROVED_CRITERION"
+        },
+        "ABSTAIN": {
+          "window_status": "NOT_REACHED",
+          "requested_samples": 0,
+          "observed_samples": 0,
+          "collision_observed": null,
+          "anchor_available": false,
+          "anchor_speed_m_s": null,
+          "anchor_distance_m": null,
+          "last_speed_m_s": null,
+          "last_distance_m": null,
+          "min_sample_speed_m_s": null,
+          "max_sample_speed_m_s": null,
+          "distance_change_from_anchor_m": null,
+          "sampled_polyline_from_anchor_m": null,
+          "cbf_residual_observed_samples": 0,
+          "min_observed_cbf_residual": null,
+          "elapsed_seconds": null,
+          "elapsed_seconds_reason": "timestep not recorded in assignment; no inference from current source",
+          "physical_rest_classification": "NOT_EVALUATED_NO_APPROVED_CRITERION"
+        }
+      }
+    },
+    {
+      "id": "2256000:0.8:AEGIS_3D_RECOVERY_MONITOR",
+      "execution_status": "COMPLETED",
+      "last_decision": "ABSTAIN",
+      "windows": {
+        "STOP": {
+          "window_status": "NOT_REACHED",
+          "requested_samples": 50,
+          "observed_samples": 0,
+          "collision_observed": null,
+          "anchor_available": false,
+          "anchor_speed_m_s": null,
+          "anchor_distance_m": null,
+          "last_speed_m_s": null,
+          "last_distance_m": null,
+          "min_sample_speed_m_s": null,
+          "max_sample_speed_m_s": null,
+          "distance_change_from_anchor_m": null,
+          "sampled_polyline_from_anchor_m": null,
+          "cbf_residual_observed_samples": 0,
+          "min_observed_cbf_residual": null,
+          "elapsed_seconds": null,
+          "elapsed_seconds_reason": "timestep not recorded in assignment; no inference from current source",
+          "physical_rest_classification": "NOT_EVALUATED_NO_APPROVED_CRITERION"
+        },
+        "ABSTAIN": {
+          "window_status": "NOT_REQUESTED",
+          "requested_samples": 0,
+          "observed_samples": 0,
+          "collision_observed": null,
+          "anchor_available": true,
+          "anchor_speed_m_s": 0.26994990115837086,
+          "anchor_distance_m": 0.18518181077533044,
+          "last_speed_m_s": null,
+          "last_distance_m": null,
+          "min_sample_speed_m_s": null,
+          "max_sample_speed_m_s": null,
+          "distance_change_from_anchor_m": null,
+          "sampled_polyline_from_anchor_m": null,
+          "cbf_residual_observed_samples": 0,
+          "min_observed_cbf_residual": null,
+          "elapsed_seconds": null,
+          "elapsed_seconds_reason": "timestep not recorded in assignment; no inference from current source",
+          "physical_rest_classification": "NOT_EVALUATED_NO_APPROVED_CRITERION"
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "Simulation observations, not real-robot validation or a safe-stop claim.",
+    "STOP anchor is decision time; ABSTAIN anchor is after its original brake.",
+    "Sampled polyline is a discrete chord sum, not exact continuous travel.",
+    "Collision absence applies only to persisted samples; partial windows remain partial.",
+    "Window completeness does not establish episode completion, dwell, stability, or authenticated provenance."
+  ],
+  "governance": "GATE_B_NOT_AUTHORIZED"
+}

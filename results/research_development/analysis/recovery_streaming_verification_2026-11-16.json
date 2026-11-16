@@ -1,0 +1,334 @@
+{
+  "classification": "EXPLORATORY_SIMULATION_AND_READ_ONLY_DEVELOPMENT_ARTIFACT_AUDIT",
+  "date_local": "2026-11-16",
+  "timezone": "Asia/Bangkok",
+  "repository": "/Users/chalermsak/Documents/ChatGPT/New project/nexvia-aegis",
+  "branch": "codex/research-hardening",
+  "parent_commit": "74b0bfab8e57cd450293e49de881207074df3141",
+  "committed": false,
+  "pushed": false,
+  "source_sha256": {
+    "src/aegis/development/__init__.py": "afe5c415a90205d00220200b69b991a54a4741e1fa655a0ac9ed4f3ccbfc3043",
+    "src/aegis/development/bounded_braking.py": "6f34c760bebd07d91a8f08110a5ad50659bcd073a59077716476df1033f999e2",
+    "src/aegis/development/dual_source_braking.py": "4f189658d8a830619e1e8fe7ba4af25348905ae22ca68d9aef0d5bd4b134eb33",
+    "src/aegis/development/assurance_gateway.py": "e810f11d21cca2ef50b02d3454c1934d9382251eab004ffc352dc32cb84e8119",
+    "src/aegis/development/sampled_motion_reference.py": "1180350e5dc47e1bbd5b461a7a5a7d22ffe4fd1263e4e1c86e44b64962d4f8aa",
+    "src/aegis/env/mujoco_3d_cbf.py": "438b8ec89d1d40101586b0d888de7e8b5d73c9763cbae2603ccab01f04801433",
+    "src/aegis/env/mujoco_lease_brake.py": "069727193b93c290a0c5e192f35931da3d6b44a69e9a5673ad63aa1b4e3414d4",
+    "scripts/research/development_ledger.py": "254fe889557148110e458ed2cb6e3286837589a484d7a63e1ae3d2c34b645502",
+    "scripts/research/freshness_lease_study.py": "dd7218147d8671aeb2e222e8527e8302655024ee469a3eb57f6ecdd63efd33ae",
+    "src/aegis/development/physical_reference.py": "d713b47a8c7426ea2dc2bfa7f545e00c7bc4b6b6a190e121b93fbea1c3692c05",
+    "scripts/research/physical_reference_study.py": "0bfa4abe4d66a4c298d219ab1fb6d05ee1ed339c6fb0537e4c1c4b5530615ef6",
+    "src/aegis/development/recovery_contract.py": "493a82be59975207ebd4beb7523706f197116d34ae824b818edb91b59572ca79",
+    "scripts/research/streaming_ledger.py": "65fb737d771731fd7e0a9c5baf5ce6624f1e636d9ae925e9ff11bdba75358282",
+    "scripts/research/recovery_contract_study.py": "a3ae5578bdf3ea98b028813ed509143557332ac0c28dd5772b4a55667c9c7365",
+    "scripts/research/audit_reference_stream.py": "ad22e2e50fb3d9bb3b1e2233313e9a571c17d291e74edc8b57e982814bd0d451",
+    "scripts/research/benchmark_reference_readers.py": "0d3fc6fd14a7b1965f17615282a74e44cbd817467d4b0a642d4da911a78cbfd7",
+    "tests/test_recovery_contract.py": "c0a42733c0e9c9015e335c2d2abdda9815d41419944cf6bf8651684ab4db23ea",
+    "tests/test_streaming_ledger.py": "225ba1bc2dfa2f251dae641b62d8a9b110ad0782d01a20655a4c15d617218cc7",
+    "tests/test_recovery_contract_study.py": "0b2bd46c6e6d8ab020cacaa023c998aa21610fd72bcc810818c0bb6d1102bd66"
+  },
+  "new_code_paths": [
+    "src/aegis/development/recovery_contract.py",
+    "scripts/research/streaming_ledger.py",
+    "scripts/research/audit_reference_stream.py",
+    "scripts/research/recovery_contract_study.py",
+    "scripts/research/benchmark_reference_readers.py",
+    "tests/test_recovery_contract.py",
+    "tests/test_streaming_ledger.py",
+    "tests/test_recovery_contract_study.py"
+  ],
+  "versions": {
+    "mujoco": "3.14.0",
+    "numpy": "2.5.3",
+    "python": "3.12.14"
+  },
+  "final_tests": {
+    "name": "pytest",
+    "errors": "0",
+    "failures": "0",
+    "skipped": "0",
+    "tests": "342",
+    "time": "39.462",
+    "timestamp": "2026-11-16T16:16:01.663240+07:00",
+    "hostname": "MacBook-Air-khxng-Chalermsak.local"
+  },
+  "test_command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:. .venv/bin/python -m pytest -q -x -p no:cacheprovider tests/test_recovery_contract.py tests/test_streaming_ledger.py tests/test_recovery_contract_study.py tests/test_physical_reference.py tests/test_physical_reference_study.py tests/test_brake_probe.py tests/test_development_ledger.py tests/test_assurance_gateway.py tests/test_bounded_braking.py tests/test_bounded_estimation_study.py tests/test_dual_source_braking.py tests/test_dual_source_fallback_study.py tests/test_freshness_lease_study.py --basetemp=/private/tmp/nexvia-recovery-regression-v2-20261116 --junitxml=/private/tmp/nexvia-recovery-regression-v2-20261116.xml",
+  "final_run": {
+    "counts": {
+      "ASSIGNED": 0,
+      "STARTED": 0,
+      "COMPLETED": 39,
+      "ERROR": 0
+    },
+    "ledger_state": "FINALIZED",
+    "physics_steps": 2418,
+    "design_statuses": {
+      "WITHIN_ASSERTED_RECOVERY_DESIGN": 18,
+      "UNSUPPORTED_INFINITE_CONTAINMENT_WITH_DISTURBANCE": 3,
+      "UNSUPPORTED_TERMINAL_AUTHORITY": 6,
+      "UNSUPPORTED_BRAKE_AVAILABILITY": 3,
+      "DECLINED_COMPOSED_CLEARANCE": 3,
+      "DECLINED_ENERGY_BUDGET": 3,
+      "DECLINED_HORIZON_BUDGET": 3
+    },
+    "evaluation_statuses": {
+      "CONDITIONAL_SAMPLED_COMPARISON": 9,
+      "UNEVALUABLE_DESIGN": 21,
+      "UNEVALUABLE_PREMISE_VIOLATION": 9
+    },
+    "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:. .venv/bin/python -m scripts.research.recovery_contract_study run /private/tmp/nexvia-recovery-study-v2-20261116/assignments.jsonl --output /private/tmp/nexvia-recovery-study-v2-20261116/summary.json"
+  },
+  "reader_benchmarks": [
+    {
+      "method": "retained",
+      "wall_seconds": 3.017286584014073,
+      "peak_process_rss_bytes": 468008960,
+      "normalized_sha256": "310da4a8747901d3581a3b4ceebd515930e3fa0b99c25b6bef752f1b59e58c6e",
+      "counts": {
+        "ASSIGNED": 0,
+        "STARTED": 0,
+        "COMPLETED": 126,
+        "ERROR": 0
+      },
+      "state": "FINALIZED",
+      "peak_buffered_episode_events": null,
+      "input_bytes": 65272478,
+      "input_sha256": "ffd27fea2278806bc8dfe25ef25c8ffeec9fda4b710f0f5966b271c261cc477d",
+      "python": "3.12.14",
+      "system": "macOS-27.2-arm64-arm-64bit",
+      "classification": "READ_ONLY_DEVELOPMENT_ARTIFACT_BENCHMARK_NO_PHYSICS_EXECUTION",
+      "cache_control": "NONE",
+      "gate_b": "GATE_B_NOT_AUTHORIZED"
+    },
+    {
+      "method": "retained",
+      "wall_seconds": 2.9915060409985017,
+      "peak_process_rss_bytes": 486735872,
+      "normalized_sha256": "310da4a8747901d3581a3b4ceebd515930e3fa0b99c25b6bef752f1b59e58c6e",
+      "counts": {
+        "ASSIGNED": 0,
+        "STARTED": 0,
+        "COMPLETED": 126,
+        "ERROR": 0
+      },
+      "state": "FINALIZED",
+      "peak_buffered_episode_events": null,
+      "input_bytes": 65272478,
+      "input_sha256": "ffd27fea2278806bc8dfe25ef25c8ffeec9fda4b710f0f5966b271c261cc477d",
+      "python": "3.12.14",
+      "system": "macOS-27.2-arm64-arm-64bit",
+      "classification": "READ_ONLY_DEVELOPMENT_ARTIFACT_BENCHMARK_NO_PHYSICS_EXECUTION",
+      "cache_control": "NONE",
+      "gate_b": "GATE_B_NOT_AUTHORIZED"
+    },
+    {
+      "method": "streaming",
+      "wall_seconds": 2.895540625002468,
+      "peak_process_rss_bytes": 61210624,
+      "normalized_sha256": "310da4a8747901d3581a3b4ceebd515930e3fa0b99c25b6bef752f1b59e58c6e",
+      "counts": {
+        "ASSIGNED": 0,
+        "STARTED": 0,
+        "COMPLETED": 126,
+        "ERROR": 0
+      },
+      "state": "FINALIZED",
+      "peak_buffered_episode_events": 181,
+      "input_bytes": 65272478,
+      "input_sha256": "ffd27fea2278806bc8dfe25ef25c8ffeec9fda4b710f0f5966b271c261cc477d",
+      "python": "3.12.14",
+      "system": "macOS-27.2-arm64-arm-64bit",
+      "classification": "READ_ONLY_DEVELOPMENT_ARTIFACT_BENCHMARK_NO_PHYSICS_EXECUTION",
+      "cache_control": "NONE",
+      "gate_b": "GATE_B_NOT_AUTHORIZED"
+    },
+    {
+      "method": "streaming",
+      "wall_seconds": 2.8691089159983676,
+      "peak_process_rss_bytes": 60964864,
+      "normalized_sha256": "310da4a8747901d3581a3b4ceebd515930e3fa0b99c25b6bef752f1b59e58c6e",
+      "counts": {
+        "ASSIGNED": 0,
+        "STARTED": 0,
+        "COMPLETED": 126,
+        "ERROR": 0
+      },
+      "state": "FINALIZED",
+      "peak_buffered_episode_events": 181,
+      "input_bytes": 65272478,
+      "input_sha256": "ffd27fea2278806bc8dfe25ef25c8ffeec9fda4b710f0f5966b271c261cc477d",
+      "python": "3.12.14",
+      "system": "macOS-27.2-arm64-arm-64bit",
+      "classification": "READ_ONLY_DEVELOPMENT_ARTIFACT_BENCHMARK_NO_PHYSICS_EXECUTION",
+      "cache_control": "NONE",
+      "gate_b": "GATE_B_NOT_AUTHORIZED"
+    }
+  ],
+  "reproduction": {
+    "raw_sha256": "6e5383a30bededb14923625a7cad49e8d06909320a822fb2e848efa729c5e16d",
+    "expected_raw_sha256": "6e5383a30bededb14923625a7cad49e8d06909320a822fb2e848efa729c5e16d",
+    "raw_identical": true,
+    "summary_identical": true,
+    "import_origins": {
+      "aegis.development": "src/aegis/development/__init__.py",
+      "aegis.development.bounded_braking": "src/aegis/development/bounded_braking.py",
+      "aegis.development.dual_source_braking": "src/aegis/development/dual_source_braking.py",
+      "aegis.development.assurance_gateway": "src/aegis/development/assurance_gateway.py",
+      "aegis.development.sampled_motion_reference": "src/aegis/development/sampled_motion_reference.py",
+      "aegis.env.mujoco_3d_cbf": "src/aegis/env/mujoco_3d_cbf.py",
+      "aegis.env.mujoco_lease_brake": "src/aegis/env/mujoco_lease_brake.py",
+      "scripts.research.development_ledger": "scripts/research/development_ledger.py",
+      "scripts.research.freshness_lease_study": "scripts/research/freshness_lease_study.py",
+      "aegis.development.physical_reference": "src/aegis/development/physical_reference.py",
+      "scripts.research.physical_reference_study": "scripts/research/physical_reference_study.py",
+      "aegis.development.recovery_contract": "src/aegis/development/recovery_contract.py",
+      "scripts.research.streaming_ledger": "scripts/research/streaming_ledger.py",
+      "scripts.research.recovery_contract_study": "scripts/research/recovery_contract_study.py"
+    },
+    "classification": "SAME_RUNTIME_SOURCE_PATH_REPRODUCTION_REUSES_ORIGINAL_PARENT_METADATA",
+    "gate_b": "GATE_B_NOT_AUTHORIZED"
+  },
+  "superseded_evidence": {
+    "reason": "Code review found finite-only design could label an uncontained infinite path as conditional containment. Label fixed and boundary test added; scientific fixture outcomes unchanged.",
+    "original_batch_path": "results/research_development/dev/recovery_contract_v1_2026-11-16",
+    "original_raw_sha256": "c178f8012916a0f3e3c8b2c864f329415eb587e38359045a5f5d22a7bcbfd8cf",
+    "earlier_test_counts": [
+      37,
+      47,
+      341
+    ],
+    "failed_test_invocations": 0,
+    "intentional_failed_or_incomplete_fixtures_retained": true
+  },
+  "fixture_archive": {
+    "logical_files": 151,
+    "unique_objects": 63,
+    "logical_bytes": 499565534,
+    "unique_bytes": 247180274,
+    "archive_bytes": 38810218
+  },
+  "preservation": {
+    "preceding_reference_probe_source_map_unchanged": true,
+    "preexisting_benchmark_sha256": "04bc31bf74423806200e39a44334e1dd0cf4063dde08797ef79dacb491b4323f",
+    "tracked_diff_numstat": "46 insertions, 2 deletions in experiments/benchmark_physical_3d_cbf.py"
+  },
+  "artifacts": {
+    "docs/research/V9_M5_RECOVERY_AND_STREAMING_EXECUTION_2026-11-16.md": {
+      "sha256": "41f69288a96359d7bb214c74e7d74b43c1ee711405a973c5f3b44b747ad2c66c",
+      "size_bytes": 24832
+    },
+    "results/research_development/analysis/recovery_packaging_2026-11-16/finalize_recovery_evidence.py": {
+      "sha256": "a87ec1012c425911ebb8a7d98fb5af0bd341ebf5584910aceb20d668c25b5f9a",
+      "size_bytes": 8857
+    },
+    "results/research_development/analysis/recovery_packaging_2026-11-16/finish_recovery_package.py": {
+      "sha256": "36a9fbbf38be6de84916ddee8b76cd48e23b960f7157d639eb56e0aaca0740f4",
+      "size_bytes": 1851
+    },
+    "results/research_development/analysis/recovery_packaging_2026-11-16/fixture_archive_stats.json": {
+      "sha256": "640ffd40c1073e6af6b715f9a7fb8de231b4e49ce2e934985031e1438c6a2113",
+      "size_bytes": 139
+    },
+    "results/research_development/analysis/recovery_packaging_2026-11-16/prepare_final_package.py": {
+      "sha256": "3fb08f36b575494dc36e42f09b1bad7ea1877b5b955f9f949779f87d218fc6a5",
+      "size_bytes": 4046
+    },
+    "results/research_development/analysis/recovery_packaging_2026-11-16/prepare_recovery_evidence.py": {
+      "sha256": "0dd5f196b682b610d16c1507da08d78eb268d4f26538d1f9beed47fa1bfad264",
+      "size_bytes": 4181
+    },
+    "results/research_development/analysis/recovery_packaging_2026-11-16/reproduce.py": {
+      "sha256": "07be1f4af5bed96c102ca46c5968653dcf1098541582d9a5d015dbc280dc4a8d",
+      "size_bytes": 2472
+    },
+    "results/research_development/analysis/recovery_streaming_tests_2026-11-16.xml": {
+      "sha256": "d77c3e250684349f629bf56e4e5127c3efb2d89e58ce579bec4dc231eb741ae4",
+      "size_bytes": 45956
+    },
+    "results/research_development/analysis/recovery_streaming_tests_v2_2026-11-16.xml": {
+      "sha256": "5320ffd2a17c751968c03996b52244555a288fcc0f3f0b1149de2bb94b52b470",
+      "size_bytes": 46098
+    },
+    "results/research_development/analysis/reference_reader_benchmark_2026-11-16/retained-1.json": {
+      "sha256": "c612969f78f4c77cf4bd0d99a85d12d011b88d8efbe5497c4117529eeb351fb5",
+      "size_bytes": 678
+    },
+    "results/research_development/analysis/reference_reader_benchmark_2026-11-16/retained-2.json": {
+      "sha256": "56f8e2dea5050d472952ed75f26f54d527f4a57a07d92130d3cf690728075fc5",
+      "size_bytes": 679
+    },
+    "results/research_development/analysis/reference_reader_benchmark_2026-11-16/retained-2.log": {
+      "sha256": "526dd4695fb83de5eafe479967300fed4768b8e86dc7e090d397f70ff7f1aaaa",
+      "size_bytes": 629
+    },
+    "results/research_development/analysis/reference_reader_benchmark_2026-11-16/streaming-1.json": {
+      "sha256": "63c850bd0596674cc332b02118433df35364b38282c8340e80e80cc9b5468b63",
+      "size_bytes": 677
+    },
+    "results/research_development/analysis/reference_reader_benchmark_2026-11-16/streaming-2.json": {
+      "sha256": "052fb7eb8fa8e94bfbdaa5f7d07c8e45748b096097c214e08379ecf3c0ef72b9",
+      "size_bytes": 678
+    },
+    "results/research_development/analysis/reference_reader_benchmark_2026-11-16/streaming-2.log": {
+      "sha256": "6e3543a2e13e35ff07fa2e198c0aea226883634ac469b27b022ef84f9ec4aa5f",
+      "size_bytes": 628
+    },
+    "results/research_development/dev/recovery_contract_source_reproduction_2026-11-16.zip": {
+      "sha256": "e9b10f8ad237cb08eb1a190acfcfaa94bb5b9e56a41f07f664868ff3ecd6f291",
+      "size_bytes": 572742
+    },
+    "results/research_development/dev/recovery_contract_source_reproduction_pre_label_fix_2026-11-16.zip": {
+      "sha256": "1db0bebf240cab2a2450df2c9887f28b59b76554ba9bdf149d789e85df1e4f59",
+      "size_bytes": 572362
+    },
+    "results/research_development/dev/recovery_contract_v1_2026-11-16/assignments.jsonl": {
+      "sha256": "c178f8012916a0f3e3c8b2c864f329415eb587e38359045a5f5d22a7bcbfd8cf",
+      "size_bytes": 3995742
+    },
+    "results/research_development/dev/recovery_contract_v1_2026-11-16/execution.log": {
+      "sha256": "d2fd4e1ca14246fca2ab14bfec3aa446c8d02003100de2b2ec2dc11cf7c62517",
+      "size_bytes": 93
+    },
+    "results/research_development/dev/recovery_contract_v1_2026-11-16/summary.json": {
+      "sha256": "0310d9cd22e32f87df37b74e44b5ff0e60d04723828b9dcf4a292088f50bbe81",
+      "size_bytes": 29483
+    },
+    "results/research_development/dev/recovery_contract_v2_2026-11-16/assignments.jsonl": {
+      "sha256": "6e5383a30bededb14923625a7cad49e8d06909320a822fb2e848efa729c5e16d",
+      "size_bytes": 3995763
+    },
+    "results/research_development/dev/recovery_contract_v2_2026-11-16/execution.log": {
+      "sha256": "d2fd4e1ca14246fca2ab14bfec3aa446c8d02003100de2b2ec2dc11cf7c62517",
+      "size_bytes": 93
+    },
+    "results/research_development/dev/recovery_contract_v2_2026-11-16/summary.json": {
+      "sha256": "74d13ac28f0caeecf2bac4be8bcf84b04542fc25ea8c19369e271914d04ff357",
+      "size_bytes": 29483
+    },
+    "results/research_development/dev/recovery_streaming_test_fixtures_2026-11-16.zip": {
+      "sha256": "e321e2a5210009fce8914e613a1ef19965f80b8b0a575250a89dae484aea401f",
+      "size_bytes": 38810218
+    }
+  },
+  "limitations": [
+    "Synthetic criteria are not approved operational requirements.",
+    "Physics is nominal 1 kg translational MuJoCo only; no real robot.",
+    "Fault/premise classification uses simulator truth for scoring, not independent onboard detection.",
+    "Floating references lack outward rounding or formal numerical certification.",
+    "Same-runtime/source-path reproduction and self-reported hashes lack independent authentication.",
+    "Two read-only benchmark observations per method on one uncontrolled-cache local workload.",
+    "No prospective independent scientific evaluation."
+  ],
+  "governance": {
+    "gate_b": "GATE_B_NOT_AUTHORIZED",
+    "overall_release": "BLOCKED",
+    "holdout_accessed": false,
+    "reserved_seed_contents_accessed": false,
+    "confirmatory_evaluation_executed": false,
+    "production_ticket_created_or_signed": false,
+    "frozen_artifacts_modified": false,
+    "release_commit_created": false,
+    "real_robot_validated": false
+  }
+}

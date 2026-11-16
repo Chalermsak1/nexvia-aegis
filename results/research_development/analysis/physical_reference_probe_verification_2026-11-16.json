@@ -1,0 +1,202 @@
+{
+  "classification": "DEVELOPMENT_REFERENCE_AND_DIAGNOSTIC_WINDOW_NOT_CONFIRMATORY",
+  "branch": "codex/research-hardening",
+  "parent_commit": "74b0bfab8e57cd450293e49de881207074df3141",
+  "source_sha256": {
+    "scripts/research/brake_probe_study.py": "bbf3b109579e06c48bef000e01de7277fbb06544d16a7196960f4138f355d27e",
+    "scripts/research/development_ledger.py": "254fe889557148110e458ed2cb6e3286837589a484d7a63e1ae3d2c34b645502",
+    "scripts/research/freshness_lease_study.py": "dd7218147d8671aeb2e222e8527e8302655024ee469a3eb57f6ecdd63efd33ae",
+    "scripts/research/physical_reference_study.py": "0bfa4abe4d66a4c298d219ab1fb6d05ee1ed339c6fb0537e4c1c4b5530615ef6",
+    "src/aegis/development/__init__.py": "afe5c415a90205d00220200b69b991a54a4741e1fa655a0ac9ed4f3ccbfc3043",
+    "src/aegis/development/assurance_gateway.py": "e810f11d21cca2ef50b02d3454c1934d9382251eab004ffc352dc32cb84e8119",
+    "src/aegis/development/bounded_braking.py": "6f34c760bebd07d91a8f08110a5ad50659bcd073a59077716476df1033f999e2",
+    "src/aegis/development/dual_source_braking.py": "4f189658d8a830619e1e8fe7ba4af25348905ae22ca68d9aef0d5bd4b134eb33",
+    "src/aegis/development/physical_reference.py": "d713b47a8c7426ea2dc2bfa7f545e00c7bc4b6b6a190e121b93fbea1c3692c05",
+    "src/aegis/development/probe_window.py": "3c84aece3cc6ea72a47ebc589e66f6b45d65967c863c8776535dc63073f5d06a",
+    "src/aegis/development/sampled_motion_reference.py": "1180350e5dc47e1bbd5b461a7a5a7d22ffe4fd1263e4e1c86e44b64962d4f8aa",
+    "src/aegis/env/mujoco_3d_cbf.py": "438b8ec89d1d40101586b0d888de7e8b5d73c9763cbae2603ccab01f04801433",
+    "src/aegis/env/mujoco_lease_brake.py": "069727193b93c290a0c5e192f35931da3d6b44a69e9a5673ad63aa1b4e3414d4"
+  },
+  "main_reference_source_sha256": {
+    "scripts/research/development_ledger.py": "254fe889557148110e458ed2cb6e3286837589a484d7a63e1ae3d2c34b645502",
+    "scripts/research/freshness_lease_study.py": "dd7218147d8671aeb2e222e8527e8302655024ee469a3eb57f6ecdd63efd33ae",
+    "scripts/research/physical_reference_study.py": "0bfa4abe4d66a4c298d219ab1fb6d05ee1ed339c6fb0537e4c1c4b5530615ef6",
+    "src/aegis/development/__init__.py": "afe5c415a90205d00220200b69b991a54a4741e1fa655a0ac9ed4f3ccbfc3043",
+    "src/aegis/development/assurance_gateway.py": "e810f11d21cca2ef50b02d3454c1934d9382251eab004ffc352dc32cb84e8119",
+    "src/aegis/development/bounded_braking.py": "6f34c760bebd07d91a8f08110a5ad50659bcd073a59077716476df1033f999e2",
+    "src/aegis/development/dual_source_braking.py": "4f189658d8a830619e1e8fe7ba4af25348905ae22ca68d9aef0d5bd4b134eb33",
+    "src/aegis/development/physical_reference.py": "d713b47a8c7426ea2dc2bfa7f545e00c7bc4b6b6a190e121b93fbea1c3692c05",
+    "src/aegis/development/sampled_motion_reference.py": "1180350e5dc47e1bbd5b461a7a5a7d22ffe4fd1263e4e1c86e44b64962d4f8aa",
+    "src/aegis/env/mujoco_3d_cbf.py": "438b8ec89d1d40101586b0d888de7e8b5d73c9763cbae2603ccab01f04801433",
+    "src/aegis/env/mujoco_lease_brake.py": "069727193b93c290a0c5e192f35931da3d6b44a69e9a5673ad63aa1b4e3414d4"
+  },
+  "test_source_sha256": {
+    "tests/test_physical_reference.py": "d2af68125b45f22d198d26e54cff16073b9aae7d304d05cda0da2b5a8b7dbda6",
+    "tests/test_physical_reference_study.py": "822705b02299ad266d98b9d2e8202a29e7d05de7dd18433622e6c14b390f7c74",
+    "tests/test_brake_probe.py": "154c2dce4949beb6c07e3542c93ccd708609a1f2a4d28590f4b30be8cd4c2196",
+    "tests/test_assurance_gateway.py": "1ef6fcca3b6d3e6ad2f290eb1d1db74484816a6acd8983ad0d43e7a46a9c7bce",
+    "tests/test_dual_source_braking.py": "bea527fa8c1a1a5d9a0f2eb9c07d74d1c05f1359a4c00dc75d7866920cb60b67",
+    "tests/test_bounded_braking.py": "9de542a31df5fc0f519aa69b7153cd8cbe09493305745b67c7b3791ad0d5a10a",
+    "tests/test_development_ledger.py": "0574aaa21272111b0bbc1e1cf0a14e033a33210d8f92e124ba7e5162b5cd9cec"
+  },
+  "runtime_versions": {
+    "mujoco": "3.14.0",
+    "numpy": "2.5.3",
+    "python": "3.12.14"
+  },
+  "studies": {
+    "reference": {
+      "completed_assignments": 126,
+      "physics_steps": 7560,
+      "matched_triples": 42,
+      "raw_sha256": "ffd27fea2278806bc8dfe25ef25c8ffeec9fda4b710f0f5966b271c261cc477d"
+    },
+    "probe": {
+      "completed_design_assignments": 21,
+      "executed_windows": 18,
+      "declined_windows": 3,
+      "physics_steps": 108,
+      "raw_sha256": "a4371c63269f580afe7b9cd6a09c71e83cacabc270a98c30f2b22c934e36739b"
+    }
+  },
+  "checks": {
+    "readonly_reanalyses_match": true,
+    "both_source_path_reproductions_byte_identical": true,
+    "source_maps_match_current_executed_bytes": true,
+    "figure_visually_inspected": true,
+    "reproduction_driver_sha256": "13f24b673d626c6dbac509356ec617980d24adf034118a62733541e456c10a2b",
+    "extra_namespace_sha256": {
+      "src/aegis/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "src/aegis/env/__init__.py": "0efefb3f0e48627f54c3791d99547a9773fc4e481d5aced9a8ecf70f501f47f3"
+    },
+    "preexisting_benchmark_sha256": "04bc31bf74423806200e39a44334e1dd0cf4063dde08797ef79dacb491b4323f",
+    "probe_observed_costs_reproduced_exactly": true
+  },
+  "tests": {
+    "passed": 192,
+    "reported_seconds": 14.49,
+    "full_repository_suite": false,
+    "groups": {
+      "tests.test_physical_reference": 30,
+      "tests.test_physical_reference_study": 27,
+      "tests.test_brake_probe": 15,
+      "tests.test_assurance_gateway": 34,
+      "tests.test_dual_source_braking": 26,
+      "tests.test_bounded_braking": 46,
+      "tests.test_development_ledger": 14
+    },
+    "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:. .venv/bin/python -m pytest -q -x -p no:cacheprovider tests/test_physical_reference.py tests/test_physical_reference_study.py tests/test_brake_probe.py tests/test_assurance_gateway.py tests/test_dual_source_braking.py tests/test_bounded_braking.py tests/test_development_ledger.py --basetemp=/private/tmp/nexvia-reference-probe-final-tests-20261116 --junitxml=/private/tmp/nexvia-reference-probe-final-tests-20261116.xml"
+  },
+  "failed_overlapping_invocations": [
+    {
+      "invocation": "nexvia-reference-integration-v1-20261116",
+      "passed": 30,
+      "failed": 1,
+      "reason": "Overstrong fixture expectations; no sensor/model bounds or actual trajectories changed to manufacture detection."
+    },
+    {
+      "invocation": "nexvia-reference-integration-v2-20261116",
+      "passed": 34,
+      "failed": 1,
+      "reason": "Overstrong fixture expectations; no sensor/model bounds or actual trajectories changed to manufacture detection."
+    },
+    {
+      "invocation": "nexvia-reference-integration-v3-20261116",
+      "passed": 35,
+      "failed": 1,
+      "reason": "Overstrong fixture expectations; no sensor/model bounds or actual trajectories changed to manufacture detection."
+    },
+    {
+      "invocation": "nexvia-reference-final-tests-20261116",
+      "passed": 35,
+      "failed": 1,
+      "reason": "Overstrong fixture expectations; no sensor/model bounds or actual trajectories changed to manufacture detection."
+    }
+  ],
+  "earlier_overlapping_passing_suites": [
+    {
+      "passed": 26,
+      "scope": "initial reference units before invalid-tick hardening"
+    },
+    {
+      "passed": 177,
+      "scope": "corrected reference regression"
+    },
+    {
+      "passed": 15,
+      "scope": "separate probe suite"
+    }
+  ],
+  "actual_batch_execution_errors": 0,
+  "negative_outcomes_are_not_safety_passes": true,
+  "retained_findings": [
+    "Sudden shared reversal/cached-state fault rejected before wrong command in modeled reference arms.",
+    "Initial frame fault needs force/acceleration relation and still causes one bad interval before diagnosis.",
+    "Coherent command-model/frame corruption passes checks while true speed increases.",
+    "Low-speed passive brake loss and partial spoofing can be uninformative/undetected.",
+    "Force/model-compatible drift can reflect inadequate authority; floor contact remains unevaluable.",
+    "Early short brake pulse separates missing force in declared fixtures, but coherent false feedback still defeats those two checks.",
+    "Three near-wall designs declined; force-over-budget cases unevaluable; no post-window rest/recoverability guarantee."
+  ],
+  "commands": {
+    "reference_run": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:. .venv/bin/python scripts/research/physical_reference_study.py run /private/tmp/nexvia-reference-actual-v1-20261116.jsonl --output /private/tmp/nexvia-reference-actual-v1-summary-20261116.json",
+    "reference_audit": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:. .venv/bin/python scripts/research/physical_reference_study.py audit /private/tmp/nexvia-reference-actual-v1-20261116.jsonl --output /private/tmp/nexvia-reference-actual-v1-reaudit-20261116.json",
+    "probe_run": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:. .venv/bin/python scripts/research/brake_probe_study.py run /private/tmp/nexvia-probe-actual-v1-20261116.jsonl --output /private/tmp/nexvia-probe-actual-v1-summary-20261116.json",
+    "probe_audit": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:. .venv/bin/python scripts/research/brake_probe_study.py audit /private/tmp/nexvia-probe-actual-v1-20261116.jsonl --output /private/tmp/nexvia-probe-actual-v1-reaudit-20261116.json",
+    "reproduction": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:. '/Users/chalermsak/Documents/ChatGPT/New project/nexvia-aegis/.venv/bin/python' reproduce.py (cwd /private/tmp/nexvia-reference-source-snapshot-20261116)",
+    "figure": "MPLCONFIGDIR=/private/tmp/nexvia-dual-mpl PYTHONDONTWRITEBYTECODE=1 .venv/bin/python plot_reference_probe_diagnostic_2026-11-16.py REFERENCE_LEDGER PROBE_LEDGER NEW_PREFIX"
+  },
+  "descriptive_probe_costs": {
+    "formula_delta_kinetic_energy": ".5 * 1 kg * (final_speed**2 - declared_initial_speed**2)",
+    "initial_speeds_by_id": {
+      "v0": 0.4,
+      "v1": 0.5,
+      "v2": 0.6
+    },
+    "energy_admission_limit": "UNSPECIFIED_NOT_INVENTED"
+  },
+  "fixture_archive": {
+    "schema": "nexvia-fixture-content-archive/1",
+    "logical_files": 74,
+    "unique_byte_objects": 38,
+    "manifest_member": "manifest.json",
+    "restore_script_member": "restore.py"
+  },
+  "limitations": [
+    "Initial anchor/acceleration/force sensors and error/frame/clock bounds are unverified model assumptions.",
+    "Virtual acceleration is interval-mean world-frame velocity change, not raw hardware IMU data.",
+    "Consistency does not identify the faulty channel or establish rest/fallback sufficiency.",
+    "Coherent joint sensor/model spoofing and insufficient brake authority remain possible.",
+    "No independent native-runtime provenance, safety certification or population inference.",
+    "Only a short sampled design window; no post-window recoverability or rest guarantee.",
+    "Sensor, geometry, initial-state and force bounds are unverified model assertions.",
+    "Reader compiles the initial model but never advances physics.",
+    "Same existing interpreter/native runtime; no independent authentication, reviewer approval or scientific replication.",
+    "No independent human/statistical/security approval or calibrated physical bounds supplied."
+  ],
+  "governance": {
+    "gate_b": "GATE_B_NOT_AUTHORIZED",
+    "release_readiness": "BLOCKED",
+    "reserved_data_files_accessed": false,
+    "holdout_or_confirmatory_evaluation_executed": false,
+    "production_ticket_created_or_signed": false,
+    "frozen_artifacts_or_registered_rules_modified": false,
+    "commit_push_merge_publication": false,
+    "hardware_validation": false
+  },
+  "artifact_sha256": {
+    "docs/research/V9_M5_PHYSICAL_REFERENCE_AND_PROBE_EXECUTION_2026-11-16.md": "1d5d8ca592bc3f44a54e70ff8bd0a118a53cdbc05da0e4f462978d9b05b1f55b",
+    "results/research_development/analysis/brake_probe_observed_costs_2026-11-16.json": "b7ab2b7d891b0dfd01125928c023f2a0de468a82db7cf7d99b4eb56c21851764",
+    "results/research_development/analysis/physical_reference_probe_tests_2026-11-16.xml": "c5099eec0a61ea06200c3d340e40767ad6dc8c74af041cfe04159fa74baae9b0",
+    "results/research_development/analysis/plot_reference_probe_diagnostic_2026-11-16.py": "666cadf057b8c93e0cd26fb1aa10e5f38dfa8105e3bd3604c585d06c81d59f6b",
+    "results/research_development/analysis/reference_probe_diagnostic_2026-11-16.png": "88f4a54d576d3495cec9cf1c5dc1b0ce85100ab2076b3a6d15007862fc8a4a44",
+    "results/research_development/analysis/reference_probe_diagnostic_2026-11-16.svg": "e5fd88dfd5d559576151aec2f7cd5303ec1b4a9397333d293f911b49df118433",
+    "results/research_development/dev/brake_probe_v1_2026-11-16/assignments.jsonl": "a4371c63269f580afe7b9cd6a09c71e83cacabc270a98c30f2b22c934e36739b",
+    "results/research_development/dev/brake_probe_v1_2026-11-16/summary.json": "b548d31e7c5c20174c8902376ffb75dd6fc7e89aca02e7c9bff3894eb891a1b3",
+    "results/research_development/dev/physical_reference_source_reproduction_2026-11-16.zip": "7924aa27dd143ac9320f64cbd2841aac0c0f283012a660861e89fd272da730e0",
+    "results/research_development/dev/physical_reference_test_fixtures_2026-11-16.zip": "58bf9a491b041c63635d1395848cb19b899fbb91af81f4b1839f121d78b56e0a",
+    "results/research_development/dev/physical_reference_v1_2026-11-16/assignments.jsonl": "ffd27fea2278806bc8dfe25ef25c8ffeec9fda4b710f0f5966b271c261cc477d",
+    "results/research_development/dev/physical_reference_v1_2026-11-16/summary.json": "2b70293f623f5ebe36ad1d90d2fac324f0e1f27c3f73276b5d4242e4675b5bdb",
+    "results/research_development/analysis/compute_brake_probe_costs_2026-11-16.py": "ce0a75ec8c2ab4a4ef6d737245057ef80b928a752e29c9549f3cab2f76f7dfa4"
+  }
+}

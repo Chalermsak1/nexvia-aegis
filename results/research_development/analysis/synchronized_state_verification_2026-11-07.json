@@ -1,0 +1,58 @@
+{
+  "classification": "EXPLORATORY_SYNCHRONIZED_ENVIRONMENT_VERIFICATION",
+  "recorded_at_utc": "2026-11-07T02:04:03.598735+00:00",
+  "parent_commit": "74b0bfab8e57cd450293e49de881207074df3141",
+  "branch": "codex/research-hardening",
+  "environment_id": "AEGIS_MUJOCO_3D_SYNCHRONIZED_V1_DEVELOPMENT",
+  "runtime": {
+    "python": "3.12.14",
+    "numpy": "2.5.3",
+    "mujoco": "3.14.0"
+  },
+  "command": [
+    "/Users/chalermsak/Documents/ChatGPT/New project/nexvia-aegis/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-p",
+    "no:cacheprovider",
+    "-q",
+    "tests/test_synchronized_3d_environment.py",
+    "tests/test_state_phase_diagnostic.py",
+    "tests/test_recovery_motion_summary.py",
+    "tests/test_recovery_physics_events.py",
+    "tests/test_recovery_physics_ledger.py",
+    "tests/test_recovery_post_abstention.py",
+    "--basetemp=/private/tmp/nexvia-synchronized-20261107/pytest-final",
+    "--junitxml=/private/tmp/nexvia-synchronized-20261107/synchronized_state_tests_2026-11-07.xml"
+  ],
+  "exit_code": 0,
+  "stdout": "..........................................................               [100%]\n58 passed in 5.99s\n",
+  "stderr": "",
+  "source_sha256_before": {
+    "src/aegis/env/mujoco_3d_synchronized.py": "f00625647ff9c56a86efba384a7149e94e149c922cce3ba5d45835aa0d9916e3",
+    "tests/test_synchronized_3d_environment.py": "6dea2f30d61c827511717df5f769d499c4470799110f9ff9bef1ff00ebdcbc79",
+    "src/aegis/env/mujoco_3d_cbf.py": "438b8ec89d1d40101586b0d888de7e8b5d73c9763cbae2603ccab01f04801433",
+    "experiments/benchmark_physical_3d_cbf.py": "04bc31bf74423806200e39a44334e1dd0cf4063dde08797ef79dacb491b4323f",
+    "scripts/research/diagnose_state_phase.py": "3de5f30d2095e1a9d0ed6d71f39b9daaa8d34ba997641512232d3c2cc2af444a",
+    "results/research_development/dev/recovery_incremental_physics_v1.jsonl": "359ae6f7e6f1de3fd99609c21cf9cdfa3d440f39a5234d8cfb45addeaafeaa2f",
+    "results/research_development/dev/recovery_post_abstention_physics_v2.jsonl": "48136174812afb4e852732d314b88bbd1b8e87dd4f860cec98c85902dd72fecf"
+  },
+  "source_sha256_after": {
+    "src/aegis/env/mujoco_3d_synchronized.py": "f00625647ff9c56a86efba384a7149e94e149c922cce3ba5d45835aa0d9916e3",
+    "tests/test_synchronized_3d_environment.py": "6dea2f30d61c827511717df5f769d499c4470799110f9ff9bef1ff00ebdcbc79",
+    "src/aegis/env/mujoco_3d_cbf.py": "438b8ec89d1d40101586b0d888de7e8b5d73c9763cbae2603ccab01f04801433",
+    "experiments/benchmark_physical_3d_cbf.py": "04bc31bf74423806200e39a44334e1dd0cf4063dde08797ef79dacb491b4323f",
+    "scripts/research/diagnose_state_phase.py": "3de5f30d2095e1a9d0ed6d71f39b9daaa8d34ba997641512232d3c2cc2af444a",
+    "results/research_development/dev/recovery_incremental_physics_v1.jsonl": "359ae6f7e6f1de3fd99609c21cf9cdfa3d440f39a5234d8cfb45addeaafeaa2f",
+    "results/research_development/dev/recovery_post_abstention_physics_v2.jsonl": "48136174812afb4e852732d314b88bbd1b8e87dd4f860cec98c85902dd72fecf"
+  },
+  "sources_unchanged": true,
+  "test_xml_sha256": "0caff856318aac8faa74954a289a438b11d965e9e8aaf6008b1fd4b39a10c72d",
+  "limitations": [
+    "Targeted synthetic/development tests only; no confirmatory or real-robot claim.",
+    "New class is opt-in; legacy behavior and historical evidence preserved.",
+    "Forward calls can change solver-derived state/callback effects; no legacy trajectory equivalence claimed.",
+    "Hash maps cover selected files only, not independent authentication."
+  ],
+  "governance": "GATE_B_NOT_AUTHORIZED"
+}

@@ -1,0 +1,49 @@
+{
+  "classification": "DEVELOPMENT_COMPARISON_PLANNING_AND_EVIDENCE_CLOSEOUT",
+  "recorded_at_utc": "2026-11-08T06:02:57.433379+00:00",
+  "heartbeat_trigger_utc": "2026-11-08T05:59:13.240Z",
+  "parent_commit": "74b0bfab8e57cd450293e49de881207074df3141",
+  "branch": "codex/research-hardening",
+  "dirty_worktree": true,
+  "inspection_checks": {
+    "synchronized_fixtures_v1_2026-11-07.jsonl": true,
+    "synchronized_fixtures_v1_summary_2026-11-07.json": true,
+    "prior_test_xml": true,
+    "prior_selected_sources_and_inputs": true,
+    "semantic_summary_matches": true
+  },
+  "retained_execution": {
+    "ledger_state": "FINALIZED",
+    "completed_assignments": 6,
+    "persisted_steps": 14,
+    "raw_sha256": "a6b0e59469f514892b727b2dd1b3266aa51823f09658ce1951ead0a19b8ff9e9"
+  },
+  "prior_test_suite": {
+    "tests": "78",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "timestamp": "2026-11-07T21:12:50.609676+07:00"
+  },
+  "new_test_runs": 0,
+  "new_simulation_runs": 0,
+  "new_policy_evaluations": 0,
+  "new_code_implementation": false,
+  "proposal_status": "NOT_EXECUTED_NOT_OWNER_APPROVAL",
+  "source_sha256": {
+    "experiments/benchmark_physical_3d_cbf.py": "04bc31bf74423806200e39a44334e1dd0cf4063dde08797ef79dacb491b4323f",
+    "src/aegis/env/mujoco_3d_cbf.py": "438b8ec89d1d40101586b0d888de7e8b5d73c9763cbae2603ccab01f04801433",
+    "src/aegis/env/mujoco_3d_synchronized.py": "f00625647ff9c56a86efba384a7149e94e149c922cce3ba5d45835aa0d9916e3",
+    "scripts/research/study_recovery_physics_evidence.py": "357b6bd2fe8b52b62dd710df27f6e42789cd56c41844210c14f7be4685a94d37",
+    "scripts/research/synchronized_fixture_ledger.py": "bc734e932dbbc48a02acb747cf17704f1dc74c5fda91a041b2e56d170bc0da2f",
+    "docs/research/AI_RESEARCH_TEAM_CHARTER_2026-10-31.md": "dde0f0536033b599969894f5f7a28e1295887673b7f4800f4a96d6c3a68bb4df"
+  },
+  "plan_sha256": "e2ded7ff0ab1a9954e9c9977cb32ef533246c9c3e7bd8a235732875c9c8ebc47",
+  "git_diff_check_exit_code": 0,
+  "limitations": [
+    "Retained-test inspection and source-backed proposed design only; not fresh regression or simulation evidence.",
+    "Self-reported hashes and runtime metadata are not independently authenticated provenance.",
+    "Eight proposed assignments are dependent trajectories in one inspected development world."
+  ],
+  "governance": "GATE_B_NOT_AUTHORIZED"
+}

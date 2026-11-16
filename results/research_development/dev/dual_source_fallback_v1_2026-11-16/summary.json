@@ -1,0 +1,3599 @@
+{
+  "study": "V9-M5 dual-source union and passive-damper diagnostic v1",
+  "ledger_state": "FINALIZED",
+  "counts": {
+    "ASSIGNED": 0,
+    "STARTED": 0,
+    "COMPLETED": 108,
+    "ERROR": 0
+  },
+  "metadata": {
+    "gate_b": "GATE_B_NOT_AUTHORIZED",
+    "not_confirmatory": true,
+    "parent_commit": "74b0bfab8e57cd450293e49de881207074df3141",
+    "sources": {
+      "scripts/research/development_ledger.py": "254fe889557148110e458ed2cb6e3286837589a484d7a63e1ae3d2c34b645502",
+      "scripts/research/dual_source_fallback_study.py": "b8bfcfaa6a0cfa4deee6884eae03a205d985f53d5f4ceb99335acfe90623e66f",
+      "src/aegis/development/__init__.py": "afe5c415a90205d00220200b69b991a54a4741e1fa655a0ac9ed4f3ccbfc3043",
+      "src/aegis/development/bounded_braking.py": "6f34c760bebd07d91a8f08110a5ad50659bcd073a59077716476df1033f999e2",
+      "src/aegis/development/dual_source_braking.py": "4f189658d8a830619e1e8fe7ba4af25348905ae22ca68d9aef0d5bd4b134eb33",
+      "src/aegis/development/passive_motion_reference.py": "46bf9269602e67bcf2399c90ee945598699fcdecbb9c12ec16b3ac0c0af47d76",
+      "src/aegis/env/mujoco_3d_cbf.py": "438b8ec89d1d40101586b0d888de7e8b5d73c9763cbae2603ccab01f04801433"
+    },
+    "versions": {
+      "mujoco": "3.14.0",
+      "numpy": "2.5.3",
+      "python": "3.12.14"
+    }
+  },
+  "assignments": [
+    {
+      "id": "w0:nominal:SINGLE_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 12,
+        "first_refusal_reason": "PRIMARY_BRAKE_UNSUPPORTED:DIRECTION_UNRESOLVED",
+        "command_steps": 12,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.008802441113411962,
+        "path_length_m": 0.06821968195425769,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.015492296359624545,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:nominal:DUAL_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 11,
+        "first_refusal_reason": "UNION_BRAKE_UNSUPPORTED",
+        "command_steps": 11,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.03954483502238809,
+        "path_length_m": 0.12294114311222087,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.07038980633985618,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:nominal:DUAL_DAMPER",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 11,
+        "first_refusal_reason": "UNION_BRAKE_UNSUPPORTED",
+        "command_steps": 11,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 86,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.0013558841637211464,
+        "path_length_m": 0.07401850230304233,
+        "retrospective_path_check": {
+          "classification": "RETROSPECTIVE_CONDITIONAL_MODEL_CHECK",
+          "reference": {
+            "classification": "CONDITIONAL_ASYMPTOTIC_PATH_BOUND",
+            "additional_path_upper_m": 0.04680388793941806,
+            "finite_time_rest_claim": false,
+            "speed_upper_m_s": 0.0835783713203894,
+            "delay_upper_seconds": 0.06,
+            "mass_kg": 1.0,
+            "damping_lower_kg_s": 2.0,
+            "persistent_force_upper_n": 0.0,
+            "assumptions": [
+              "Initial true speed is bounded by the supplied upper bound.",
+              "Zero incremental commanded force after the request; ideal gravity compensation.",
+              "Constant free mass; no contact or other unmodeled forces.",
+              "After a coast-only bounded delay, passive damping >= supplied coefficient remains available.",
+              "Zero persistent disturbance allowance is required for this finite infinite-horizon path bound.",
+              "Ordinary floating-point development reference, not outward-rounded interval verification."
+            ]
+          },
+          "observed_post_refusal_path_m": 0.021467165530677637,
+          "exceeds_conditional_bound": false
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:primary_reverse:SINGLE_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": null,
+        "first_refusal_reason": null,
+        "command_steps": 100,
+        "positive_command_power_samples": 94,
+        "kinetic_energy_increase_samples": 94,
+        "primary_raw_bound_violations": 94,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 3.998591551256031,
+        "path_length_m": 4.061238730489268,
+        "retrospective_path_check": {
+          "classification": "NOT_REQUESTED",
+          "reference": null,
+          "observed_post_refusal_path_m": null,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:primary_reverse:DUAL_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 6,
+        "first_refusal_reason": "CONTRADICTORY_SOURCE_BALLS",
+        "command_steps": 6,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 94,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.23876451583656788,
+        "path_length_m": 0.4895237375756237,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.44887728977275726,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:primary_reverse:DUAL_DAMPER",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 6,
+        "first_refusal_reason": "CONTRADICTORY_SOURCE_BALLS",
+        "command_steps": 6,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 87,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 91,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.006728773476558703,
+        "path_length_m": 0.17099018993306464,
+        "retrospective_path_check": {
+          "classification": "RETROSPECTIVE_CONDITIONAL_MODEL_CHECK",
+          "reference": {
+            "classification": "CONDITIONAL_ASYMPTOTIC_PATH_BOUND",
+            "additional_path_upper_m": 0.14774187809304545,
+            "finite_time_rest_claim": false,
+            "speed_upper_m_s": 0.26382478230900974,
+            "delay_upper_seconds": 0.06,
+            "mass_kg": 1.0,
+            "damping_lower_kg_s": 2.0,
+            "persistent_force_upper_n": 0.0,
+            "assumptions": [
+              "Initial true speed is bounded by the supplied upper bound.",
+              "Zero incremental commanded force after the request; ideal gravity compensation.",
+              "Constant free mass; no contact or other unmodeled forces.",
+              "After a coast-only bounded delay, passive damping >= supplied coefficient remains available.",
+              "Zero persistent disturbance allowance is required for this finite infinite-horizon path bound.",
+              "Ordinary floating-point development reference, not outward-rounded interval verification."
+            ]
+          },
+          "observed_post_refusal_path_m": 0.13034374213019825,
+          "exceeds_conditional_bound": false
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:secondary_reverse:SINGLE_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 12,
+        "first_refusal_reason": "PRIMARY_BRAKE_UNSUPPORTED:DIRECTION_UNRESOLVED",
+        "command_steps": 12,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 18,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.008802441113411962,
+        "path_length_m": 0.06821968195425769,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.015492296359624545,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:secondary_reverse:DUAL_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 6,
+        "first_refusal_reason": "CONTRADICTORY_SOURCE_BALLS",
+        "command_steps": 6,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 94,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.23876451583656788,
+        "path_length_m": 0.4895237375756237,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.44887728977275726,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:secondary_reverse:DUAL_DAMPER",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 6,
+        "first_refusal_reason": "CONTRADICTORY_SOURCE_BALLS",
+        "command_steps": 6,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 76,
+        "damper_active_steps": 91,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.006728773476558703,
+        "path_length_m": 0.17099018993306464,
+        "retrospective_path_check": {
+          "classification": "RETROSPECTIVE_CONDITIONAL_MODEL_CHECK",
+          "reference": {
+            "classification": "CONDITIONAL_ASYMPTOTIC_PATH_BOUND",
+            "additional_path_upper_m": 0.1539808489600804,
+            "finite_time_rest_claim": false,
+            "speed_upper_m_s": 0.2749658017144293,
+            "delay_upper_seconds": 0.06,
+            "mass_kg": 1.0,
+            "damping_lower_kg_s": 2.0,
+            "persistent_force_upper_n": 0.0,
+            "assumptions": [
+              "Initial true speed is bounded by the supplied upper bound.",
+              "Zero incremental commanded force after the request; ideal gravity compensation.",
+              "Constant free mass; no contact or other unmodeled forces.",
+              "After a coast-only bounded delay, passive damping >= supplied coefficient remains available.",
+              "Zero persistent disturbance allowance is required for this finite infinite-horizon path bound.",
+              "Ordinary floating-point development reference, not outward-rounded interval verification."
+            ]
+          },
+          "observed_post_refusal_path_m": 0.13034374213019825,
+          "exceeds_conditional_bound": false
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:shared_reverse:SINGLE_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": null,
+        "first_refusal_reason": null,
+        "command_steps": 100,
+        "positive_command_power_samples": 94,
+        "kinetic_energy_increase_samples": 94,
+        "primary_raw_bound_violations": 94,
+        "secondary_raw_bound_violations": 94,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 3.998591551256031,
+        "path_length_m": 4.061238730489268,
+        "retrospective_path_check": {
+          "classification": "NOT_REQUESTED",
+          "reference": null,
+          "observed_post_refusal_path_m": null,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:shared_reverse:DUAL_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": null,
+        "first_refusal_reason": null,
+        "command_steps": 100,
+        "positive_command_power_samples": 94,
+        "kinetic_energy_increase_samples": 94,
+        "primary_raw_bound_violations": 94,
+        "secondary_raw_bound_violations": 94,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 3.998591551256031,
+        "path_length_m": 4.061238730489268,
+        "retrospective_path_check": {
+          "classification": "NOT_REQUESTED",
+          "reference": null,
+          "observed_post_refusal_path_m": null,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:shared_reverse:DUAL_DAMPER",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": null,
+        "first_refusal_reason": null,
+        "command_steps": 100,
+        "positive_command_power_samples": 94,
+        "kinetic_energy_increase_samples": 94,
+        "primary_raw_bound_violations": 94,
+        "secondary_raw_bound_violations": 94,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 3.998591551256031,
+        "path_length_m": 4.061238730489268,
+        "retrospective_path_check": {
+          "classification": "NOT_REQUESTED",
+          "reference": null,
+          "observed_post_refusal_path_m": null,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:primary_reported_reverse:SINGLE_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 6,
+        "first_refusal_reason": "PRIMARY_BRAKE_UNSUPPORTED:DIRECTION_UNRESOLVED",
+        "command_steps": 6,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.23876451583656788,
+        "path_length_m": 0.4895237375756237,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.44887728977275726,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:primary_reported_reverse:DUAL_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 6,
+        "first_refusal_reason": "PRIMARY_BRAKE_UNSUPPORTED:DIRECTION_UNRESOLVED",
+        "command_steps": 6,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.23876451583656788,
+        "path_length_m": 0.4895237375756237,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.44887728977275726,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:primary_reported_reverse:DUAL_DAMPER",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 6,
+        "first_refusal_reason": "PRIMARY_BRAKE_UNSUPPORTED:DIRECTION_UNRESOLVED",
+        "command_steps": 6,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 91,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.006728773476558703,
+        "path_length_m": 0.17099018993306464,
+        "retrospective_path_check": {
+          "classification": "RETROSPECTIVE_CONDITIONAL_MODEL_CHECK",
+          "reference": {
+            "classification": "CONDITIONAL_ASYMPTOTIC_PATH_BOUND",
+            "additional_path_upper_m": 0.4089964522053401,
+            "finite_time_rest_claim": false,
+            "speed_upper_m_s": 0.7303508075095358,
+            "delay_upper_seconds": 0.06,
+            "mass_kg": 1.0,
+            "damping_lower_kg_s": 2.0,
+            "persistent_force_upper_n": 0.0,
+            "assumptions": [
+              "Initial true speed is bounded by the supplied upper bound.",
+              "Zero incremental commanded force after the request; ideal gravity compensation.",
+              "Constant free mass; no contact or other unmodeled forces.",
+              "After a coast-only bounded delay, passive damping >= supplied coefficient remains available.",
+              "Zero persistent disturbance allowance is required for this finite infinite-horizon path bound.",
+              "Ordinary floating-point development reference, not outward-rounded interval verification."
+            ]
+          },
+          "observed_post_refusal_path_m": 0.13034374213019825,
+          "exceeds_conditional_bound": false
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:shared_retimestamped_stale:SINGLE_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 14,
+        "first_refusal_reason": "PRIMARY_BRAKE_UNSUPPORTED:HOLD_ENERGY_BOUND_UNSUPPORTED",
+        "command_steps": 14,
+        "positive_command_power_samples": 2,
+        "kinetic_energy_increase_samples": 2,
+        "primary_raw_bound_violations": 18,
+        "secondary_raw_bound_violations": 15,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.08097265932675142,
+        "path_length_m": 0.1942847521513452,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.1392729740420122,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:shared_retimestamped_stale:DUAL_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 14,
+        "first_refusal_reason": "PRIMARY_BRAKE_UNSUPPORTED:HOLD_ENERGY_BOUND_UNSUPPORTED",
+        "command_steps": 14,
+        "positive_command_power_samples": 2,
+        "kinetic_energy_increase_samples": 2,
+        "primary_raw_bound_violations": 18,
+        "secondary_raw_bound_violations": 15,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.08097265932675142,
+        "path_length_m": 0.1942847521513452,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.1392729740420122,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:shared_retimestamped_stale:DUAL_DAMPER",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 14,
+        "first_refusal_reason": "PRIMARY_BRAKE_UNSUPPORTED:HOLD_ENERGY_BOUND_UNSUPPORTED",
+        "command_steps": 14,
+        "positive_command_power_samples": 2,
+        "kinetic_energy_increase_samples": 2,
+        "primary_raw_bound_violations": 12,
+        "secondary_raw_bound_violations": 11,
+        "damper_active_steps": 83,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.0031229946549715597,
+        "path_length_m": 0.09879497000482787,
+        "retrospective_path_check": {
+          "classification": "RETROSPECTIVE_CONDITIONAL_MODEL_CHECK",
+          "reference": {
+            "classification": "CONDITIONAL_ASYMPTOTIC_PATH_BOUND",
+            "additional_path_upper_m": 0.035832381576551955,
+            "finite_time_rest_claim": false,
+            "speed_upper_m_s": 0.06398639567241421,
+            "delay_upper_seconds": 0.06,
+            "mass_kg": 1.0,
+            "damping_lower_kg_s": 2.0,
+            "persistent_force_upper_n": 0.0,
+            "assumptions": [
+              "Initial true speed is bounded by the supplied upper bound.",
+              "Zero incremental commanded force after the request; ideal gravity compensation.",
+              "Constant free mass; no contact or other unmodeled forces.",
+              "After a coast-only bounded delay, passive damping >= supplied coefficient remains available.",
+              "Zero persistent disturbance allowance is required for this finite infinite-horizon path bound.",
+              "Ordinary floating-point development reference, not outward-rounded interval verification."
+            ]
+          },
+          "observed_post_refusal_path_m": 0.04378319189549486,
+          "exceeds_conditional_bound": true
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:primary_replay:SINGLE_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 6,
+        "first_refusal_reason": "REQUIRED_SOURCE_REJECTED",
+        "command_steps": 6,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 94,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.23876451583656788,
+        "path_length_m": 0.4895237375756237,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.44887728977275726,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:primary_replay:DUAL_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 6,
+        "first_refusal_reason": "REQUIRED_SOURCE_REJECTED",
+        "command_steps": 6,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 94,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.23876451583656788,
+        "path_length_m": 0.4895237375756237,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.44887728977275726,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:primary_replay:DUAL_DAMPER",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 6,
+        "first_refusal_reason": "REQUIRED_SOURCE_REJECTED",
+        "command_steps": 6,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 94,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 91,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.006728773476558703,
+        "path_length_m": 0.17099018993306464,
+        "retrospective_path_check": {
+          "classification": "UNSUPPORTED_MISSING_ACCEPTED_STATE_BALL",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.13034374213019825,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:secondary_missing:SINGLE_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 12,
+        "first_refusal_reason": "PRIMARY_BRAKE_UNSUPPORTED:DIRECTION_UNRESOLVED",
+        "command_steps": 12,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.008802441113411962,
+        "path_length_m": 0.06821968195425769,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.015492296359624545,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:secondary_missing:DUAL_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 6,
+        "first_refusal_reason": "REQUIRED_SOURCE_REJECTED",
+        "command_steps": 6,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.23876451583656788,
+        "path_length_m": 0.4895237375756237,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.44887728977275726,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:secondary_missing:DUAL_DAMPER",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 6,
+        "first_refusal_reason": "REQUIRED_SOURCE_REJECTED",
+        "command_steps": 6,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 91,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.006728773476558703,
+        "path_length_m": 0.17099018993306464,
+        "retrospective_path_check": {
+          "classification": "UNSUPPORTED_MISSING_ACCEPTED_STATE_BALL",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.13034374213019825,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:primary_position_bias:SINGLE_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 12,
+        "first_refusal_reason": "PRIMARY_BRAKE_UNSUPPORTED:DIRECTION_UNRESOLVED",
+        "command_steps": 12,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 94,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.008802441113411962,
+        "path_length_m": 0.06821968195425769,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.015492296359624545,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:primary_position_bias:DUAL_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 6,
+        "first_refusal_reason": "CONTRADICTORY_SOURCE_BALLS",
+        "command_steps": 6,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 94,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.23876451583656788,
+        "path_length_m": 0.4895237375756237,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.44887728977275726,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:primary_position_bias:DUAL_DAMPER",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 6,
+        "first_refusal_reason": "CONTRADICTORY_SOURCE_BALLS",
+        "command_steps": 6,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 94,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 91,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.006728773476558703,
+        "path_length_m": 0.17099018993306464,
+        "retrospective_path_check": {
+          "classification": "RETROSPECTIVE_CONDITIONAL_MODEL_CHECK",
+          "reference": {
+            "classification": "CONDITIONAL_ASYMPTOTIC_PATH_BOUND",
+            "additional_path_upper_m": 0.1485550151500432,
+            "finite_time_rest_claim": false,
+            "speed_upper_m_s": 0.2652768127679343,
+            "delay_upper_seconds": 0.06,
+            "mass_kg": 1.0,
+            "damping_lower_kg_s": 2.0,
+            "persistent_force_upper_n": 0.0,
+            "assumptions": [
+              "Initial true speed is bounded by the supplied upper bound.",
+              "Zero incremental commanded force after the request; ideal gravity compensation.",
+              "Constant free mass; no contact or other unmodeled forces.",
+              "After a coast-only bounded delay, passive damping >= supplied coefficient remains available.",
+              "Zero persistent disturbance allowance is required for this finite infinite-horizon path bound.",
+              "Ordinary floating-point development reference, not outward-rounded interval verification."
+            ]
+          },
+          "observed_post_refusal_path_m": 0.13034374213019825,
+          "exceeds_conditional_bound": false
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:secondary_position_bias:SINGLE_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 12,
+        "first_refusal_reason": "PRIMARY_BRAKE_UNSUPPORTED:DIRECTION_UNRESOLVED",
+        "command_steps": 12,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 94,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.008802441113411962,
+        "path_length_m": 0.06821968195425769,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.015492296359624545,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:secondary_position_bias:DUAL_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 6,
+        "first_refusal_reason": "CONTRADICTORY_SOURCE_BALLS",
+        "command_steps": 6,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 94,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.23876451583656788,
+        "path_length_m": 0.4895237375756237,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.44887728977275726,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:secondary_position_bias:DUAL_DAMPER",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 6,
+        "first_refusal_reason": "CONTRADICTORY_SOURCE_BALLS",
+        "command_steps": 6,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 94,
+        "damper_active_steps": 91,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.006728773476558703,
+        "path_length_m": 0.17099018993306464,
+        "retrospective_path_check": {
+          "classification": "RETROSPECTIVE_CONDITIONAL_MODEL_CHECK",
+          "reference": {
+            "classification": "CONDITIONAL_ASYMPTOTIC_PATH_BOUND",
+            "additional_path_upper_m": 0.1485550151500432,
+            "finite_time_rest_claim": false,
+            "speed_upper_m_s": 0.2652768127679343,
+            "delay_upper_seconds": 0.06,
+            "mass_kg": 1.0,
+            "damping_lower_kg_s": 2.0,
+            "persistent_force_upper_n": 0.0,
+            "assumptions": [
+              "Initial true speed is bounded by the supplied upper bound.",
+              "Zero incremental commanded force after the request; ideal gravity compensation.",
+              "Constant free mass; no contact or other unmodeled forces.",
+              "After a coast-only bounded delay, passive damping >= supplied coefficient remains available.",
+              "Zero persistent disturbance allowance is required for this finite infinite-horizon path bound.",
+              "Ordinary floating-point development reference, not outward-rounded interval verification."
+            ]
+          },
+          "observed_post_refusal_path_m": 0.13034374213019825,
+          "exceeds_conditional_bound": false
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:shared_position_bias:SINGLE_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 12,
+        "first_refusal_reason": "PRIMARY_BRAKE_UNSUPPORTED:DIRECTION_UNRESOLVED",
+        "command_steps": 12,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 94,
+        "secondary_raw_bound_violations": 94,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.008802441113411962,
+        "path_length_m": 0.06821968195425769,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.015492296359624545,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:shared_position_bias:DUAL_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 11,
+        "first_refusal_reason": "UNION_BRAKE_UNSUPPORTED",
+        "command_steps": 11,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 94,
+        "secondary_raw_bound_violations": 94,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.03954483502238809,
+        "path_length_m": 0.12294114311222087,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.07038980633985618,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:shared_position_bias:DUAL_DAMPER",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 11,
+        "first_refusal_reason": "UNION_BRAKE_UNSUPPORTED",
+        "command_steps": 11,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 94,
+        "secondary_raw_bound_violations": 94,
+        "damper_active_steps": 86,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.0013558841637211464,
+        "path_length_m": 0.07401850230304233,
+        "retrospective_path_check": {
+          "classification": "RETROSPECTIVE_CONDITIONAL_MODEL_CHECK",
+          "reference": {
+            "classification": "CONDITIONAL_ASYMPTOTIC_PATH_BOUND",
+            "additional_path_upper_m": 0.04680388793941806,
+            "finite_time_rest_claim": false,
+            "speed_upper_m_s": 0.0835783713203894,
+            "delay_upper_seconds": 0.06,
+            "mass_kg": 1.0,
+            "damping_lower_kg_s": 2.0,
+            "persistent_force_upper_n": 0.0,
+            "assumptions": [
+              "Initial true speed is bounded by the supplied upper bound.",
+              "Zero incremental commanded force after the request; ideal gravity compensation.",
+              "Constant free mass; no contact or other unmodeled forces.",
+              "After a coast-only bounded delay, passive damping >= supplied coefficient remains available.",
+              "Zero persistent disturbance allowance is required for this finite infinite-horizon path bound.",
+              "Ordinary floating-point development reference, not outward-rounded interval verification."
+            ]
+          },
+          "observed_post_refusal_path_m": 0.021467165530677637,
+          "exceeds_conditional_bound": false
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:damper_unavailable:SINGLE_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 12,
+        "first_refusal_reason": "PRIMARY_BRAKE_UNSUPPORTED:DIRECTION_UNRESOLVED",
+        "command_steps": 12,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.008802441113411962,
+        "path_length_m": 0.06821968195425769,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.015492296359624545,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:damper_unavailable:DUAL_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 11,
+        "first_refusal_reason": "UNION_BRAKE_UNSUPPORTED",
+        "command_steps": 11,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.03954483502238809,
+        "path_length_m": 0.12294114311222087,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.07038980633985618,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w0:damper_unavailable:DUAL_DAMPER",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 11,
+        "first_refusal_reason": "UNION_BRAKE_UNSUPPORTED",
+        "command_steps": 11,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 86,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.03954483502238809,
+        "path_length_m": 0.12294114311222087,
+        "retrospective_path_check": {
+          "classification": "RETROSPECTIVE_CONDITIONAL_MODEL_CHECK",
+          "reference": {
+            "classification": "UNSUPPORTED_FALLBACK_UNAVAILABLE",
+            "additional_path_upper_m": null,
+            "finite_time_rest_claim": false,
+            "speed_upper_m_s": 0.0835783713203894,
+            "delay_upper_seconds": 0.06,
+            "mass_kg": 1.0,
+            "damping_lower_kg_s": 2.0,
+            "persistent_force_upper_n": 0.0,
+            "assumptions": [
+              "Initial true speed is bounded by the supplied upper bound.",
+              "Zero incremental commanded force after the request; ideal gravity compensation.",
+              "Constant free mass; no contact or other unmodeled forces.",
+              "After a coast-only bounded delay, passive damping >= supplied coefficient remains available.",
+              "Zero persistent disturbance allowance is required for this finite infinite-horizon path bound.",
+              "Ordinary floating-point development reference, not outward-rounded interval verification."
+            ]
+          },
+          "observed_post_refusal_path_m": 0.07038980633985618,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:nominal:SINGLE_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 13,
+        "first_refusal_reason": "PRIMARY_BRAKE_UNSUPPORTED:DIRECTION_UNRESOLVED",
+        "command_steps": 13,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.00368198528205649,
+        "path_length_m": 0.06793528010890913,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.006406654390771692,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:nominal:DUAL_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 12,
+        "first_refusal_reason": "UNION_BRAKE_UNSUPPORTED",
+        "command_steps": 12,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.03746505240778606,
+        "path_length_m": 0.12739347825020256,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.06593849223770618,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:nominal:DUAL_DAMPER",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 12,
+        "first_refusal_reason": "UNION_BRAKE_UNSUPPORTED",
+        "command_steps": 12,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 85,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.0013359570743663126,
+        "path_length_m": 0.0817674368236743,
+        "retrospective_path_check": {
+          "classification": "RETROSPECTIVE_CONDITIONAL_MODEL_CHECK",
+          "reference": {
+            "classification": "CONDITIONAL_ASYMPTOTIC_PATH_BOUND",
+            "additional_path_upper_m": 0.0423372232217179,
+            "finite_time_rest_claim": false,
+            "speed_upper_m_s": 0.07560218432449625,
+            "delay_upper_seconds": 0.06,
+            "mass_kg": 1.0,
+            "damping_lower_kg_s": 2.0,
+            "persistent_force_upper_n": 0.0,
+            "assumptions": [
+              "Initial true speed is bounded by the supplied upper bound.",
+              "Zero incremental commanded force after the request; ideal gravity compensation.",
+              "Constant free mass; no contact or other unmodeled forces.",
+              "After a coast-only bounded delay, passive damping >= supplied coefficient remains available.",
+              "Zero persistent disturbance allowance is required for this finite infinite-horizon path bound.",
+              "Ordinary floating-point development reference, not outward-rounded interval verification."
+            ]
+          },
+          "observed_post_refusal_path_m": 0.020312450811177912,
+          "exceeds_conditional_bound": false
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:primary_reverse:SINGLE_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": null,
+        "first_refusal_reason": null,
+        "command_steps": 100,
+        "positive_command_power_samples": 94,
+        "kinetic_energy_increase_samples": 94,
+        "primary_raw_bound_violations": 94,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 4.035681308997252,
+        "path_length_m": 4.13541509246889,
+        "retrospective_path_check": {
+          "classification": "NOT_REQUESTED",
+          "reference": null,
+          "observed_post_refusal_path_m": null,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:primary_reverse:DUAL_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 6,
+        "first_refusal_reason": "CONTRADICTORY_SOURCE_BALLS",
+        "command_steps": 6,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 94,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.2758622684409978,
+        "path_length_m": 0.5637188590471754,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.5186210646690803,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:primary_reverse:DUAL_DAMPER",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 6,
+        "first_refusal_reason": "CONTRADICTORY_SOURCE_BALLS",
+        "command_steps": 6,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 90,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 91,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.007774248650664934,
+        "path_length_m": 0.1956935403797209,
+        "retrospective_path_check": {
+          "classification": "RETROSPECTIVE_CONDITIONAL_MODEL_CHECK",
+          "reference": {
+            "classification": "CONDITIONAL_ASYMPTOTIC_PATH_BOUND",
+            "additional_path_upper_m": 0.1780565098562316,
+            "finite_time_rest_claim": false,
+            "speed_upper_m_s": 0.3179580533146993,
+            "delay_upper_seconds": 0.06,
+            "mass_kg": 1.0,
+            "damping_lower_kg_s": 2.0,
+            "persistent_force_upper_n": 0.0,
+            "assumptions": [
+              "Initial true speed is bounded by the supplied upper bound.",
+              "Zero incremental commanded force after the request; ideal gravity compensation.",
+              "Constant free mass; no contact or other unmodeled forces.",
+              "After a coast-only bounded delay, passive damping >= supplied coefficient remains available.",
+              "Zero persistent disturbance allowance is required for this finite infinite-horizon path bound.",
+              "Ordinary floating-point development reference, not outward-rounded interval verification."
+            ]
+          },
+          "observed_post_refusal_path_m": 0.15059574600162579,
+          "exceeds_conditional_bound": false
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:secondary_reverse:SINGLE_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 13,
+        "first_refusal_reason": "PRIMARY_BRAKE_UNSUPPORTED:DIRECTION_UNRESOLVED",
+        "command_steps": 13,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 7,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.00368198528205649,
+        "path_length_m": 0.06793528010890913,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.006406654390771692,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:secondary_reverse:DUAL_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 6,
+        "first_refusal_reason": "CONTRADICTORY_SOURCE_BALLS",
+        "command_steps": 6,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 94,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.2758622684409978,
+        "path_length_m": 0.5637188590471754,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.5186210646690803,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:secondary_reverse:DUAL_DAMPER",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 6,
+        "first_refusal_reason": "CONTRADICTORY_SOURCE_BALLS",
+        "command_steps": 6,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 82,
+        "damper_active_steps": 91,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.007774248650664934,
+        "path_length_m": 0.1956935403797209,
+        "retrospective_path_check": {
+          "classification": "RETROSPECTIVE_CONDITIONAL_MODEL_CHECK",
+          "reference": {
+            "classification": "CONDITIONAL_ASYMPTOTIC_PATH_BOUND",
+            "additional_path_upper_m": 0.16453541464541874,
+            "finite_time_rest_claim": false,
+            "speed_upper_m_s": 0.29381324043824775,
+            "delay_upper_seconds": 0.06,
+            "mass_kg": 1.0,
+            "damping_lower_kg_s": 2.0,
+            "persistent_force_upper_n": 0.0,
+            "assumptions": [
+              "Initial true speed is bounded by the supplied upper bound.",
+              "Zero incremental commanded force after the request; ideal gravity compensation.",
+              "Constant free mass; no contact or other unmodeled forces.",
+              "After a coast-only bounded delay, passive damping >= supplied coefficient remains available.",
+              "Zero persistent disturbance allowance is required for this finite infinite-horizon path bound.",
+              "Ordinary floating-point development reference, not outward-rounded interval verification."
+            ]
+          },
+          "observed_post_refusal_path_m": 0.15059574600162579,
+          "exceeds_conditional_bound": false
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:shared_reverse:SINGLE_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": null,
+        "first_refusal_reason": null,
+        "command_steps": 100,
+        "positive_command_power_samples": 94,
+        "kinetic_energy_increase_samples": 94,
+        "primary_raw_bound_violations": 94,
+        "secondary_raw_bound_violations": 94,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 4.035681308997252,
+        "path_length_m": 4.13541509246889,
+        "retrospective_path_check": {
+          "classification": "NOT_REQUESTED",
+          "reference": null,
+          "observed_post_refusal_path_m": null,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:shared_reverse:DUAL_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": null,
+        "first_refusal_reason": null,
+        "command_steps": 100,
+        "positive_command_power_samples": 94,
+        "kinetic_energy_increase_samples": 94,
+        "primary_raw_bound_violations": 94,
+        "secondary_raw_bound_violations": 94,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 4.035681308997252,
+        "path_length_m": 4.13541509246889,
+        "retrospective_path_check": {
+          "classification": "NOT_REQUESTED",
+          "reference": null,
+          "observed_post_refusal_path_m": null,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:shared_reverse:DUAL_DAMPER",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": null,
+        "first_refusal_reason": null,
+        "command_steps": 100,
+        "positive_command_power_samples": 94,
+        "kinetic_energy_increase_samples": 94,
+        "primary_raw_bound_violations": 94,
+        "secondary_raw_bound_violations": 94,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 4.035681308997252,
+        "path_length_m": 4.13541509246889,
+        "retrospective_path_check": {
+          "classification": "NOT_REQUESTED",
+          "reference": null,
+          "observed_post_refusal_path_m": null,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:primary_reported_reverse:SINGLE_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 6,
+        "first_refusal_reason": "PRIMARY_BRAKE_UNSUPPORTED:DIRECTION_UNRESOLVED",
+        "command_steps": 6,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.2758622684409978,
+        "path_length_m": 0.5637188590471754,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.5186210646690803,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:primary_reported_reverse:DUAL_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 6,
+        "first_refusal_reason": "PRIMARY_BRAKE_UNSUPPORTED:DIRECTION_UNRESOLVED",
+        "command_steps": 6,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.2758622684409978,
+        "path_length_m": 0.5637188590471754,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.5186210646690803,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:primary_reported_reverse:DUAL_DAMPER",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 6,
+        "first_refusal_reason": "PRIMARY_BRAKE_UNSUPPORTED:DIRECTION_UNRESOLVED",
+        "command_steps": 6,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 91,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.007774248650664934,
+        "path_length_m": 0.1956935403797209,
+        "retrospective_path_check": {
+          "classification": "RETROSPECTIVE_CONDITIONAL_MODEL_CHECK",
+          "reference": {
+            "classification": "CONDITIONAL_ASYMPTOTIC_PATH_BOUND",
+            "additional_path_upper_m": 0.47920397664043923,
+            "finite_time_rest_claim": false,
+            "speed_upper_m_s": 0.8557213868579272,
+            "delay_upper_seconds": 0.06,
+            "mass_kg": 1.0,
+            "damping_lower_kg_s": 2.0,
+            "persistent_force_upper_n": 0.0,
+            "assumptions": [
+              "Initial true speed is bounded by the supplied upper bound.",
+              "Zero incremental commanded force after the request; ideal gravity compensation.",
+              "Constant free mass; no contact or other unmodeled forces.",
+              "After a coast-only bounded delay, passive damping >= supplied coefficient remains available.",
+              "Zero persistent disturbance allowance is required for this finite infinite-horizon path bound.",
+              "Ordinary floating-point development reference, not outward-rounded interval verification."
+            ]
+          },
+          "observed_post_refusal_path_m": 0.15059574600162579,
+          "exceeds_conditional_bound": false
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:shared_retimestamped_stale:SINGLE_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 16,
+        "first_refusal_reason": "PRIMARY_BRAKE_UNSUPPORTED:DIRECTION_UNRESOLVED",
+        "command_steps": 16,
+        "positive_command_power_samples": 3,
+        "kinetic_energy_increase_samples": 3,
+        "primary_raw_bound_violations": 43,
+        "secondary_raw_bound_violations": 22,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.12300712725066103,
+        "path_length_m": 0.2731838977424409,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.20665197378110994,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:shared_retimestamped_stale:DUAL_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 15,
+        "first_refusal_reason": "UNION_BRAKE_UNSUPPORTED",
+        "command_steps": 15,
+        "positive_command_power_samples": 2,
+        "kinetic_energy_increase_samples": 2,
+        "primary_raw_bound_violations": 31,
+        "secondary_raw_bound_violations": 15,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.0833809174019216,
+        "path_length_m": 0.20581934099959245,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.1417475595832747,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:shared_retimestamped_stale:DUAL_DAMPER",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 15,
+        "first_refusal_reason": "UNION_BRAKE_UNSUPPORTED",
+        "command_steps": 15,
+        "positive_command_power_samples": 2,
+        "kinetic_energy_increase_samples": 2,
+        "primary_raw_bound_violations": 19,
+        "secondary_raw_bound_violations": 12,
+        "damper_active_steps": 82,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.0033445126787168384,
+        "path_length_m": 0.10909283882203501,
+        "retrospective_path_check": {
+          "classification": "RETROSPECTIVE_CONDITIONAL_MODEL_CHECK",
+          "reference": {
+            "classification": "CONDITIONAL_ASYMPTOTIC_PATH_BOUND",
+            "additional_path_upper_m": 0.03696126099116076,
+            "finite_time_rest_claim": false,
+            "speed_upper_m_s": 0.06600225176992992,
+            "delay_upper_seconds": 0.06,
+            "mass_kg": 1.0,
+            "damping_lower_kg_s": 2.0,
+            "persistent_force_upper_n": 0.0,
+            "assumptions": [
+              "Initial true speed is bounded by the supplied upper bound.",
+              "Zero incremental commanded force after the request; ideal gravity compensation.",
+              "Constant free mass; no contact or other unmodeled forces.",
+              "After a coast-only bounded delay, passive damping >= supplied coefficient remains available.",
+              "Zero persistent disturbance allowance is required for this finite infinite-horizon path bound.",
+              "Ordinary floating-point development reference, not outward-rounded interval verification."
+            ]
+          },
+          "observed_post_refusal_path_m": 0.04502105740571727,
+          "exceeds_conditional_bound": true
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:primary_replay:SINGLE_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 6,
+        "first_refusal_reason": "REQUIRED_SOURCE_REJECTED",
+        "command_steps": 6,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 94,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.2758622684409978,
+        "path_length_m": 0.5637188590471754,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.5186210646690803,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:primary_replay:DUAL_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 6,
+        "first_refusal_reason": "REQUIRED_SOURCE_REJECTED",
+        "command_steps": 6,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 94,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.2758622684409978,
+        "path_length_m": 0.5637188590471754,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.5186210646690803,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:primary_replay:DUAL_DAMPER",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 6,
+        "first_refusal_reason": "REQUIRED_SOURCE_REJECTED",
+        "command_steps": 6,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 94,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 91,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.007774248650664934,
+        "path_length_m": 0.1956935403797209,
+        "retrospective_path_check": {
+          "classification": "UNSUPPORTED_MISSING_ACCEPTED_STATE_BALL",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.15059574600162579,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:secondary_missing:SINGLE_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 13,
+        "first_refusal_reason": "PRIMARY_BRAKE_UNSUPPORTED:DIRECTION_UNRESOLVED",
+        "command_steps": 13,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.00368198528205649,
+        "path_length_m": 0.06793528010890913,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.006406654390771692,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:secondary_missing:DUAL_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 6,
+        "first_refusal_reason": "REQUIRED_SOURCE_REJECTED",
+        "command_steps": 6,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.2758622684409978,
+        "path_length_m": 0.5637188590471754,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.5186210646690803,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:secondary_missing:DUAL_DAMPER",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 6,
+        "first_refusal_reason": "REQUIRED_SOURCE_REJECTED",
+        "command_steps": 6,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 91,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.007774248650664934,
+        "path_length_m": 0.1956935403797209,
+        "retrospective_path_check": {
+          "classification": "UNSUPPORTED_MISSING_ACCEPTED_STATE_BALL",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.15059574600162579,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:primary_position_bias:SINGLE_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 13,
+        "first_refusal_reason": "PRIMARY_BRAKE_UNSUPPORTED:DIRECTION_UNRESOLVED",
+        "command_steps": 13,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 94,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.00368198528205649,
+        "path_length_m": 0.06793528010890913,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.006406654390771692,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:primary_position_bias:DUAL_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 6,
+        "first_refusal_reason": "CONTRADICTORY_SOURCE_BALLS",
+        "command_steps": 6,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 94,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.2758622684409978,
+        "path_length_m": 0.5637188590471754,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.5186210646690803,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:primary_position_bias:DUAL_DAMPER",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 6,
+        "first_refusal_reason": "CONTRADICTORY_SOURCE_BALLS",
+        "command_steps": 6,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 94,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 91,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.007774248650664934,
+        "path_length_m": 0.1956935403797209,
+        "retrospective_path_check": {
+          "classification": "RETROSPECTIVE_CONDITIONAL_MODEL_CHECK",
+          "reference": {
+            "classification": "CONDITIONAL_ASYMPTOTIC_PATH_BOUND",
+            "additional_path_upper_m": 0.1780565098562316,
+            "finite_time_rest_claim": false,
+            "speed_upper_m_s": 0.3179580533146993,
+            "delay_upper_seconds": 0.06,
+            "mass_kg": 1.0,
+            "damping_lower_kg_s": 2.0,
+            "persistent_force_upper_n": 0.0,
+            "assumptions": [
+              "Initial true speed is bounded by the supplied upper bound.",
+              "Zero incremental commanded force after the request; ideal gravity compensation.",
+              "Constant free mass; no contact or other unmodeled forces.",
+              "After a coast-only bounded delay, passive damping >= supplied coefficient remains available.",
+              "Zero persistent disturbance allowance is required for this finite infinite-horizon path bound.",
+              "Ordinary floating-point development reference, not outward-rounded interval verification."
+            ]
+          },
+          "observed_post_refusal_path_m": 0.15059574600162579,
+          "exceeds_conditional_bound": false
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:secondary_position_bias:SINGLE_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 13,
+        "first_refusal_reason": "PRIMARY_BRAKE_UNSUPPORTED:DIRECTION_UNRESOLVED",
+        "command_steps": 13,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 94,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.00368198528205649,
+        "path_length_m": 0.06793528010890913,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.006406654390771692,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:secondary_position_bias:DUAL_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 6,
+        "first_refusal_reason": "CONTRADICTORY_SOURCE_BALLS",
+        "command_steps": 6,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 94,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.2758622684409978,
+        "path_length_m": 0.5637188590471754,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.5186210646690803,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:secondary_position_bias:DUAL_DAMPER",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 6,
+        "first_refusal_reason": "CONTRADICTORY_SOURCE_BALLS",
+        "command_steps": 6,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 94,
+        "damper_active_steps": 91,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.007774248650664934,
+        "path_length_m": 0.1956935403797209,
+        "retrospective_path_check": {
+          "classification": "RETROSPECTIVE_CONDITIONAL_MODEL_CHECK",
+          "reference": {
+            "classification": "CONDITIONAL_ASYMPTOTIC_PATH_BOUND",
+            "additional_path_upper_m": 0.1780565098562316,
+            "finite_time_rest_claim": false,
+            "speed_upper_m_s": 0.3179580533146993,
+            "delay_upper_seconds": 0.06,
+            "mass_kg": 1.0,
+            "damping_lower_kg_s": 2.0,
+            "persistent_force_upper_n": 0.0,
+            "assumptions": [
+              "Initial true speed is bounded by the supplied upper bound.",
+              "Zero incremental commanded force after the request; ideal gravity compensation.",
+              "Constant free mass; no contact or other unmodeled forces.",
+              "After a coast-only bounded delay, passive damping >= supplied coefficient remains available.",
+              "Zero persistent disturbance allowance is required for this finite infinite-horizon path bound.",
+              "Ordinary floating-point development reference, not outward-rounded interval verification."
+            ]
+          },
+          "observed_post_refusal_path_m": 0.15059574600162579,
+          "exceeds_conditional_bound": false
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:shared_position_bias:SINGLE_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 13,
+        "first_refusal_reason": "PRIMARY_BRAKE_UNSUPPORTED:DIRECTION_UNRESOLVED",
+        "command_steps": 13,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 94,
+        "secondary_raw_bound_violations": 94,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.00368198528205649,
+        "path_length_m": 0.06793528010890913,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.006406654390771692,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:shared_position_bias:DUAL_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 12,
+        "first_refusal_reason": "UNION_BRAKE_UNSUPPORTED",
+        "command_steps": 12,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 94,
+        "secondary_raw_bound_violations": 94,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.03746505240778606,
+        "path_length_m": 0.12739347825020256,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.06593849223770618,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:shared_position_bias:DUAL_DAMPER",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 12,
+        "first_refusal_reason": "UNION_BRAKE_UNSUPPORTED",
+        "command_steps": 12,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 94,
+        "secondary_raw_bound_violations": 94,
+        "damper_active_steps": 85,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.0013359570743663126,
+        "path_length_m": 0.0817674368236743,
+        "retrospective_path_check": {
+          "classification": "RETROSPECTIVE_CONDITIONAL_MODEL_CHECK",
+          "reference": {
+            "classification": "CONDITIONAL_ASYMPTOTIC_PATH_BOUND",
+            "additional_path_upper_m": 0.0423372232217179,
+            "finite_time_rest_claim": false,
+            "speed_upper_m_s": 0.07560218432449625,
+            "delay_upper_seconds": 0.06,
+            "mass_kg": 1.0,
+            "damping_lower_kg_s": 2.0,
+            "persistent_force_upper_n": 0.0,
+            "assumptions": [
+              "Initial true speed is bounded by the supplied upper bound.",
+              "Zero incremental commanded force after the request; ideal gravity compensation.",
+              "Constant free mass; no contact or other unmodeled forces.",
+              "After a coast-only bounded delay, passive damping >= supplied coefficient remains available.",
+              "Zero persistent disturbance allowance is required for this finite infinite-horizon path bound.",
+              "Ordinary floating-point development reference, not outward-rounded interval verification."
+            ]
+          },
+          "observed_post_refusal_path_m": 0.020312450811177912,
+          "exceeds_conditional_bound": false
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:damper_unavailable:SINGLE_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 13,
+        "first_refusal_reason": "PRIMARY_BRAKE_UNSUPPORTED:DIRECTION_UNRESOLVED",
+        "command_steps": 13,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.00368198528205649,
+        "path_length_m": 0.06793528010890913,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.006406654390771692,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:damper_unavailable:DUAL_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 12,
+        "first_refusal_reason": "UNION_BRAKE_UNSUPPORTED",
+        "command_steps": 12,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.03746505240778606,
+        "path_length_m": 0.12739347825020256,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.06593849223770618,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w1:damper_unavailable:DUAL_DAMPER",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 12,
+        "first_refusal_reason": "UNION_BRAKE_UNSUPPORTED",
+        "command_steps": 12,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 85,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.03746505240778606,
+        "path_length_m": 0.12739347825020256,
+        "retrospective_path_check": {
+          "classification": "RETROSPECTIVE_CONDITIONAL_MODEL_CHECK",
+          "reference": {
+            "classification": "UNSUPPORTED_FALLBACK_UNAVAILABLE",
+            "additional_path_upper_m": null,
+            "finite_time_rest_claim": false,
+            "speed_upper_m_s": 0.07560218432449625,
+            "delay_upper_seconds": 0.06,
+            "mass_kg": 1.0,
+            "damping_lower_kg_s": 2.0,
+            "persistent_force_upper_n": 0.0,
+            "assumptions": [
+              "Initial true speed is bounded by the supplied upper bound.",
+              "Zero incremental commanded force after the request; ideal gravity compensation.",
+              "Constant free mass; no contact or other unmodeled forces.",
+              "After a coast-only bounded delay, passive damping >= supplied coefficient remains available.",
+              "Zero persistent disturbance allowance is required for this finite infinite-horizon path bound.",
+              "Ordinary floating-point development reference, not outward-rounded interval verification."
+            ]
+          },
+          "observed_post_refusal_path_m": 0.06593849223770618,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:nominal:SINGLE_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 10,
+        "first_refusal_reason": "PRIMARY_BRAKE_UNSUPPORTED:DIRECTION_UNRESOLVED",
+        "command_steps": 10,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.022631012017605846,
+        "path_length_m": 0.08091273886790573,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.040735821631689484,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:nominal:DUAL_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 9,
+        "first_refusal_reason": "UNION_BRAKE_UNSUPPORTED",
+        "command_steps": 9,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.06134469722822061,
+        "path_length_m": 0.1513716459512287,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.11164734895536456,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:nominal:DUAL_DAMPER",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 9,
+        "first_refusal_reason": "UNION_BRAKE_UNSUPPORTED",
+        "command_steps": 9,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 88,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.0019446577064552138,
+        "path_length_m": 0.07310499859044033,
+        "retrospective_path_check": {
+          "classification": "RETROSPECTIVE_CONDITIONAL_MODEL_CHECK",
+          "reference": {
+            "classification": "CONDITIONAL_ASYMPTOTIC_PATH_BOUND",
+            "additional_path_upper_m": 0.05089749805442893,
+            "finite_time_rest_claim": false,
+            "speed_upper_m_s": 0.09088838938290882,
+            "delay_upper_seconds": 0.06,
+            "mass_kg": 1.0,
+            "damping_lower_kg_s": 2.0,
+            "persistent_force_upper_n": 0.0,
+            "assumptions": [
+              "Initial true speed is bounded by the supplied upper bound.",
+              "Zero incremental commanded force after the request; ideal gravity compensation.",
+              "Constant free mass; no contact or other unmodeled forces.",
+              "After a coast-only bounded delay, passive damping >= supplied coefficient remains available.",
+              "Zero persistent disturbance allowance is required for this finite infinite-horizon path bound.",
+              "Ordinary floating-point development reference, not outward-rounded interval verification."
+            ]
+          },
+          "observed_post_refusal_path_m": 0.03338070159457618,
+          "exceeds_conditional_bound": false
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:primary_reverse:SINGLE_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": null,
+        "first_refusal_reason": null,
+        "command_steps": 100,
+        "positive_command_power_samples": 94,
+        "kinetic_energy_increase_samples": 94,
+        "primary_raw_bound_violations": 94,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 3.940316429267315,
+        "path_length_m": 3.944704175375718,
+        "retrospective_path_check": {
+          "classification": "NOT_REQUESTED",
+          "reference": null,
+          "observed_post_refusal_path_m": null,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:primary_reverse:DUAL_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 6,
+        "first_refusal_reason": "CONTRADICTORY_SOURCE_BALLS",
+        "command_steps": 6,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 94,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.18060713702256193,
+        "path_length_m": 0.3732058741883802,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.3395414176024105,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:primary_reverse:DUAL_DAMPER",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 6,
+        "first_refusal_reason": "CONTRADICTORY_SOURCE_BALLS",
+        "command_steps": 6,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 80,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 91,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.0050898036880256394,
+        "path_length_m": 0.13225955147459167,
+        "retrospective_path_check": {
+          "classification": "RETROSPECTIVE_CONDITIONAL_MODEL_CHECK",
+          "reference": {
+            "classification": "CONDITIONAL_ASYMPTOTIC_PATH_BOUND",
+            "additional_path_upper_m": 0.12670109445322764,
+            "finite_time_rest_claim": false,
+            "speed_upper_m_s": 0.22625195438076362,
+            "delay_upper_seconds": 0.06,
+            "mass_kg": 1.0,
+            "damping_lower_kg_s": 2.0,
+            "persistent_force_upper_n": 0.0,
+            "assumptions": [
+              "Initial true speed is bounded by the supplied upper bound.",
+              "Zero incremental commanded force after the request; ideal gravity compensation.",
+              "Constant free mass; no contact or other unmodeled forces.",
+              "After a coast-only bounded delay, passive damping >= supplied coefficient remains available.",
+              "Zero persistent disturbance allowance is required for this finite infinite-horizon path bound.",
+              "Ordinary floating-point development reference, not outward-rounded interval verification."
+            ]
+          },
+          "observed_post_refusal_path_m": 0.09859509488862199,
+          "exceeds_conditional_bound": false
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:secondary_reverse:SINGLE_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 10,
+        "first_refusal_reason": "PRIMARY_BRAKE_UNSUPPORTED:DIRECTION_UNRESOLVED",
+        "command_steps": 10,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 94,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.022631012017605846,
+        "path_length_m": 0.08091273886790573,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.040735821631689484,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:secondary_reverse:DUAL_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 6,
+        "first_refusal_reason": "CONTRADICTORY_SOURCE_BALLS",
+        "command_steps": 6,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 94,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.18060713702256193,
+        "path_length_m": 0.3732058741883802,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.3395414176024105,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:secondary_reverse:DUAL_DAMPER",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 6,
+        "first_refusal_reason": "CONTRADICTORY_SOURCE_BALLS",
+        "command_steps": 6,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 71,
+        "damper_active_steps": 91,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.0050898036880256394,
+        "path_length_m": 0.13225955147459167,
+        "retrospective_path_check": {
+          "classification": "RETROSPECTIVE_CONDITIONAL_MODEL_CHECK",
+          "reference": {
+            "classification": "CONDITIONAL_ASYMPTOTIC_PATH_BOUND",
+            "additional_path_upper_m": 0.11194107922775114,
+            "finite_time_rest_claim": false,
+            "speed_upper_m_s": 0.1998947843352699,
+            "delay_upper_seconds": 0.06,
+            "mass_kg": 1.0,
+            "damping_lower_kg_s": 2.0,
+            "persistent_force_upper_n": 0.0,
+            "assumptions": [
+              "Initial true speed is bounded by the supplied upper bound.",
+              "Zero incremental commanded force after the request; ideal gravity compensation.",
+              "Constant free mass; no contact or other unmodeled forces.",
+              "After a coast-only bounded delay, passive damping >= supplied coefficient remains available.",
+              "Zero persistent disturbance allowance is required for this finite infinite-horizon path bound.",
+              "Ordinary floating-point development reference, not outward-rounded interval verification."
+            ]
+          },
+          "observed_post_refusal_path_m": 0.09859509488862199,
+          "exceeds_conditional_bound": false
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:shared_reverse:SINGLE_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": null,
+        "first_refusal_reason": null,
+        "command_steps": 100,
+        "positive_command_power_samples": 94,
+        "kinetic_energy_increase_samples": 94,
+        "primary_raw_bound_violations": 94,
+        "secondary_raw_bound_violations": 94,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 3.940316429267315,
+        "path_length_m": 3.944704175375718,
+        "retrospective_path_check": {
+          "classification": "NOT_REQUESTED",
+          "reference": null,
+          "observed_post_refusal_path_m": null,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:shared_reverse:DUAL_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": null,
+        "first_refusal_reason": null,
+        "command_steps": 100,
+        "positive_command_power_samples": 94,
+        "kinetic_energy_increase_samples": 94,
+        "primary_raw_bound_violations": 94,
+        "secondary_raw_bound_violations": 94,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 3.940316429267315,
+        "path_length_m": 3.944704175375718,
+        "retrospective_path_check": {
+          "classification": "NOT_REQUESTED",
+          "reference": null,
+          "observed_post_refusal_path_m": null,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:shared_reverse:DUAL_DAMPER",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": null,
+        "first_refusal_reason": null,
+        "command_steps": 100,
+        "positive_command_power_samples": 94,
+        "kinetic_energy_increase_samples": 94,
+        "primary_raw_bound_violations": 94,
+        "secondary_raw_bound_violations": 94,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 3.940316429267315,
+        "path_length_m": 3.944704175375718,
+        "retrospective_path_check": {
+          "classification": "NOT_REQUESTED",
+          "reference": null,
+          "observed_post_refusal_path_m": null,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:primary_reported_reverse:SINGLE_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 6,
+        "first_refusal_reason": "PRIMARY_BRAKE_UNSUPPORTED:DIRECTION_UNRESOLVED",
+        "command_steps": 6,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.18060713702256193,
+        "path_length_m": 0.3732058741883802,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.3395414176024105,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:primary_reported_reverse:DUAL_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 6,
+        "first_refusal_reason": "PRIMARY_BRAKE_UNSUPPORTED:DIRECTION_UNRESOLVED",
+        "command_steps": 6,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.18060713702256193,
+        "path_length_m": 0.3732058741883802,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.3395414176024105,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:primary_reported_reverse:DUAL_DAMPER",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 6,
+        "first_refusal_reason": "PRIMARY_BRAKE_UNSUPPORTED:DIRECTION_UNRESOLVED",
+        "command_steps": 6,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 91,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.0050898036880256394,
+        "path_length_m": 0.13225955147459167,
+        "retrospective_path_check": {
+          "classification": "RETROSPECTIVE_CONDITIONAL_MODEL_CHECK",
+          "reference": {
+            "classification": "CONDITIONAL_ASYMPTOTIC_PATH_BOUND",
+            "additional_path_upper_m": 0.3154294894273437,
+            "finite_time_rest_claim": false,
+            "speed_upper_m_s": 0.5632669454059709,
+            "delay_upper_seconds": 0.06,
+            "mass_kg": 1.0,
+            "damping_lower_kg_s": 2.0,
+            "persistent_force_upper_n": 0.0,
+            "assumptions": [
+              "Initial true speed is bounded by the supplied upper bound.",
+              "Zero incremental commanded force after the request; ideal gravity compensation.",
+              "Constant free mass; no contact or other unmodeled forces.",
+              "After a coast-only bounded delay, passive damping >= supplied coefficient remains available.",
+              "Zero persistent disturbance allowance is required for this finite infinite-horizon path bound.",
+              "Ordinary floating-point development reference, not outward-rounded interval verification."
+            ]
+          },
+          "observed_post_refusal_path_m": 0.09859509488862199,
+          "exceeds_conditional_bound": false
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:shared_retimestamped_stale:SINGLE_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 13,
+        "first_refusal_reason": "PRIMARY_BRAKE_UNSUPPORTED:HOLD_ENERGY_BOUND_UNSUPPORTED",
+        "command_steps": 13,
+        "positive_command_power_samples": 2,
+        "kinetic_energy_increase_samples": 2,
+        "primary_raw_bound_violations": 27,
+        "secondary_raw_bound_violations": 14,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.09858927581543965,
+        "path_length_m": 0.215213684858531,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.17154533991886703,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:shared_retimestamped_stale:DUAL_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 13,
+        "first_refusal_reason": "PRIMARY_BRAKE_UNSUPPORTED:HOLD_ENERGY_BOUND_UNSUPPORTED",
+        "command_steps": 13,
+        "positive_command_power_samples": 2,
+        "kinetic_energy_increase_samples": 2,
+        "primary_raw_bound_violations": 27,
+        "secondary_raw_bound_violations": 14,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.09858927581543965,
+        "path_length_m": 0.215213684858531,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.17154533991886703,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:shared_retimestamped_stale:DUAL_DAMPER",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 13,
+        "first_refusal_reason": "PRIMARY_BRAKE_UNSUPPORTED:HOLD_ENERGY_BOUND_UNSUPPORTED",
+        "command_steps": 13,
+        "positive_command_power_samples": 2,
+        "kinetic_energy_increase_samples": 2,
+        "primary_raw_bound_violations": 13,
+        "secondary_raw_bound_violations": 11,
+        "damper_active_steps": 84,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.003656193526987086,
+        "path_length_m": 0.09705024263281826,
+        "retrospective_path_check": {
+          "classification": "RETROSPECTIVE_CONDITIONAL_MODEL_CHECK",
+          "reference": {
+            "classification": "CONDITIONAL_ASYMPTOTIC_PATH_BOUND",
+            "additional_path_upper_m": 0.030899467364493227,
+            "finite_time_rest_claim": false,
+            "speed_upper_m_s": 0.055177620293737906,
+            "delay_upper_seconds": 0.06,
+            "mass_kg": 1.0,
+            "damping_lower_kg_s": 2.0,
+            "persistent_force_upper_n": 0.0,
+            "assumptions": [
+              "Initial true speed is bounded by the supplied upper bound.",
+              "Zero incremental commanded force after the request; ideal gravity compensation.",
+              "Constant free mass; no contact or other unmodeled forces.",
+              "After a coast-only bounded delay, passive damping >= supplied coefficient remains available.",
+              "Zero persistent disturbance allowance is required for this finite infinite-horizon path bound.",
+              "Ordinary floating-point development reference, not outward-rounded interval verification."
+            ]
+          },
+          "observed_post_refusal_path_m": 0.05338189769315428,
+          "exceeds_conditional_bound": true
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:primary_replay:SINGLE_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 6,
+        "first_refusal_reason": "REQUIRED_SOURCE_REJECTED",
+        "command_steps": 6,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 94,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.18060713702256193,
+        "path_length_m": 0.3732058741883802,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.3395414176024105,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:primary_replay:DUAL_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 6,
+        "first_refusal_reason": "REQUIRED_SOURCE_REJECTED",
+        "command_steps": 6,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 94,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.18060713702256193,
+        "path_length_m": 0.3732058741883802,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.3395414176024105,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:primary_replay:DUAL_DAMPER",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 6,
+        "first_refusal_reason": "REQUIRED_SOURCE_REJECTED",
+        "command_steps": 6,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 94,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 91,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.0050898036880256394,
+        "path_length_m": 0.13225955147459167,
+        "retrospective_path_check": {
+          "classification": "UNSUPPORTED_MISSING_ACCEPTED_STATE_BALL",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.09859509488862199,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:secondary_missing:SINGLE_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 10,
+        "first_refusal_reason": "PRIMARY_BRAKE_UNSUPPORTED:DIRECTION_UNRESOLVED",
+        "command_steps": 10,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.022631012017605846,
+        "path_length_m": 0.08091273886790573,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.040735821631689484,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:secondary_missing:DUAL_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 6,
+        "first_refusal_reason": "REQUIRED_SOURCE_REJECTED",
+        "command_steps": 6,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.18060713702256193,
+        "path_length_m": 0.3732058741883802,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.3395414176024105,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:secondary_missing:DUAL_DAMPER",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 6,
+        "first_refusal_reason": "REQUIRED_SOURCE_REJECTED",
+        "command_steps": 6,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 91,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.0050898036880256394,
+        "path_length_m": 0.13225955147459167,
+        "retrospective_path_check": {
+          "classification": "UNSUPPORTED_MISSING_ACCEPTED_STATE_BALL",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.09859509488862199,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:primary_position_bias:SINGLE_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 10,
+        "first_refusal_reason": "PRIMARY_BRAKE_UNSUPPORTED:DIRECTION_UNRESOLVED",
+        "command_steps": 10,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 94,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.022631012017605846,
+        "path_length_m": 0.08091273886790573,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.040735821631689484,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:primary_position_bias:DUAL_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 6,
+        "first_refusal_reason": "CONTRADICTORY_SOURCE_BALLS",
+        "command_steps": 6,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 94,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.18060713702256193,
+        "path_length_m": 0.3732058741883802,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.3395414176024105,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:primary_position_bias:DUAL_DAMPER",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 6,
+        "first_refusal_reason": "CONTRADICTORY_SOURCE_BALLS",
+        "command_steps": 6,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 94,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 91,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.0050898036880256394,
+        "path_length_m": 0.13225955147459167,
+        "retrospective_path_check": {
+          "classification": "RETROSPECTIVE_CONDITIONAL_MODEL_CHECK",
+          "reference": {
+            "classification": "CONDITIONAL_ASYMPTOTIC_PATH_BOUND",
+            "additional_path_upper_m": 0.12670109445322764,
+            "finite_time_rest_claim": false,
+            "speed_upper_m_s": 0.22625195438076362,
+            "delay_upper_seconds": 0.06,
+            "mass_kg": 1.0,
+            "damping_lower_kg_s": 2.0,
+            "persistent_force_upper_n": 0.0,
+            "assumptions": [
+              "Initial true speed is bounded by the supplied upper bound.",
+              "Zero incremental commanded force after the request; ideal gravity compensation.",
+              "Constant free mass; no contact or other unmodeled forces.",
+              "After a coast-only bounded delay, passive damping >= supplied coefficient remains available.",
+              "Zero persistent disturbance allowance is required for this finite infinite-horizon path bound.",
+              "Ordinary floating-point development reference, not outward-rounded interval verification."
+            ]
+          },
+          "observed_post_refusal_path_m": 0.09859509488862199,
+          "exceeds_conditional_bound": false
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:secondary_position_bias:SINGLE_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 10,
+        "first_refusal_reason": "PRIMARY_BRAKE_UNSUPPORTED:DIRECTION_UNRESOLVED",
+        "command_steps": 10,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 94,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.022631012017605846,
+        "path_length_m": 0.08091273886790573,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.040735821631689484,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:secondary_position_bias:DUAL_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 6,
+        "first_refusal_reason": "CONTRADICTORY_SOURCE_BALLS",
+        "command_steps": 6,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 94,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.18060713702256193,
+        "path_length_m": 0.3732058741883802,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.3395414176024105,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:secondary_position_bias:DUAL_DAMPER",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 6,
+        "first_refusal_reason": "CONTRADICTORY_SOURCE_BALLS",
+        "command_steps": 6,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 94,
+        "damper_active_steps": 91,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.0050898036880256394,
+        "path_length_m": 0.13225955147459167,
+        "retrospective_path_check": {
+          "classification": "RETROSPECTIVE_CONDITIONAL_MODEL_CHECK",
+          "reference": {
+            "classification": "CONDITIONAL_ASYMPTOTIC_PATH_BOUND",
+            "additional_path_upper_m": 0.12670109445322764,
+            "finite_time_rest_claim": false,
+            "speed_upper_m_s": 0.22625195438076362,
+            "delay_upper_seconds": 0.06,
+            "mass_kg": 1.0,
+            "damping_lower_kg_s": 2.0,
+            "persistent_force_upper_n": 0.0,
+            "assumptions": [
+              "Initial true speed is bounded by the supplied upper bound.",
+              "Zero incremental commanded force after the request; ideal gravity compensation.",
+              "Constant free mass; no contact or other unmodeled forces.",
+              "After a coast-only bounded delay, passive damping >= supplied coefficient remains available.",
+              "Zero persistent disturbance allowance is required for this finite infinite-horizon path bound.",
+              "Ordinary floating-point development reference, not outward-rounded interval verification."
+            ]
+          },
+          "observed_post_refusal_path_m": 0.09859509488862199,
+          "exceeds_conditional_bound": false
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:shared_position_bias:SINGLE_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 10,
+        "first_refusal_reason": "PRIMARY_BRAKE_UNSUPPORTED:DIRECTION_UNRESOLVED",
+        "command_steps": 10,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 94,
+        "secondary_raw_bound_violations": 94,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.022631012017605846,
+        "path_length_m": 0.08091273886790573,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.040735821631689484,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:shared_position_bias:DUAL_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 9,
+        "first_refusal_reason": "UNION_BRAKE_UNSUPPORTED",
+        "command_steps": 9,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 94,
+        "secondary_raw_bound_violations": 94,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.06134469722822061,
+        "path_length_m": 0.1513716459512287,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.11164734895536456,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:shared_position_bias:DUAL_DAMPER",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 9,
+        "first_refusal_reason": "UNION_BRAKE_UNSUPPORTED",
+        "command_steps": 9,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 94,
+        "secondary_raw_bound_violations": 94,
+        "damper_active_steps": 88,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.0019446577064552138,
+        "path_length_m": 0.07310499859044033,
+        "retrospective_path_check": {
+          "classification": "RETROSPECTIVE_CONDITIONAL_MODEL_CHECK",
+          "reference": {
+            "classification": "CONDITIONAL_ASYMPTOTIC_PATH_BOUND",
+            "additional_path_upper_m": 0.05089749805442893,
+            "finite_time_rest_claim": false,
+            "speed_upper_m_s": 0.09088838938290882,
+            "delay_upper_seconds": 0.06,
+            "mass_kg": 1.0,
+            "damping_lower_kg_s": 2.0,
+            "persistent_force_upper_n": 0.0,
+            "assumptions": [
+              "Initial true speed is bounded by the supplied upper bound.",
+              "Zero incremental commanded force after the request; ideal gravity compensation.",
+              "Constant free mass; no contact or other unmodeled forces.",
+              "After a coast-only bounded delay, passive damping >= supplied coefficient remains available.",
+              "Zero persistent disturbance allowance is required for this finite infinite-horizon path bound.",
+              "Ordinary floating-point development reference, not outward-rounded interval verification."
+            ]
+          },
+          "observed_post_refusal_path_m": 0.03338070159457618,
+          "exceeds_conditional_bound": false
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:damper_unavailable:SINGLE_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 10,
+        "first_refusal_reason": "PRIMARY_BRAKE_UNSUPPORTED:DIRECTION_UNRESOLVED",
+        "command_steps": 10,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.022631012017605846,
+        "path_length_m": 0.08091273886790573,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.040735821631689484,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:damper_unavailable:DUAL_COAST",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 9,
+        "first_refusal_reason": "UNION_BRAKE_UNSUPPORTED",
+        "command_steps": 9,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 0,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.06134469722822061,
+        "path_length_m": 0.1513716459512287,
+        "retrospective_path_check": {
+          "classification": "NO_PASSIVE_FALLBACK_BASELINE",
+          "reference": null,
+          "observed_post_refusal_path_m": 0.11164734895536456,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    },
+    {
+      "id": "w2:damper_unavailable:DUAL_DAMPER",
+      "state": "COMPLETED",
+      "summary": {
+        "control_steps": 100,
+        "physics_steps": 100,
+        "first_refusal_step": 9,
+        "first_refusal_reason": "UNION_BRAKE_UNSUPPORTED",
+        "command_steps": 9,
+        "positive_command_power_samples": 0,
+        "kinetic_energy_increase_samples": 0,
+        "primary_raw_bound_violations": 0,
+        "secondary_raw_bound_violations": 0,
+        "damper_active_steps": 0,
+        "damper_failed_steps": 88,
+        "collision_samples": 0,
+        "final_sampled_speed_m_s": 0.06134469722822061,
+        "path_length_m": 0.1513716459512287,
+        "retrospective_path_check": {
+          "classification": "RETROSPECTIVE_CONDITIONAL_MODEL_CHECK",
+          "reference": {
+            "classification": "UNSUPPORTED_FALLBACK_UNAVAILABLE",
+            "additional_path_upper_m": null,
+            "finite_time_rest_claim": false,
+            "speed_upper_m_s": 0.09088838938290882,
+            "delay_upper_seconds": 0.06,
+            "mass_kg": 1.0,
+            "damping_lower_kg_s": 2.0,
+            "persistent_force_upper_n": 0.0,
+            "assumptions": [
+              "Initial true speed is bounded by the supplied upper bound.",
+              "Zero incremental commanded force after the request; ideal gravity compensation.",
+              "Constant free mass; no contact or other unmodeled forces.",
+              "After a coast-only bounded delay, passive damping >= supplied coefficient remains available.",
+              "Zero persistent disturbance allowance is required for this finite infinite-horizon path bound.",
+              "Ordinary floating-point development reference, not outward-rounded interval verification."
+            ]
+          },
+          "observed_post_refusal_path_m": 0.11164734895536456,
+          "exceeds_conditional_bound": null
+        },
+        "classification": "DEVELOPMENT_DIAGNOSTIC_NOT_A_RECOVERY_OR_SAFETY_PASS"
+      }
+    }
+  ],
+  "matched_triples": [
+    {
+      "world": 0,
+      "case": "nominal",
+      "status": "MATCHED_RESET_RUNTIME_NOISE_ONLY"
+    },
+    {
+      "world": 0,
+      "case": "primary_reverse",
+      "status": "MATCHED_RESET_RUNTIME_NOISE_ONLY"
+    },
+    {
+      "world": 0,
+      "case": "secondary_reverse",
+      "status": "MATCHED_RESET_RUNTIME_NOISE_ONLY"
+    },
+    {
+      "world": 0,
+      "case": "shared_reverse",
+      "status": "MATCHED_RESET_RUNTIME_NOISE_ONLY"
+    },
+    {
+      "world": 0,
+      "case": "primary_reported_reverse",
+      "status": "MATCHED_RESET_RUNTIME_NOISE_ONLY"
+    },
+    {
+      "world": 0,
+      "case": "shared_retimestamped_stale",
+      "status": "MATCHED_RESET_RUNTIME_NOISE_ONLY"
+    },
+    {
+      "world": 0,
+      "case": "primary_replay",
+      "status": "MATCHED_RESET_RUNTIME_NOISE_ONLY"
+    },
+    {
+      "world": 0,
+      "case": "secondary_missing",
+      "status": "MATCHED_RESET_RUNTIME_NOISE_ONLY"
+    },
+    {
+      "world": 0,
+      "case": "primary_position_bias",
+      "status": "MATCHED_RESET_RUNTIME_NOISE_ONLY"
+    },
+    {
+      "world": 0,
+      "case": "secondary_position_bias",
+      "status": "MATCHED_RESET_RUNTIME_NOISE_ONLY"
+    },
+    {
+      "world": 0,
+      "case": "shared_position_bias",
+      "status": "MATCHED_RESET_RUNTIME_NOISE_ONLY"
+    },
+    {
+      "world": 0,
+      "case": "damper_unavailable",
+      "status": "MATCHED_RESET_RUNTIME_NOISE_ONLY"
+    },
+    {
+      "world": 1,
+      "case": "nominal",
+      "status": "MATCHED_RESET_RUNTIME_NOISE_ONLY"
+    },
+    {
+      "world": 1,
+      "case": "primary_reverse",
+      "status": "MATCHED_RESET_RUNTIME_NOISE_ONLY"
+    },
+    {
+      "world": 1,
+      "case": "secondary_reverse",
+      "status": "MATCHED_RESET_RUNTIME_NOISE_ONLY"
+    },
+    {
+      "world": 1,
+      "case": "shared_reverse",
+      "status": "MATCHED_RESET_RUNTIME_NOISE_ONLY"
+    },
+    {
+      "world": 1,
+      "case": "primary_reported_reverse",
+      "status": "MATCHED_RESET_RUNTIME_NOISE_ONLY"
+    },
+    {
+      "world": 1,
+      "case": "shared_retimestamped_stale",
+      "status": "MATCHED_RESET_RUNTIME_NOISE_ONLY"
+    },
+    {
+      "world": 1,
+      "case": "primary_replay",
+      "status": "MATCHED_RESET_RUNTIME_NOISE_ONLY"
+    },
+    {
+      "world": 1,
+      "case": "secondary_missing",
+      "status": "MATCHED_RESET_RUNTIME_NOISE_ONLY"
+    },
+    {
+      "world": 1,
+      "case": "primary_position_bias",
+      "status": "MATCHED_RESET_RUNTIME_NOISE_ONLY"
+    },
+    {
+      "world": 1,
+      "case": "secondary_position_bias",
+      "status": "MATCHED_RESET_RUNTIME_NOISE_ONLY"
+    },
+    {
+      "world": 1,
+      "case": "shared_position_bias",
+      "status": "MATCHED_RESET_RUNTIME_NOISE_ONLY"
+    },
+    {
+      "world": 1,
+      "case": "damper_unavailable",
+      "status": "MATCHED_RESET_RUNTIME_NOISE_ONLY"
+    },
+    {
+      "world": 2,
+      "case": "nominal",
+      "status": "MATCHED_RESET_RUNTIME_NOISE_ONLY"
+    },
+    {
+      "world": 2,
+      "case": "primary_reverse",
+      "status": "MATCHED_RESET_RUNTIME_NOISE_ONLY"
+    },
+    {
+      "world": 2,
+      "case": "secondary_reverse",
+      "status": "MATCHED_RESET_RUNTIME_NOISE_ONLY"
+    },
+    {
+      "world": 2,
+      "case": "shared_reverse",
+      "status": "MATCHED_RESET_RUNTIME_NOISE_ONLY"
+    },
+    {
+      "world": 2,
+      "case": "primary_reported_reverse",
+      "status": "MATCHED_RESET_RUNTIME_NOISE_ONLY"
+    },
+    {
+      "world": 2,
+      "case": "shared_retimestamped_stale",
+      "status": "MATCHED_RESET_RUNTIME_NOISE_ONLY"
+    },
+    {
+      "world": 2,
+      "case": "primary_replay",
+      "status": "MATCHED_RESET_RUNTIME_NOISE_ONLY"
+    },
+    {
+      "world": 2,
+      "case": "secondary_missing",
+      "status": "MATCHED_RESET_RUNTIME_NOISE_ONLY"
+    },
+    {
+      "world": 2,
+      "case": "primary_position_bias",
+      "status": "MATCHED_RESET_RUNTIME_NOISE_ONLY"
+    },
+    {
+      "world": 2,
+      "case": "secondary_position_bias",
+      "status": "MATCHED_RESET_RUNTIME_NOISE_ONLY"
+    },
+    {
+      "world": 2,
+      "case": "shared_position_bias",
+      "status": "MATCHED_RESET_RUNTIME_NOISE_ONLY"
+    },
+    {
+      "world": 2,
+      "case": "damper_unavailable",
+      "status": "MATCHED_RESET_RUNTIME_NOISE_ONLY"
+    }
+  ],
+  "gate_b": "GATE_B_NOT_AUTHORIZED",
+  "classification": "SIMULATION_DIAGNOSTIC_NOT_CONFIRMATORY_OR_HARDWARE_VALIDATION",
+  "limitations": [
+    "Sensor error bounds and at-least-one-valid-source condition are assumptions.",
+    "Compatibility cannot authenticate truth or exclude common-mode faults.",
+    "Hypothetical switchable damping and ideal gravity compensation are not available robot hardware.",
+    "Command decisions stop examining sensors after latched refusal; raw packets remain recorded/scored.",
+    "Three inspected development worlds, dependent trajectories, no reliability inference.",
+    "No collision-avoidance controller or certified recoverability envelope.",
+    "Hash chains/reconstructed arithmetic do not authenticate an independent runtime."
+  ]
+}

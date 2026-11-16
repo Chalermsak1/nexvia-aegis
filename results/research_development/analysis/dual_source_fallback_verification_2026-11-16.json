@@ -1,0 +1,142 @@
+{
+  "classification": "EXPLORATORY_SIMULATION_NOT_CONFIRMATORY_OR_HARDWARE_VALIDATION",
+  "branch": "codex/research-hardening",
+  "parent_commit": "74b0bfab8e57cd450293e49de881207074df3141",
+  "source_sha256": {
+    "scripts/research/development_ledger.py": "254fe889557148110e458ed2cb6e3286837589a484d7a63e1ae3d2c34b645502",
+    "scripts/research/dual_source_fallback_study.py": "b8bfcfaa6a0cfa4deee6884eae03a205d985f53d5f4ceb99335acfe90623e66f",
+    "src/aegis/development/__init__.py": "afe5c415a90205d00220200b69b991a54a4741e1fa655a0ac9ed4f3ccbfc3043",
+    "src/aegis/development/bounded_braking.py": "6f34c760bebd07d91a8f08110a5ad50659bcd073a59077716476df1033f999e2",
+    "src/aegis/development/dual_source_braking.py": "4f189658d8a830619e1e8fe7ba4af25348905ae22ca68d9aef0d5bd4b134eb33",
+    "src/aegis/development/passive_motion_reference.py": "46bf9269602e67bcf2399c90ee945598699fcdecbb9c12ec16b3ac0c0af47d76",
+    "src/aegis/env/mujoco_3d_cbf.py": "438b8ec89d1d40101586b0d888de7e8b5d73c9763cbae2603ccab01f04801433"
+  },
+  "test_source_sha256": {
+    "tests/test_dual_source_braking.py": "bea527fa8c1a1a5d9a0f2eb9c07d74d1c05f1359a4c00dc75d7866920cb60b67",
+    "tests/test_passive_motion_reference.py": "4ccc80a785ebd0e42ebc44d7130f7bd1413f18f863b5da53efcfa0efaa9a8d2f",
+    "tests/test_dual_source_fallback_study.py": "49b4487b3f9f72d74044495026342f47d9f197e9bd85bb20e3fb121f70b2d3e3",
+    "tests/test_bounded_braking.py": "9de542a31df5fc0f519aa69b7153cd8cbe09493305745b67c7b3791ad0d5a10a",
+    "tests/test_bounded_estimation_study.py": "ad10422c26d9f69e4a061139b368968c44b7a18ff60bb98f921d19fbe8bd9390",
+    "tests/test_development_ledger.py": "0574aaa21272111b0bbc1e1cf0a14e033a33210d8f92e124ba7e5162b5cd9cec"
+  },
+  "runtime_versions": {
+    "mujoco": "3.14.0",
+    "numpy": "2.5.3",
+    "python": "3.12.14"
+  },
+  "checks": {
+    "completed_assignments": 108,
+    "control_events": 10800,
+    "physics_events": 10800,
+    "matched_triples": 36,
+    "readonly_reanalysis_matches": true,
+    "executed_sources_still_match": true,
+    "source_snapshot_reproduction_byte_identical": true,
+    "actual_and_reproduced_ledger_sha256": "23732dd1c644d2a90daf264d8b2d2b2c783e917c70ed9e650ee8e756276f10de",
+    "preexisting_benchmark_sha256": "04bc31bf74423806200e39a44334e1dd0cf4063dde08797ef79dacb491b4323f",
+    "source_snapshot_extra_namespace_sha256": {
+      "src/aegis/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "src/aegis/env/__init__.py": "0efefb3f0e48627f54c3791d99547a9773fc4e481d5aced9a8ecf70f501f47f3"
+    },
+    "reproduction_driver_sha256": "af098f41d2ad590fe77e7135a35bd4085240bddd8a2e3424b9b635913d72df20",
+    "figure_png_visually_inspected": true
+  },
+  "regression": {
+    "passed": 135,
+    "reported_seconds": 33.6,
+    "test_groups": {
+      "tests.test_dual_source_braking": 26,
+      "tests.test_passive_motion_reference": 15,
+      "tests.test_dual_source_fallback_study": 21,
+      "tests.test_bounded_braking": 46,
+      "tests.test_bounded_estimation_study": 13,
+      "tests.test_development_ledger": 14
+    },
+    "full_repository_suite": false,
+    "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:. .venv/bin/python -m pytest -q -x -p no:cacheprovider tests/test_dual_source_braking.py tests/test_passive_motion_reference.py tests/test_dual_source_fallback_study.py tests/test_bounded_braking.py tests/test_bounded_estimation_study.py tests/test_development_ledger.py --basetemp=/private/tmp/nexvia-dual-final-tests-20261116 --junitxml=/private/tmp/nexvia-dual-final-tests-20261116.xml"
+  },
+  "earlier_test_suites": [
+    {
+      "passed": 26,
+      "scope": "new supervisor unit tests"
+    },
+    {
+      "passed": 46,
+      "scope": "supervisor and first integrated fixture"
+    },
+    {
+      "passed": 134,
+      "scope": "passive reference and selected regression"
+    }
+  ],
+  "earlier_counts_overlap": true,
+  "unexpected_pytest_failures": 0,
+  "actual_batch_execution_errors": 0,
+  "smoke": {
+    "scope": "one in-memory pre-envelope development episode, w0 primary reversal with dual damper",
+    "original_raw_events_retained": false,
+    "stdout_summary_observation": {
+      "physics_steps": 100,
+      "first_refusal_step": 6,
+      "first_refusal_reason": "CONTRADICTORY_SOURCE_BALLS",
+      "damper_active_steps": 91,
+      "final_sampled_speed_m_s": 0.006728773476558703,
+      "path_length_m": 0.17099018993306464
+    },
+    "source_map_reconstructed_from_retained_revision_and_unchanged_dependencies": {
+      "src/aegis/development/__init__.py": "afe5c415a90205d00220200b69b991a54a4741e1fa655a0ac9ed4f3ccbfc3043",
+      "src/aegis/development/bounded_braking.py": "6f34c760bebd07d91a8f08110a5ad50659bcd073a59077716476df1033f999e2",
+      "src/aegis/development/dual_source_braking.py": "4f189658d8a830619e1e8fe7ba4af25348905ae22ca68d9aef0d5bd4b134eb33",
+      "src/aegis/env/mujoco_3d_cbf.py": "438b8ec89d1d40101586b0d888de7e8b5d73c9763cbae2603ccab01f04801433",
+      "scripts/research/development_ledger.py": "254fe889557148110e458ed2cb6e3286837589a484d7a63e1ae3d2c34b645502",
+      "scripts/research/dual_source_fallback_study.py": "bb2ead909ee0e3a0fbbb95ee859c9251e6bc8ab806a0b5cf588101a2928b7eec"
+    },
+    "not_complete_raw_evidence": true
+  },
+  "commands": {
+    "actual": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:. .venv/bin/python scripts/research/dual_source_fallback_study.py run /private/tmp/nexvia-dual-actual-v1-20261116.jsonl --output /private/tmp/nexvia-dual-actual-v1-summary-20261116.json",
+    "audit": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:. .venv/bin/python scripts/research/dual_source_fallback_study.py audit /private/tmp/nexvia-dual-actual-v1-20261116.jsonl --output /private/tmp/nexvia-dual-actual-v1-reaudit-20261116.json",
+    "reproduction": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:. '/Users/chalermsak/Documents/ChatGPT/New project/nexvia-aegis/.venv/bin/python' reproduce.py (cwd: /private/tmp/nexvia-dual-source-snapshot-20261116)",
+    "figure": "MPLCONFIGDIR=/private/tmp/nexvia-dual-mpl PYTHONDONTWRITEBYTECODE=1 .venv/bin/python plot_dual_source_diagnostic_2026-11-16.py summary.json NEW_OUTPUT_PREFIX"
+  },
+  "retained_negative_findings": [
+    "Shared reversal: all arms accelerate and no damper request occurs.",
+    "Shared relabeled stale measurements exceed the conditional path bound in all three damper trajectories.",
+    "Unavailable damper remains failed with nonzero residual speed."
+  ],
+  "tooling_notes": [
+    "Matplotlib/fontconfig cache warnings preceded successful figure generation.",
+    "One image-view attempt occurred before PNG generation completed; final PNG was inspected."
+  ],
+  "reproduction_limits": "Same existing interpreter and native dependencies, no independent provenance authentication or human review.",
+  "limitations": [
+    "Sensor error bounds and at-least-one-valid-source condition are assumptions.",
+    "Compatibility cannot authenticate truth or exclude common-mode faults.",
+    "Hypothetical switchable damping and ideal gravity compensation are not available robot hardware.",
+    "Command decisions stop examining sensors after latched refusal; raw packets remain recorded/scored.",
+    "Three inspected development worlds, dependent trajectories, no reliability inference.",
+    "No collision-avoidance controller or certified recoverability envelope.",
+    "Hash chains/reconstructed arithmetic do not authenticate an independent runtime."
+  ],
+  "governance": {
+    "gate_b": "GATE_B_NOT_AUTHORIZED",
+    "release_readiness": "BLOCKED",
+    "reserved_data_files_accessed": false,
+    "holdout_or_confirmatory_evaluation_executed": false,
+    "production_ticket_created_or_signed": false,
+    "frozen_artifacts_or_registered_rules_modified": false,
+    "commit_push_merge_publication_performed": false,
+    "hardware_validation": false
+  },
+  "artifact_sha256": {
+    "docs/research/V9_M5_DUAL_SOURCE_FALLBACK_EXECUTION_2026-11-16.md": "037b1c0a25066757a64d66aae270e5e814f17889a28cd6b231df180d4fe01635",
+    "results/research_development/analysis/dual_source_diagnostic_2026-11-16.png": "3c228a43eda27da8b27375389770b50c0b833ba06fef720bfedfd1bdfb670a5b",
+    "results/research_development/analysis/dual_source_diagnostic_2026-11-16.svg": "2e1df3ac8d3ae162693149a98034e238c2a18aa1995a744768fa744ccd7a4d80",
+    "results/research_development/analysis/dual_source_fallback_tests_2026-11-16.xml": "9564575d29cb667c518722dd9816fce16d71291a4ec02e293974a60087404fcf",
+    "results/research_development/analysis/plot_dual_source_diagnostic_2026-11-16.py": "c61cc74372f52020feb77910f7dc63a46af24fab09a19f19cf6e55d35d1e395b",
+    "results/research_development/dev/dual_source_fallback_v1_2026-11-16/assignments.jsonl": "23732dd1c644d2a90daf264d8b2d2b2c783e917c70ed9e650ee8e756276f10de",
+    "results/research_development/dev/dual_source_fallback_v1_2026-11-16/summary.json": "a9b43d82b95ae4d58940b7a35a179b333221d892a70965adbd290c556630bcdb",
+    "results/research_development/dev/dual_source_snapshot_reproduction_2026-11-16.zip": "0d2e11a8ce7fabae775db133a29d501cb043ef3a75796c3a5813bf8bebbc9938",
+    "results/research_development/dev/dual_source_test_fixtures_2026-11-16.zip": "56be0e91144471faab1172d90c4c8ef01f77200735094c758cabc43eac044192"
+  }
+}

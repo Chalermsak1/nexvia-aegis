@@ -1,0 +1,1 @@
+Packaged into the repository on 2026-11-16 after standalone development. Original README statements about repository edits describe the preparation stage. These references are not integrated into the robot, evaluator or frozen statistical rules. Gate B remains GATE_B_NOT_AUTHORIZED.

@@ -1,0 +1,13 @@
+# Configuration guard for recovery noise coupling — 2026-11-12
+
+**Development only; `GATE_B_NOT_AUTHORIZED`.** Inspected branch `codex/research-hardening`, working changes and research-team charter for heartbeat trigger 2026-11-11T14:04:21.830Z; execution continued across the date change. Existing user changes and historical artifacts were preserved. No Holdout/reserved outcomes or seeds, production tickets, frozen rules/artifacts, commit/push or hardware validation were involved.
+
+Added `scripts/research/configured_noise_pairing.py` and `tests/test_configured_noise_pairing.py`. The earlier arithmetic helper explicitly required its caller to check configuration. This new entry point makes those declarations required before comparing traces: zero dropout/latency/replay, unit velocity scales, no velocity bias/adaptive vector loss, supported recovery controller, valid seed/budgets, and matched bias/method/horizon settings for a pair. Required missing fields reject. Extra metadata is permitted; it is not validated as an execution argument map.
+
+`compare_configured` calls the existing finite-trace/noise helper after validating both declarations. A supported empty pair still returns null innovation agreement. Configuration acceptance is labeled SUPPORTED_DECLARED_PAIR, not policy/scientific acceptance. Identical but unsupported settings reject, as do missing replay declaration, biased velocity, invalid seed/controller/count, adaptive loss, boolean zero and unmatched bias conditions.
+
+**Verification: 27 targeted tests passed in 1.45 seconds**: 18 new configuration tests plus eight existing arithmetic tests and one actual-trace integration test. The adjacent actual-trace test executes two short development simulations; it tests the original arithmetic helper, not an authenticated binding of configuration declarations to those traces. No unexpected failure/incomplete test occurred. This is not a full-suite rerun. `git diff --check` passed.
+
+Limits: configuration is caller-declared and not independently authenticated/bound to the trace. The guard cannot detect a dishonest manifest, unrecorded fault/callback or hidden argument outside the required fields. It does not replace complete argument/runtime/phase/source recording in the future runner. No existing helper, simulator or benchmark was changed. The proposed eight-assignment comparison remains unexecuted; no safety improvement, independent reliability result or V9-M4 pass is claimed.
+
+Next bind this entry point to the separately versioned recovery runner's full assignment map and raw evidence, then implement its physical-event/phase and interrupted-run validation. Scientific/security/release blockers remain open. Gate B remains `GATE_B_NOT_AUTHORIZED`.

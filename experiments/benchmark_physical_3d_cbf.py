@@ -97,7 +97,15 @@ def run_3d_episode(
     on_trace=None,
     navigation_force_method: str = "AXIS_CLIP",
     recovery_steps: int = 100,
+    on_physics=None,
+    post_abstain_steps: int = 0,
 ) -> dict:
+    if type(post_abstain_steps) is not int or post_abstain_steps < 0:
+        raise ValueError("post_abstain_steps must be a nonnegative integer")
+    if post_abstain_steps and controller_type not in {"AEGIS_3D_ANCHOR_RECOVERY", "AEGIS_3D_RECOVERY_MONITOR"}:
+        raise ValueError("post-abstention diagnostics require an exploratory recovery arm")
+    if on_physics is not None and (not callable(on_physics) or controller_type not in {"AEGIS_3D_ANCHOR_RECOVERY", "AEGIS_3D_RECOVERY_MONITOR"}):
+        raise ValueError("on_physics requires a callable and an exploratory recovery arm")
     if type(recovery_steps) is not int or recovery_steps <= 0:
         raise ValueError("recovery_steps must be a positive integer")
     if recovery_steps != 100 and controller_type not in {"AEGIS_3D_ANCHOR_RECOVERY", "AEGIS_3D_RECOVERY_MONITOR"}:
@@ -192,6 +200,7 @@ def run_3d_episode(
     anchor_valid_readings = 0
     injected_vector_loss_steps = 0
     post_stop = None
+    post_abstain = None
     velocity_history = []
     previous_velocity_delivery = None
     range_window: list[float] = []
@@ -199,7 +208,24 @@ def run_3d_episode(
     vector_window_b: list[np.ndarray] = []
     range_history: list[tuple[float, bool]] = []
 
-    def observe_step(step_state: dict) -> None:
+    def emit_physics(step_state: dict, stage: str) -> None:
+        # Observation only: never feeds controller decisions or changes scores.
+        # A crash after physics but before this sink returns may leave a gap.
+        if on_physics is not None:
+            force = step_state.get("safe_action")
+            on_physics({
+                "decision_step": step, "physics_step": env.step_count, "stage": stage,
+                "position": step_state["robot_pos"].tolist(),
+                "velocity": step_state["robot_velocity"].tolist(),
+                "target": step_state["target_pos"].tolist(),
+                "distance": float(step_state["distance"]),
+                "collision": bool(step_state["safety_violation"]),
+                "projected_force": force.tolist() if force is not None else None,
+                "cbf_residual": step_state.get("cbf_constraint_residual"),
+                "cbf_feasible": step_state.get("cbf_qp_feasible"),
+            })
+
+    def observe_step(step_state: dict, stage: str = "MAIN") -> None:
         nonlocal collision_occurred, cbf_constraint_violation_occurred
         nonlocal cbf_unchecked_steps, cbf_exact_fallback_steps, cbf_infeasible_steps
         collision_occurred |= bool(step_state["safety_violation"])
@@ -212,6 +238,7 @@ def run_3d_episode(
             method = step_state.get("cbf_projection_method")
             cbf_exact_fallback_steps += int(method == "EXACT_ACTIVE_SET")
             cbf_infeasible_steps += int(method == "INFEASIBLE_WITHIN_ACTUATOR_BOX")
+        emit_physics(step_state, stage)
 
     for step in range(max_steps):
         steps_taken = step + 1
@@ -536,8 +563,22 @@ def run_3d_episode(
 
             if dec_type == "ABSTAIN":
                 state = env.step(np.zeros(3), force_braking=True)
-                observe_step(state)
+                observe_step(state, stage="ABSTAIN_BRAKE")
                 abstained = True
+                if post_abstain_steps:
+                    # Preserve the original first-brake state/counters/outcome.
+                    # Additional active truth-state braking is diagnostic only.
+                    after = []
+                    for _ in range(post_abstain_steps):
+                        observed = env.step(np.zeros(3), force_braking=True)
+                        emit_physics(observed, "POST_ABSTAIN_BRAKE")
+                        after.append({"distance": float(observed["distance"]),
+                                      "speed": float(np.linalg.norm(observed["robot_velocity"])),
+                                      "collision": bool(observed["safety_violation"]),
+                                      "cbf_residual": observed.get("cbf_constraint_residual")})
+                    post_abstain = {"initial_brake_distance": float(state["distance"]),
+                                    "initial_brake_speed": float(np.linalg.norm(state["robot_velocity"])),
+                                    "steps": after}
                 break
             elif dec_type == "STOP":
                 if true_dist <= env.config.success_radius:
@@ -551,6 +592,7 @@ def run_3d_episode(
                     after = []
                     for _ in range(post_stop_steps):
                         observed = env.step(np.zeros(3), force_braking=True)
+                        emit_physics(observed, "POST_STOP_BRAKE")
                         after.append({"distance": float(observed["distance"]),
                                       "speed": float(np.linalg.norm(observed["robot_velocity"])),
                                       "collision": bool(observed["safety_violation"]),
@@ -590,6 +632,8 @@ def run_3d_episode(
         "anchor_queries": anchor_queries,
         "anchor_valid_readings": anchor_valid_readings,
     }
+    if post_abstain_steps:
+        result["post_abstain"] = post_abstain
     if post_stop_steps:
         result["post_stop"] = post_stop
     if controller_type in {"AEGIS_3D_FRESH_VELOCITY", "AEGIS_3D_BOUNDED_GAP"}:

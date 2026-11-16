@@ -1,0 +1,101 @@
+{
+  "classification": "EXPLORATORY_SYNCHRONIZED_FIXTURE_VERIFICATION",
+  "recorded_at_utc": "2026-11-07T14:13:41.680207+00:00",
+  "parent_commit": "74b0bfab8e57cd450293e49de881207074df3141",
+  "branch": "codex/research-hardening",
+  "dirty_worktree": true,
+  "runtime": {
+    "python": "3.12.14",
+    "numpy": "2.5.3",
+    "mujoco": "3.14.0"
+  },
+  "tests": {
+    "initial_passed": 72,
+    "final_passed": 78,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "reported_final_seconds": 3.51,
+    "xml_sha256": "3d2ebad91884e64d7bd4c5c2414409e9680938a42028a781afb735c2718ff2f3",
+    "command": [
+      "/Users/chalermsak/Documents/ChatGPT/New project/nexvia-aegis/.venv/bin/python",
+      "-m",
+      "pytest",
+      "-p",
+      "no:cacheprovider",
+      "-q",
+      "tests/test_synchronized_fixture_ledger.py",
+      "tests/test_synchronized_3d_environment.py",
+      "tests/test_state_phase_diagnostic.py",
+      "tests/test_recovery_motion_summary.py",
+      "tests/test_recovery_physics_events.py",
+      "tests/test_recovery_physics_ledger.py",
+      "tests/test_recovery_post_abstention.py",
+      "--basetemp=/private/tmp/nexvia-sync-ledger-20261107/pytest-final",
+      "--junitxml=/private/tmp/nexvia-sync-ledger-20261107/synchronized_fixture_tests_2026-11-07.xml"
+    ],
+    "environment": {
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONPATH": "src:."
+    }
+  },
+  "executions": [
+    {
+      "command": [
+        "/Users/chalermsak/Documents/ChatGPT/New project/nexvia-aegis/.venv/bin/python",
+        "scripts/research/synchronized_fixture_ledger.py",
+        "--output",
+        "/private/tmp/nexvia-sync-ledger-20261107/synchronized_fixtures_v1_2026-11-07.jsonl"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/Users/chalermsak/Documents/ChatGPT/New project/nexvia-aegis/.venv/bin/python",
+        "scripts/research/synchronized_fixture_ledger.py",
+        "--analyze",
+        "/private/tmp/nexvia-sync-ledger-20261107/synchronized_fixtures_v1_2026-11-07.jsonl",
+        "--output",
+        "/private/tmp/nexvia-sync-ledger-20261107/synchronized_fixtures_v1_summary_2026-11-07.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "source_sha256_before": {
+    "scripts/research/synchronized_fixture_ledger.py": "bc734e932dbbc48a02acb747cf17704f1dc74c5fda91a041b2e56d170bc0da2f",
+    "tests/test_synchronized_fixture_ledger.py": "bd043f63e58180d5640420fcb1a3c40edfd3756b23c8362a8e000b09c532c53d",
+    "src/aegis/env/mujoco_3d_synchronized.py": "f00625647ff9c56a86efba384a7149e94e149c922cce3ba5d45835aa0d9916e3",
+    "src/aegis/env/mujoco_3d_cbf.py": "438b8ec89d1d40101586b0d888de7e8b5d73c9763cbae2603ccab01f04801433",
+    "scripts/research/development_ledger.py": "254fe889557148110e458ed2cb6e3286837589a484d7a63e1ae3d2c34b645502",
+    "scripts/research/evidence_integrity.py": "a1b4633e9e24c9594d43a93c6b103ece9d4070da179e9f8de145196fe3ba8022",
+    "experiments/benchmark_physical_3d_cbf.py": "04bc31bf74423806200e39a44334e1dd0cf4063dde08797ef79dacb491b4323f",
+    "results/research_development/dev/recovery_incremental_physics_v1.jsonl": "359ae6f7e6f1de3fd99609c21cf9cdfa3d440f39a5234d8cfb45addeaafeaa2f",
+    "results/research_development/dev/recovery_post_abstention_physics_v2.jsonl": "48136174812afb4e852732d314b88bbd1b8e87dd4f860cec98c85902dd72fecf"
+  },
+  "source_sha256_after": {
+    "scripts/research/synchronized_fixture_ledger.py": "bc734e932dbbc48a02acb747cf17704f1dc74c5fda91a041b2e56d170bc0da2f",
+    "tests/test_synchronized_fixture_ledger.py": "bd043f63e58180d5640420fcb1a3c40edfd3756b23c8362a8e000b09c532c53d",
+    "src/aegis/env/mujoco_3d_synchronized.py": "f00625647ff9c56a86efba384a7149e94e149c922cce3ba5d45835aa0d9916e3",
+    "src/aegis/env/mujoco_3d_cbf.py": "438b8ec89d1d40101586b0d888de7e8b5d73c9763cbae2603ccab01f04801433",
+    "scripts/research/development_ledger.py": "254fe889557148110e458ed2cb6e3286837589a484d7a63e1ae3d2c34b645502",
+    "scripts/research/evidence_integrity.py": "a1b4633e9e24c9594d43a93c6b103ece9d4070da179e9f8de145196fe3ba8022",
+    "experiments/benchmark_physical_3d_cbf.py": "04bc31bf74423806200e39a44334e1dd0cf4063dde08797ef79dacb491b4323f",
+    "results/research_development/dev/recovery_incremental_physics_v1.jsonl": "359ae6f7e6f1de3fd99609c21cf9cdfa3d440f39a5234d8cfb45addeaafeaa2f",
+    "results/research_development/dev/recovery_post_abstention_physics_v2.jsonl": "48136174812afb4e852732d314b88bbd1b8e87dd4f860cec98c85902dd72fecf"
+  },
+  "sources_unchanged": true,
+  "output_sha256": {
+    "synchronized_fixtures_v1_2026-11-07.jsonl": "a6b0e59469f514892b727b2dd1b3266aa51823f09658ce1951ead0a19b8ff9e9",
+    "synchronized_fixtures_v1_summary_2026-11-07.json": "c1fe2a93c81247f883c49802e009e2f1e71adfd84f68ceeb78a6c907f26b0be4"
+  },
+  "governance": "GATE_B_NOT_AUTHORIZED",
+  "limitations": [
+    "Fixed synthetic engineering fixtures, not policy efficacy, independent risk trials or real-robot validation.",
+    "Selected self-reported source/runtime consistency; not authentication, complete dependency closure or rollback protection.",
+    "Interrupted physical steps may be unrecorded between integration and persistence."
+  ]
+}

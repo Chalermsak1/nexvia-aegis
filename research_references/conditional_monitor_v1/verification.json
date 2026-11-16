@@ -1,0 +1,14 @@
+{
+  "classification": "STANDALONE_DEVELOPMENT_EPROCESS_REFERENCE",
+  "final_tests_passed": 26,
+  "initial_tests_passed": 25,
+  "repository_modified": false,
+  "conditional_null": "UNVERIFIED CALLER ASSUMPTION: E[Z_t | past] <= predictable tau_t > 0",
+  "numeric_boundary": "Not certified floating-point verification",
+  "sha256": {
+    "development_eprocess.py": "587359bddbc819d2cfbf7094f68933dea5be02814983ae0e93e0cf9b7f132a0d",
+    "test_development_eprocess.py": "a0630cef13660407943480ed33c5cdbf9cfa0abbee41f8167903111c85130364",
+    "tests_final.xml": "af4e15d8d1b5c16cd646c42f41a9f0a42bec27a05ae53ea973cddf46d9702898"
+  },
+  "governance": "GATE_B_NOT_AUTHORIZED"
+}

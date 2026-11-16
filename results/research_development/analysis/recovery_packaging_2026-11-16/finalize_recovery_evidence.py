@@ -1,0 +1,44 @@
+from pathlib import Path
+import json,hashlib,zipfile,shutil,xml.etree.ElementTree as ET,subprocess,collections,sys
+root=Path('/Users/chalermsak/Documents/ChatGPT/New project/nexvia-aegis');pkg=Path('/private/tmp/nexvia-recovery-final-package-20261116')
+snapshot=Path('/private/tmp/nexvia-recovery-source-snapshot-v2-20261116');reproduced=Path('/private/tmp/nexvia-recovery-source-reproduction-v2-20261116')
+v=json.loads((reproduced/'verification.json').read_text());assert v['raw_identical'] and v['summary_identical']
+archive=pkg/'results/research_development/dev/recovery_contract_source_reproduction_2026-11-16.zip'
+with zipfile.ZipFile(archive,'x',compression=zipfile.ZIP_DEFLATED) as z:
+ for base,prefix in ((snapshot,'source'),(reproduced,'reproduced')):
+  for f in sorted(base.rglob('*')):
+   if f.is_file():z.write(f,prefix+'/'+str(f.relative_to(base)))
+ z.write('/private/tmp/nexvia-recovery-source-reproduction-v2-20261116.log','execution.log')
+ z.writestr('README.txt','Extract into a new directory. Use the recorded Python 3.12.14 / NumPy 2.5.3 / MuJoCo 3.14.0 runtime. From source/, run PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:. /ABSOLUTE/PATH/TO/PYTHON reproduce.py /NEW/OUTPUT/DIRECTORY. Driver verifies source/version maps and import paths, reuses ORIGINAL parent metadata and checks raw and summary equality. This is not an independent build or replication.\n')
+with zipfile.ZipFile(archive) as z:assert z.testzip() is None
+for name in ('prepare_final_package.py','finalize_recovery_evidence.py'):
+ target=pkg/'results/research_development/analysis/recovery_packaging_2026-11-16'/name;shutil.copyfile(Path('/private/tmp/nexvia-recovery-20261116')/name,target)
+report=Path('/private/tmp/nexvia-recovery-20261116/docs/research/V9_M5_RECOVERY_AND_STREAMING_EXECUTION_2026-11-16.md')
+s=report.read_text()
+for a,b in [('recovery_contract.py:50','recovery_contract.py:54'),('recovery_contract_study.py:23','recovery_contract_study.py:25'),('recovery_contract_study.py:67','recovery_contract_study.py:57'),('recovery_contract_study.py:94','recovery_contract_study.py:85'),('recovery_contract_study.py:110','recovery_contract_study.py:99'),('streaming_ledger.py:13','streaming_ledger.py:12'),('audit_reference_stream.py:24','audit_reference_stream.py:23')]:s=s.replace(a,b)
+s=s.replace('Its raw ledger hash and final receipt identify the exact bytes.','Its raw ledger SHA-256 is `'+v['raw_sha256']+'`; the final receipt identifies all retained artifacts.')
+target=pkg/'docs/research'/report.name;target.parent.mkdir(parents=True,exist_ok=True);target.write_text(s)
+stats=json.loads((pkg/'fixture_archive_stats.json').read_text());dst=pkg/'results/research_development/analysis/recovery_packaging_2026-11-16/fixture_archive_stats.json';dst.write_text(json.dumps(stats,indent=2)+'\n')
+# Root staging helper is not an artifact destined for the repository.
+(pkg/'fixture_archive_stats.json').unlink()
+sys.path[:0]=[str(root),str(root/'src')]
+from scripts.research import recovery_contract_study as study
+files=list(dict.fromkeys(study.FILES+('scripts/research/audit_reference_stream.py','scripts/research/benchmark_reference_readers.py','tests/test_recovery_contract.py','tests/test_streaming_ledger.py','tests/test_recovery_contract_study.py')))
+sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
+source={p:sha(root/p) for p in files}
+summary=json.loads((pkg/'results/research_development/dev/recovery_contract_v2_2026-11-16/summary.json').read_text());rows=[a['summary'] for a in summary['assignments']]
+old=json.loads((pkg/'results/research_development/dev/recovery_contract_v1_2026-11-16/summary.json').read_text())
+assert old['assignments']==summary['assignments']  # outcome accounting unchanged; source metadata differ
+assert study.hashes()==summary['metadata']['sources']
+prior=json.loads((root/'results/research_development/analysis/physical_reference_probe_verification_2026-11-16.json').read_text())
+assert all(sha(root/p)==h for p,h in prior['source_sha256'].items())
+xml=pkg/'results/research_development/analysis/recovery_streaming_tests_v2_2026-11-16.xml';suite=ET.parse(xml).getroot().find('testsuite');assert suite.attrib['tests']=='342' and suite.attrib['failures']=='0' and suite.attrib['errors']=='0'
+bench=[json.loads(f.read_text()) for f in sorted((pkg/'results/research_development/analysis/reference_reader_benchmark_2026-11-16').glob('*.json'))]
+assert len({b['normalized_sha256'] for b in bench})==1
+assert sha(root/'experiments/benchmark_physical_3d_cbf.py')=='04bc31bf74423806200e39a44334e1dd0cf4063dde08797ef79dacb491b4323f'
+new_code=['src/aegis/development/recovery_contract.py','scripts/research/streaming_ledger.py','scripts/research/audit_reference_stream.py','scripts/research/recovery_contract_study.py','scripts/research/benchmark_reference_readers.py','tests/test_recovery_contract.py','tests/test_streaming_ledger.py','tests/test_recovery_contract_study.py']
+artifacts={str(f.relative_to(pkg)): {'sha256':sha(f),'size_bytes':f.stat().st_size} for f in sorted(pkg.rglob('*')) if f.is_file()}
+command='PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:. .venv/bin/python -m pytest -q -x -p no:cacheprovider '+' '.join(['tests/test_recovery_contract.py','tests/test_streaming_ledger.py','tests/test_recovery_contract_study.py','tests/test_physical_reference.py','tests/test_physical_reference_study.py','tests/test_brake_probe.py','tests/test_development_ledger.py','tests/test_assurance_gateway.py','tests/test_bounded_braking.py','tests/test_bounded_estimation_study.py','tests/test_dual_source_braking.py','tests/test_dual_source_fallback_study.py','tests/test_freshness_lease_study.py'])+' --basetemp=/private/tmp/nexvia-recovery-regression-v2-20261116 --junitxml=/private/tmp/nexvia-recovery-regression-v2-20261116.xml'
+receipt={'classification':'EXPLORATORY_SIMULATION_AND_READ_ONLY_DEVELOPMENT_ARTIFACT_AUDIT','date_local':'2026-11-16','timezone':'Asia/Bangkok','repository':str(root),'branch':'codex/research-hardening','parent_commit':'74b0bfab8e57cd450293e49de881207074df3141','committed':False,'pushed':False,'source_sha256':source,'new_code_paths':new_code,'versions':summary['metadata']['versions'],'final_tests':suite.attrib,'test_command':command,'final_run':{'counts':summary['counts'],'ledger_state':summary['ledger_state'],'physics_steps':sum(s['physics_steps'] for s in rows),'design_statuses':dict(collections.Counter(s['design_status'] for s in rows)),'evaluation_statuses':dict(collections.Counter(s['model_evaluation'] for s in rows)),'command':'PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:. .venv/bin/python -m scripts.research.recovery_contract_study run /private/tmp/nexvia-recovery-study-v2-20261116/assignments.jsonl --output /private/tmp/nexvia-recovery-study-v2-20261116/summary.json'},'reader_benchmarks':bench,'reproduction':v,'superseded_evidence':{'reason':'Code review found finite-only design could label an uncontained infinite path as conditional containment. Label fixed and boundary test added; scientific fixture outcomes unchanged.','original_batch_path':'results/research_development/dev/recovery_contract_v1_2026-11-16','original_raw_sha256':sha(pkg/'results/research_development/dev/recovery_contract_v1_2026-11-16/assignments.jsonl'),'earlier_test_counts':[37,47,341],'failed_test_invocations':0,'intentional_failed_or_incomplete_fixtures_retained':True},'fixture_archive':stats,'preservation':{'preceding_reference_probe_source_map_unchanged':True,'preexisting_benchmark_sha256':'04bc31bf74423806200e39a44334e1dd0cf4063dde08797ef79dacb491b4323f','tracked_diff_numstat':'46 insertions, 2 deletions in experiments/benchmark_physical_3d_cbf.py'},'artifacts':artifacts,'limitations':['Synthetic criteria are not approved operational requirements.','Physics is nominal 1 kg translational MuJoCo only; no real robot.','Fault/premise classification uses simulator truth for scoring, not independent onboard detection.','Floating references lack outward rounding or formal numerical certification.','Same-runtime/source-path reproduction and self-reported hashes lack independent authentication.','Two read-only benchmark observations per method on one uncontrolled-cache local workload.','No prospective independent scientific evaluation.'],'governance':{'gate_b':'GATE_B_NOT_AUTHORIZED','overall_release':'BLOCKED','holdout_accessed':False,'reserved_seed_contents_accessed':False,'confirmatory_evaluation_executed':False,'production_ticket_created_or_signed':False,'frozen_artifacts_modified':False,'release_commit_created':False,'real_robot_validated':False}}
+p=pkg/'results/research_development/analysis/recovery_streaming_verification_2026-11-16.json';p.write_text(json.dumps(receipt,indent=2,allow_nan=False)+'\n')
+print(json.dumps({'files_to_add':len(artifacts)+1,'final_raw_sha256':v['raw_sha256'],'tests':suite.attrib['tests'],'artifacts_verified':len(artifacts)},indent=2))
