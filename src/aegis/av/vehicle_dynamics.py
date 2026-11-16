@@ -189,6 +189,20 @@ class FrenetFrame:
         s_clamped = float(np.clip(s, 0.0, self.total_length))
         return float(np.interp(s_clamped, self.s_coords, self.curvatures))
 
+    def frenet_to_cartesian(self, s: float, d: float = 0.0) -> tuple[float, float]:
+        """
+        Converts Frenet road coordinates (s, d) to global Cartesian coordinates (x, y).
+        """
+        s_clamped = float(np.clip(s, 0.0, self.total_length))
+        x_center = float(np.interp(s_clamped, self.s_coords, self.waypoints[:, 0]))
+        y_center = float(np.interp(s_clamped, self.s_coords, self.waypoints[:, 1]))
+        if abs(d) < 1e-6:
+            return x_center, y_center
+
+        norm_x = float(np.interp(s_clamped, self.s_coords[:-1], self.normals[:, 0]))
+        norm_y = float(np.interp(s_clamped, self.s_coords[:-1], self.normals[:, 1]))
+        return x_center + d * norm_x, y_center + d * norm_y
+
 
 class DynamicBicycleModel:
     """

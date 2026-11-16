@@ -140,3 +140,79 @@ def test_safe_ppo_agent_training_update():
     assert "entropy" in metrics
     assert not np.isnan(metrics["policy_loss"])
     assert not np.isnan(metrics["value_loss"])
+
+
+def test_adaptive_cbf_and_energy_metrics():
+    """Validates that Adaptive CBF tracks control energy, jerk, and modulates barrier decay."""
+    env = Safe6DOFQuadrotorEnv(
+        shield_enabled=True,
+        adaptive_cbf=True,
+        max_steps=20,
+        energy_penalty_weight=0.02,
+        smoothness_penalty_weight=0.01,
+    )
+    env.reset()
+
+    # Step through with mild actions
+    action = np.array([0.2, -0.1, 0.05], dtype=np.float32)
+    for _ in range(10):
+        _, reward, terminated, truncated, info = env.step(action)
+        if terminated or truncated:
+            break
+
+    assert "control_energy" in info
+    assert "mean_jerk" in info
+    assert "transit_time_s" in info
+    assert info["control_energy"] >= 0.0
+    assert info["mean_jerk"] >= 0.0
+    assert info["transit_time_s"] > 0.0
+
+
+def test_sensor_fault_and_innovation_gate_rejection():
+    """Validates that innovation gate catches sensor spoofing and prevents false arrival."""
+    fault_cfg = {"fault_type": "spoof_arrival", "start_step": 5}
+
+    # 1. Without innovation gate: sensor spoof causes false arrival
+    env_unguarded = Safe6DOFQuadrotorEnv(
+        shield_enabled=True,
+        enable_innovation_gate=False,
+        sensor_fault_config=fault_cfg,
+        max_steps=20,
+    )
+    env_unguarded.reset()
+    action = np.zeros(3, dtype=np.float32)
+
+    unguarded_false_arrival = False
+    for _ in range(15):
+        _, _, terminated, _, info = env_unguarded.step(action)
+        if info["false_arrival"]:
+            unguarded_false_arrival = True
+            break
+        if terminated:
+            break
+
+    assert unguarded_false_arrival, "Unguarded env must succumb to sensor spoofing (false arrival)"
+
+    # 2. With innovation gate: sensor spoofing is intercepted; system abstains with 0 false arrivals
+    env_guarded = Safe6DOFQuadrotorEnv(
+        shield_enabled=True,
+        enable_innovation_gate=True,
+        sensor_fault_config=fault_cfg,
+        max_steps=20,
+    )
+    env_guarded.reset()
+
+    guarded_false_arrival = False
+    guarded_abstained = False
+    for _ in range(15):
+        _, _, terminated, _, info = env_guarded.step(action)
+        if info["false_arrival"]:
+            guarded_false_arrival = True
+        if info["abstain"]:
+            guarded_abstained = True
+        if terminated:
+            break
+
+    assert not guarded_false_arrival, "Guarded env must NEVER suffer false arrival (Selective Risk = 0%)"
+    assert guarded_abstained, "Guarded env must successfully flag abstention upon sensor anomaly"
+

@@ -16,6 +16,7 @@ import math
 from typing import Any, Tuple
 
 import numpy as np
+import mujoco
 
 from aegis.env.deep_aerodynamics import DeepAerodynamicsConfig
 from aegis.env.mujoco_3d_cbf import Obstacle3D
@@ -45,13 +46,23 @@ class Safe6DOFQuadrotorEnv:
     def __init__(
         self,
         shield_enabled: bool = True,
+        adaptive_cbf: bool = False,
         enable_deep_aero: bool = True,
         max_steps: int = 150,
         intervention_penalty_weight: float = 0.05,
+        energy_penalty_weight: float = 0.015,
+        smoothness_penalty_weight: float = 0.005,
+        enable_innovation_gate: bool = False,
+        sensor_fault_config: dict[str, Any] | None = None,
     ) -> None:
         self.shield_enabled = shield_enabled
+        self.adaptive_cbf = adaptive_cbf
         self.max_steps = max_steps
         self.intervention_penalty_weight = intervention_penalty_weight
+        self.energy_penalty_weight = energy_penalty_weight
+        self.smoothness_penalty_weight = smoothness_penalty_weight
+        self.enable_innovation_gate = enable_innovation_gate
+        self.sensor_fault_config = sensor_fault_config
 
         # 6-DOF Quadrotor Physics Configuration
         deep_cfg = DeepAerodynamicsConfig(
@@ -91,12 +102,32 @@ class Safe6DOFQuadrotorEnv:
         self.step_idx = 0
         self.cumulative_interventions = 0
         self.cumulative_intervention_norm = 0.0
+        self.cumulative_control_energy = 0.0
+        self.cumulative_jerk = 0.0
+        mg = self.quad_cfg.mass * self.quad_cfg.gravity
+        self.last_applied_force = np.array([0.0, 0.0, mg], dtype=np.float64)
+        self.dwell_steps = 0
+        self.innovation_gate_open = False
+        self.abstained = False
+        self.estimated_pos = np.zeros(3, dtype=np.float64)
+        self.estimated_vel = np.zeros(3, dtype=np.float64)
 
-    def reset(self, rng: np.random.Generator | None = None) -> np.ndarray:
+    def reset(
+        self,
+        rng: np.random.Generator | None = None,
+        initial_pos: np.ndarray | None = None,
+    ) -> np.ndarray:
         """Resets simulation and obstacle states, returning initial observation."""
         self.step_idx = 0
         self.cumulative_interventions = 0
         self.cumulative_intervention_norm = 0.0
+        self.cumulative_control_energy = 0.0
+        self.cumulative_jerk = 0.0
+        mg = self.quad_cfg.mass * self.quad_cfg.gravity
+        self.last_applied_force = np.array([0.0, 0.0, mg], dtype=np.float64)
+        self.dwell_steps = 0
+        self.innovation_gate_open = False
+        self.abstained = False
 
         # Reset dynamic obstacles to initial positions
         self.dynamic_obstacles[0].center = np.array([0.0, -0.6, 0.9], dtype=np.float64)
@@ -106,6 +137,14 @@ class Safe6DOFQuadrotorEnv:
         self.dynamic_obstacles[1].velocity = np.array([-0.50, 0.0, 0.0], dtype=np.float64)
 
         raw_state = self.sim.reset(rng=rng, initial_soc=1.0)
+        if initial_pos is not None:
+            self.sim.data.qpos[:3] = np.asarray(initial_pos, dtype=np.float64)
+            self.sim.data.qvel[:] = 0.0
+            mujoco.mj_forward(self.sim.model, self.sim.data)
+            raw_state = self.sim.get_state()
+
+        self.estimated_pos = raw_state["pos"].copy()
+        self.estimated_vel = raw_state["vel"].copy()
         return self._get_obs(raw_state)
 
     def _step_dynamic_obstacles(self, dt: float) -> None:
@@ -165,58 +204,107 @@ class Safe6DOFQuadrotorEnv:
         """
         Executes one RL environment step:
         1. Action mapping from continuous policy output to 3D force.
-        2. Differentiable HOCBF Safety Shield projection (if enabled).
-        3. Advances 6-DOF MuJoCo physics and dynamic obstacles.
-        4. Calculates dense task reward + shield intervention penalty.
+        2. Sensor fault injection & Dual Innovation Gate evaluation.
+        3. Adaptive HOCBF Safety Shield projection (if enabled).
+        4. Advances 6-DOF MuJoCo physics and dynamic obstacles.
+        5. Computes energy consumption, smoothness, and task rewards.
+        6. Verifies Physical Dwell Rest (E-05) vs Perceived Arrival for 0% Selective Risk.
         """
         self.step_idx += 1
         action_clamped = np.clip(action, -1.0, 1.0)
+        dt = self.quad_cfg.outer_dt
 
-        # Residual Safe RL Formulation:
-        # F_net = F_nominal(target) + F_RL(s)
-        # Nominal tracking force drives toward destination:
         pos_curr = self.sim.data.qpos[:3].copy()
         vel_curr = self.sim.data.qvel[:3].copy()
         mg = self.quad_cfg.mass * self.quad_cfg.gravity
 
-        k_p = 2.8
-        k_d = 1.4
-        f_nominal = k_p * (self.target_pos - pos_curr) - k_d * vel_curr
-        f_nominal[2] += mg
+        # 1. Sensor observation & fault perturbation
+        sensor_fault_active = False
+        pos_obs = pos_curr.copy()
+        vel_obs = vel_curr.copy()
 
-        # Policy outputs adaptive evasion offset
-        f_scale_horiz = 10.0
-        f_scale_vert = 14.0
-        f_rl_offset = np.array([
-            action_clamped[0] * f_scale_horiz,
-            action_clamped[1] * f_scale_horiz,
-            action_clamped[2] * f_scale_vert,
-        ], dtype=np.float64)
+        if self.sensor_fault_config is not None:
+            start_s = self.sensor_fault_config.get("start_step", 25)
+            if self.step_idx >= start_s:
+                sensor_fault_active = True
+                f_type = self.sensor_fault_config.get("fault_type", "range_drift")
+                if f_type == "spoof_arrival":
+                    # Spoofs position directly to target (claims premature arrival)
+                    pos_obs = self.target_pos.copy() + np.random.normal(0, 0.02, 3)
+                    vel_obs = np.array([0.02, -0.01, 0.0], dtype=np.float64)
+                elif f_type == "range_drift":
+                    drift_dir = (self.target_pos - pos_curr)
+                    norm_d = float(np.linalg.norm(drift_dir))
+                    if norm_d > 1e-4:
+                        drift_dir = drift_dir / norm_d
+                    pos_obs += drift_dir * min(1.2, 0.05 * (self.step_idx - start_s))
+                elif f_type == "velocity_noise":
+                    vel_obs += np.random.normal(0, 0.35, 3)
 
-        desired_force_rl = f_nominal + f_rl_offset
+        # 2. Dual-Sensor Fusion & Innovation Gate (E-05, E-06)
+        # Update internal momentum model: F_net = F_applied - mg e3
+        a_net = (self.last_applied_force / self.quad_cfg.mass) - np.array([0.0, 0.0, self.quad_cfg.gravity])
+        self.estimated_vel = 0.85 * self.estimated_vel + 0.15 * (vel_curr + a_net * dt)
+        self.estimated_pos += self.estimated_vel * dt
 
-        # Combine static obstacles + current dynamic obstacles for CBF
+        innovation_residual = float(np.linalg.norm(pos_obs - self.estimated_pos))
+        vel_innovation = float(np.linalg.norm(vel_obs - self.estimated_vel))
+
+        if self.enable_innovation_gate and sensor_fault_active:
+            if innovation_residual > 0.22 or vel_innovation > 0.30:
+                self.innovation_gate_open = True
+                self.abstained = True
+
+        # 3. Residual Guidance Force
+        if self.enable_innovation_gate and self.abstained:
+            # Active safe fallback: velocity air-brake and level hover
+            desired_force_rl = np.array([0.0, 0.0, mg], dtype=np.float64) - 2.5 * vel_curr
+            desired_force_rl[2] = mg - 1.5 * vel_curr[2]
+        else:
+            k_p = 3.2
+            dist_raw = float(np.linalg.norm(self.target_pos - pos_curr))
+            k_d = 3.2 if dist_raw < 0.85 else 1.6
+            f_nominal = k_p * (self.target_pos - pos_curr) - k_d * vel_curr
+            f_nominal[2] += mg
+
+            f_scale_horiz = 10.0
+            f_scale_vert = 14.0
+            f_rl_offset = np.array([
+                action_clamped[0] * f_scale_horiz,
+                action_clamped[1] * f_scale_horiz,
+                action_clamped[2] * f_scale_vert,
+            ], dtype=np.float64)
+
+            desired_force_rl = f_nominal + f_rl_offset
+
+        # 4. Dynamic obstacles update
         active_cbf_obstacles = list(self.sim.obstacles) + [
             Obstacle3D(center=d.center.copy(), radius=d.radius)
             for d in self.dynamic_obstacles
         ]
         self.sim.obstacles = active_cbf_obstacles
-
-        # Step dynamic obstacles
         self._step_dynamic_obstacles(self.quad_cfg.outer_dt)
 
-        # Apply HOCBF Safety Shield
+        # 5. Adaptive HOCBF Safety Shield
         intervention_norm = 0.0
         barrier_active = False
 
         if self.shield_enabled:
             st_pre = self.sim.get_state()
+            adaptive_gammas = None
+            if self.adaptive_cbf:
+                v_mag = float(np.linalg.norm(st_pre["vel"]))
+                # Velocity-scaled contraction factor: proactive at high speeds, agile at low speeds
+                g_adapt = self.quad_cfg.cbf_gamma * (1.0 + 0.35 * min(2.5, v_mag / 1.2))
+                adaptive_gammas = (g_adapt, g_adapt)
+
             f_safe, barrier_active = self.sim.cbf.filter_safe_force(
                 pos=st_pre["pos"],
                 vel=st_pre["vel"],
                 desired_force=desired_force_rl,
                 obstacles=active_cbf_obstacles,
                 current_tilt=math.radians(st_pre["tilt_deg"]),
+                adaptive_gammas=adaptive_gammas,
             )
             intervention_norm = float(np.linalg.norm(f_safe - desired_force_rl))
             if barrier_active:
@@ -226,13 +314,22 @@ class Safe6DOFQuadrotorEnv:
         else:
             f_to_apply = desired_force_rl
 
-        # Execute 6-DOF step in MuJoCo
+        # 6. Control Energy & Smoothness / Jerk Tracking
+        f_hover = np.array([0.0, 0.0, mg], dtype=np.float64)
+        step_energy = float(np.sum((f_to_apply - f_hover)**2)) * dt
+        self.cumulative_control_energy += step_energy
+
+        step_jerk = float(np.linalg.norm(f_to_apply - self.last_applied_force)) / dt
+        self.cumulative_jerk += step_jerk * dt
+        self.last_applied_force = f_to_apply.copy()
+
+        # 7. Execute 6-DOF step in MuJoCo
         st_next, _ = self.sim.step_outer(
             desired_force_world=f_to_apply,
-            shield_with_cbf=False, # already filtered above
+            shield_with_cbf=False,
         )
 
-        # Check collision with dynamic obstacles
+        # 8. Check collision
         pos_drone = st_next["pos"]
         r_quad = self.quad_cfg.robot_collision_radius
         dyn_collision = any(
@@ -241,22 +338,51 @@ class Safe6DOFQuadrotorEnv:
         )
         total_collision = st_next["collision"] or dyn_collision
 
-        # Compute Rewards
+        # 9. Physical Dwell Rest (E-05) & Arrival Verification
         dist_to_target = float(np.linalg.norm(pos_drone - self.target_pos))
         vel_norm = float(np.linalg.norm(st_next["vel"]))
-        arrived = dist_to_target < 0.28 and vel_norm < 0.40
 
-        # Reward formulation:
-        # Progress reward + speed regulation - action penalty - shield intervention penalty
+        is_phys_near = dist_to_target < 0.28 and vel_norm < 0.25
+        if is_phys_near:
+            self.dwell_steps += 1
+        else:
+            self.dwell_steps = 0
+        phys_arrived = self.dwell_steps >= 5
+
+        # Perceived arrival (what an unshielded or un-gated observer reports)
+        dist_perceived = float(np.linalg.norm(pos_obs - self.target_pos))
+        vel_perceived = float(np.linalg.norm(vel_obs))
+        perceived_arrived = dist_perceived < 0.28 and vel_perceived < 0.35
+
+        false_arrival = False
+        true_arrival = False
+
+        if self.enable_innovation_gate and self.abstained:
+            arrived = False
+        elif phys_arrived:
+            true_arrival = True
+            arrived = True
+        elif perceived_arrived and not phys_arrived:
+            false_arrival = True
+            arrived = True
+        else:
+            arrived = False
+
+        # 10. Multi-Objective Energy-Aware Reward
         r_progress = -1.2 * dist_to_target
         r_vel = -0.08 * vel_norm
         r_action = -0.02 * float(np.sum(action_clamped**2))
         r_intervention = -self.intervention_penalty_weight * (intervention_norm ** 2)
+        r_energy = -self.energy_penalty_weight * (step_energy / ((mg**2) * dt))
+        r_jerk = -self.smoothness_penalty_weight * (step_jerk / (mg * 10.0))
 
-        reward = r_progress + r_vel + r_action + r_intervention
+        reward = r_progress + r_vel + r_action + r_intervention + r_energy + r_jerk
 
-        if arrived:
-            reward += 100.0
+        if true_arrival:
+            reward += 120.0
+        elif false_arrival:
+            reward -= 50.0
+
         if total_collision:
             reward -= 80.0
 
@@ -266,10 +392,16 @@ class Safe6DOFQuadrotorEnv:
         info = {
             "distance": dist_to_target,
             "arrived": arrived,
+            "true_arrival": true_arrival,
+            "false_arrival": false_arrival,
+            "abstain": self.abstained,
             "collision": total_collision,
             "barrier_active": barrier_active,
             "intervention_norm": intervention_norm,
             "cumulative_interventions": self.cumulative_interventions,
+            "control_energy": self.cumulative_control_energy,
+            "mean_jerk": float(self.cumulative_jerk / max(1e-4, self.step_idx * dt)),
+            "transit_time_s": float(self.step_idx * dt),
             "soc": st_next["deep_aero"]["soc"] if st_next["deep_aero"] is not None else 1.0,
             "tilt_deg": st_next["tilt_deg"],
             "drone_pos": pos_drone.copy(),

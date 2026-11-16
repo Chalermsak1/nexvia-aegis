@@ -12,13 +12,104 @@ Combines:
 
 from __future__ import annotations
 
+import ctypes
 import math
+import os
+from pathlib import Path
+import sys
 import time
 from dataclasses import dataclass, field
 import numpy as np
 from scipy.optimize import minimize
 
 from aegis.env.quadrotor_6dof import Obstacle3D, QuadrotorConfig, UnderactuatedCBF6DOF
+
+
+class _AegisNmpcObstacle(ctypes.Structure):
+    _fields_ = [
+        ("cx", ctypes.c_double),
+        ("cy", ctypes.c_double),
+        ("cz", ctypes.c_double),
+        ("radius", ctypes.c_double),
+        ("vx", ctypes.c_double),
+        ("vy", ctypes.c_double),
+        ("vz", ctypes.c_double),
+    ]
+
+
+class _AegisNmpcCorridorPlane(ctypes.Structure):
+    _fields_ = [
+        ("nx", ctypes.c_double),
+        ("ny", ctypes.c_double),
+        ("nz", ctypes.c_double),
+        ("d", ctypes.c_double),
+    ]
+
+
+class _AegisNmpcResult(ctypes.Structure):
+    _fields_ = [
+        ("f0_x", ctypes.c_double),
+        ("f0_y", ctypes.c_double),
+        ("f0_z", ctypes.c_double),
+        ("traj_p", (ctypes.c_double * 3) * 16),
+        ("traj_v", (ctypes.c_double * 3) * 16),
+        ("traj_f", (ctypes.c_double * 3) * 15),
+        ("success", ctypes.c_int),
+        ("iterations", ctypes.c_int),
+        ("solve_time_us", ctypes.c_double),
+        ("min_barrier_margin", ctypes.c_double),
+        ("fallback_activated", ctypes.c_int),
+    ]
+
+
+_NMPC_CPP_LIB: ctypes.CDLL | None = None
+
+
+def _load_cpp_nmpc_kernel(explicit_path: str | None = None) -> ctypes.CDLL | None:
+    global _NMPC_CPP_LIB
+    if _NMPC_CPP_LIB is not None:
+        return _NMPC_CPP_LIB
+
+    repo_root = Path(__file__).resolve().parents[3]
+    cwd = Path.cwd()
+    lib_names = (
+        ["libaegis_kernel.dylib", "libaegis_kernel.so"]
+        if sys.platform == "darwin"
+        else ["libaegis_kernel.so", "libaegis_kernel.dylib"]
+    )
+
+    candidates: list[Path] = []
+    if explicit_path:
+        candidates.append(Path(explicit_path))
+    for base in (repo_root / "build", cwd / "build"):
+        for name in lib_names:
+            p = base / name
+            if p not in candidates:
+                candidates.append(p)
+
+    for cand in candidates:
+        if cand.is_file():
+            try:
+                lib = ctypes.CDLL(str(cand.resolve()))
+                if hasattr(lib, "aegis_nmpc_cbf_solve"):
+                    lib.aegis_nmpc_cbf_solve.argtypes = [
+                        ctypes.POINTER(ctypes.c_double),
+                        ctypes.POINTER(ctypes.c_double),
+                        ctypes.POINTER(ctypes.c_double),
+                        ctypes.POINTER(ctypes.c_double),
+                        ctypes.POINTER(ctypes.c_double),
+                        ctypes.POINTER(ctypes.c_double),
+                        ctypes.POINTER(_AegisNmpcObstacle),
+                        ctypes.c_int,
+                        ctypes.POINTER(_AegisNmpcCorridorPlane),
+                        ctypes.c_int,
+                    ]
+                    lib.aegis_nmpc_cbf_solve.restype = _AegisNmpcResult
+                    _NMPC_CPP_LIB = lib
+                    return lib
+            except Exception:
+                continue
+    return None
 
 
 @dataclass
@@ -49,6 +140,8 @@ class NmpcCbfConfig:
     max_solver_iters: int = 40
     solver_tolerance: float = 1e-4
     max_solve_time_ms: float = 18.0  # Max compute budget per step
+    use_cpp_kernel: bool = True      # Enable C++20 RTI-SQP Microkernel (<1.0 ms)
+    kernel_lib_path: str | None = None
 
 
 @dataclass
@@ -106,6 +199,7 @@ class NmpcCbfController:
             min_thrust_per_motor=self.cfg.min_thrust_total / 4.0,
         )
         self._fallback_hocbf = UnderactuatedCBF6DOF(quad_cfg)
+        self._cpp_kernel = _load_cpp_nmpc_kernel(self.cfg.kernel_lib_path) if self.cfg.use_cpp_kernel else None
 
     def _build_propagation_matrices(self) -> None:
         """
@@ -184,9 +278,11 @@ class NmpcCbfController:
         target_vel: np.ndarray | None = None,
         obstacles: list[Obstacle3D] | None = None,
         obstacles_vel: list[np.ndarray] | None = None,
+        corridor_planes: list[tuple[np.ndarray, float]] | None = None,
     ) -> NmpcOptimizationResult:
         """
         Executes NMPC-CBF receding horizon optimization.
+        Uses C++20 RTI-SQP kernel if available (< 0.5 ms), else pure Python SLSQP fallback.
         Returns NmpcOptimizationResult containing optimal force F_0 to apply.
         """
         start_time = time.perf_counter()
@@ -199,6 +295,79 @@ class NmpcCbfController:
         dt = self.dt
         m = self.m
         g = self.g
+
+        # Fast path: High-Performance C++20 RTI-SQP NMPC Engine
+        if self._cpp_kernel is not None and self.cfg.use_cpp_kernel and self.N == 15:
+            n_obs = len(obstacles)
+            obs_array = (_AegisNmpcObstacle * n_obs)()
+            for i, obs in enumerate(obstacles):
+                obs_v = obstacles_vel[i] if obstacles_vel and i < len(obstacles_vel) else np.zeros(3)
+                obs_array[i].cx = float(obs.center[0])
+                obs_array[i].cy = float(obs.center[1])
+                obs_array[i].cz = float(obs.center[2])
+                obs_array[i].radius = float(obs.radius)
+                obs_array[i].vx = float(obs_v[0])
+                obs_array[i].vy = float(obs_v[1])
+                obs_array[i].vz = float(obs_v[2])
+
+            n_planes = len(corridor_planes) if corridor_planes else 0
+            plane_array = (_AegisNmpcCorridorPlane * n_planes)()
+            if corridor_planes:
+                for i, (n_vec, d_val) in enumerate(corridor_planes):
+                    plane_array[i].nx = float(n_vec[0])
+                    plane_array[i].ny = float(n_vec[1])
+                    plane_array[i].nz = float(n_vec[2])
+                    plane_array[i].d = float(d_val)
+
+            c_pos = (ctypes.c_double * 3)(*current_pos.astype(np.float64))
+            c_vel = (ctypes.c_double * 3)(*current_vel.astype(np.float64))
+            c_tpos = (ctypes.c_double * 3)(*target_pos.astype(np.float64))
+            c_tvel = (ctypes.c_double * 3)(*target_vel.astype(np.float64))
+            c_last_f = (ctypes.c_double * 3)(*self._last_applied_force.astype(np.float64))
+            c_warm = (ctypes.c_double * 45)(*self._u_warm.astype(np.float64))
+
+            res = self._cpp_kernel.aegis_nmpc_cbf_solve(
+                c_pos,
+                c_vel,
+                c_tpos,
+                c_tvel,
+                c_last_f,
+                c_warm,
+                obs_array,
+                n_obs,
+                plane_array,
+                n_planes,
+            )
+
+            solve_time = res.solve_time_us / 1000.0  # in ms
+            f_applied = np.array([res.f0_x, res.f0_y, res.f0_z], dtype=np.float64)
+            self._last_applied_force = f_applied.copy()
+
+            traj_p = np.zeros((self.N + 1, 3), dtype=np.float64)
+            traj_v = np.zeros((self.N + 1, 3), dtype=np.float64)
+            traj_f = np.zeros((self.N, 3), dtype=np.float64)
+            for k in range(self.N + 1):
+                traj_p[k] = [res.traj_p[k][0], res.traj_p[k][1], res.traj_p[k][2]]
+                traj_v[k] = [res.traj_v[k][0], res.traj_v[k][1], res.traj_v[k][2]]
+                if k < self.N:
+                    traj_f[k] = [res.traj_f[k][0], res.traj_f[k][1], res.traj_f[k][2]]
+
+            self._u_warm = np.concatenate([traj_f[1:].flatten(), self.hover_force])
+
+            return NmpcOptimizationResult(
+                optimal_force_world=f_applied,
+                planned_trajectory=PlannedHorizonTrajectory(
+                    positions=traj_p,
+                    velocities=traj_v,
+                    forces=traj_f,
+                    times=np.linspace(0.0, self.N * dt, self.N + 1),
+                ),
+                solver_success=bool(res.success),
+                solver_iterations=int(res.iterations),
+                solve_time_ms=solve_time,
+                min_barrier_margin=float(res.min_barrier_margin),
+                fallback_activated=bool(res.fallback_activated),
+            )
 
         # 1. Compute Free Response (Zero-Force ballistic trajectory)
         P_free = np.zeros(3 * N, dtype=np.float64)

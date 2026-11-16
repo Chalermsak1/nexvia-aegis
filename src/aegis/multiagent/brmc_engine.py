@@ -86,13 +86,18 @@ class ByzantineResilientMartingaleConsensus:
                 weights={m.agent_id: 0.0 for m in messages},
             )
 
-        # 1. Trimmed Martingale Aggregation (Ville Supermartingale Invariant)
+        # 1. Byzantine-Resilient Order-Statistic e-Merging (Vovk–Wang Invariant)
         # Sort active agent wealths
         sorted_by_wealth = sorted(active_msgs, key=lambda m: m.martingale_wealth)
         f = self.max_byzantine_faults
-        # Drop the f smallest and f largest wealths to neutralize both masking and denial-of-service Byzantine wealths
+        # Drop the f smallest and f largest wealths to neutralize both masking and DoS attacks
         trimmed_wealth_msgs = sorted_by_wealth[f : n_active - f]
-        consensus_wealth = float(np.mean([m.martingale_wealth for m in trimmed_wealth_msgs]))
+        raw_trimmed_mean = float(np.mean([m.martingale_wealth for m in trimmed_wealth_msgs]))
+
+        # Theoretical Vovk-Wang scaling multiplier: c_VW = (n_active - f) / (n_active - 2f)
+        # Strictly preserves Ville's maximal inequality: P_H0(exists t: M_t^swarm >= 1/alpha) <= alpha
+        scaling_multiplier = float(n_active - f) / max(1.0, float(n_active - 2 * f))
+        consensus_wealth = raw_trimmed_mean * scaling_multiplier
 
         # Swarm alarm triggered if resilient wealth crosses Ville bound
         swarm_alarm = consensus_wealth >= self.wealth_threshold
@@ -107,17 +112,34 @@ class ByzantineResilientMartingaleConsensus:
             trimmed_slice = sorted_coords[f : n_active - f]
             coord_center[d] = float(np.mean(trimmed_slice)) if len(trimmed_slice) > 0 else float(np.median(sorted_coords))
 
-        # 3. Byzantine Quarantine Screening with Consecutive Breach Counter
-        # An agent is flagged for quarantine if its spatial discrepancy from the coordinate trimmed center
-        # exceeds byzantine_isolation_threshold * sigma for 3 consecutive steps, or exhibits an extreme wealth breach.
+        # Robust Median Estimator of Swarm Measurement Uncertainty
+        all_sigmas = np.array([max(1e-4, float(m.sigma)) for m in active_msgs], dtype=np.float64)
+        median_sigma = float(np.median(all_sigmas))
+        min_allowed_sigma = max(0.015, 0.35 * median_sigma)
+
+        # 3. Byzantine Quarantine Screening with Anti-Sigma-Spoofing
+        # An agent is flagged for quarantine if:
+        # a) It attempts a Variance/Sigma-Spoofing attack (reporting tiny sigma while spatially deviant) -> Instant Isolation
+        # b) Its spatial discrepancy exceeds byzantine_isolation_threshold * sigma for 3 consecutive steps
+        # c) It exhibits an extreme martingale wealth breach
         newly_quarantined = []
         for m in active_msgs:
             dev = float(np.linalg.norm(m.pos_estimate - coord_center))
-            normalized_dev = dev / max(m.sigma, 1e-4)
+            sigma_eff = max(m.sigma, min_allowed_sigma)
+            normalized_dev = dev / sigma_eff
             is_spatial_breach = normalized_dev > self.byzantine_isolation_threshold
             is_wealth_breach = m.martingale_wealth >= self.wealth_threshold
 
-            if is_spatial_breach or (is_wealth_breach and normalized_dev > 2.0):
+            # Immediate variance/sigma-spoofing defense:
+            # If an attacker sends an infinitesimal sigma (< 0.25 * median_sigma) while deviating from trimmed center
+            is_sigma_spoofing = (m.sigma < 0.25 * median_sigma) and (dev > 2.0 * min_allowed_sigma)
+
+            if is_sigma_spoofing:
+                # Instant isolation on variance-spoofing attack without waiting 3 steps
+                self.breach_counts[m.agent_id] = 3
+                self.quarantine_registry.add(m.agent_id)
+                newly_quarantined.append(m.agent_id)
+            elif is_spatial_breach or (is_wealth_breach and normalized_dev > 2.0):
                 self.breach_counts[m.agent_id] = self.breach_counts.get(m.agent_id, 0) + 1
                 if self.breach_counts[m.agent_id] >= 3:
                     self.quarantine_registry.add(m.agent_id)
@@ -125,15 +147,30 @@ class ByzantineResilientMartingaleConsensus:
             else:
                 self.breach_counts[m.agent_id] = max(0, self.breach_counts.get(m.agent_id, 0) - 1)
 
-        # 4. Inverse-Variance Weighting over Remaining Un-quarantined Agents
+        # 4. Anti-Sigma-Spoofing Weighted Fusion over Remaining Un-quarantined Agents
         final_valid_msgs = [m for m in active_msgs if m.agent_id not in self.quarantine_registry]
         if not final_valid_msgs:
             final_pos = coord_center
             weights = {m.agent_id: 0.0 for m in messages}
         else:
-            w_raw = [1.0 / (m.sigma**2) for m in final_valid_msgs]
+            w_raw = [1.0 / (max(m.sigma, min_allowed_sigma)**2) for m in final_valid_msgs]
             w_sum = sum(w_raw)
-            weights = {m.agent_id: w / w_sum for m, w in zip(final_valid_msgs, w_raw)}
+            raw_weights = {m.agent_id: w / w_sum for m, w in zip(final_valid_msgs, w_raw)}
+
+            # Bound maximum individual peer influence to prevent consensus hijacking
+            max_influence = 1.0 / max(1.0, float(len(final_valid_msgs) - f))
+            weights = {}
+            for m in messages:
+                if m.agent_id in raw_weights:
+                    weights[m.agent_id] = min(raw_weights[m.agent_id], max_influence)
+                else:
+                    weights[m.agent_id] = 0.0
+
+            w_tot = sum(weights.values())
+            if w_tot > 1e-12:
+                for aid in weights:
+                    weights[aid] /= w_tot
+
             final_pos = sum(m.pos_estimate * weights[m.agent_id] for m in final_valid_msgs)
 
         return SwarmConsensusState(

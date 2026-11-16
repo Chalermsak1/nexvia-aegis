@@ -11,6 +11,7 @@ from aegis.v9.anchor_range_gate import (
 )
 from aegis.v9.controller import AegisV9Controller, AegisV9Telemetry
 from aegis.v9.controller_3d import Aegis3DAwareController
+from aegis.v9.estimated_state_candidate import EstimatedStateCandidate
 from aegis.v9.cusum_monitor import (
     CusumChannelSpec,
     CusumStepResult,
@@ -55,6 +56,15 @@ from aegis.v9.ville_monitor import (
     VilleChannelSpec,
     VilleStepResult,
 )
+from aegis.v9.robust_tube_clbf import (
+    DwellPhase,
+    MicroActiveSetQPSolver,
+    MicroQPSolution,
+    RobustTubeCLBFConfig,
+    RobustTubeCLBFController,
+    TerminalPhysicalStillnessMonitor,
+    TubeUncertaintyState,
+)
 
 __all__ = [
     "Aegis3DAwareController",
@@ -68,14 +78,22 @@ __all__ = [
     "CusumStepResult",
     "DecoupledEpisodeRNG",
     "DisjointPerSensorCalibrator",
+    "DwellPhase",
+    "EstimatedStateCandidate",
     "FixedSequenceLTTResult",
+    "MicroActiveSetQPSolver",
+    "MicroQPSolution",
     "MultiChannelCusumMonitor",
     "MultiChannelVilleMonitor",
     "PREREGISTERED_CANDIDATE_FAMILY",
     "PerSensorCalibrationState",
     "PolicyEvaluationSummary",
+    "RobustTubeCLBFConfig",
+    "RobustTubeCLBFController",
     "SensorCalStatus",
     "SymmetricAnchorRangeGate",
+    "TerminalPhysicalStillnessMonitor",
+    "TubeUncertaintyState",
     "V9CandidateParams",
     "V9HierarchicalManifestGenerator",
     "V9ScenarioSpec",

@@ -231,3 +231,42 @@ def test_swarm_6dof_formation_flight_and_tilt():
     assert st["inter_agent_collisions"] == 0
     assert min_inter_dist >= (2.0 * cfg.robot_collision_radius - 0.02)
 
+
+def test_swarm_6dof_downwash_wake_integration():
+    """
+    Verifies 6-DOF swarm integration with downwash wake physics and Wake-Aware HOCBF:
+    - Drone 0 hovers at z=1.5m producing ~11.8 N of thrust.
+    - Drone 1 attempts to fly underneath Drone 0 at z=0.7m.
+    - Wake model calculates non-zero wake severity and downward disturbance on Drone 1.
+    - Wake-Aware HOCBF activates and enforces lateral standoff to avoid downwash column.
+    """
+    cfg = Swarm6DOFConfig(
+        num_robots=2,
+        mass=1.2,
+        enable_downwash_wake=True,
+    )
+    env = AegisMuJoCoSwarm6DOFEnvironment(cfg)
+    env.reset()
+
+    # Position Drone 0 at (0.0, 0.0, 1.5) and Drone 1 at (0.0, 0.05, 0.7)
+    env.data.qpos[0:3] = np.array([0.0, 0.0, 1.5])
+    env.data.qpos[7:10] = np.array([0.0, 0.05, 0.7])
+    mujoco.mj_forward(env.model, env.data)
+
+    hover_f = np.array([0.0, 0.0, cfg.mass * cfg.gravity])
+    # Drone 1 commanded to climb upward directly into Drone 0
+    climb_f = np.array([0.0, 0.0, cfg.mass * cfg.gravity + 4.0])
+
+    commands = [hover_f, climb_f]
+    st, barriers_active = env.step_outer(commands, shield_with_cbf=True)
+
+    # Verify wake metrics
+    assert st["wake_severities"] is not None
+    assert len(st["wake_severities"]) == 2
+    # Drone 1 sits in Drone 0's wake cone
+    assert st["wake_severities"][1] > 0.05, f"Expected wake disturbance, got {st['wake_severities'][1]}"
+    # Barriers must activate to protect follower from entering downwash cone
+    assert barriers_active[1] is True
+    # Zero collisions
+    assert st["inter_agent_collisions"] == 0
+

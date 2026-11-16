@@ -1,0 +1,22 @@
+{
+  "aegis_cooperative": {
+    "throughput_pct": 75.0,
+    "cleared_count": 3,
+    "total_honest": 4,
+    "collisions_count": 0,
+    "min_distance_m": 0.5499999991466451,
+    "cleared_steps": {
+      "0": 84,
+      "1": 245,
+      "4": 384
+    }
+  },
+  "naive_cbf": {
+    "throughput_pct": 75.0,
+    "cleared_count": 3,
+    "total_honest": 4,
+    "collisions_count": 0,
+    "min_distance_m": 0.549999991894837,
+    "deadlock": false
+  }
+}

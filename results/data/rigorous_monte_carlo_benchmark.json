@@ -1,0 +1,95 @@
+{
+  "uncompensated_cbf": {
+    "num_episodes": 100,
+    "collisions": 0,
+    "collision_rate": 0.0,
+    "collision_95ci": [
+      0.0,
+      0.03621669264517641
+    ],
+    "barrier_violations": 45,
+    "barrier_violation_rate": 0.45,
+    "barrier_violation_95ci": [
+      0.350320229239672,
+      0.552719811226064
+    ],
+    "stalls": 0,
+    "stall_rate": 0.0,
+    "min_clearance_mean": 0.2212430248343024,
+    "min_clearance_std": 0.011351255894483294,
+    "min_clearance_min": 0.19132506433991142,
+    "min_h_mean": 0.001243024834302347,
+    "min_h_std": 0.011351255894483294,
+    "min_h_min": -0.02867493566008858,
+    "ville_false_alarms": 0,
+    "ville_fa_rate": 0.0,
+    "ville_delay_mean_ms": 340.5505058917811,
+    "ville_delay_std_ms": 73.22306892318265,
+    "chi2_false_alarms": 0,
+    "chi2_fa_rate": 0.0,
+    "chi2_delay_mean_ms": 201.4505058917811,
+    "chi2_delay_std_ms": 56.18428206901912
+  },
+  "robust_tube_cbf": {
+    "num_episodes": 100,
+    "collisions": 5,
+    "collision_rate": 0.05,
+    "collision_95ci": [
+      0.016431879182052158,
+      0.11283491110546275
+    ],
+    "barrier_violations": 9,
+    "barrier_violation_rate": 0.09,
+    "barrier_violation_95ci": [
+      0.04198359562839225,
+      0.1639822550296352
+    ],
+    "stalls": 42,
+    "stall_rate": 0.42,
+    "min_clearance_mean": 0.31773945059918973,
+    "min_clearance_std": 0.06883153623202243,
+    "min_clearance_min": 0.09701637883345882,
+    "min_h_mean": 0.0977394505991897,
+    "min_h_std": 0.06883153623202243,
+    "min_h_min": -0.12298362116654118,
+    "ville_false_alarms": 0,
+    "ville_fa_rate": 0.0,
+    "ville_delay_mean_ms": 337.15050589178105,
+    "ville_delay_std_ms": 71.47605163274453,
+    "chi2_false_alarms": 0,
+    "chi2_fa_rate": 0.0,
+    "chi2_delay_mean_ms": 199.1505058917811,
+    "chi2_delay_std_ms": 55.0465804723438
+  },
+  "aegis_self_auditing": {
+    "num_episodes": 100,
+    "collisions": 0,
+    "collision_rate": 0.0,
+    "collision_95ci": [
+      0.0,
+      0.03621669264517641
+    ],
+    "barrier_violations": 0,
+    "barrier_violation_rate": 0.0,
+    "barrier_violation_95ci": [
+      0.0,
+      0.03621669264517641
+    ],
+    "stalls": 0,
+    "stall_rate": 0.0,
+    "min_clearance_mean": 0.28408679471674675,
+    "min_clearance_std": 0.009128290283751695,
+    "min_clearance_min": 0.2581151103070971,
+    "min_h_mean": 0.06408679471674672,
+    "min_h_std": 0.009128290283751695,
+    "min_h_min": 0.038115110307097105,
+    "ville_false_alarms": 0,
+    "ville_fa_rate": 0.0,
+    "ville_delay_mean_ms": 338.45050589178106,
+    "ville_delay_std_ms": 71.36299965766804,
+    "chi2_false_alarms": 0,
+    "chi2_fa_rate": 0.0,
+    "chi2_delay_mean_ms": 199.8505058917811,
+    "chi2_delay_std_ms": 55.443854743052036
+  }
+}

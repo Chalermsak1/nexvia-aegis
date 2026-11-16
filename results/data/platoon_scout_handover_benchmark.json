@@ -1,0 +1,536 @@
+{
+  "milestone": "V9-M12",
+  "phase": 12,
+  "title": "Multi-Vehicle Collaborative Platooning & Dual Aerial Scout Handover Benchmark",
+  "summary": {
+    "BLIND": {
+      "obstacle_collision_rate_pct": 0.0,
+      "inter_vehicle_collision_rate_pct": 0.0,
+      "average_stopping_margin_m": 76.12384218695134,
+      "average_min_platoon_gap_m": 11.313473190980702,
+      "string_stability_amplification": 1.8871206621391317,
+      "lookahead_preview_continuity_pct": 0.0,
+      "min_inter_drone_separation_m": 10.0
+    },
+    "SINGLE_SCOUT": {
+      "obstacle_collision_rate_pct": 0.0,
+      "inter_vehicle_collision_rate_pct": 0.0,
+      "average_stopping_margin_m": 76.12384218695134,
+      "average_min_platoon_gap_m": 7.93779189979347,
+      "string_stability_amplification": 1.0,
+      "lookahead_preview_continuity_pct": 0.0,
+      "min_inter_drone_separation_m": 10.0
+    },
+    "AEGIS_DUAL_SCOUT": {
+      "obstacle_collision_rate_pct": 0.0,
+      "inter_vehicle_collision_rate_pct": 0.0,
+      "average_stopping_margin_m": 87.05352661438721,
+      "average_min_platoon_gap_m": 6.931061199343358,
+      "string_stability_amplification": 1.0,
+      "lookahead_preview_continuity_pct": 90.21999999999998,
+      "min_inter_drone_separation_m": 5.977539747633628
+    },
+    "SCENARIO_B_NAIVE_V2V": {
+      "inter_vehicle_collision_rate_pct": 0.0,
+      "average_min_platoon_gap_m": 17.35420288378913
+    },
+    "SCENARIO_B_AEGIS_VILLE": {
+      "inter_vehicle_collision_rate_pct": 0.0,
+      "average_min_platoon_gap_m": 17.456891467431745
+    }
+  },
+  "episodes_scenario_a": {
+    "BLIND": [
+      {
+        "architecture": "BLIND",
+        "seed": 42,
+        "inter_collision": false,
+        "obstacle_collision": false,
+        "min_gap": 11.279506639843522,
+        "final_lead_s": 243.29038421245852,
+        "stopping_margin": 76.70961578754148,
+        "peak_string_amp": 1.8067783123339125,
+        "preview_fraction": 0.0,
+        "min_drone_separation": 10.0
+      },
+      {
+        "architecture": "BLIND",
+        "seed": 43,
+        "inter_collision": false,
+        "obstacle_collision": false,
+        "min_gap": 11.42167620429517,
+        "final_lead_s": 244.44238957613697,
+        "stopping_margin": 75.55761042386303,
+        "peak_string_amp": 1.8220962035036679,
+        "preview_fraction": 0.0,
+        "min_drone_separation": 10.0
+      },
+      {
+        "architecture": "BLIND",
+        "seed": 44,
+        "inter_collision": false,
+        "obstacle_collision": false,
+        "min_gap": 11.246438257573903,
+        "final_lead_s": 245.89544305604724,
+        "stopping_margin": 74.10455694395276,
+        "peak_string_amp": 1.559431186519861,
+        "preview_fraction": 0.0,
+        "min_drone_separation": 10.0
+      },
+      {
+        "architecture": "BLIND",
+        "seed": 45,
+        "inter_collision": false,
+        "obstacle_collision": false,
+        "min_gap": 11.296363323994076,
+        "final_lead_s": 243.53675013747048,
+        "stopping_margin": 76.46324986252952,
+        "peak_string_amp": 2.020973025027451,
+        "preview_fraction": 0.0,
+        "min_drone_separation": 10.0
+      },
+      {
+        "architecture": "BLIND",
+        "seed": 46,
+        "inter_collision": false,
+        "obstacle_collision": false,
+        "min_gap": 11.446616466190353,
+        "final_lead_s": 244.2176957259868,
+        "stopping_margin": 75.7823042740132,
+        "peak_string_amp": 2.03522685159142,
+        "preview_fraction": 0.0,
+        "min_drone_separation": 10.0
+      },
+      {
+        "architecture": "BLIND",
+        "seed": 47,
+        "inter_collision": false,
+        "obstacle_collision": false,
+        "min_gap": 11.298821446059822,
+        "final_lead_s": 243.4269056476227,
+        "stopping_margin": 76.5730943523773,
+        "peak_string_amp": 2.0886979054680808,
+        "preview_fraction": 0.0,
+        "min_drone_separation": 10.0
+      },
+      {
+        "architecture": "BLIND",
+        "seed": 48,
+        "inter_collision": false,
+        "obstacle_collision": false,
+        "min_gap": 11.284576299315649,
+        "final_lead_s": 243.49636117113198,
+        "stopping_margin": 76.50363882886802,
+        "peak_string_amp": 1.9748480267672792,
+        "preview_fraction": 0.0,
+        "min_drone_separation": 10.0
+      },
+      {
+        "architecture": "BLIND",
+        "seed": 49,
+        "inter_collision": false,
+        "obstacle_collision": false,
+        "min_gap": 11.273840524795038,
+        "final_lead_s": 243.37675463223644,
+        "stopping_margin": 76.62324536776356,
+        "peak_string_amp": 1.7423783081575006,
+        "preview_fraction": 0.0,
+        "min_drone_separation": 10.0
+      },
+      {
+        "architecture": "BLIND",
+        "seed": 50,
+        "inter_collision": false,
+        "obstacle_collision": false,
+        "min_gap": 11.292657258530614,
+        "final_lead_s": 243.74571430833748,
+        "stopping_margin": 76.25428569166252,
+        "peak_string_amp": 1.762283743832534,
+        "preview_fraction": 0.0,
+        "min_drone_separation": 10.0
+      },
+      {
+        "architecture": "BLIND",
+        "seed": 51,
+        "inter_collision": false,
+        "obstacle_collision": false,
+        "min_gap": 11.294235489208877,
+        "final_lead_s": 243.33317966305796,
+        "stopping_margin": 76.66682033694204,
+        "peak_string_amp": 2.0584930581896104,
+        "preview_fraction": 0.0,
+        "min_drone_separation": 10.0
+      }
+    ],
+    "SINGLE_SCOUT": [
+      {
+        "architecture": "SINGLE_SCOUT",
+        "seed": 42,
+        "inter_collision": false,
+        "obstacle_collision": false,
+        "min_gap": 7.8263208051709965,
+        "final_lead_s": 243.29038421245852,
+        "stopping_margin": 76.70961578754148,
+        "peak_string_amp": 1.0,
+        "preview_fraction": 0.0,
+        "min_drone_separation": 10.0
+      },
+      {
+        "architecture": "SINGLE_SCOUT",
+        "seed": 43,
+        "inter_collision": false,
+        "obstacle_collision": false,
+        "min_gap": 8.181944923824279,
+        "final_lead_s": 244.44238957613697,
+        "stopping_margin": 75.55761042386303,
+        "peak_string_amp": 0.9999999999999999,
+        "preview_fraction": 0.0,
+        "min_drone_separation": 10.0
+      },
+      {
+        "architecture": "SINGLE_SCOUT",
+        "seed": 44,
+        "inter_collision": false,
+        "obstacle_collision": false,
+        "min_gap": 8.014887618555083,
+        "final_lead_s": 245.89544305604724,
+        "stopping_margin": 74.10455694395276,
+        "peak_string_amp": 0.9999999999999998,
+        "preview_fraction": 0.0,
+        "min_drone_separation": 10.0
+      },
+      {
+        "architecture": "SINGLE_SCOUT",
+        "seed": 45,
+        "inter_collision": false,
+        "obstacle_collision": false,
+        "min_gap": 7.8773473765642334,
+        "final_lead_s": 243.53675013747048,
+        "stopping_margin": 76.46324986252952,
+        "peak_string_amp": 1.0,
+        "preview_fraction": 0.0,
+        "min_drone_separation": 10.0
+      },
+      {
+        "architecture": "SINGLE_SCOUT",
+        "seed": 46,
+        "inter_collision": false,
+        "obstacle_collision": false,
+        "min_gap": 8.126664670989943,
+        "final_lead_s": 244.2176957259868,
+        "stopping_margin": 75.7823042740132,
+        "peak_string_amp": 0.9999999999999999,
+        "preview_fraction": 0.0,
+        "min_drone_separation": 10.0
+      },
+      {
+        "architecture": "SINGLE_SCOUT",
+        "seed": 47,
+        "inter_collision": false,
+        "obstacle_collision": false,
+        "min_gap": 7.844317967972802,
+        "final_lead_s": 243.4269056476227,
+        "stopping_margin": 76.5730943523773,
+        "peak_string_amp": 1.0,
+        "preview_fraction": 0.0,
+        "min_drone_separation": 10.0
+      },
+      {
+        "architecture": "SINGLE_SCOUT",
+        "seed": 48,
+        "inter_collision": false,
+        "obstacle_collision": false,
+        "min_gap": 7.856759204079498,
+        "final_lead_s": 243.49636117113198,
+        "stopping_margin": 76.50363882886802,
+        "peak_string_amp": 1.0000000000000002,
+        "preview_fraction": 0.0,
+        "min_drone_separation": 10.0
+      },
+      {
+        "architecture": "SINGLE_SCOUT",
+        "seed": 49,
+        "inter_collision": false,
+        "obstacle_collision": false,
+        "min_gap": 7.825224614940384,
+        "final_lead_s": 243.37675463223644,
+        "stopping_margin": 76.62324536776356,
+        "peak_string_amp": 1.0000000000000002,
+        "preview_fraction": 0.0,
+        "min_drone_separation": 10.0
+      },
+      {
+        "architecture": "SINGLE_SCOUT",
+        "seed": 50,
+        "inter_collision": false,
+        "obstacle_collision": false,
+        "min_gap": 7.971123958347522,
+        "final_lead_s": 243.74571430833748,
+        "stopping_margin": 76.25428569166252,
+        "peak_string_amp": 0.9999999999999999,
+        "preview_fraction": 0.0,
+        "min_drone_separation": 10.0
+      },
+      {
+        "architecture": "SINGLE_SCOUT",
+        "seed": 51,
+        "inter_collision": false,
+        "obstacle_collision": false,
+        "min_gap": 7.853327857489961,
+        "final_lead_s": 243.33317966305796,
+        "stopping_margin": 76.66682033694204,
+        "peak_string_amp": 0.9999999999999999,
+        "preview_fraction": 0.0,
+        "min_drone_separation": 10.0
+      }
+    ],
+    "AEGIS_DUAL_SCOUT": [
+      {
+        "architecture": "AEGIS_DUAL_SCOUT",
+        "seed": 42,
+        "inter_collision": false,
+        "obstacle_collision": false,
+        "min_gap": 7.004314551580523,
+        "final_lead_s": 230.33101586631744,
+        "stopping_margin": 89.66898413368256,
+        "peak_string_amp": 1.0,
+        "preview_fraction": 0.902,
+        "min_drone_separation": 5.979726941972549
+      },
+      {
+        "architecture": "AEGIS_DUAL_SCOUT",
+        "seed": 43,
+        "inter_collision": false,
+        "obstacle_collision": false,
+        "min_gap": 6.940607308760593,
+        "final_lead_s": 226.8059384600306,
+        "stopping_margin": 93.1940615399694,
+        "peak_string_amp": 0.9999999999999999,
+        "preview_fraction": 0.902,
+        "min_drone_separation": 5.979878337530186
+      },
+      {
+        "architecture": "AEGIS_DUAL_SCOUT",
+        "seed": 44,
+        "inter_collision": false,
+        "obstacle_collision": false,
+        "min_gap": 6.371664539636629,
+        "final_lead_s": 224.24169443697028,
+        "stopping_margin": 95.75830556302972,
+        "peak_string_amp": 0.9999999999999998,
+        "preview_fraction": 0.904,
+        "min_drone_separation": 5.977539747633628
+      },
+      {
+        "architecture": "AEGIS_DUAL_SCOUT",
+        "seed": 45,
+        "inter_collision": false,
+        "obstacle_collision": false,
+        "min_gap": 6.502437958029236,
+        "final_lead_s": 233.0700372366312,
+        "stopping_margin": 86.92996276336879,
+        "peak_string_amp": 1.0,
+        "preview_fraction": 0.902,
+        "min_drone_separation": 5.979712298648516
+      },
+      {
+        "architecture": "AEGIS_DUAL_SCOUT",
+        "seed": 46,
+        "inter_collision": false,
+        "obstacle_collision": false,
+        "min_gap": 7.5031363968295635,
+        "final_lead_s": 262.6529716834056,
+        "stopping_margin": 57.34702831659439,
+        "peak_string_amp": 0.9999999999999999,
+        "preview_fraction": 0.902,
+        "min_drone_separation": 5.979673172506608
+      },
+      {
+        "architecture": "AEGIS_DUAL_SCOUT",
+        "seed": 47,
+        "inter_collision": false,
+        "obstacle_collision": false,
+        "min_gap": 6.638475294470157,
+        "final_lead_s": 231.79511988659718,
+        "stopping_margin": 88.20488011340282,
+        "peak_string_amp": 1.0,
+        "preview_fraction": 0.902,
+        "min_drone_separation": 5.979329588316608
+      },
+      {
+        "architecture": "AEGIS_DUAL_SCOUT",
+        "seed": 48,
+        "inter_collision": false,
+        "obstacle_collision": false,
+        "min_gap": 7.091220636198318,
+        "final_lead_s": 230.66274228172233,
+        "stopping_margin": 89.33725771827767,
+        "peak_string_amp": 1.0000000000000002,
+        "preview_fraction": 0.902,
+        "min_drone_separation": 5.979681172147931
+      },
+      {
+        "architecture": "AEGIS_DUAL_SCOUT",
+        "seed": 49,
+        "inter_collision": false,
+        "obstacle_collision": false,
+        "min_gap": 7.055186278517243,
+        "final_lead_s": 230.46306826698154,
+        "stopping_margin": 89.53693173301846,
+        "peak_string_amp": 1.0000000000000002,
+        "preview_fraction": 0.902,
+        "min_drone_separation": 5.979771911756571
+      },
+      {
+        "architecture": "AEGIS_DUAL_SCOUT",
+        "seed": 50,
+        "inter_collision": false,
+        "obstacle_collision": false,
+        "min_gap": 7.117456533364549,
+        "final_lead_s": 228.78681751303907,
+        "stopping_margin": 91.21318248696093,
+        "peak_string_amp": 0.9999999999999999,
+        "preview_fraction": 0.902,
+        "min_drone_separation": 5.979738338500504
+      },
+      {
+        "architecture": "AEGIS_DUAL_SCOUT",
+        "seed": 51,
+        "inter_collision": false,
+        "obstacle_collision": false,
+        "min_gap": 7.086112496046769,
+        "final_lead_s": 230.65532822443265,
+        "stopping_margin": 89.34467177556735,
+        "peak_string_amp": 0.9999999999999999,
+        "preview_fraction": 0.902,
+        "min_drone_separation": 5.979649835381258
+      }
+    ]
+  },
+  "episodes_scenario_b": {
+    "NAIVE_V2V": [
+      {
+        "architecture": "NAIVE_V2V",
+        "seed": 42,
+        "inter_collision": false,
+        "min_gap": 17.370583245392357
+      },
+      {
+        "architecture": "NAIVE_V2V",
+        "seed": 43,
+        "inter_collision": false,
+        "min_gap": 17.362739670980222
+      },
+      {
+        "architecture": "NAIVE_V2V",
+        "seed": 44,
+        "inter_collision": false,
+        "min_gap": 17.439075808397238
+      },
+      {
+        "architecture": "NAIVE_V2V",
+        "seed": 45,
+        "inter_collision": false,
+        "min_gap": 17.32135305107403
+      },
+      {
+        "architecture": "NAIVE_V2V",
+        "seed": 46,
+        "inter_collision": false,
+        "min_gap": 17.319819565386883
+      },
+      {
+        "architecture": "NAIVE_V2V",
+        "seed": 47,
+        "inter_collision": false,
+        "min_gap": 17.31269010648173
+      },
+      {
+        "architecture": "NAIVE_V2V",
+        "seed": 48,
+        "inter_collision": false,
+        "min_gap": 17.331380861298133
+      },
+      {
+        "architecture": "NAIVE_V2V",
+        "seed": 49,
+        "inter_collision": false,
+        "min_gap": 17.384116294136565
+      },
+      {
+        "architecture": "NAIVE_V2V",
+        "seed": 50,
+        "inter_collision": false,
+        "min_gap": 17.382000899745808
+      },
+      {
+        "architecture": "NAIVE_V2V",
+        "seed": 51,
+        "inter_collision": false,
+        "min_gap": 17.31826933499835
+      }
+    ],
+    "AEGIS_VILLE": [
+      {
+        "architecture": "AEGIS_VILLE",
+        "seed": 42,
+        "inter_collision": false,
+        "min_gap": 17.475543968845233
+      },
+      {
+        "architecture": "AEGIS_VILLE",
+        "seed": 43,
+        "inter_collision": false,
+        "min_gap": 17.44279455576923
+      },
+      {
+        "architecture": "AEGIS_VILLE",
+        "seed": 44,
+        "inter_collision": false,
+        "min_gap": 17.504982703452686
+      },
+      {
+        "architecture": "AEGIS_VILLE",
+        "seed": 45,
+        "inter_collision": false,
+        "min_gap": 17.431453296932222
+      },
+      {
+        "architecture": "AEGIS_VILLE",
+        "seed": 46,
+        "inter_collision": false,
+        "min_gap": 17.434788309753305
+      },
+      {
+        "architecture": "AEGIS_VILLE",
+        "seed": 47,
+        "inter_collision": false,
+        "min_gap": 17.446451326216295
+      },
+      {
+        "architecture": "AEGIS_VILLE",
+        "seed": 48,
+        "inter_collision": false,
+        "min_gap": 17.44723726700737
+      },
+      {
+        "architecture": "AEGIS_VILLE",
+        "seed": 49,
+        "inter_collision": false,
+        "min_gap": 17.463908169880927
+      },
+      {
+        "architecture": "AEGIS_VILLE",
+        "seed": 50,
+        "inter_collision": false,
+        "min_gap": 17.47308118164499
+      },
+      {
+        "architecture": "AEGIS_VILLE",
+        "seed": 51,
+        "inter_collision": false,
+        "min_gap": 17.448673894815176
+      }
+    ]
+  }
+}

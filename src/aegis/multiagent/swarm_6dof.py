@@ -23,6 +23,11 @@ import mujoco
 import numpy as np
 
 from aegis.env.deep_aerodynamics import DeepAerodynamicsConfig, DeepAerodynamicsEngine
+from aegis.env.downwash_wake_model import (
+    DownwashWakeConfig,
+    DownwashWakeModel,
+    WakeAwareHOCBF,
+)
 from aegis.env.mujoco_3d_cbf import Obstacle3D
 from aegis.env.quadrotor_6dof import (
     QuadrotorConfig,
@@ -66,6 +71,9 @@ class Swarm6DOFConfig:
     # Deep Aerodynamics & Electromechanics
     enable_deep_aerodynamics: bool = False
     deep_aero_config: DeepAerodynamicsConfig | None = None
+    # Downwash Wake & Wake-Aware CBF
+    enable_downwash_wake: bool = False
+    downwash_config: DownwashWakeConfig | None = None
 
 
 class ReciprocalUnderactuatedCBF6DOF:
@@ -81,6 +89,22 @@ class ReciprocalUnderactuatedCBF6DOF:
         self.cfg = cfg
         self.gamma1 = cfg.cbf_gamma
         self.gamma2 = cfg.cbf_gamma
+        self.wake_cbf = (
+            WakeAwareHOCBF(
+                r_safe=2.0 * cfg.robot_collision_radius + cfg.inter_agent_margin,
+                kappa_wake=(
+                    cfg.downwash_config.wake_cbf_kappa
+                    if cfg.downwash_config is not None
+                    else 2.5
+                ),
+                gamma1=cfg.cbf_gamma,
+                gamma2=cfg.cbf_gamma,
+                mass_kg=cfg.mass,
+                gravity=cfg.gravity,
+            )
+            if cfg.enable_downwash_wake
+            else None
+        )
 
     def filter_swarm_forces(
         self,
@@ -89,6 +113,7 @@ class ReciprocalUnderactuatedCBF6DOF:
         desired_forces: list[np.ndarray],
         obstacles: list[Obstacle3D],
         quarantined_mask: list[bool] | None = None,
+        responsibility_weights: list[float] | None = None,
     ) -> tuple[list[np.ndarray], list[bool]]:
         """
         Solves active-set projection for all quadrotors in the swarm.
@@ -152,7 +177,7 @@ class ReciprocalUnderactuatedCBF6DOF:
                 a_neg[axis] = -1.0 / m
                 constraints.append((a_neg, (alpha1 + alpha2) * vel_i[axis] + alpha1 * alpha2 * h_neg))
 
-            # 3. Reciprocal Inter-Agent Barriers between quadrotor i and quadrotor j
+            # 3. Decentralized Responsibility-Shared Pairwise Tube-CBF between quadrotor i and j
             for j in range(n):
                 if i == j:
                     continue
@@ -160,15 +185,41 @@ class ReciprocalUnderactuatedCBF6DOF:
                 vel_j = velocities[j]
                 p_ij = pos_i - pos_j
                 v_ij = vel_i - vel_j
-                r_mutual = 2.0 * r_quad + margin_agent
+
+                # Tube-CBF tracking uncertainty buffer: kappa_delta * sigma_pair
+                sigma_pair = 0.05  # Position estimation covariance bound
+                kappa_delta = 1.8  # Tube multiplier
+                tube_buffer = kappa_delta * sigma_pair
+
+                r_mutual = 2.0 * r_quad + margin_agent + tube_buffer
                 h_ij = float(np.sum(p_ij**2) - r_mutual**2)
                 h_dot_ij = 2.0 * float(np.dot(p_ij, v_ij))
 
-                # Reciprocal sharing: quadrotor i assumes half responsibility
-                # a_ij^T F_i <= b_ij
-                a_ij = -2.0 * p_ij / m
-                b_ij = float(np.sum(v_ij**2)) + (alpha1 + alpha2) * h_dot_ij + alpha1 * alpha2 * h_ij
-                constraints.append((a_ij, b_ij))
+                # Asymmetric Responsibility Allocation:
+                # If priority weights provided, use explicit token arbitration.
+                # If agent i has right-of-way (mu_ij <= 0.0), agent i yields 0% (no constraint on agent i w.r.t peer j).
+                # Peer j (with mu_ji == 1.0) assumes 100% yielding responsibility.
+                is_j_quarantined = quarantined_mask[j] if (quarantined_mask and j < len(quarantined_mask)) else False
+                if responsibility_weights is not None and i < len(responsibility_weights):
+                    mu_ij = float(responsibility_weights[i])
+                elif is_j_quarantined:
+                    mu_ij = 1.0
+                else:
+                    mu_ij = 0.5
+
+                if mu_ij <= 0.0:
+                    continue  # Full right-of-way: yielding peer bears 100% responsibility
+
+                # a_ij^T F_i <= mu_ij * b_ij
+                if self.cfg.enable_downwash_wake and (pos_i[2] < pos_j[2]) and self.wake_cbf is not None:
+                    a_ij, b_raw, _ = self.wake_cbf.compute_barrier_constraint(
+                        pos_i=pos_i, vel_i=vel_i, pos_j=pos_j, vel_j=vel_j
+                    )
+                    b_ij = b_raw
+                else:
+                    a_ij = -2.0 * p_ij / m
+                    b_ij = float(np.sum(v_ij**2)) + (alpha1 + alpha2) * h_dot_ij + alpha1 * alpha2 * h_ij
+                constraints.append((a_ij, mu_ij * b_ij))
 
             # Active-set iterative projection
             f_safe = f_des_i.copy()
@@ -203,7 +254,11 @@ class AegisMuJoCoSwarm6DOFEnvironment:
     Continuous Multi-Agent 6-DOF Quadrotor Dynamics Environment in MuJoCo Physics.
     """
 
-    def __init__(self, config: Swarm6DOFConfig | None = None) -> None:
+    def __init__(
+        self,
+        config: Swarm6DOFConfig | None = None,
+        custom_obstacles: list[Obstacle3D] | None = None,
+    ) -> None:
         self.cfg = config or Swarm6DOFConfig()
         self.quad_cfg = QuadrotorConfig(
             mass=self.cfg.mass,
@@ -230,12 +285,20 @@ class AegisMuJoCoSwarm6DOFEnvironment:
             if self.cfg.enable_deep_aerodynamics
             else None
         )
+        self.wake_model: DownwashWakeModel | None = (
+            DownwashWakeModel(self.cfg.downwash_config)
+            if self.cfg.enable_downwash_wake
+            else None
+        )
 
-        self.obstacles: list[Obstacle3D] = [
-            Obstacle3D(center=np.array([0.0, 0.0, 0.8], dtype=np.float64), radius=0.45),
-            Obstacle3D(center=np.array([1.2, -0.9, 0.7], dtype=np.float64), radius=0.35),
-            Obstacle3D(center=np.array([-0.9, 1.2, 0.7], dtype=np.float64), radius=0.35),
-        ]
+        if custom_obstacles is not None:
+            self.obstacles = list(custom_obstacles)
+        else:
+            self.obstacles = [
+                Obstacle3D(center=np.array([0.0, 0.0, 0.8], dtype=np.float64), radius=0.45),
+                Obstacle3D(center=np.array([1.2, -0.9, 0.7], dtype=np.float64), radius=0.35),
+                Obstacle3D(center=np.array([-0.9, 1.2, 0.7], dtype=np.float64), radius=0.35),
+            ]
         self.target_pos = np.array([2.0, 2.0, 1.2], dtype=np.float64)
         self.wind_velocity = np.array(self.cfg.wind_mean, dtype=np.float64)
 
@@ -399,6 +462,14 @@ class AegisMuJoCoSwarm6DOFEnvironment:
                 for eng in self.deep_aero_engines
             ]
 
+        wake_severities = None
+        if self.wake_model is not None:
+            wake_states = self.wake_model.compute_swarm_wake_disturbances(
+                positions,
+                [float(np.sum(self.controllers[k].actual_motor_thrusts)) for k in range(self.cfg.num_robots)],
+            )
+            wake_severities = [float(ws.wake_severity) for ws in wake_states]
+
         return {
             "positions": positions,
             "velocities": velocities,
@@ -410,6 +481,7 @@ class AegisMuJoCoSwarm6DOFEnvironment:
             "distances": distances_to_target,
             "wind": self.wind_velocity.copy(),
             "deep_aero": deep_aero_states,
+            "wake_severities": wake_severities,
         }
 
     def step_outer(
@@ -417,6 +489,7 @@ class AegisMuJoCoSwarm6DOFEnvironment:
         desired_forces: list[np.ndarray],
         shield_with_cbf: bool = True,
         quarantined_mask: list[bool] | None = None,
+        responsibility_weights: list[float] | None = None,
         rng: np.random.Generator | None = None,
     ) -> tuple[dict[str, Any], list[bool]]:
         """
@@ -446,6 +519,7 @@ class AegisMuJoCoSwarm6DOFEnvironment:
                 desired_forces=desired_forces,
                 obstacles=self.obstacles,
                 quarantined_mask=quarantined_mask,
+                responsibility_weights=responsibility_weights,
             )
         else:
             forces_safe = [f.copy() for f in desired_forces]
@@ -456,6 +530,12 @@ class AegisMuJoCoSwarm6DOFEnvironment:
         drag_rot = 0.04
 
         for _ in range(sub_steps):
+            wake_states = None
+            if self.wake_model is not None:
+                curr_pos = [self.data.qpos[7 * k : 7 * k + 3].copy() for k in range(self.cfg.num_robots)]
+                curr_thrusts = [float(np.sum(self.controllers[k].actual_motor_thrusts)) for k in range(self.cfg.num_robots)]
+                wake_states = self.wake_model.compute_swarm_wake_disturbances(curr_pos, curr_thrusts)
+
             for i in range(self.cfg.num_robots):
                 qpos_idx = 7 * i
                 qvel_idx = 6 * i
@@ -509,6 +589,11 @@ class AegisMuJoCoSwarm6DOFEnvironment:
 
                 tau_body = np.array([wrench_actual[1], wrench_actual[2], wrench_actual[3]]) + tau_gyro - drag_rot * w_curr
                 tau_world = R @ tau_body
+
+                # Reciprocal aerodynamic downwash wake forces & moments
+                if wake_states is not None:
+                    f_world += wake_states[i].wake_force
+                    tau_world += wake_states[i].wake_torque
 
                 bid = self.quad_body_ids[i]
                 self.data.xfrc_applied[bid, :3] = f_world

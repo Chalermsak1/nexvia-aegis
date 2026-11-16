@@ -116,3 +116,34 @@ def test_wind_perturbation_propagation():
     assert abs(mean_w[0] - 0.5) < 0.35
     # Variance along X should be strictly positive
     assert np.var(wind_arr[:, 0]) > 0.0
+
+
+def test_asymmetric_cbf_around_quarantined_peer():
+    """
+    Validates that when a peer drone is marked as quarantined/faulty,
+    the healthy peer assumes 100% full unilateral evasion responsibility
+    and commands stronger evasive deceleration than standard reciprocal sharing.
+    """
+    cfg = Swarm3DConfig(num_robots=2, robot_radius=0.20, inter_agent_margin=0.10)
+    cbf = SwarmCBF3DFilter(cfg)
+
+    # Robot 0 approaching Robot 1 (which is stationary/faulty at 0.80m)
+    pos = [np.array([0.0, 0.0, 1.0]), np.array([0.80, 0.0, 1.0])]
+    vel = [np.array([0.7, 0.0, 0.0]), np.array([0.0, 0.0, 0.0])]
+    des_u = [np.array([1.5, 0.0, 0.0]), np.array([0.0, 0.0, 0.0])]
+
+    # 1. Reciprocal sharing (assumes peer 1 will dodge equally)
+    safe_u_recip, act_recip = cbf.compute_safe_swarm_controls(
+        positions=pos, velocities=vel, desired_controls=des_u, obstacles=[], quarantined_mask=[False, False]
+    )
+
+    # 2. Asymmetric AEGIS (knows peer 1 is quarantined/unresponsive)
+    safe_u_asym, act_asym = cbf.compute_safe_swarm_controls(
+        positions=pos, velocities=vel, desired_controls=des_u, obstacles=[], quarantined_mask=[False, True]
+    )
+
+    # Robot 0 must exert stronger deceleration against the quarantined peer
+    assert safe_u_asym[0][0] < safe_u_recip[0][0], "Asymmetric CBF must enforce greater braking against non-dodging peer"
+    # Robot 1 (quarantined) must be commanded with active damping hover
+    assert np.allclose(safe_u_asym[1], np.zeros(3)), "Stationary quarantined peer should remain hovering"
+

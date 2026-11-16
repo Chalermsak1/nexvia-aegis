@@ -1,0 +1,167 @@
+{
+  "timestamp": "2026-11-01T04:26:21Z",
+  "milestone": "V9-M15",
+  "description": "Prospective 100 Worlds Factorial Benchmark: Parametric Model Mismatch & Mass Invariance (Task E-08)",
+  "summary": {
+    "naive_baseline": {
+      "total_worlds": 100,
+      "collision_count": 100,
+      "collision_rate_pct": 100.0,
+      "goal_reached_count": 0,
+      "safe_abstain_count": 0,
+      "stall_count": 0,
+      "solvable_success_rate_pct": 0.0,
+      "dead_end_safety_rate_pct": 0.0,
+      "selective_risk_pct": 100.0,
+      "mean_min_clearance_m": 0.7597911336960083,
+      "heavy_payload_count": 33,
+      "heavy_payload_collisions": 33,
+      "heavy_payload_mean_clearance_m": 0.7601530618564909,
+      "avg_goal_time_s": 0.0
+    },
+    "nominal_cbf": {
+      "total_worlds": 100,
+      "collision_count": 0,
+      "collision_rate_pct": 0.0,
+      "goal_reached_count": 92,
+      "safe_abstain_count": 7,
+      "stall_count": 1,
+      "solvable_success_rate_pct": 98.50746268656717,
+      "dead_end_safety_rate_pct": 100.0,
+      "selective_risk_pct": 0.0,
+      "mean_min_clearance_m": 1.4363188202001929,
+      "heavy_payload_count": 33,
+      "heavy_payload_collisions": 0,
+      "heavy_payload_mean_clearance_m": 1.438289893571654,
+      "avg_goal_time_s": 13.867826086956523
+    },
+    "aegis_parametric_invariant": {
+      "total_worlds": 100,
+      "collision_count": 0,
+      "collision_rate_pct": 0.0,
+      "goal_reached_count": 60,
+      "safe_abstain_count": 40,
+      "stall_count": 0,
+      "solvable_success_rate_pct": 82.08955223880598,
+      "dead_end_safety_rate_pct": 100.0,
+      "selective_risk_pct": 0.0,
+      "mean_min_clearance_m": 1.667609128181288,
+      "heavy_payload_count": 33,
+      "heavy_payload_collisions": 0,
+      "heavy_payload_mean_clearance_m": 1.6529957379482496,
+      "avg_goal_time_s": 11.864
+    }
+  },
+  "raw_episodes_sample": [
+    {
+      "world_id": 0,
+      "arm": "AEGIS_PARAMETRIC",
+      "topology": "CORRIDOR",
+      "mass_ratio": 0.75,
+      "outcome": "GOAL_REACHED",
+      "min_clearance_m": 1.303237397676323,
+      "final_ek_j": 0.02130455452975486,
+      "time_s": 8.48,
+      "is_safe": true
+    },
+    {
+      "world_id": 1,
+      "arm": "AEGIS_PARAMETRIC",
+      "topology": "CUL_DE_SAC",
+      "mass_ratio": 0.75,
+      "outcome": "SAFE_ABSTAIN",
+      "min_clearance_m": 1.4051172225837962,
+      "final_ek_j": 0.000608895375014721,
+      "time_s": 8.4,
+      "is_safe": true
+    },
+    {
+      "world_id": 2,
+      "arm": "AEGIS_PARAMETRIC",
+      "topology": "SLALOM",
+      "mass_ratio": 0.75,
+      "outcome": "GOAL_REACHED",
+      "min_clearance_m": 1.820660115543504,
+      "final_ek_j": 0.019351179276465097,
+      "time_s": 13.08,
+      "is_safe": true
+    },
+    {
+      "world_id": 3,
+      "arm": "AEGIS_PARAMETRIC",
+      "topology": "CORRIDOR",
+      "mass_ratio": 1.0,
+      "outcome": "GOAL_REACHED",
+      "min_clearance_m": 1.4268669270310452,
+      "final_ek_j": 0.028412281905658143,
+      "time_s": 9.6,
+      "is_safe": true
+    },
+    {
+      "world_id": 4,
+      "arm": "AEGIS_PARAMETRIC",
+      "topology": "CUL_DE_SAC",
+      "mass_ratio": 1.0,
+      "outcome": "GOAL_REACHED",
+      "min_clearance_m": 1.3976281878098489,
+      "final_ek_j": 0.0261382993650245,
+      "time_s": 15.92,
+      "is_safe": true
+    },
+    {
+      "world_id": 5,
+      "arm": "AEGIS_PARAMETRIC",
+      "topology": "SLALOM",
+      "mass_ratio": 1.0,
+      "outcome": "GOAL_REACHED",
+      "min_clearance_m": 1.9929319580908753,
+      "final_ek_j": 0.026271336933871445,
+      "time_s": 11.36,
+      "is_safe": true
+    },
+    {
+      "world_id": 6,
+      "arm": "AEGIS_PARAMETRIC",
+      "topology": "CORRIDOR",
+      "mass_ratio": 1.3,
+      "outcome": "GOAL_REACHED",
+      "min_clearance_m": 1.3042361870083055,
+      "final_ek_j": 0.03621873612917281,
+      "time_s": 11.28,
+      "is_safe": true
+    },
+    {
+      "world_id": 7,
+      "arm": "AEGIS_PARAMETRIC",
+      "topology": "CUL_DE_SAC",
+      "mass_ratio": 1.3,
+      "outcome": "SAFE_ABSTAIN",
+      "min_clearance_m": 1.406577394245265,
+      "final_ek_j": 0.00033539504432242295,
+      "time_s": 7.8,
+      "is_safe": true
+    },
+    {
+      "world_id": 8,
+      "arm": "AEGIS_PARAMETRIC",
+      "topology": "SLALOM",
+      "mass_ratio": 1.3,
+      "outcome": "GOAL_REACHED",
+      "min_clearance_m": 2.001225252946216,
+      "final_ek_j": 0.03852785997005251,
+      "time_s": 11.88,
+      "is_safe": true
+    },
+    {
+      "world_id": 9,
+      "arm": "AEGIS_PARAMETRIC",
+      "topology": "CORRIDOR",
+      "mass_ratio": 0.75,
+      "outcome": "GOAL_REACHED",
+      "min_clearance_m": 1.4488634734506973,
+      "final_ek_j": 0.02157505143912179,
+      "time_s": 9.28,
+      "is_safe": true
+    }
+  ]
+}
