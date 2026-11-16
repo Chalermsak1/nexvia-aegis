@@ -1,0 +1,67 @@
+{
+  "classification": "EXPLORATORY_SYNCHRONIZED_FIXTURE_AUDIT",
+  "input_sha256": "a6b0e59469f514892b727b2dd1b3266aa51823f09658ce1951ead0a19b8ff9e9",
+  "ledger_state": "FINALIZED",
+  "assignments": [
+    {
+      "id": "drift_10ms",
+      "execution_status": "COMPLETED",
+      "reset_observed": true,
+      "requested_steps": 3,
+      "persisted_steps": 3,
+      "persisted_step_seconds": 0.03,
+      "collision_observed": false
+    },
+    {
+      "id": "drift_20ms",
+      "execution_status": "COMPLETED",
+      "reset_observed": true,
+      "requested_steps": 3,
+      "persisted_steps": 3,
+      "persisted_step_seconds": 0.06,
+      "collision_observed": false
+    },
+    {
+      "id": "active_braking",
+      "execution_status": "COMPLETED",
+      "reset_observed": true,
+      "requested_steps": 5,
+      "persisted_steps": 5,
+      "persisted_step_seconds": 0.1,
+      "collision_observed": false
+    },
+    {
+      "id": "floor_crossing",
+      "execution_status": "COMPLETED",
+      "reset_observed": true,
+      "requested_steps": 1,
+      "persisted_steps": 1,
+      "persisted_step_seconds": 0.02,
+      "collision_observed": true
+    },
+    {
+      "id": "obstacle_crossing",
+      "execution_status": "COMPLETED",
+      "reset_observed": true,
+      "requested_steps": 1,
+      "persisted_steps": 1,
+      "persisted_step_seconds": 0.02,
+      "collision_observed": true
+    },
+    {
+      "id": "boundary_crossing",
+      "execution_status": "COMPLETED",
+      "reset_observed": true,
+      "requested_steps": 1,
+      "persisted_steps": 1,
+      "persisted_step_seconds": 0.02,
+      "collision_observed": true
+    }
+  ],
+  "governance": "GATE_B_NOT_AUTHORIZED",
+  "limitations": [
+    "Synthetic fixtures, including deliberate collisions; not policy performance or real-robot validation.",
+    "Times cover persisted samples only; an interrupted physical step may be unrecorded.",
+    "A self-reported valid chain does not authenticate physical truth, metadata or rollback state."
+  ]
+}

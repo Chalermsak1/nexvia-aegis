@@ -1,0 +1,24 @@
+{
+  "classification": "EXPLORATORY_STATE_PHASE_VERIFICATION",
+  "parent_commit": "74b0bfab8e57cd450293e49de881207074df3141",
+  "branch": "codex/research-hardening",
+  "dirty_worktree": true,
+  "tests": {
+    "passed": 45,
+    "seconds": 7.07,
+    "new_tests": 7,
+    "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:. .venv/bin/python -m pytest -p no:cacheprovider -q tests/test_state_phase_diagnostic.py tests/test_recovery_motion_summary.py tests/test_recovery_physics_events.py tests/test_recovery_physics_ledger.py tests/test_recovery_post_abstention.py --basetemp=/private/tmp/nexvia-state-phase-20261107/pytest-temp",
+    "exit_code": 0
+  },
+  "diagnostic_result_sha256": "bf52b668daff4a4b2f874f576baa82171b139221348251b0fff90a6bd81b65a3",
+  "retained_development_input_sha256": {
+    "results/research_development/dev/recovery_incremental_physics_v1.jsonl": "359ae6f7e6f1de3fd99609c21cf9cdfa3d440f39a5234d8cfb45addeaafeaa2f",
+    "results/research_development/dev/recovery_post_abstention_physics_v2.jsonl": "48136174812afb4e852732d314b88bbd1b8e87dd4f860cec98c85902dd72fecf"
+  },
+  "report_sha256": "8b2e7b679569374fa0094aff3a04f92cf7ebba1c73e835bab3b1b418e11963db",
+  "governance": "GATE_B_NOT_AUTHORIZED",
+  "limitations": [
+    "No full suite or production environment remediation.",
+    "No independent authentication or Holdout/real-robot validation."
+  ]
+}

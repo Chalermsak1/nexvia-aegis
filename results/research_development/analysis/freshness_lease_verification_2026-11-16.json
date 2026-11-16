@@ -1,0 +1,120 @@
+{
+  "classification": "DEVELOPMENT_SIMULATION_NOT_CONFIRMATORY_OR_HARDWARE_VALIDATION",
+  "branch": "codex/research-hardening",
+  "parent_commit": "74b0bfab8e57cd450293e49de881207074df3141",
+  "source_sha256": {
+    "scripts/research/development_ledger.py": "254fe889557148110e458ed2cb6e3286837589a484d7a63e1ae3d2c34b645502",
+    "scripts/research/freshness_lease_study.py": "dd7218147d8671aeb2e222e8527e8302655024ee469a3eb57f6ecdd63efd33ae",
+    "src/aegis/development/__init__.py": "afe5c415a90205d00220200b69b991a54a4741e1fa655a0ac9ed4f3ccbfc3043",
+    "src/aegis/development/assurance_gateway.py": "e810f11d21cca2ef50b02d3454c1934d9382251eab004ffc352dc32cb84e8119",
+    "src/aegis/development/bounded_braking.py": "6f34c760bebd07d91a8f08110a5ad50659bcd073a59077716476df1033f999e2",
+    "src/aegis/development/dual_source_braking.py": "4f189658d8a830619e1e8fe7ba4af25348905ae22ca68d9aef0d5bd4b134eb33",
+    "src/aegis/development/sampled_motion_reference.py": "1180350e5dc47e1bbd5b461a7a5a7d22ffe4fd1263e4e1c86e44b64962d4f8aa",
+    "src/aegis/env/mujoco_3d_cbf.py": "438b8ec89d1d40101586b0d888de7e8b5d73c9763cbae2603ccab01f04801433",
+    "src/aegis/env/mujoco_lease_brake.py": "069727193b93c290a0c5e192f35931da3d6b44a69e9a5673ad63aa1b4e3414d4"
+  },
+  "test_source_sha256": {
+    "tests/test_assurance_gateway.py": "1ef6fcca3b6d3e6ad2f290eb1d1db74484816a6acd8983ad0d43e7a46a9c7bce",
+    "tests/test_freshness_lease_study.py": "dd9e197d786d67e59472dc6777fafe30e4ac31e77e1fa37a259b1d2847cc080f",
+    "tests/test_dual_source_braking.py": "bea527fa8c1a1a5d9a0f2eb9c07d74d1c05f1359a4c00dc75d7866920cb60b67",
+    "tests/test_passive_motion_reference.py": "4ccc80a785ebd0e42ebc44d7130f7bd1413f18f863b5da53efcfa0efaa9a8d2f",
+    "tests/test_bounded_braking.py": "9de542a31df5fc0f519aa69b7153cd8cbe09493305745b67c7b3791ad0d5a10a",
+    "tests/test_development_ledger.py": "0574aaa21272111b0bbc1e1cf0a14e033a33210d8f92e124ba7e5162b5cd9cec"
+  },
+  "runtime_versions": {
+    "mujoco": "3.14.0",
+    "numpy": "2.5.3",
+    "python": "3.12.14"
+  },
+  "checks": {
+    "completed_assignments": 117,
+    "tick_events": 9360,
+    "physics_steps": 9360,
+    "matched_triples": 39,
+    "source_maps_match_executed_bytes": true,
+    "readonly_reanalysis_matches": true,
+    "source_path_reproduction_byte_identical": true,
+    "raw_and_reproduced_sha256": "dec1755180cffe158a50b9ccec15418657acbc0e50000f9994fdfda489b60f2e",
+    "reproduction_driver_sha256": "b65d78aa02455163168af5bc32a8833463d1d7498bd81cb41c567db225b0c0bb",
+    "extra_namespace_sha256": {
+      "src/aegis/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "src/aegis/env/__init__.py": "0efefb3f0e48627f54c3791d99547a9773fc4e481d5aced9a8ecf70f501f47f3"
+    },
+    "preexisting_benchmark_sha256": "04bc31bf74423806200e39a44334e1dd0cf4063dde08797ef79dacb491b4323f",
+    "final_png_visually_inspected": true
+  },
+  "tests": {
+    "passed": 166,
+    "reported_duration_seconds": 8.96,
+    "full_repository_suite": false,
+    "test_groups": {
+      "tests.test_assurance_gateway": 34,
+      "tests.test_freshness_lease_study": 31,
+      "tests.test_dual_source_braking": 26,
+      "tests.test_passive_motion_reference": 15,
+      "tests.test_bounded_braking": 46,
+      "tests.test_development_ledger": 14
+    },
+    "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:. .venv/bin/python -m pytest -q -x -p no:cacheprovider tests/test_assurance_gateway.py tests/test_freshness_lease_study.py tests/test_dual_source_braking.py tests/test_passive_motion_reference.py tests/test_bounded_braking.py tests/test_development_ledger.py --basetemp=/private/tmp/nexvia-assurance-regression-final-20261116 --junitxml=/private/tmp/nexvia-assurance-regression-final-20261116.xml"
+  },
+  "earlier_overlapping_suites": [
+    {
+      "passed": 34,
+      "scope": "new contract/native/reference units"
+    },
+    {
+      "passed": 62,
+      "scope": "first complete integration fixture"
+    }
+  ],
+  "unexpected_pytest_failures": 0,
+  "actual_execution_errors": 0,
+  "negative_outcomes_are_not_safety_passes": true,
+  "commands": {
+    "actual": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:. .venv/bin/python scripts/research/freshness_lease_study.py run /private/tmp/nexvia-assurance-actual-v1-20261116.jsonl --output /private/tmp/nexvia-assurance-actual-v1-summary-20261116.json",
+    "audit": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:. .venv/bin/python scripts/research/freshness_lease_study.py audit /private/tmp/nexvia-assurance-actual-v1-20261116.jsonl --output /private/tmp/nexvia-assurance-actual-v1-reaudit-20261116.json",
+    "reproduction": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:. '/Users/chalermsak/Documents/ChatGPT/New project/nexvia-aegis/.venv/bin/python' reproduce.py (cwd /private/tmp/nexvia-assurance-source-snapshot-20261116)",
+    "figure": "MPLCONFIGDIR=/private/tmp/nexvia-dual-mpl PYTHONDONTWRITEBYTECODE=1 .venv/bin/python plot_assurance_diagnostic_2026-11-16.py ACTUAL_LEDGER NEW_PREFIX"
+  },
+  "native_documentation": {
+    "url": "https://mujoco.readthedocs.io/en/3.14.0/XMLreference.html#actuator-velocity",
+    "role": "Velocity-servo gain/bias and force-limit semantics; actual compiled/native arrays separately checked."
+  },
+  "retained_negative_findings": [
+    "Fresh shared reversals and compromised witnesses pass timely command leases.",
+    "Shared scheduler loss prevents watchdog/switch execution and leaves expired force active.",
+    "Weak capped brakes cannot balance the persistent disturbance.",
+    "Mass/gravity mismatch ends in floor contact with near-zero speed; the free-motion reference is UNEVALUABLE.",
+    "Motion within a conservative path bound can still leave the arena."
+  ],
+  "source_reproduction_limit": "Same existing interpreter/native runtime, not independent authentication or scientific replication.",
+  "limitations": [
+    "Capture witness and independent scheduling are unauthed model assumptions.",
+    "Shared scheduler/witness/semantic failures remain possible.",
+    "New three-slide plant with hypothetical powered capped brakes; do not pool old-arm results.",
+    "Command energy guard remains conditional on its original zero-unmodeled-force model.",
+    "Sampled envelope is conservative, assumes no contact and takes no braking credit.",
+    "No real-world safe-stop, sensing accuracy or native-runtime authenticity claim."
+  ],
+  "governance": {
+    "gate_b": "GATE_B_NOT_AUTHORIZED",
+    "release_readiness": "BLOCKED",
+    "reserved_data_files_accessed": false,
+    "confirmatory_or_holdout_evaluation_executed": false,
+    "production_ticket_created_or_signed": false,
+    "frozen_artifacts_or_registered_rules_modified": false,
+    "commit_push_merge_publication": false,
+    "real_robot_validation": false
+  },
+  "artifact_sha256": {
+    "docs/research/V9_M5_FRESHNESS_LEASE_EXECUTION_2026-11-16.md": "e86534570389bd95d62ded3b6185a591ec5f6f8dc0d413dfadb639bd64db0f50",
+    "results/research_development/analysis/assurance_diagnostic_2026-11-16.png": "6775a96318a068f42c61a8d5511c4e101c4b5134728c983b2c0fe898e0d49181",
+    "results/research_development/analysis/assurance_diagnostic_2026-11-16.svg": "7cc31b3265ede9f247d2502f277b3ccbaa9e06a4b79fb128b8c2880afbaf7dd6",
+    "results/research_development/analysis/freshness_lease_tests_2026-11-16.xml": "ca8c57ecf006840b47ab4027a2dcab1066fa6f756a8cd1f584dffe290aa14d73",
+    "results/research_development/analysis/plot_assurance_diagnostic_2026-11-16.py": "be92bddeef8b87bd268800a2267c5b6dcf60455f075d58ea9f6fc15ac1de77f0",
+    "results/research_development/dev/freshness_lease_source_reproduction_2026-11-16.zip": "3faf70cfa9b4ac9f9e2c363ce099e7fd8220d5fb69c0f5b75034054913e551bf",
+    "results/research_development/dev/freshness_lease_test_fixtures_2026-11-16.zip": "b5280ad06bb8f929fac352f4a6728ff51f06b3ae4b2326e8c15a70d4dcf6ebf6",
+    "results/research_development/dev/freshness_lease_v1_2026-11-16/assignments.jsonl": "dec1755180cffe158a50b9ccec15418657acbc0e50000f9994fdfda489b60f2e",
+    "results/research_development/dev/freshness_lease_v1_2026-11-16/summary.json": "34c6ce2e1804da1b160da5e21a5bddf6b2b5cc0eda580c6add3e0d7fb47d44aa"
+  }
+}

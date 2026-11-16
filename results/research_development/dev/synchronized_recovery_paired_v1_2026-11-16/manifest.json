@@ -1,0 +1,349 @@
+{
+  "study": "V9-M5 synchronized recovery paired development v1",
+  "classification": "EXPLORATORY_DEVELOPMENT",
+  "assignments": [
+    {
+      "id": "aegis_3d_anchor_recovery_nominal_legacy",
+      "configuration": {
+        "controller_type": "AEGIS_3D_ANCHOR_RECOVERY",
+        "seed": 2256000,
+        "sensor_bias": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "max_steps": 400,
+        "range_bias_m": 0.0,
+        "range_dropout_probability": 0.0,
+        "range_latency_steps": 0,
+        "anchor_bias_xyz": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "anchor_dropout_probability": 0.0,
+        "post_stop_steps": 50,
+        "velocity_bias_xyz": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "velocity_dropout_probability": 0.0,
+        "velocity_scale": 1.0,
+        "velocity_latency_steps": 0,
+        "velocity_replay_probability": 0.0,
+        "secondary_velocity_scale": 1.0,
+        "secondary_velocity_dropout_probability": 0.0,
+        "fail_vectors_after_stop_proposal": false,
+        "navigation_force_method": "DIRECTION_PRESERVING_PEAK",
+        "recovery_steps": 100,
+        "post_abstain_steps": 25
+      },
+      "synchronized": false,
+      "child": "aegis_3d_anchor_recovery_nominal_legacy.jsonl"
+    },
+    {
+      "id": "aegis_3d_anchor_recovery_nominal_sync",
+      "configuration": {
+        "controller_type": "AEGIS_3D_ANCHOR_RECOVERY",
+        "seed": 2256000,
+        "sensor_bias": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "max_steps": 400,
+        "range_bias_m": 0.0,
+        "range_dropout_probability": 0.0,
+        "range_latency_steps": 0,
+        "anchor_bias_xyz": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "anchor_dropout_probability": 0.0,
+        "post_stop_steps": 50,
+        "velocity_bias_xyz": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "velocity_dropout_probability": 0.0,
+        "velocity_scale": 1.0,
+        "velocity_latency_steps": 0,
+        "velocity_replay_probability": 0.0,
+        "secondary_velocity_scale": 1.0,
+        "secondary_velocity_dropout_probability": 0.0,
+        "fail_vectors_after_stop_proposal": false,
+        "navigation_force_method": "DIRECTION_PRESERVING_PEAK",
+        "recovery_steps": 100,
+        "post_abstain_steps": 25
+      },
+      "synchronized": true,
+      "child": "aegis_3d_anchor_recovery_nominal_sync.jsonl"
+    },
+    {
+      "id": "aegis_3d_anchor_recovery_heavy_legacy",
+      "configuration": {
+        "controller_type": "AEGIS_3D_ANCHOR_RECOVERY",
+        "seed": 2256000,
+        "sensor_bias": [
+          0.8,
+          0.8,
+          -0.3
+        ],
+        "max_steps": 400,
+        "range_bias_m": 0.0,
+        "range_dropout_probability": 0.0,
+        "range_latency_steps": 0,
+        "anchor_bias_xyz": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "anchor_dropout_probability": 0.0,
+        "post_stop_steps": 50,
+        "velocity_bias_xyz": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "velocity_dropout_probability": 0.0,
+        "velocity_scale": 1.0,
+        "velocity_latency_steps": 0,
+        "velocity_replay_probability": 0.0,
+        "secondary_velocity_scale": 1.0,
+        "secondary_velocity_dropout_probability": 0.0,
+        "fail_vectors_after_stop_proposal": false,
+        "navigation_force_method": "DIRECTION_PRESERVING_PEAK",
+        "recovery_steps": 100,
+        "post_abstain_steps": 25
+      },
+      "synchronized": false,
+      "child": "aegis_3d_anchor_recovery_heavy_legacy.jsonl"
+    },
+    {
+      "id": "aegis_3d_anchor_recovery_heavy_sync",
+      "configuration": {
+        "controller_type": "AEGIS_3D_ANCHOR_RECOVERY",
+        "seed": 2256000,
+        "sensor_bias": [
+          0.8,
+          0.8,
+          -0.3
+        ],
+        "max_steps": 400,
+        "range_bias_m": 0.0,
+        "range_dropout_probability": 0.0,
+        "range_latency_steps": 0,
+        "anchor_bias_xyz": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "anchor_dropout_probability": 0.0,
+        "post_stop_steps": 50,
+        "velocity_bias_xyz": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "velocity_dropout_probability": 0.0,
+        "velocity_scale": 1.0,
+        "velocity_latency_steps": 0,
+        "velocity_replay_probability": 0.0,
+        "secondary_velocity_scale": 1.0,
+        "secondary_velocity_dropout_probability": 0.0,
+        "fail_vectors_after_stop_proposal": false,
+        "navigation_force_method": "DIRECTION_PRESERVING_PEAK",
+        "recovery_steps": 100,
+        "post_abstain_steps": 25
+      },
+      "synchronized": true,
+      "child": "aegis_3d_anchor_recovery_heavy_sync.jsonl"
+    },
+    {
+      "id": "aegis_3d_recovery_monitor_nominal_legacy",
+      "configuration": {
+        "controller_type": "AEGIS_3D_RECOVERY_MONITOR",
+        "seed": 2256000,
+        "sensor_bias": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "max_steps": 400,
+        "range_bias_m": 0.0,
+        "range_dropout_probability": 0.0,
+        "range_latency_steps": 0,
+        "anchor_bias_xyz": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "anchor_dropout_probability": 0.0,
+        "post_stop_steps": 50,
+        "velocity_bias_xyz": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "velocity_dropout_probability": 0.0,
+        "velocity_scale": 1.0,
+        "velocity_latency_steps": 0,
+        "velocity_replay_probability": 0.0,
+        "secondary_velocity_scale": 1.0,
+        "secondary_velocity_dropout_probability": 0.0,
+        "fail_vectors_after_stop_proposal": false,
+        "navigation_force_method": "DIRECTION_PRESERVING_PEAK",
+        "recovery_steps": 100,
+        "post_abstain_steps": 25
+      },
+      "synchronized": false,
+      "child": "aegis_3d_recovery_monitor_nominal_legacy.jsonl"
+    },
+    {
+      "id": "aegis_3d_recovery_monitor_nominal_sync",
+      "configuration": {
+        "controller_type": "AEGIS_3D_RECOVERY_MONITOR",
+        "seed": 2256000,
+        "sensor_bias": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "max_steps": 400,
+        "range_bias_m": 0.0,
+        "range_dropout_probability": 0.0,
+        "range_latency_steps": 0,
+        "anchor_bias_xyz": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "anchor_dropout_probability": 0.0,
+        "post_stop_steps": 50,
+        "velocity_bias_xyz": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "velocity_dropout_probability": 0.0,
+        "velocity_scale": 1.0,
+        "velocity_latency_steps": 0,
+        "velocity_replay_probability": 0.0,
+        "secondary_velocity_scale": 1.0,
+        "secondary_velocity_dropout_probability": 0.0,
+        "fail_vectors_after_stop_proposal": false,
+        "navigation_force_method": "DIRECTION_PRESERVING_PEAK",
+        "recovery_steps": 100,
+        "post_abstain_steps": 25
+      },
+      "synchronized": true,
+      "child": "aegis_3d_recovery_monitor_nominal_sync.jsonl"
+    },
+    {
+      "id": "aegis_3d_recovery_monitor_heavy_legacy",
+      "configuration": {
+        "controller_type": "AEGIS_3D_RECOVERY_MONITOR",
+        "seed": 2256000,
+        "sensor_bias": [
+          0.8,
+          0.8,
+          -0.3
+        ],
+        "max_steps": 400,
+        "range_bias_m": 0.0,
+        "range_dropout_probability": 0.0,
+        "range_latency_steps": 0,
+        "anchor_bias_xyz": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "anchor_dropout_probability": 0.0,
+        "post_stop_steps": 50,
+        "velocity_bias_xyz": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "velocity_dropout_probability": 0.0,
+        "velocity_scale": 1.0,
+        "velocity_latency_steps": 0,
+        "velocity_replay_probability": 0.0,
+        "secondary_velocity_scale": 1.0,
+        "secondary_velocity_dropout_probability": 0.0,
+        "fail_vectors_after_stop_proposal": false,
+        "navigation_force_method": "DIRECTION_PRESERVING_PEAK",
+        "recovery_steps": 100,
+        "post_abstain_steps": 25
+      },
+      "synchronized": false,
+      "child": "aegis_3d_recovery_monitor_heavy_legacy.jsonl"
+    },
+    {
+      "id": "aegis_3d_recovery_monitor_heavy_sync",
+      "configuration": {
+        "controller_type": "AEGIS_3D_RECOVERY_MONITOR",
+        "seed": 2256000,
+        "sensor_bias": [
+          0.8,
+          0.8,
+          -0.3
+        ],
+        "max_steps": 400,
+        "range_bias_m": 0.0,
+        "range_dropout_probability": 0.0,
+        "range_latency_steps": 0,
+        "anchor_bias_xyz": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "anchor_dropout_probability": 0.0,
+        "post_stop_steps": 50,
+        "velocity_bias_xyz": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "velocity_dropout_probability": 0.0,
+        "velocity_scale": 1.0,
+        "velocity_latency_steps": 0,
+        "velocity_replay_probability": 0.0,
+        "secondary_velocity_scale": 1.0,
+        "secondary_velocity_dropout_probability": 0.0,
+        "fail_vectors_after_stop_proposal": false,
+        "navigation_force_method": "DIRECTION_PRESERVING_PEAK",
+        "recovery_steps": 100,
+        "post_abstain_steps": 25
+      },
+      "synchronized": true,
+      "child": "aegis_3d_recovery_monitor_heavy_sync.jsonl"
+    }
+  ],
+  "parent_commit": "74b0bfab8e57cd450293e49de881207074df3141",
+  "source_sha256": {
+    "experiments/benchmark_physical_3d_cbf.py": "04bc31bf74423806200e39a44334e1dd0cf4063dde08797ef79dacb491b4323f",
+    "scripts/research/audit_bridge_v3.py": "1025c51aea610958b9f3e2c5c8510073edf8076805900885f906c7693efc2f95",
+    "scripts/research/configured_noise_pairing.py": "39ae97cdd3c8fc2d01c46e9827cf535619cf7b49613c10e486f2ecaef4ed0e8a",
+    "scripts/research/development_ledger.py": "254fe889557148110e458ed2cb6e3286837589a484d7a63e1ae3d2c34b645502",
+    "scripts/research/paired_recovery_study.py": "3db2e54fe09d97c67702f892bd845f89b5f3c083b16dfaf7fdb163e2abc62fea",
+    "scripts/research/recovery_execution_bridge_v3.py": "680ae82bd06e842aa497b5a5ed0fbaec5c91f5e5e1035f4fa47353ca01e1d3ed",
+    "scripts/research/recovery_noise_pairing.py": "adc3248ad81c9128be3171d349ef17dad396ea7dd08a098ed9b240c0e57268c5",
+    "src/aegis/env/mujoco_3d_cbf.py": "438b8ec89d1d40101586b0d888de7e8b5d73c9763cbae2603ccab01f04801433",
+    "src/aegis/env/mujoco_3d_synchronized.py": "f00625647ff9c56a86efba384a7149e94e149c922cce3ba5d45835aa0d9916e3",
+    "src/aegis/v9/anchor_recovery_candidate.py": "14234ba7efccecc28f639a0ecb6b390ea29b59eaccc3b82bd6f4360dccdf038a",
+    "src/aegis/v9/controller_3d.py": "4579219de9d9ab4269fa620e1962685e844f927ba00e6979d571aa47f73f6892",
+    "src/aegis/v9/recovery_monitor_candidate.py": "134b2f549fde1762e5d48b5505131a231634ddf77edcbd766e1bf00fd189819d",
+    "src/aegis/v9/stabilized_arrival_candidate.py": "3f93b0c736a924296c949466fbec502040ce1c65a19912a64564ff7ec5928cb8"
+  },
+  "runtime_versions": {
+    "python": "3.12.14",
+    "numpy": "2.5.3",
+    "mujoco": "3.14.0"
+  },
+  "governance": "GATE_B_NOT_AUTHORIZED",
+  "design": "One previously inspected world; eight dependent assignments, four environment pairs."
+}

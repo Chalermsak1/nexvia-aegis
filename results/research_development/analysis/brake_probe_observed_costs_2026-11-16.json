@@ -1,0 +1,217 @@
+{
+  "classification": "POSTHOC_DESCRIPTIVE_MODEL_COSTS",
+  "mass_kg": 1.0,
+  "rows": [
+    {
+      "assignment_id": "v0:nominal",
+      "physics_steps": 6,
+      "window_seconds": 0.12,
+      "sampled_path_m": 0.046425599999999845,
+      "initial_speed_m_s": 0.4,
+      "residual_speed_m_s": 0.36864,
+      "observed_delta_kinetic_energy_j": -0.012052275200000004,
+      "energy_admission_limit": "UNSPECIFIED_NOT_AN_OPERATIONAL_ENERGY_BUDGET"
+    },
+    {
+      "assignment_id": "v0:brake_absent",
+      "physics_steps": 6,
+      "window_seconds": 0.12,
+      "sampled_path_m": 0.04800000000000004,
+      "initial_speed_m_s": 0.4,
+      "residual_speed_m_s": 0.4,
+      "observed_delta_kinetic_energy_j": 0.0,
+      "energy_admission_limit": "UNSPECIFIED_NOT_AN_OPERATIONAL_ENERGY_BUDGET"
+    },
+    {
+      "assignment_id": "v0:force_feedback_spoof",
+      "physics_steps": 6,
+      "window_seconds": 0.12,
+      "sampled_path_m": 0.04800000000000004,
+      "initial_speed_m_s": 0.4,
+      "residual_speed_m_s": 0.4,
+      "observed_delta_kinetic_energy_j": 0.0,
+      "energy_admission_limit": "UNSPECIFIED_NOT_AN_OPERATIONAL_ENERGY_BUDGET"
+    },
+    {
+      "assignment_id": "v0:coherent_spoof",
+      "physics_steps": 6,
+      "window_seconds": 0.12,
+      "sampled_path_m": 0.04800000000000004,
+      "initial_speed_m_s": 0.4,
+      "residual_speed_m_s": 0.4,
+      "observed_delta_kinetic_energy_j": 0.0,
+      "energy_admission_limit": "UNSPECIFIED_NOT_AN_OPERATIONAL_ENERGY_BUDGET"
+    },
+    {
+      "assignment_id": "v0:wrong_sign",
+      "physics_steps": 6,
+      "window_seconds": 0.12,
+      "sampled_path_m": 0.04999999999999982,
+      "initial_speed_m_s": 0.4,
+      "residual_speed_m_s": 0.44000000000000006,
+      "observed_delta_kinetic_energy_j": 0.01680000000000001,
+      "energy_admission_limit": "UNSPECIFIED_NOT_AN_OPERATIONAL_ENERGY_BUDGET"
+    },
+    {
+      "assignment_id": "v0:force_over_budget",
+      "physics_steps": 6,
+      "window_seconds": 0.12,
+      "sampled_path_m": 0.05400000000000005,
+      "initial_speed_m_s": 0.4,
+      "residual_speed_m_s": 0.52,
+      "observed_delta_kinetic_energy_j": 0.0552,
+      "energy_admission_limit": "UNSPECIFIED_NOT_AN_OPERATIONAL_ENERGY_BUDGET"
+    },
+    {
+      "assignment_id": "v0:near_wall_design",
+      "physics_steps": 0,
+      "window_seconds": 0.0,
+      "sampled_path_m": null,
+      "initial_speed_m_s": 0.4,
+      "residual_speed_m_s": null,
+      "observed_delta_kinetic_energy_j": null,
+      "energy_admission_limit": "UNSPECIFIED_NOT_AN_OPERATIONAL_ENERGY_BUDGET"
+    },
+    {
+      "assignment_id": "v1:nominal",
+      "physics_steps": 6,
+      "window_seconds": 0.12,
+      "sampled_path_m": 0.05803199999999986,
+      "initial_speed_m_s": 0.5,
+      "residual_speed_m_s": 0.4608,
+      "observed_delta_kinetic_energy_j": -0.018831680000000003,
+      "energy_admission_limit": "UNSPECIFIED_NOT_AN_OPERATIONAL_ENERGY_BUDGET"
+    },
+    {
+      "assignment_id": "v1:brake_absent",
+      "physics_steps": 6,
+      "window_seconds": 0.12,
+      "sampled_path_m": 0.06000000000000005,
+      "initial_speed_m_s": 0.5,
+      "residual_speed_m_s": 0.5,
+      "observed_delta_kinetic_energy_j": 0.0,
+      "energy_admission_limit": "UNSPECIFIED_NOT_AN_OPERATIONAL_ENERGY_BUDGET"
+    },
+    {
+      "assignment_id": "v1:force_feedback_spoof",
+      "physics_steps": 6,
+      "window_seconds": 0.12,
+      "sampled_path_m": 0.06000000000000005,
+      "initial_speed_m_s": 0.5,
+      "residual_speed_m_s": 0.5,
+      "observed_delta_kinetic_energy_j": 0.0,
+      "energy_admission_limit": "UNSPECIFIED_NOT_AN_OPERATIONAL_ENERGY_BUDGET"
+    },
+    {
+      "assignment_id": "v1:coherent_spoof",
+      "physics_steps": 6,
+      "window_seconds": 0.12,
+      "sampled_path_m": 0.06000000000000005,
+      "initial_speed_m_s": 0.5,
+      "residual_speed_m_s": 0.5,
+      "observed_delta_kinetic_energy_j": 0.0,
+      "energy_admission_limit": "UNSPECIFIED_NOT_AN_OPERATIONAL_ENERGY_BUDGET"
+    },
+    {
+      "assignment_id": "v1:wrong_sign",
+      "physics_steps": 6,
+      "window_seconds": 0.12,
+      "sampled_path_m": 0.06199999999999983,
+      "initial_speed_m_s": 0.5,
+      "residual_speed_m_s": 0.54,
+      "observed_delta_kinetic_energy_j": 0.020800000000000013,
+      "energy_admission_limit": "UNSPECIFIED_NOT_AN_OPERATIONAL_ENERGY_BUDGET"
+    },
+    {
+      "assignment_id": "v1:force_over_budget",
+      "physics_steps": 6,
+      "window_seconds": 0.12,
+      "sampled_path_m": 0.06600000000000006,
+      "initial_speed_m_s": 0.5,
+      "residual_speed_m_s": 0.6200000000000001,
+      "observed_delta_kinetic_energy_j": 0.06720000000000007,
+      "energy_admission_limit": "UNSPECIFIED_NOT_AN_OPERATIONAL_ENERGY_BUDGET"
+    },
+    {
+      "assignment_id": "v1:near_wall_design",
+      "physics_steps": 0,
+      "window_seconds": 0.0,
+      "sampled_path_m": null,
+      "initial_speed_m_s": 0.5,
+      "residual_speed_m_s": null,
+      "observed_delta_kinetic_energy_j": null,
+      "energy_admission_limit": "UNSPECIFIED_NOT_AN_OPERATIONAL_ENERGY_BUDGET"
+    },
+    {
+      "assignment_id": "v2:nominal",
+      "physics_steps": 6,
+      "window_seconds": 0.12,
+      "sampled_path_m": 0.07000000000000028,
+      "initial_speed_m_s": 0.6,
+      "residual_speed_m_s": 0.5599999999999999,
+      "observed_delta_kinetic_energy_j": -0.023200000000000026,
+      "energy_admission_limit": "UNSPECIFIED_NOT_AN_OPERATIONAL_ENERGY_BUDGET"
+    },
+    {
+      "assignment_id": "v2:brake_absent",
+      "physics_steps": 6,
+      "window_seconds": 0.12,
+      "sampled_path_m": 0.07200000000000006,
+      "initial_speed_m_s": 0.6,
+      "residual_speed_m_s": 0.6,
+      "observed_delta_kinetic_energy_j": 0.0,
+      "energy_admission_limit": "UNSPECIFIED_NOT_AN_OPERATIONAL_ENERGY_BUDGET"
+    },
+    {
+      "assignment_id": "v2:force_feedback_spoof",
+      "physics_steps": 6,
+      "window_seconds": 0.12,
+      "sampled_path_m": 0.07200000000000006,
+      "initial_speed_m_s": 0.6,
+      "residual_speed_m_s": 0.6,
+      "observed_delta_kinetic_energy_j": 0.0,
+      "energy_admission_limit": "UNSPECIFIED_NOT_AN_OPERATIONAL_ENERGY_BUDGET"
+    },
+    {
+      "assignment_id": "v2:coherent_spoof",
+      "physics_steps": 6,
+      "window_seconds": 0.12,
+      "sampled_path_m": 0.07200000000000006,
+      "initial_speed_m_s": 0.6,
+      "residual_speed_m_s": 0.6,
+      "observed_delta_kinetic_energy_j": 0.0,
+      "energy_admission_limit": "UNSPECIFIED_NOT_AN_OPERATIONAL_ENERGY_BUDGET"
+    },
+    {
+      "assignment_id": "v2:wrong_sign",
+      "physics_steps": 6,
+      "window_seconds": 0.12,
+      "sampled_path_m": 0.07399999999999984,
+      "initial_speed_m_s": 0.6,
+      "residual_speed_m_s": 0.64,
+      "observed_delta_kinetic_energy_j": 0.024800000000000016,
+      "energy_admission_limit": "UNSPECIFIED_NOT_AN_OPERATIONAL_ENERGY_BUDGET"
+    },
+    {
+      "assignment_id": "v2:force_over_budget",
+      "physics_steps": 6,
+      "window_seconds": 0.12,
+      "sampled_path_m": 0.07800000000000007,
+      "initial_speed_m_s": 0.6,
+      "residual_speed_m_s": 0.7200000000000001,
+      "observed_delta_kinetic_energy_j": 0.07920000000000005,
+      "energy_admission_limit": "UNSPECIFIED_NOT_AN_OPERATIONAL_ENERGY_BUDGET"
+    },
+    {
+      "assignment_id": "v2:near_wall_design",
+      "physics_steps": 0,
+      "window_seconds": 0.0,
+      "sampled_path_m": null,
+      "initial_speed_m_s": 0.6,
+      "residual_speed_m_s": null,
+      "observed_delta_kinetic_energy_j": null,
+      "energy_admission_limit": "UNSPECIFIED_NOT_AN_OPERATIONAL_ENERGY_BUDGET"
+    }
+  ],
+  "limitations": "True simulation velocities for scoring only; no energy/rest approval threshold."
+}

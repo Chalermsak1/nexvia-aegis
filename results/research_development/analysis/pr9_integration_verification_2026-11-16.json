@@ -1,0 +1,74 @@
+{
+  "classification": "DEVELOPMENT_PR_INTEGRATION_NOT_RELEASE_APPROVAL",
+  "research_parent": "f637bc19a810854213fa66850f8e48d89c438772",
+  "main_parent": "936fbdfeb516cf8b77ba6107c57f9f796293a525",
+  "conflict": "add/add evidence index",
+  "unique_ledgers": 21,
+  "shared_hashes_agree": 19,
+  "snapshots": [
+    {
+      "id": "research_hardening",
+      "source_commit": "f637bc19a810854213fa66850f8e48d89c438772",
+      "path": "docs/research/evidence_index_snapshots/research_hardening_f637bc1.json",
+      "sha256": "40d84568320a7c6cc3f15edec2acdab16004d2a118794a9dd2dc4bbba1c6bc92",
+      "ledger_count": 19,
+      "original_metadata": {
+        "classification": "READ_ONLY_DEVELOPMENT_EVIDENCE_INVENTORY",
+        "repository": "https://github.com/Chalermsak1/nexvia-aegis.git",
+        "commit": "74b0bfab8e57cd450293e49de881207074df3141",
+        "branch": "codex/research-hardening",
+        "runtime_observed": {
+          "python": "3.12.14",
+          "numpy": "2.5.3",
+          "mujoco": "3.14.0",
+          "pytest": "9.1.1",
+          "torch": "NOT_INSTALLED"
+        },
+        "scope": "Only development JSONL ledgers; no protected Holdout data or seed files inspected. Overlapping/repeated cases must not be pooled as independent observations. Not a comprehensive inventory of all repository artifacts.",
+        "report": {
+          "path": "docs/research/NEXVIA_AEGIS_COMPREHENSIVE_DEVELOPMENT_AND_RESEARCH_ROADMAP_2026-10-31_TH.md",
+          "sha256": "e489b8383ed81750e0bd129bae3f982acd42586789f1ca472ec381bf000df121",
+          "sections": 22,
+          "lines": 866,
+          "engineering_work_items": 35
+        },
+        "validation_scope": "Documentation checks: relative links, explicit TOC anchors, table column counts, code fences, required scope terms, and byte hashes of all 19 development ledgers. No new simulation or full software test suite executed for document preparation.",
+        "previous_test_execution_record": {
+          "basis": "Coordinator tool execution before commit 74b0bfa; not independently replicated during report preparation",
+          "selection": "27 changed/new test files",
+          "result": "324 passed in 2.78s",
+          "full_repository_suite": false
+        }
+      }
+    },
+    {
+      "id": "main",
+      "source_commit": "936fbdfeb516cf8b77ba6107c57f9f796293a525",
+      "path": "docs/research/evidence_index_snapshots/main_936fbdf.json",
+      "sha256": "581034da7a58e40f6b3b2e18a7d4ad802530fc5c206e23a805e0466afeb889c9",
+      "ledger_count": 21,
+      "original_metadata": {
+        "generated_at": "2026-10-31T14:46:26.297238+00:00",
+        "scope": "results/research_development/dev/*.jsonl",
+        "total_ledgers": 21
+      }
+    }
+  ],
+  "selected_tests": {
+    "passed": 348,
+    "failed": 0,
+    "errors": 0,
+    "seconds": 85.657,
+    "full_repository_suite": false
+  },
+  "artifacts": {
+    "docs/research/NEXVIA_AEGIS_DEVELOPMENT_EVIDENCE_INDEX_2026-10-31.json": "5227132844b1c1d4c203aa3423a04b9c14143e227fe48036954d732ac0b974db",
+    "docs/research/PR9_INTEGRATION_RESOLUTION_2026-11-16.md": "1144a6a780564eae2ccc22b0f536c513dae1b11f46962eacbf6dfb6dc3e899cb",
+    "tests/test_evidence_index_merge.py": "3957de12fae0de396cadffc45143f071618e8902daab76cb37003fc22a760e42",
+    "results/research_development/analysis/pr9_integration_tests_2026-11-16.xml": "9c171acfd5182f16cc9a5839334674fcb33f79eff0cf5fd61ec16bf8db01b86a",
+    "results/research_development/analysis/pr9_integration_tests_2026-11-16.log": "e75db639c40d0cb25faead9afd95e09dd8800e8e7ad09107a2bf67fe8ba86803",
+    "docs/research/evidence_index_snapshots/research_hardening_f637bc1.json": "40d84568320a7c6cc3f15edec2acdab16004d2a118794a9dd2dc4bbba1c6bc92",
+    "docs/research/evidence_index_snapshots/main_936fbdf.json": "581034da7a58e40f6b3b2e18a7d4ad802530fc5c206e23a805e0466afeb889c9"
+  },
+  "gate_b": "GATE_B_NOT_AUTHORIZED"
+}

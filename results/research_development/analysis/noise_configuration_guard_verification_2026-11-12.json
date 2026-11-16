@@ -1,0 +1,29 @@
+{
+  "classification": "EXPLORATORY_CONFIGURATION_GUARD_VERIFICATION",
+  "parent_commit": "74b0bfab8e57cd450293e49de881207074df3141",
+  "tests": {
+    "tests": "27",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "1.455",
+    "timestamp": "2026-11-12T10:44:16.607457+07:00"
+  },
+  "source_sha256": {
+    "scripts/research/configured_noise_pairing.py": "39ae97cdd3c8fc2d01c46e9827cf535619cf7b49613c10e486f2ecaef4ed0e8a",
+    "tests/test_configured_noise_pairing.py": "376bd6705cbb3a81bd006c125b902a7d5b03c335377858fb214116d2acbc1559",
+    "scripts/research/recovery_noise_pairing.py": "adc3248ad81c9128be3171d349ef17dad396ea7dd08a098ed9b240c0e57268c5",
+    "tests/test_recovery_noise_actual_trace.py": "51680380c8a8d29719cefe2c1bc8b3a250af518f4b2fbd01fb23cff2311b8b71",
+    "experiments/benchmark_physical_3d_cbf.py": "04bc31bf74423806200e39a44334e1dd0cf4063dde08797ef79dacb491b4323f"
+  },
+  "artifacts_sha256": {
+    "report.md": "c2df04eb3ae0c804a338ddbfddc919d2f3232515605dc40df43fa486fbcf0093",
+    "tests.xml": "a7bcbfc885e5d5fa9c68210c8b70d3659610606876f58939cfa1feae24760903"
+  },
+  "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:. .venv/bin/python -m pytest -p no:cacheprovider -q tests/test_configured_noise_pairing.py tests/test_recovery_noise_pairing.py tests/test_recovery_noise_actual_trace.py --basetemp=/private/tmp/nexvia-config-20261112/pytest --junitxml=/private/tmp/nexvia-config-20261112/tests.xml",
+  "limitations": [
+    "Selected current-source hashes only; no before/after attestation or independent authentication.",
+    "Caller declarations do not prove actual execution configuration."
+  ],
+  "governance": "GATE_B_NOT_AUTHORIZED"
+}

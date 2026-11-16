@@ -1,0 +1,41 @@
+{
+  "classification": "EXPLORATORY_DIAGNOSTIC_TOOLING_VERIFICATION",
+  "recorded_at_utc": "2026-11-01T14:04:21.939614+00:00",
+  "branch": "codex/research-hardening",
+  "parent_commit": "74b0bfab8e57cd450293e49de881207074df3141",
+  "dirty_worktree": true,
+  "python": "3.12.14",
+  "tests": [
+    {
+      "scope": "new motion diagnostics plus physical event, ledger and post-abstention regressions",
+      "command": "PYTHONPATH=src:. .venv/bin/python -m pytest -q tests/test_recovery_motion_summary.py tests/test_recovery_physics_events.py tests/test_recovery_physics_ledger.py tests/test_recovery_post_abstention.py",
+      "initial_passed": 37,
+      "final_passed": 38,
+      "final_seconds": 3.16,
+      "exit_code": 0
+    }
+  ],
+  "development_analysis": {
+    "v1": "completed",
+    "v2": "completed",
+    "new_research_simulations": 0,
+    "note": "Adjacent tests execute development-only fixtures; analysis uses retained development ledgers."
+  },
+  "sha256": {
+    "scripts/research/summarize_recovery_motion.py": "c7ab3ce4d1752b88931c9fc5550cfcbd748ec18ff73f5f5cb9ec4b9e33a23464",
+    "tests/test_recovery_motion_summary.py": "2b7ff17dd708837a071e7ef8918afcd3892a220dd6812475fb32ea89953328ee",
+    "scripts/research/analyze_recovery_physics_evidence.py": "658c451602264ee8a0c34f7329cc3b210d40750fcb2ab419e584a4fd52301048",
+    "scripts/research/development_ledger.py": "254fe889557148110e458ed2cb6e3286837589a484d7a63e1ae3d2c34b645502",
+    "experiments/benchmark_physical_3d_cbf.py": "04bc31bf74423806200e39a44334e1dd0cf4063dde08797ef79dacb491b4323f",
+    "src/aegis/env/mujoco_3d_cbf.py": "438b8ec89d1d40101586b0d888de7e8b5d73c9763cbae2603ccab01f04801433",
+    "results/research_development/dev/recovery_incremental_physics_v1.jsonl": "359ae6f7e6f1de3fd99609c21cf9cdfa3d440f39a5234d8cfb45addeaafeaa2f",
+    "results/research_development/dev/recovery_post_abstention_physics_v2.jsonl": "48136174812afb4e852732d314b88bbd1b8e87dd4f860cec98c85902dd72fecf",
+    "results/research_development/analysis/recovery_motion_observations_2026-11-01_v1.json": "0d85b0f8cbe7f39f90fc466dec404a3903ad37a6a50da55c9105b097a4532403",
+    "results/research_development/analysis/recovery_motion_observations_2026-11-01_v2.json": "7a3fc2b9ce57700457e628d91c338eb794683d1251a2efdf3b8a35683e78f2f2"
+  },
+  "limitations": [
+    "Selected files only; not dependency closure, independent authentication, power-loss assurance or reproducibility certification.",
+    "No full repository suite, real robot, Holdout evaluation or release authorization."
+  ],
+  "governance": "GATE_B_NOT_AUTHORIZED"
+}

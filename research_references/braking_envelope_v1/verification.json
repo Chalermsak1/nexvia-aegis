@@ -1,0 +1,14 @@
+{
+  "classification": "STANDALONE_ONE_DIMENSIONAL_BRAKING_REFERENCE",
+  "final_tests_passed": 47,
+  "initial_tests_passed": 46,
+  "repository_modified": false,
+  "numeric_claim": "Ordinary floating-point reference, not certified interval arithmetic.",
+  "sha256": {
+    "braking_envelope.py": "f9230c62bfb451d0b8b7e42b5c693168399be6b88b8cfec3faafa6bef719cd37",
+    "test_braking_envelope.py": "75a5ce1cf0b194a7ad451bf067bc5e8e21c4d246c374edcdb1c64bbf44f6d387",
+    "tests_final.xml": "7c73268e97ab938d248fcf04cd4428ac7c664ca61504c7d4072bcca25edb9c59",
+    "README.md": "7701f3e192807fe726fcff46aaa585194f13990201cbaf3c98e598f73d59bc92"
+  },
+  "governance": "GATE_B_NOT_AUTHORIZED"
+}

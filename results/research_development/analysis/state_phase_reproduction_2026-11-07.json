@@ -1,0 +1,583 @@
+{
+  "classification": "EXPLORATORY_STATE_PHASE_REPRODUCTION",
+  "parent_commit": "74b0bfab8e57cd450293e49de881207074df3141",
+  "runtime": {
+    "python": "3.12.14",
+    "numpy": "2.5.3",
+    "mujoco": "3.14.0"
+  },
+  "source_sha256_before": {
+    "src/aegis/env/mujoco_3d_cbf.py": "438b8ec89d1d40101586b0d888de7e8b5d73c9763cbae2603ccab01f04801433",
+    "scripts/research/diagnose_state_phase.py": "3de5f30d2095e1a9d0ed6d71f39b9daaa8d34ba997641512232d3c2cc2af444a",
+    "tests/test_state_phase_diagnostic.py": "2046ece117f5aaa77fbaf3249d51b741a6973c1f697493adf69a7af18365d26a"
+  },
+  "source_sha256_after": {
+    "src/aegis/env/mujoco_3d_cbf.py": "438b8ec89d1d40101586b0d888de7e8b5d73c9763cbae2603ccab01f04801433",
+    "scripts/research/diagnose_state_phase.py": "3de5f30d2095e1a9d0ed6d71f39b9daaa8d34ba997641512232d3c2cc2af444a",
+    "tests/test_state_phase_diagnostic.py": "2046ece117f5aaa77fbaf3249d51b741a6973c1f697493adf69a7af18365d26a"
+  },
+  "cases": [
+    {
+      "timestep_seconds": 0.01,
+      "initial_speed_m_s": 0.0,
+      "command": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "steps": [
+        {
+          "simulation_time_seconds": 0.01,
+          "runtime_timestep_seconds": 0.01,
+          "reported_position": [
+            -2.0,
+            -2.0,
+            0.5
+          ],
+          "integrated_translation_qpos": [
+            -2.0,
+            -2.0,
+            0.5
+          ],
+          "copied_forward_position": [
+            -2.0,
+            -2.0,
+            0.5
+          ],
+          "reported_velocity": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "reported_distance": 5.656854249492381,
+          "copied_forward_distance": 5.656854249492381,
+          "position_phase_offset_m": 0.0
+        },
+        {
+          "simulation_time_seconds": 0.02,
+          "runtime_timestep_seconds": 0.01,
+          "reported_position": [
+            -2.0,
+            -2.0,
+            0.5
+          ],
+          "integrated_translation_qpos": [
+            -2.0,
+            -2.0,
+            0.5
+          ],
+          "copied_forward_position": [
+            -2.0,
+            -2.0,
+            0.5
+          ],
+          "reported_velocity": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "reported_distance": 5.656854249492381,
+          "copied_forward_distance": 5.656854249492381,
+          "position_phase_offset_m": 0.0
+        },
+        {
+          "simulation_time_seconds": 0.03,
+          "runtime_timestep_seconds": 0.01,
+          "reported_position": [
+            -2.0,
+            -2.0,
+            0.5
+          ],
+          "integrated_translation_qpos": [
+            -2.0,
+            -2.0,
+            0.5
+          ],
+          "copied_forward_position": [
+            -2.0,
+            -2.0,
+            0.5
+          ],
+          "reported_velocity": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "reported_distance": 5.656854249492381,
+          "copied_forward_distance": 5.656854249492381,
+          "position_phase_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "timestep_seconds": 0.01,
+      "initial_speed_m_s": 0.1,
+      "command": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "steps": [
+        {
+          "simulation_time_seconds": 0.01,
+          "runtime_timestep_seconds": 0.01,
+          "reported_position": [
+            -2.0,
+            -2.0,
+            0.5
+          ],
+          "integrated_translation_qpos": [
+            -1.999,
+            -2.0,
+            0.5
+          ],
+          "copied_forward_position": [
+            -1.999,
+            -2.0,
+            0.5
+          ],
+          "reported_velocity": [
+            0.1,
+            0.0,
+            0.0
+          ],
+          "reported_distance": 5.656854249492381,
+          "copied_forward_distance": 5.656147186910893,
+          "position_phase_offset_m": 0.0009999999999998899
+        },
+        {
+          "simulation_time_seconds": 0.02,
+          "runtime_timestep_seconds": 0.01,
+          "reported_position": [
+            -1.999,
+            -2.0,
+            0.5
+          ],
+          "integrated_translation_qpos": [
+            -1.9980000000000002,
+            -2.0,
+            0.5
+          ],
+          "copied_forward_position": [
+            -1.9980000000000002,
+            -2.0,
+            0.5
+          ],
+          "reported_velocity": [
+            0.1,
+            0.0,
+            0.0
+          ],
+          "reported_distance": 5.656147186910893,
+          "copied_forward_distance": 5.655440212750905,
+          "position_phase_offset_m": 0.0009999999999998899
+        },
+        {
+          "simulation_time_seconds": 0.03,
+          "runtime_timestep_seconds": 0.01,
+          "reported_position": [
+            -1.9980000000000002,
+            -2.0,
+            0.5
+          ],
+          "integrated_translation_qpos": [
+            -1.9970000000000003,
+            -2.0,
+            0.5
+          ],
+          "copied_forward_position": [
+            -1.9970000000000003,
+            -2.0,
+            0.5
+          ],
+          "reported_velocity": [
+            0.1,
+            0.0,
+            0.0
+          ],
+          "reported_distance": 5.655440212750905,
+          "copied_forward_distance": 5.654733327045583,
+          "position_phase_offset_m": 0.0009999999999998899
+        }
+      ]
+    },
+    {
+      "timestep_seconds": 0.01,
+      "initial_speed_m_s": 0.5,
+      "command": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "steps": [
+        {
+          "simulation_time_seconds": 0.01,
+          "runtime_timestep_seconds": 0.01,
+          "reported_position": [
+            -2.0,
+            -2.0,
+            0.5
+          ],
+          "integrated_translation_qpos": [
+            -1.995,
+            -2.0,
+            0.5
+          ],
+          "copied_forward_position": [
+            -1.995,
+            -2.0,
+            0.5
+          ],
+          "reported_velocity": [
+            0.5,
+            0.0,
+            0.0
+          ],
+          "reported_distance": 5.656854249492381,
+          "copied_forward_distance": 5.653319821131651,
+          "position_phase_offset_m": 0.004999999999999893
+        },
+        {
+          "simulation_time_seconds": 0.02,
+          "runtime_timestep_seconds": 0.01,
+          "reported_position": [
+            -1.995,
+            -2.0,
+            0.5
+          ],
+          "integrated_translation_qpos": [
+            -1.9900000000000002,
+            -2.0,
+            0.5
+          ],
+          "copied_forward_position": [
+            -1.9900000000000002,
+            -2.0,
+            0.5
+          ],
+          "reported_velocity": [
+            0.5,
+            0.0,
+            0.0
+          ],
+          "reported_distance": 5.653319821131651,
+          "copied_forward_distance": 5.64978760662735,
+          "position_phase_offset_m": 0.004999999999999893
+        },
+        {
+          "simulation_time_seconds": 0.03,
+          "runtime_timestep_seconds": 0.01,
+          "reported_position": [
+            -1.9900000000000002,
+            -2.0,
+            0.5
+          ],
+          "integrated_translation_qpos": [
+            -1.9850000000000003,
+            -2.0,
+            0.5
+          ],
+          "copied_forward_position": [
+            -1.9850000000000003,
+            -2.0,
+            0.5
+          ],
+          "reported_velocity": [
+            0.5,
+            0.0,
+            0.0
+          ],
+          "reported_distance": 5.64978760662735,
+          "copied_forward_distance": 5.646257610134345,
+          "position_phase_offset_m": 0.004999999999999893
+        }
+      ]
+    },
+    {
+      "timestep_seconds": 0.02,
+      "initial_speed_m_s": 0.0,
+      "command": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "steps": [
+        {
+          "simulation_time_seconds": 0.02,
+          "runtime_timestep_seconds": 0.02,
+          "reported_position": [
+            -2.0,
+            -2.0,
+            0.5
+          ],
+          "integrated_translation_qpos": [
+            -2.0,
+            -2.0,
+            0.5
+          ],
+          "copied_forward_position": [
+            -2.0,
+            -2.0,
+            0.5
+          ],
+          "reported_velocity": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "reported_distance": 5.656854249492381,
+          "copied_forward_distance": 5.656854249492381,
+          "position_phase_offset_m": 0.0
+        },
+        {
+          "simulation_time_seconds": 0.04,
+          "runtime_timestep_seconds": 0.02,
+          "reported_position": [
+            -2.0,
+            -2.0,
+            0.5
+          ],
+          "integrated_translation_qpos": [
+            -2.0,
+            -2.0,
+            0.5
+          ],
+          "copied_forward_position": [
+            -2.0,
+            -2.0,
+            0.5
+          ],
+          "reported_velocity": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "reported_distance": 5.656854249492381,
+          "copied_forward_distance": 5.656854249492381,
+          "position_phase_offset_m": 0.0
+        },
+        {
+          "simulation_time_seconds": 0.06,
+          "runtime_timestep_seconds": 0.02,
+          "reported_position": [
+            -2.0,
+            -2.0,
+            0.5
+          ],
+          "integrated_translation_qpos": [
+            -2.0,
+            -2.0,
+            0.5
+          ],
+          "copied_forward_position": [
+            -2.0,
+            -2.0,
+            0.5
+          ],
+          "reported_velocity": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "reported_distance": 5.656854249492381,
+          "copied_forward_distance": 5.656854249492381,
+          "position_phase_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "timestep_seconds": 0.02,
+      "initial_speed_m_s": 0.1,
+      "command": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "steps": [
+        {
+          "simulation_time_seconds": 0.02,
+          "runtime_timestep_seconds": 0.02,
+          "reported_position": [
+            -2.0,
+            -2.0,
+            0.5
+          ],
+          "integrated_translation_qpos": [
+            -1.998,
+            -2.0,
+            0.5
+          ],
+          "copied_forward_position": [
+            -1.998,
+            -2.0,
+            0.5
+          ],
+          "reported_velocity": [
+            0.1,
+            0.0,
+            0.0
+          ],
+          "reported_distance": 5.656854249492381,
+          "copied_forward_distance": 5.655440212750905,
+          "position_phase_offset_m": 0.0020000000000000018
+        },
+        {
+          "simulation_time_seconds": 0.04,
+          "runtime_timestep_seconds": 0.02,
+          "reported_position": [
+            -1.998,
+            -2.0,
+            0.5
+          ],
+          "integrated_translation_qpos": [
+            -1.996,
+            -2.0,
+            0.5
+          ],
+          "copied_forward_position": [
+            -1.996,
+            -2.0,
+            0.5
+          ],
+          "reported_velocity": [
+            0.1,
+            0.0,
+            0.0
+          ],
+          "reported_distance": 5.655440212750905,
+          "copied_forward_distance": 5.654026529828101,
+          "position_phase_offset_m": 0.0020000000000000018
+        },
+        {
+          "simulation_time_seconds": 0.06,
+          "runtime_timestep_seconds": 0.02,
+          "reported_position": [
+            -1.996,
+            -2.0,
+            0.5
+          ],
+          "integrated_translation_qpos": [
+            -1.994,
+            -2.0,
+            0.5
+          ],
+          "copied_forward_position": [
+            -1.994,
+            -2.0,
+            0.5
+          ],
+          "reported_velocity": [
+            0.1,
+            0.0,
+            0.0
+          ],
+          "reported_distance": 5.654026529828101,
+          "copied_forward_distance": 5.652613200989433,
+          "position_phase_offset_m": 0.0020000000000000018
+        }
+      ]
+    },
+    {
+      "timestep_seconds": 0.02,
+      "initial_speed_m_s": 0.5,
+      "command": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "steps": [
+        {
+          "simulation_time_seconds": 0.02,
+          "runtime_timestep_seconds": 0.02,
+          "reported_position": [
+            -2.0,
+            -2.0,
+            0.5
+          ],
+          "integrated_translation_qpos": [
+            -1.99,
+            -2.0,
+            0.5
+          ],
+          "copied_forward_position": [
+            -1.99,
+            -2.0,
+            0.5
+          ],
+          "reported_velocity": [
+            0.5,
+            0.0,
+            0.0
+          ],
+          "reported_distance": 5.656854249492381,
+          "copied_forward_distance": 5.64978760662735,
+          "position_phase_offset_m": 0.010000000000000009
+        },
+        {
+          "simulation_time_seconds": 0.04,
+          "runtime_timestep_seconds": 0.02,
+          "reported_position": [
+            -1.99,
+            -2.0,
+            0.5
+          ],
+          "integrated_translation_qpos": [
+            -1.98,
+            -2.0,
+            0.5
+          ],
+          "copied_forward_position": [
+            -1.98,
+            -2.0,
+            0.5
+          ],
+          "reported_velocity": [
+            0.5,
+            0.0,
+            0.0
+          ],
+          "reported_distance": 5.64978760662735,
+          "copied_forward_distance": 5.6427298358152855,
+          "position_phase_offset_m": 0.010000000000000009
+        },
+        {
+          "simulation_time_seconds": 0.06,
+          "runtime_timestep_seconds": 0.02,
+          "reported_position": [
+            -1.98,
+            -2.0,
+            0.5
+          ],
+          "integrated_translation_qpos": [
+            -1.97,
+            -2.0,
+            0.5
+          ],
+          "copied_forward_position": [
+            -1.97,
+            -2.0,
+            0.5
+          ],
+          "reported_velocity": [
+            0.5,
+            0.0,
+            0.0
+          ],
+          "reported_distance": 5.6427298358152855,
+          "copied_forward_distance": 5.635680970388583,
+          "position_phase_offset_m": 0.010000000000000009
+        }
+      ]
+    }
+  ],
+  "fixture_cases": 6,
+  "total_fixture_steps": 18,
+  "limitations": [
+    "Synthetic open-loop simulation fixtures; not policy evaluation or independent reliability trials.",
+    "Copied-data forward pass is diagnostic only and never changes live controller inputs.",
+    "No claim about exact corrections to historical summaries or their outcome classifications.",
+    "Source hashes are selected-file consistency checks, not authenticated provenance.",
+    "No Holdout, reserved seeds/outcomes, production tickets or real robot involved."
+  ],
+  "governance": "GATE_B_NOT_AUTHORIZED"
+}

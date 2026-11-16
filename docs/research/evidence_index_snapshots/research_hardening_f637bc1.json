@@ -1,0 +1,334 @@
+{
+  "classification": "READ_ONLY_DEVELOPMENT_EVIDENCE_INVENTORY",
+  "repository": "https://github.com/Chalermsak1/nexvia-aegis.git",
+  "commit": "74b0bfab8e57cd450293e49de881207074df3141",
+  "branch": "codex/research-hardening",
+  "runtime_observed": {
+    "python": "3.12.14",
+    "numpy": "2.5.3",
+    "mujoco": "3.14.0",
+    "pytest": "9.1.1",
+    "torch": "NOT_INSTALLED"
+  },
+  "scope": "Only development JSONL ledgers; no protected Holdout data or seed files inspected. Overlapping/repeated cases must not be pooled as independent observations. Not a comprehensive inventory of all repository artifacts.",
+  "ledgers": [
+    {
+      "path": "results/research_development/dev/estimated_braking_ledger_v1.jsonl",
+      "sha256": "b882b77e51fe92041048aed198f9e5ea65b6f30770214518a9a20c9c46a0b888",
+      "bytes": 576138,
+      "study": "V9-M5 exploratory estimated braking",
+      "schema": "nexvia-development-ledger/1",
+      "visible_state": "FINALIZED",
+      "assignment_counts": {
+        "ASSIGNED": 0,
+        "STARTED": 0,
+        "COMPLETED": 24,
+        "ERROR": 0
+      },
+      "event_records": 0,
+      "warning": "Local unkeyed chain verification is not independent authentication or durability proof."
+    },
+    {
+      "path": "results/research_development/dev/estimated_braking_ledger_v2.jsonl",
+      "sha256": "7ab994c817f374458317d00c8e0f518e86a2ead705f67febf2ad032a4dc8bb87",
+      "bytes": 1450730,
+      "study": "V9-M5 exploratory estimated braking v2",
+      "schema": "nexvia-development-ledger/1",
+      "visible_state": "FINALIZED",
+      "assignment_counts": {
+        "ASSIGNED": 0,
+        "STARTED": 0,
+        "COMPLETED": 24,
+        "ERROR": 0
+      },
+      "event_records": 0,
+      "warning": "Local unkeyed chain verification is not independent authentication or durability proof."
+    },
+    {
+      "path": "results/research_development/dev/estimated_braking_step_ledger_v3.jsonl",
+      "sha256": "c9e9fc6bb0db0444d9cd1b4c02002dec82f9ac207c2f3971d96175a85b47c3d2",
+      "bytes": 559177,
+      "study": "V9-M5 exploratory estimated braking v3",
+      "schema": "nexvia-development-ledger/2",
+      "visible_state": "FINALIZED",
+      "assignment_counts": {
+        "ASSIGNED": 0,
+        "STARTED": 0,
+        "COMPLETED": 8,
+        "ERROR": 0
+      },
+      "event_records": 281,
+      "warning": "Local unkeyed chain verification is not independent authentication or durability proof."
+    },
+    {
+      "path": "results/research_development/dev/navigation_force_ablation_v1.jsonl",
+      "sha256": "6169d85eebfa1bb0dcf5ab0b4c95261f967dfe40d3a503b56ea9a182972e196d",
+      "bytes": 4588655,
+      "study": "V9-M5 ideal-state navigation force ablation v1",
+      "schema": "nexvia-development-ledger/2",
+      "visible_state": "FINALIZED",
+      "assignment_counts": {
+        "ASSIGNED": 0,
+        "STARTED": 0,
+        "COMPLETED": 6,
+        "ERROR": 0
+      },
+      "event_records": 4800,
+      "warning": "Local unkeyed chain verification is not independent authentication or durability proof."
+    },
+    {
+      "path": "results/research_development/dev/recovery_monitor_ledger_v1.jsonl",
+      "sha256": "a676c1f0a6213f29757f2b0b01d0398f31ea8d0f6f998ace528d87e70e09ff98",
+      "bytes": 371521,
+      "study": "V9-M5 exploratory recovery monitor",
+      "schema": "nexvia-development-ledger/1",
+      "visible_state": "FINALIZED",
+      "assignment_counts": {
+        "ASSIGNED": 0,
+        "STARTED": 0,
+        "COMPLETED": 36,
+        "ERROR": 0
+      },
+      "event_records": 0,
+      "warning": "Local unkeyed chain verification is not independent authentication or durability proof."
+    },
+    {
+      "path": "results/research_development/dev/recovery_monitor_step_ledger_v2.jsonl",
+      "sha256": "1dda32819f6970b290237ef14906f4b9031ea74690f49fc3a944f1fc1dc07f0a",
+      "bytes": 18976367,
+      "study": "V9-M5 exploratory recovery monitor",
+      "schema": "nexvia-development-ledger/2",
+      "visible_state": "FINALIZED",
+      "assignment_counts": {
+        "ASSIGNED": 0,
+        "STARTED": 0,
+        "COMPLETED": 32,
+        "ERROR": 0
+      },
+      "event_records": 11200,
+      "warning": "Local unkeyed chain verification is not independent authentication or durability proof."
+    },
+    {
+      "path": "results/research_development/dev/recovery_monitor_step_trigger_diagnostic_v2.jsonl",
+      "sha256": "75d15e7c863dc196f2129ceb9e8db776763f51110d84457748ac75966ccc0180",
+      "bytes": 9982416,
+      "study": "V9-M5 exploratory recovery monitor",
+      "schema": "nexvia-development-ledger/2",
+      "visible_state": "FINALIZED",
+      "assignment_counts": {
+        "ASSIGNED": 0,
+        "STARTED": 0,
+        "COMPLETED": 16,
+        "ERROR": 0
+      },
+      "event_records": 5826,
+      "warning": "Local unkeyed chain verification is not independent authentication or durability proof."
+    },
+    {
+      "path": "results/research_development/dev/recovery_monitor_vector_loss_v2.jsonl",
+      "sha256": "aed0dc58956f63f675a45dec755f70942bb13d54ff7bb2ea02167b123995b458",
+      "bytes": 481063,
+      "study": "V9-M5 exploratory recovery monitor",
+      "schema": "nexvia-development-ledger/1",
+      "visible_state": "FINALIZED",
+      "assignment_counts": {
+        "ASSIGNED": 0,
+        "STARTED": 0,
+        "COMPLETED": 48,
+        "ERROR": 0
+      },
+      "event_records": 0,
+      "warning": "Local unkeyed chain verification is not independent authentication or durability proof."
+    },
+    {
+      "path": "results/research_development/dev/recovery_progress_horizon_diagnostic_v1.jsonl",
+      "sha256": "c73446f1d111546145d532d34ca998731615a98b30e5a6925acf771586f0618b",
+      "bytes": 8002984,
+      "study": "V9-M5 exploratory recovery monitor",
+      "schema": "nexvia-development-ledger/2",
+      "visible_state": "FINALIZED",
+      "assignment_counts": {
+        "ASSIGNED": 0,
+        "STARTED": 0,
+        "COMPLETED": 4,
+        "ERROR": 0
+      },
+      "event_records": 4800,
+      "warning": "Local unkeyed chain verification is not independent authentication or durability proof."
+    },
+    {
+      "path": "results/research_development/dev/team_force_axis_smoke_v1.jsonl",
+      "sha256": "a8a96233912157c48d4cf35f54d1fb0dcaa94f025867f53239fae4121aa51ad6",
+      "bytes": 6343849,
+      "study": "V9-M5 exploratory recovery monitor",
+      "schema": "nexvia-development-ledger/2",
+      "visible_state": "FINALIZED",
+      "assignment_counts": {
+        "ASSIGNED": 0,
+        "STARTED": 0,
+        "COMPLETED": 8,
+        "ERROR": 0
+      },
+      "event_records": 3402,
+      "warning": "Local unkeyed chain verification is not independent authentication or durability proof."
+    },
+    {
+      "path": "results/research_development/dev/team_force_direction_smoke_v1.jsonl",
+      "sha256": "34cf9601f56d7be643f6960f4016acdf6e01243f27dc04c40f15f490999afe2e",
+      "bytes": 4547433,
+      "study": "V9-M5 exploratory recovery monitor",
+      "schema": "nexvia-development-ledger/2",
+      "visible_state": "FINALIZED",
+      "assignment_counts": {
+        "ASSIGNED": 0,
+        "STARTED": 0,
+        "COMPLETED": 8,
+        "ERROR": 0
+      },
+      "event_records": 2343,
+      "warning": "Local unkeyed chain verification is not independent authentication or durability proof."
+    },
+    {
+      "path": "results/research_development/dev/team_fresh_factorial_axis_100_v1.jsonl",
+      "sha256": "18a8acd28a80e354cadf336bc1ace425750a55346629d8813ffff2978e1be6db",
+      "bytes": 4203894,
+      "study": "V9-M5 exploratory recovery monitor",
+      "schema": "nexvia-development-ledger/2",
+      "visible_state": "FINALIZED",
+      "assignment_counts": {
+        "ASSIGNED": 0,
+        "STARTED": 0,
+        "COMPLETED": 8,
+        "ERROR": 0
+      },
+      "event_records": 1911,
+      "warning": "Local unkeyed chain verification is not independent authentication or durability proof."
+    },
+    {
+      "path": "results/research_development/dev/team_fresh_factorial_axis_300_v1.jsonl",
+      "sha256": "eb2280addca946bb57557d4ab8a69682af0d22b266e5dce5e953969ac61266e6",
+      "bytes": 4203894,
+      "study": "V9-M5 exploratory recovery monitor",
+      "schema": "nexvia-development-ledger/2",
+      "visible_state": "FINALIZED",
+      "assignment_counts": {
+        "ASSIGNED": 0,
+        "STARTED": 0,
+        "COMPLETED": 8,
+        "ERROR": 0
+      },
+      "event_records": 1911,
+      "warning": "Local unkeyed chain verification is not independent authentication or durability proof."
+    },
+    {
+      "path": "results/research_development/dev/team_fresh_factorial_direction_100_v1.jsonl",
+      "sha256": "c5fb46c66d412b8b2f73a58e992571e05fbfc69c2418876b7da819b43adce8e3",
+      "bytes": 4188992,
+      "study": "V9-M5 exploratory recovery monitor",
+      "schema": "nexvia-development-ledger/2",
+      "visible_state": "FINALIZED",
+      "assignment_counts": {
+        "ASSIGNED": 0,
+        "STARTED": 0,
+        "COMPLETED": 8,
+        "ERROR": 0
+      },
+      "event_records": 1885,
+      "warning": "Local unkeyed chain verification is not independent authentication or durability proof."
+    },
+    {
+      "path": "results/research_development/dev/team_fresh_factorial_direction_300_v1.jsonl",
+      "sha256": "09ef447ce954aba20f9d1d3da01484ca8560097eb5605a8b13ec3057ccc09281",
+      "bytes": 4188992,
+      "study": "V9-M5 exploratory recovery monitor",
+      "schema": "nexvia-development-ledger/2",
+      "visible_state": "FINALIZED",
+      "assignment_counts": {
+        "ASSIGNED": 0,
+        "STARTED": 0,
+        "COMPLETED": 8,
+        "ERROR": 0
+      },
+      "event_records": 1885,
+      "warning": "Local unkeyed chain verification is not independent authentication or durability proof."
+    },
+    {
+      "path": "results/research_development/dev/team_recovery_budget_100_v1.jsonl",
+      "sha256": "155059bc5bb15b6c9150a107c226175c591f9d81a590f3e478b87aaf87b3a92c",
+      "bytes": 5163185,
+      "study": "V9-M5 exploratory recovery monitor",
+      "schema": "nexvia-development-ledger/2",
+      "visible_state": "FINALIZED",
+      "assignment_counts": {
+        "ASSIGNED": 0,
+        "STARTED": 0,
+        "COMPLETED": 8,
+        "ERROR": 0
+      },
+      "event_records": 2343,
+      "warning": "Local unkeyed chain verification is not independent authentication or durability proof."
+    },
+    {
+      "path": "results/research_development/dev/team_recovery_budget_300_v1.jsonl",
+      "sha256": "22f1b9236434f89b64322f5afd70c8d60dc69582163d83c9b6bb922d058e4d2d",
+      "bytes": 6109224,
+      "study": "V9-M5 exploratory recovery monitor",
+      "schema": "nexvia-development-ledger/2",
+      "visible_state": "FINALIZED",
+      "assignment_counts": {
+        "ASSIGNED": 0,
+        "STARTED": 0,
+        "COMPLETED": 8,
+        "ERROR": 0
+      },
+      "event_records": 2753,
+      "warning": "Local unkeyed chain verification is not independent authentication or durability proof."
+    },
+    {
+      "path": "results/research_development/dev/team_recovery_fault_axis_v1.jsonl",
+      "sha256": "0313735d0916e1b856f37ed17f2f7d24ba8d8affb9ea0c519f054a8c710e73e3",
+      "bytes": 6435440,
+      "study": "V9-M5 exploratory recovery monitor",
+      "schema": "nexvia-development-ledger/2",
+      "visible_state": "FINALIZED",
+      "assignment_counts": {
+        "ASSIGNED": 0,
+        "STARTED": 0,
+        "COMPLETED": 8,
+        "ERROR": 0
+      },
+      "event_records": 3014,
+      "warning": "Local unkeyed chain verification is not independent authentication or durability proof."
+    },
+    {
+      "path": "results/research_development/dev/team_recovery_fault_direction_v1.jsonl",
+      "sha256": "7bbbfae9c0de94b3ba3cbbf811cd127b224c4d4cc6bd85b438aece280ba9b53e",
+      "bytes": 3850809,
+      "study": "V9-M5 exploratory recovery monitor",
+      "schema": "nexvia-development-ledger/2",
+      "visible_state": "FINALIZED",
+      "assignment_counts": {
+        "ASSIGNED": 0,
+        "STARTED": 0,
+        "COMPLETED": 8,
+        "ERROR": 0
+      },
+      "event_records": 1754,
+      "warning": "Local unkeyed chain verification is not independent authentication or durability proof."
+    }
+  ],
+  "report": {
+    "path": "docs/research/NEXVIA_AEGIS_COMPREHENSIVE_DEVELOPMENT_AND_RESEARCH_ROADMAP_2026-10-31_TH.md",
+    "sha256": "e489b8383ed81750e0bd129bae3f982acd42586789f1ca472ec381bf000df121",
+    "sections": 22,
+    "lines": 866,
+    "engineering_work_items": 35
+  },
+  "validation_scope": "Documentation checks: relative links, explicit TOC anchors, table column counts, code fences, required scope terms, and byte hashes of all 19 development ledgers. No new simulation or full software test suite executed for document preparation.",
+  "previous_test_execution_record": {
+    "basis": "Coordinator tool execution before commit 74b0bfa; not independently replicated during report preparation",
+    "selection": "27 changed/new test files",
+    "result": "324 passed in 2.78s",
+    "full_repository_suite": false
+  }
+}

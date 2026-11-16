@@ -1,0 +1,194 @@
+{
+  "classification": "EXPLORATORY_RUNTIME_DRIFT_VERIFICATION",
+  "parent_commit": "74b0bfab8e57cd450293e49de881207074df3141",
+  "tests": {
+    "tests": "23",
+    "errors": "0",
+    "failures": "0",
+    "skipped": "0",
+    "timestamp": "2026-11-14T21:04:35.212975+07:00",
+    "time": "1.666"
+  },
+  "source_sha256": {
+    "scripts/research/recovery_execution_bridge_v2.py": "43791110dbd64040e566a3186de2542df5e84abe1be8456a51c2943c47102def",
+    "tests/test_recovery_execution_runtime.py": "18496d37d5c8fd7c067007f1c027211ed51c929b0edf59325e0355bd39069eb2",
+    "scripts/research/recovery_execution_bridge.py": "70a27f8e22073636c94c85e36c216e4263040e983c5fec1af45c6a5fec7c0d18",
+    "scripts/research/audit_bridge_timing.py": "95e9d80c67241e29b5f3062514d9433ffcc5d5d4801e85181c3d8a49e76d9bd4",
+    "experiments/benchmark_physical_3d_cbf.py": "04bc31bf74423806200e39a44334e1dd0cf4063dde08797ef79dacb491b4323f"
+  },
+  "fixture_entries": [
+    {
+      "path": "test_actual_short_bridge_timin0/raw.jsonl",
+      "sha256": "086c971e8ab85078c7e5a1a7781c160e240bb034a8c50e9d734dbc3d81b8d8fd",
+      "study": "V9-M5 recovery execution bridge v1 development",
+      "ledger_state": "FINALIZED"
+    },
+    {
+      "path": "test_actual_short_bridge_timin1/raw.jsonl",
+      "sha256": "7917d21b2795c342152fb897db7dccc06907a1a901378b245d1ca948971c6f4b",
+      "study": "V9-M5 recovery execution bridge v1 development",
+      "ledger_state": "FINALIZED"
+    },
+    {
+      "path": "test_argument_map_reset_and_ph0/run.jsonl",
+      "sha256": "7917d21b2795c342152fb897db7dccc06907a1a901378b245d1ca948971c6f4b",
+      "study": "V9-M5 recovery execution bridge v1 development",
+      "ledger_state": "FINALIZED"
+    },
+    {
+      "path": "test_argument_map_reset_and_ph1/run.jsonl",
+      "sha256": "086c971e8ab85078c7e5a1a7781c160e240bb034a8c50e9d734dbc3d81b8d8fd",
+      "study": "V9-M5 recovery execution bridge v1 development",
+      "ledger_state": "FINALIZED"
+    },
+    {
+      "path": "test_drift_after_physics_is_er0/drift.jsonl",
+      "sha256": "2aaa3b4d20715dca50372b0a50aba350f1fc5408228195ef6460385ca357aeb2",
+      "study": "V9-M5 recovery execution bridge v2 runtime-checked development",
+      "ledger_state": "FINALIZED_WITH_ERRORS"
+    },
+    {
+      "path": "test_drift_after_physics_is_er1/drift.jsonl",
+      "sha256": "94ca5a7df8e25420da3d2543cc6b71973d51ec9619198c8e4fd845cfd8390e3c",
+      "study": "V9-M5 recovery execution bridge v2 runtime-checked development",
+      "ledger_state": "FINALIZED_WITH_ERRORS"
+    },
+    {
+      "path": "test_drift_after_physics_is_er2/drift.jsonl",
+      "sha256": "c78f93e1fb5d58066b543b7b25ee1d61649f3bb6c2534fb585f2d02f953a1b7f",
+      "study": "V9-M5 recovery execution bridge v2 runtime-checked development",
+      "ledger_state": "FINALIZED_WITH_ERRORS"
+    },
+    {
+      "path": "test_execution_exception_is_no0/run.jsonl",
+      "sha256": "0b1eb5e8fcd138f03c0c15c6c16b3b2448dc50fec94694dc9c388b28570d25e8",
+      "study": "V9-M5 recovery execution bridge v1 development",
+      "ledger_state": "FINALIZED_WITH_ERRORS"
+    },
+    {
+      "path": "test_physics_persistence_failu0/run.jsonl",
+      "sha256": "eff1e08ab2e993d5ef36fa74c171e361732e82a1796511f314e85f95030a4b09",
+      "study": "V9-M5 recovery execution bridge v1 development",
+      "ledger_state": "INCOMPLETE"
+    },
+    {
+      "path": "test_rehashed_contradictions_a0/bad.jsonl",
+      "sha256": "b54eff953f91f3e44a9b7dda36a0eb5bcc73a306505129e792555a52062b3a0e",
+      "study": "V9-M5 recovery execution bridge v1 development",
+      "ledger_state": "FINALIZED"
+    },
+    {
+      "path": "test_rehashed_contradictions_a0/raw.jsonl",
+      "sha256": "086c971e8ab85078c7e5a1a7781c160e240bb034a8c50e9d734dbc3d81b8d8fd",
+      "study": "V9-M5 recovery execution bridge v1 development",
+      "ledger_state": "FINALIZED"
+    },
+    {
+      "path": "test_rehashed_contradictions_a1/bad.jsonl",
+      "sha256": "dffa38e6cfee9399b87417384e876ca10122ae0199b07c4b311b1938fb159fd3",
+      "study": "V9-M5 recovery execution bridge v1 development",
+      "ledger_state": "FINALIZED"
+    },
+    {
+      "path": "test_rehashed_contradictions_a1/raw.jsonl",
+      "sha256": "086c971e8ab85078c7e5a1a7781c160e240bb034a8c50e9d734dbc3d81b8d8fd",
+      "study": "V9-M5 recovery execution bridge v1 development",
+      "ledger_state": "FINALIZED"
+    },
+    {
+      "path": "test_rehashed_contradictions_a2/bad.jsonl",
+      "sha256": "c20c81b723d6d12c8995a50cd15fe1cccd0a67d3e0f843be9a093c6bc785a23d",
+      "study": "V9-M5 recovery execution bridge v1 development",
+      "ledger_state": "FINALIZED"
+    },
+    {
+      "path": "test_rehashed_contradictions_a2/raw.jsonl",
+      "sha256": "086c971e8ab85078c7e5a1a7781c160e240bb034a8c50e9d734dbc3d81b8d8fd",
+      "study": "V9-M5 recovery execution bridge v1 development",
+      "ledger_state": "FINALIZED"
+    },
+    {
+      "path": "test_rehashed_contradictions_a3/bad.jsonl",
+      "sha256": "a5843d9e26c84f853a2b3ac0adebbcade23120a6f3bb42f371e3814f3e015cee",
+      "study": "V9-M5 recovery execution bridge v1 development",
+      "ledger_state": "FINALIZED"
+    },
+    {
+      "path": "test_rehashed_contradictions_a3/raw.jsonl",
+      "sha256": "086c971e8ab85078c7e5a1a7781c160e240bb034a8c50e9d734dbc3d81b8d8fd",
+      "study": "V9-M5 recovery execution bridge v1 development",
+      "ledger_state": "FINALIZED"
+    },
+    {
+      "path": "test_rehashed_contradictions_a4/bad.jsonl",
+      "sha256": "49457dcd70fc8fb60d788a607cb51dbef133f19a1f26fe11d7481fbf00779173",
+      "study": "V9-M5 recovery execution bridge v1 development",
+      "ledger_state": "FINALIZED"
+    },
+    {
+      "path": "test_rehashed_contradictions_a4/raw.jsonl",
+      "sha256": "086c971e8ab85078c7e5a1a7781c160e240bb034a8c50e9d734dbc3d81b8d8fd",
+      "study": "V9-M5 recovery execution bridge v1 development",
+      "ledger_state": "FINALIZED"
+    },
+    {
+      "path": "test_rehashed_contradictions_a5/bad.jsonl",
+      "sha256": "c614a527809a453378edd4eed4928903c7220623ba11c4ec71d8943ca3341fb2",
+      "study": "V9-M5 recovery execution bridge v1 development",
+      "ledger_state": "FINALIZED"
+    },
+    {
+      "path": "test_rehashed_contradictions_a5/raw.jsonl",
+      "sha256": "086c971e8ab85078c7e5a1a7781c160e240bb034a8c50e9d734dbc3d81b8d8fd",
+      "study": "V9-M5 recovery execution bridge v1 development",
+      "ledger_state": "FINALIZED"
+    },
+    {
+      "path": "test_rehashed_contradictions_a6/bad.jsonl",
+      "sha256": "41bdfaaa366b1760f2844db234df8b702cde9c06841792e9a8c7fe796cce9395",
+      "study": "V9-M5 recovery execution bridge v1 development",
+      "ledger_state": "FINALIZED"
+    },
+    {
+      "path": "test_rehashed_contradictions_a6/raw.jsonl",
+      "sha256": "086c971e8ab85078c7e5a1a7781c160e240bb034a8c50e9d734dbc3d81b8d8fd",
+      "study": "V9-M5 recovery execution bridge v1 development",
+      "ledger_state": "FINALIZED"
+    },
+    {
+      "path": "test_runtime_sink_failure_prop0/sink.jsonl",
+      "sha256": "6e150ec535873d76a89f0be8ca97003cb9b6ab68c836b29dde223aee9be33c13",
+      "study": "V9-M5 recovery execution bridge v2 runtime-checked development",
+      "ledger_state": "INCOMPLETE"
+    },
+    {
+      "path": "test_runtime_snapshot_precedes0/normal.jsonl",
+      "sha256": "2e127fee299f921e85b47ec70352a86f151ab3a5929fc40fcc297019e831f9c6",
+      "study": "V9-M5 recovery execution bridge v2 runtime-checked development",
+      "ledger_state": "FINALIZED"
+    },
+    {
+      "path": "test_runtime_snapshot_precedes1/normal.jsonl",
+      "sha256": "6dfbca03cbe3391c73d9bd6308a2de44366acd53ef6b143d8df9b787d9154143",
+      "study": "V9-M5 recovery execution bridge v2 runtime-checked development",
+      "ledger_state": "FINALIZED"
+    },
+    {
+      "path": "test_unstarted_assignment_is_n0/partial.jsonl",
+      "sha256": "c47a05e467548bb50a424cd43adff629ab41899f52c12418d218463e576664bc",
+      "study": "V9-M5 recovery execution bridge v1 development",
+      "ledger_state": "INCOMPLETE"
+    }
+  ],
+  "artifact_sha256": {
+    "report.md": "b16631082d9c3e8de9b7f89623afebfe42e35bda78315e35dbe140d8cbe9b17e",
+    "tests.xml": "40f5a510aa4b8a0a6f63798b912e60061180490ce8d3f27ba0697a16e235e2e8",
+    "fixtures.zip": "894a36e34ec5afac2c56738aa8fe95776ca6fff96780eb6793166f1844a49d0e"
+  },
+  "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:. .venv/bin/python -m pytest -p no:cacheprovider -q tests/test_recovery_execution_runtime.py tests/test_recovery_execution_bridge.py tests/test_audit_bridge_timing.py --basetemp=/private/tmp/nexvia-runtime-20261114/pytest --junitxml=/private/tmp/nexvia-runtime-20261114/tests.xml",
+  "limitations": [
+    "Selected current-source hashes, not independent authentication or test-process before/after attestation.",
+    "Only selected runtime fields are monitored."
+  ],
+  "governance": "GATE_B_NOT_AUTHORIZED"
+}

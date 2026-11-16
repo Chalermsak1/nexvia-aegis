@@ -1,0 +1,55 @@
+{
+  "classification": "EXPLORATORY_PHYSICS_EVIDENCE",
+  "input_sha256": "359ae6f7e6f1de3fd99609c21cf9cdfa3d440f39a5234d8cfb45addeaafeaa2f",
+  "ledger_state": "FINALIZED",
+  "assignments": [
+    {
+      "id": "2256000:0.0:AEGIS_3D_ANCHOR_RECOVERY",
+      "execution_status": "COMPLETED",
+      "decision_events": 139,
+      "physics_events": 139,
+      "stage_counts": {
+        "MAIN": 138,
+        "ABSTAIN_BRAKE": 1
+      },
+      "post_stop_collision_observed": false,
+      "limitation": "Post-action observations; crash between physics and persistence can leave an unrecorded step. No post-abstention horizon or safe-stop claim."
+    },
+    {
+      "id": "2256000:0.0:AEGIS_3D_RECOVERY_MONITOR",
+      "execution_status": "COMPLETED",
+      "decision_events": 86,
+      "physics_events": 86,
+      "stage_counts": {
+        "MAIN": 85,
+        "ABSTAIN_BRAKE": 1
+      },
+      "post_stop_collision_observed": false,
+      "limitation": "Post-action observations; crash between physics and persistence can leave an unrecorded step. No post-abstention horizon or safe-stop claim."
+    },
+    {
+      "id": "2256000:0.8:AEGIS_3D_ANCHOR_RECOVERY",
+      "execution_status": "COMPLETED",
+      "decision_events": 252,
+      "physics_events": 301,
+      "stage_counts": {
+        "MAIN": 251,
+        "POST_STOP_BRAKE": 50
+      },
+      "post_stop_collision_observed": false,
+      "limitation": "Post-action observations; crash between physics and persistence can leave an unrecorded step. No post-abstention horizon or safe-stop claim."
+    },
+    {
+      "id": "2256000:0.8:AEGIS_3D_RECOVERY_MONITOR",
+      "execution_status": "COMPLETED",
+      "decision_events": 222,
+      "physics_events": 222,
+      "stage_counts": {
+        "MAIN": 221,
+        "ABSTAIN_BRAKE": 1
+      },
+      "post_stop_collision_observed": false,
+      "limitation": "Post-action observations; crash between physics and persistence can leave an unrecorded step. No post-abstention horizon or safe-stop claim."
+    }
+  ]
+}

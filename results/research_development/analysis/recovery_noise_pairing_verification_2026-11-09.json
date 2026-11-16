@@ -1,0 +1,46 @@
+{
+  "classification": "EXPLORATORY_NOISE_PAIRING_VERIFICATION",
+  "parent_commit": "74b0bfab8e57cd450293e49de881207074df3141",
+  "branch": "codex/research-hardening",
+  "tests": {
+    "tests": "86",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "24.769",
+    "timestamp": "2026-11-09T11:06:55.953863+07:00"
+  },
+  "source_sha256": {
+    "scripts/research/recovery_noise_pairing.py": "adc3248ad81c9128be3171d349ef17dad396ea7dd08a098ed9b240c0e57268c5",
+    "tests/test_recovery_noise_pairing.py": "8f709033b956c35fffed6cfc077f5de0427407d3ecc1b71c85a56ce5d05df408",
+    "experiments/benchmark_physical_3d_cbf.py": "04bc31bf74423806200e39a44334e1dd0cf4063dde08797ef79dacb491b4323f",
+    "src/aegis/env/mujoco_3d_synchronized.py": "f00625647ff9c56a86efba384a7149e94e149c922cce3ba5d45835aa0d9916e3"
+  },
+  "xml_sha256": "afd1c0d4996329234dce0119a4419eda035b5cb12dde70c5ef3a5f3d8e04f3be",
+  "report_sha256": "d4b88f9b7d2726f2617263d7047a4557a359ae125d2b1a2c0e5e293392d1f1c2",
+  "test_scope": [
+    "test_recovery_noise_pairing",
+    "test_synchronized_fixture_ledger",
+    "test_synchronized_3d_environment",
+    "test_state_phase_diagnostic",
+    "test_recovery_motion_summary",
+    "test_recovery_physics_events",
+    "test_recovery_physics_ledger",
+    "test_recovery_post_abstention"
+  ],
+  "pytest_options": [
+    "-p",
+    "no:cacheprovider",
+    "-q"
+  ],
+  "environment": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "src:."
+  },
+  "new_policy_study_runs": 0,
+  "limitations": [
+    "Constructed trace fixtures do not verify seeded benchmark stream behavior.",
+    "Selected current-source hashes, not independent authentication or before/after source attestation."
+  ],
+  "governance": "GATE_B_NOT_AUTHORIZED"
+}

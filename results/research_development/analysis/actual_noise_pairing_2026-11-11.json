@@ -1,0 +1,54 @@
+{
+  "classification": "EXPLORATORY_NOISE_COUPLING_DIAGNOSTIC",
+  "common_decision_steps": 86,
+  "unmatched_decision_steps": [
+    0,
+    0
+  ],
+  "innovation_agreement": {
+    "sensor_a": true,
+    "sensor_b": true,
+    "range": true,
+    "velocity": true
+  },
+  "common_anchor_queries": 10,
+  "unmatched_anchor_queries": [
+    0,
+    0
+  ],
+  "anchor_query_ordinal_agreement": true,
+  "anchor_request_steps": [
+    [
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33
+    ],
+    [
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33
+    ]
+  ],
+  "common_query_steps_equal": true,
+  "numerical_tolerance": 1e-10,
+  "limitations": [
+    "Complete supported observations required; malformed/missing readings reject, never imply agreement.",
+    "Agreement covers common prefix/query ordinals only; no physical-time alignment, authentication or efficacy claim.",
+    "Caller must independently verify zero latency/dropout/replay, unit velocity scale and declared biases."
+  ],
+  "governance": "GATE_B_NOT_AUTHORIZED"
+}

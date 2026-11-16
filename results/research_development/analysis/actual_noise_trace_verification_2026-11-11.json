@@ -1,0 +1,36 @@
+{
+  "classification": "EXPLORATORY_ACTUAL_TRACE_INTEGRATION_VERIFICATION",
+  "parent_commit": "74b0bfab8e57cd450293e49de881207074df3141",
+  "tests": {
+    "tests": "9",
+    "errors": "0",
+    "failures": "0",
+    "skipped": "0",
+    "timestamp": "2026-11-11T16:09:10.187481+07:00",
+    "time": "2.284"
+  },
+  "source_sha256": {
+    "tests/test_recovery_noise_actual_trace.py": "51680380c8a8d29719cefe2c1bc8b3a250af518f4b2fbd01fb23cff2311b8b71",
+    "scripts/research/recovery_noise_pairing.py": "adc3248ad81c9128be3171d349ef17dad396ea7dd08a098ed9b240c0e57268c5",
+    "experiments/benchmark_physical_3d_cbf.py": "04bc31bf74423806200e39a44334e1dd0cf4063dde08797ef79dacb491b4323f",
+    "src/aegis/env/mujoco_3d_cbf.py": "438b8ec89d1d40101586b0d888de7e8b5d73c9763cbae2603ccab01f04801433",
+    "src/aegis/env/mujoco_3d_synchronized.py": "f00625647ff9c56a86efba384a7149e94e149c922cce3ba5d45835aa0d9916e3",
+    "scripts/research/development_ledger.py": "254fe889557148110e458ed2cb6e3286837589a484d7a63e1ae3d2c34b645502"
+  },
+  "artifact_sha256": {
+    "tests.xml": "c895dfa92103197ddc582d7b2f91c2df582b26cb092697fc344d596f47585e31",
+    "report.md": "cb25cf57b8a889f38f6022d2987203a9bfe448bffd5a7c71c5be00d9ecc9865a",
+    "pytest/test_actual_traces_match_decla0/actual_noise_trace.jsonl": "3766a75debd21382f512c874fb254ef4c2e63ad5047d4aa78092f0d09bd349a3",
+    "pytest/test_actual_traces_match_decla0/pairing.json": "48154ba6533350093c9e5cc211b95ca075c6d9254d57030da28e1fcd7dc240ff"
+  },
+  "ledger_state": "FINALIZED",
+  "execution_counts": {
+    "ASSIGNED": 0,
+    "STARTED": 0,
+    "COMPLETED": 2,
+    "ERROR": 0
+  },
+  "test_command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:. .venv/bin/python -m pytest -p no:cacheprovider -q tests/test_recovery_noise_actual_trace.py tests/test_recovery_noise_pairing.py --basetemp=/private/tmp/nexvia-trace-20261111/pytest --junitxml=/private/tmp/nexvia-trace-20261111/tests.xml",
+  "scope": "Two short development simulation runs, not the eight-assignment comparison or confirmatory evaluation.",
+  "governance": "GATE_B_NOT_AUTHORIZED"
+}

@@ -1,0 +1,411 @@
+{
+  "classification": "EXPLORATORY_PAIRED_RECOVERY_COMPARISON",
+  "ledger_state": "FINALIZED",
+  "assignments": [
+    {
+      "id": "aegis_3d_anchor_recovery_nominal_legacy",
+      "batch_status": "COMPLETED",
+      "child_execution_status": "COMPLETED",
+      "outcome": {
+        "true_success": 0,
+        "false_arrival": 0,
+        "abstained": 1,
+        "timeout": 0
+      },
+      "child_sha256": "2bd6aa574acc63b2b3fbe87ab99b676803f0500adf9fc4d13a4218b6afab5fef",
+      "decision_events": 139,
+      "physics_events": 164,
+      "last_physics_speed": 0.020552763284077,
+      "observed_physics_collision": false
+    },
+    {
+      "id": "aegis_3d_anchor_recovery_nominal_sync",
+      "batch_status": "COMPLETED",
+      "child_execution_status": "COMPLETED",
+      "outcome": {
+        "true_success": 0,
+        "false_arrival": 0,
+        "abstained": 1,
+        "timeout": 0
+      },
+      "child_sha256": "ae0cb8e45833b3fe462c0ff731b66249dd389116b26851e91a9387036603503d",
+      "decision_events": 139,
+      "physics_events": 164,
+      "last_physics_speed": 0.020289690688205186,
+      "observed_physics_collision": false
+    },
+    {
+      "id": "aegis_3d_anchor_recovery_heavy_legacy",
+      "batch_status": "COMPLETED",
+      "child_execution_status": "COMPLETED",
+      "outcome": {
+        "true_success": 1,
+        "false_arrival": 0,
+        "abstained": 0,
+        "timeout": 0
+      },
+      "child_sha256": "b87822ba70ee6c808838e9d3819411f98cfb04f8392619f237bbaa12cf02fac9",
+      "decision_events": 252,
+      "physics_events": 301,
+      "last_physics_speed": 0.010732739362099427,
+      "observed_physics_collision": false
+    },
+    {
+      "id": "aegis_3d_anchor_recovery_heavy_sync",
+      "batch_status": "COMPLETED",
+      "child_execution_status": "COMPLETED",
+      "outcome": {
+        "true_success": 1,
+        "false_arrival": 0,
+        "abstained": 0,
+        "timeout": 0
+      },
+      "child_sha256": "d6827f7b8f1fe7739a2f9e5347b9a6a86cc337ec22333a98103411bec48cec6b",
+      "decision_events": 252,
+      "physics_events": 301,
+      "last_physics_speed": 0.008797228079796219,
+      "observed_physics_collision": false
+    },
+    {
+      "id": "aegis_3d_recovery_monitor_nominal_legacy",
+      "batch_status": "COMPLETED",
+      "child_execution_status": "COMPLETED",
+      "outcome": {
+        "true_success": 0,
+        "false_arrival": 0,
+        "abstained": 1,
+        "timeout": 0
+      },
+      "child_sha256": "ca8b3905529e14e51bf812f0a7d9632f92911090f7e4a3e31b5626554e379687",
+      "decision_events": 86,
+      "physics_events": 111,
+      "last_physics_speed": 0.17919362657191157,
+      "observed_physics_collision": false
+    },
+    {
+      "id": "aegis_3d_recovery_monitor_nominal_sync",
+      "batch_status": "COMPLETED",
+      "child_execution_status": "COMPLETED",
+      "outcome": {
+        "true_success": 0,
+        "false_arrival": 0,
+        "abstained": 1,
+        "timeout": 0
+      },
+      "child_sha256": "19f66db98df72b96771142e8a8f2597c24c2e5f4df43b1432209095bf9942d1a",
+      "decision_events": 86,
+      "physics_events": 111,
+      "last_physics_speed": 0.1766206171186859,
+      "observed_physics_collision": false
+    },
+    {
+      "id": "aegis_3d_recovery_monitor_heavy_legacy",
+      "batch_status": "COMPLETED",
+      "child_execution_status": "COMPLETED",
+      "outcome": {
+        "true_success": 0,
+        "false_arrival": 0,
+        "abstained": 1,
+        "timeout": 0
+      },
+      "child_sha256": "1a8b5b280a0d8da5566b233540a0ba5ddaf0430c27e0d7ea72b08063f61dfae8",
+      "decision_events": 222,
+      "physics_events": 247,
+      "last_physics_speed": 0.09728905809362338,
+      "observed_physics_collision": false
+    },
+    {
+      "id": "aegis_3d_recovery_monitor_heavy_sync",
+      "batch_status": "COMPLETED",
+      "child_execution_status": "COMPLETED",
+      "outcome": {
+        "true_success": 0,
+        "false_arrival": 0,
+        "abstained": 1,
+        "timeout": 0
+      },
+      "child_sha256": "d5eff8bffe0d4b0a0c2d57d08a8710d37e6602d55a05100e9df11fa3795dfaa8",
+      "decision_events": 222,
+      "physics_events": 247,
+      "last_physics_speed": 0.07974422976677328,
+      "observed_physics_collision": false
+    }
+  ],
+  "declared_pairs": 4,
+  "pairs": [
+    {
+      "ids": [
+        "aegis_3d_anchor_recovery_nominal_legacy",
+        "aegis_3d_anchor_recovery_nominal_sync"
+      ],
+      "status": "COMPARABLE_DEVELOPMENT_EVIDENCE",
+      "reason": null,
+      "pairing": {
+        "classification": "EXPLORATORY_NOISE_COUPLING_DIAGNOSTIC",
+        "common_decision_steps": 139,
+        "unmatched_decision_steps": [
+          0,
+          0
+        ],
+        "innovation_agreement": {
+          "sensor_a": true,
+          "sensor_b": true,
+          "range": true,
+          "velocity": true
+        },
+        "common_anchor_queries": 15,
+        "unmatched_anchor_queries": [
+          0,
+          0
+        ],
+        "anchor_query_ordinal_agreement": true,
+        "anchor_request_steps": [
+          [
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            128,
+            134,
+            135,
+            136,
+            138
+          ],
+          [
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            128,
+            134,
+            135,
+            136,
+            138
+          ]
+        ],
+        "common_query_steps_equal": true,
+        "numerical_tolerance": 1e-10,
+        "limitations": [
+          "Complete supported observations required; malformed/missing readings reject, never imply agreement.",
+          "Agreement covers common prefix/query ordinals only; no physical-time alignment, authentication or efficacy claim.",
+          "Caller must independently verify zero latency/dropout/replay, unit velocity scale and declared biases.",
+          "Configuration is caller-declared, not independently bound or authenticated to these traces."
+        ],
+        "governance": "GATE_B_NOT_AUTHORIZED",
+        "configuration_preconditions": "SUPPORTED_DECLARED_PAIR"
+      }
+    },
+    {
+      "ids": [
+        "aegis_3d_anchor_recovery_heavy_legacy",
+        "aegis_3d_anchor_recovery_heavy_sync"
+      ],
+      "status": "COMPARABLE_DEVELOPMENT_EVIDENCE",
+      "reason": null,
+      "pairing": {
+        "classification": "EXPLORATORY_NOISE_COUPLING_DIAGNOSTIC",
+        "common_decision_steps": 252,
+        "unmatched_decision_steps": [
+          0,
+          0
+        ],
+        "innovation_agreement": {
+          "sensor_a": true,
+          "sensor_b": true,
+          "range": true,
+          "velocity": true
+        },
+        "common_anchor_queries": 11,
+        "unmatched_anchor_queries": [
+          0,
+          0
+        ],
+        "anchor_query_ordinal_agreement": true,
+        "anchor_request_steps": [
+          [
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            251
+          ],
+          [
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            251
+          ]
+        ],
+        "common_query_steps_equal": true,
+        "numerical_tolerance": 1e-10,
+        "limitations": [
+          "Complete supported observations required; malformed/missing readings reject, never imply agreement.",
+          "Agreement covers common prefix/query ordinals only; no physical-time alignment, authentication or efficacy claim.",
+          "Caller must independently verify zero latency/dropout/replay, unit velocity scale and declared biases.",
+          "Configuration is caller-declared, not independently bound or authenticated to these traces."
+        ],
+        "governance": "GATE_B_NOT_AUTHORIZED",
+        "configuration_preconditions": "SUPPORTED_DECLARED_PAIR"
+      }
+    },
+    {
+      "ids": [
+        "aegis_3d_recovery_monitor_nominal_legacy",
+        "aegis_3d_recovery_monitor_nominal_sync"
+      ],
+      "status": "COMPARABLE_DEVELOPMENT_EVIDENCE",
+      "reason": null,
+      "pairing": {
+        "classification": "EXPLORATORY_NOISE_COUPLING_DIAGNOSTIC",
+        "common_decision_steps": 86,
+        "unmatched_decision_steps": [
+          0,
+          0
+        ],
+        "innovation_agreement": {
+          "sensor_a": true,
+          "sensor_b": true,
+          "range": true,
+          "velocity": true
+        },
+        "common_anchor_queries": 10,
+        "unmatched_anchor_queries": [
+          0,
+          0
+        ],
+        "anchor_query_ordinal_agreement": true,
+        "anchor_request_steps": [
+          [
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33
+          ],
+          [
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33
+          ]
+        ],
+        "common_query_steps_equal": true,
+        "numerical_tolerance": 1e-10,
+        "limitations": [
+          "Complete supported observations required; malformed/missing readings reject, never imply agreement.",
+          "Agreement covers common prefix/query ordinals only; no physical-time alignment, authentication or efficacy claim.",
+          "Caller must independently verify zero latency/dropout/replay, unit velocity scale and declared biases.",
+          "Configuration is caller-declared, not independently bound or authenticated to these traces."
+        ],
+        "governance": "GATE_B_NOT_AUTHORIZED",
+        "configuration_preconditions": "SUPPORTED_DECLARED_PAIR"
+      }
+    },
+    {
+      "ids": [
+        "aegis_3d_recovery_monitor_heavy_legacy",
+        "aegis_3d_recovery_monitor_heavy_sync"
+      ],
+      "status": "COMPARABLE_DEVELOPMENT_EVIDENCE",
+      "reason": null,
+      "pairing": {
+        "classification": "EXPLORATORY_NOISE_COUPLING_DIAGNOSTIC",
+        "common_decision_steps": 222,
+        "unmatched_decision_steps": [
+          0,
+          0
+        ],
+        "innovation_agreement": {
+          "sensor_a": true,
+          "sensor_b": true,
+          "range": true,
+          "velocity": true
+        },
+        "common_anchor_queries": 10,
+        "unmatched_anchor_queries": [
+          0,
+          0
+        ],
+        "anchor_query_ordinal_agreement": true,
+        "anchor_request_steps": [
+          [
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15
+          ],
+          [
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15
+          ]
+        ],
+        "common_query_steps_equal": true,
+        "numerical_tolerance": 1e-10,
+        "limitations": [
+          "Complete supported observations required; malformed/missing readings reject, never imply agreement.",
+          "Agreement covers common prefix/query ordinals only; no physical-time alignment, authentication or efficacy claim.",
+          "Caller must independently verify zero latency/dropout/replay, unit velocity scale and declared biases.",
+          "Configuration is caller-declared, not independently bound or authenticated to these traces."
+        ],
+        "governance": "GATE_B_NOT_AUTHORIZED",
+        "configuration_preconditions": "SUPPORTED_DECLARED_PAIR"
+      }
+    }
+  ],
+  "governance": "GATE_B_NOT_AUTHORIZED",
+  "limitations": [
+    "One inspected development world, not independent reliability trials or confirmatory results.",
+    "Environment synchronization changes control inputs and solver state, not merely reporting.",
+    "Self-reported hashes/runtime cannot authenticate execution; residual motion is not safe stopping."
+  ]
+}

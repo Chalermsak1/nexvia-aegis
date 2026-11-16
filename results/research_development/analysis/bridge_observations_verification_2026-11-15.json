@@ -1,0 +1,39 @@
+{
+  "classification": "EXPLORATORY_OBSERVATION_AUDIT_VERIFICATION",
+  "parent_commit": "74b0bfab8e57cd450293e49de881207074df3141",
+  "tests": {
+    "tests": "34",
+    "errors": "0",
+    "failures": "0",
+    "skipped": "0",
+    "time": "1.849",
+    "timestamp": "2026-11-15T21:41:30.456271+07:00"
+  },
+  "source_sha256": {
+    "scripts/research/audit_bridge_observations.py": "172a26de57c5347aa395dc4f3bbfebccdcefa7c86ffaf16ceabf2337cb2694c0",
+    "tests/test_audit_bridge_observations.py": "550d2eb1c66419bf1f4b1e7af3ae4989efc529462e8d0ff4453030e29f1bde80",
+    "scripts/research/audit_bridge_v2.py": "99aeafc4d4873718a1884c6f4d97d1f860f40bfa732d68d084171b6dfebef4b1",
+    "scripts/research/recovery_execution_bridge_v2.py": "43791110dbd64040e566a3186de2542df5e84abe1be8456a51c2943c47102def"
+  },
+  "artifacts_sha256": {
+    "report.md": "b7e4bec94e15c491369d23846805c62bc9260be3a22eb33db1abdd5414a22606",
+    "tests.xml": "03e6ee2b31acb7074432b7816a4e26cab6258799e363052928ea558ed950afac",
+    "fixtures.zip": "1c48a3f31c3e87c9731a2df4acd940185f0b3c865aeb3de0effd53b75352fce6"
+  },
+  "test_files": [
+    "tests/test_audit_bridge_observations.py",
+    "tests/test_audit_bridge_v2.py",
+    "tests/test_recovery_execution_runtime.py",
+    "tests/test_audit_bridge_timing.py"
+  ],
+  "options": [
+    "-p",
+    "no:cacheprovider",
+    "-q"
+  ],
+  "environment": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "src:."
+  },
+  "governance": "GATE_B_NOT_AUTHORIZED"
+}

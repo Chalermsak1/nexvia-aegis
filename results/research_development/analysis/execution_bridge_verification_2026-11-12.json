@@ -1,0 +1,54 @@
+{
+  "classification": "EXPLORATORY_EXECUTION_BRIDGE_VERIFICATION",
+  "parent_commit": "74b0bfab8e57cd450293e49de881207074df3141",
+  "test_command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:. .venv/bin/python -m pytest -p no:cacheprovider -q tests/test_recovery_execution_bridge.py tests/test_configured_noise_pairing.py tests/test_recovery_noise_pairing.py --basetemp=/private/tmp/nexvia-bridge-20261112/final --junitxml=/private/tmp/nexvia-bridge-20261112/final.xml",
+  "tests": {
+    "tests": "33",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "1.095",
+    "timestamp": "2026-11-12T10:52:48.472030+07:00"
+  },
+  "source_sha256": {
+    "scripts/research/recovery_execution_bridge.py": "70a27f8e22073636c94c85e36c216e4263040e983c5fec1af45c6a5fec7c0d18",
+    "tests/test_recovery_execution_bridge.py": "00982e580b48c1717249c807d49de0151869e8b960c459b1a76c6b6edc7cc2c3",
+    "scripts/research/configured_noise_pairing.py": "39ae97cdd3c8fc2d01c46e9827cf535619cf7b49613c10e486f2ecaef4ed0e8a",
+    "experiments/benchmark_physical_3d_cbf.py": "04bc31bf74423806200e39a44334e1dd0cf4063dde08797ef79dacb491b4323f",
+    "src/aegis/env/mujoco_3d_cbf.py": "438b8ec89d1d40101586b0d888de7e8b5d73c9763cbae2603ccab01f04801433",
+    "src/aegis/env/mujoco_3d_synchronized.py": "f00625647ff9c56a86efba384a7149e94e149c922cce3ba5d45835aa0d9916e3",
+    "scripts/research/development_ledger.py": "254fe889557148110e458ed2cb6e3286837589a484d7a63e1ae3d2c34b645502"
+  },
+  "fixture_ledger_entries": [
+    {
+      "path": "test_argument_map_reset_and_ph0/run.jsonl",
+      "sha256": "7917d21b2795c342152fb897db7dccc06907a1a901378b245d1ca948971c6f4b",
+      "ledger_state": "FINALIZED"
+    },
+    {
+      "path": "test_argument_map_reset_and_ph1/run.jsonl",
+      "sha256": "086c971e8ab85078c7e5a1a7781c160e240bb034a8c50e9d734dbc3d81b8d8fd",
+      "ledger_state": "FINALIZED"
+    },
+    {
+      "path": "test_execution_exception_is_no0/run.jsonl",
+      "sha256": "0b1eb5e8fcd138f03c0c15c6c16b3b2448dc50fec94694dc9c388b28570d25e8",
+      "ledger_state": "FINALIZED_WITH_ERRORS"
+    },
+    {
+      "path": "test_physics_persistence_failu0/run.jsonl",
+      "sha256": "eff1e08ab2e993d5ef36fa74c171e361732e82a1796511f314e85f95030a4b09",
+      "ledger_state": "INCOMPLETE"
+    }
+  ],
+  "artifact_sha256": {
+    "report.md": "2f366cd46e9a67ff5761a16552d35ac84c101380a66964cf807de9ce0704e65e",
+    "final.xml": "83bb952ac8406a764690fa05ea0a753e8c7577ada1f31a5256344ca601adcfff",
+    "fixtures.zip": "9163d3ded1d1c426c25435ba6a3015254d892c9a9d660e6173499a8b6e80c25e"
+  },
+  "limitations": [
+    "Current selected sources, not independent authentication/before-after attestation of the test process.",
+    "Expected injected error/incomplete cases remain explicit; no full eight-assignment study."
+  ],
+  "governance": "GATE_B_NOT_AUTHORIZED"
+}

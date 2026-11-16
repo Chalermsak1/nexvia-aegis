@@ -1,0 +1,34 @@
+{
+  "source_sha256": "c057bb7c9a58b6a17663784447af046b8eee46d6ab97819abd79fc8ede44890d",
+  "lower_clip_example": {
+    "tau": 0.35,
+    "z_values": [
+      0,
+      1.4
+    ],
+    "probabilities": [
+      0.75,
+      0.25
+    ],
+    "expected_z": 0.35,
+    "clipped_scores": [
+      -0.9,
+      3.0
+    ],
+    "expected_score": 0.07499999999999996,
+    "expected_factor": 1.01875
+  },
+  "floor_example": {
+    "wealth": 0.01,
+    "scores": [
+      -0.5,
+      0.5
+    ],
+    "probabilities": [
+      0.5,
+      0.5
+    ],
+    "expected_factor_before_floor": 1.0,
+    "expected_wealth_after_floor": 0.010624999999999999
+  }
+}

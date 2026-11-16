@@ -1,0 +1,749 @@
+{
+  "study": "V9-M5 finite-window brake diagnostic v1",
+  "ledger_state": "FINALIZED",
+  "counts": {
+    "ASSIGNED": 0,
+    "STARTED": 0,
+    "COMPLETED": 21,
+    "ERROR": 0
+  },
+  "metadata": {
+    "gate_b": "GATE_B_NOT_AUTHORIZED",
+    "parent_commit": "74b0bfab8e57cd450293e49de881207074df3141",
+    "sources": {
+      "scripts/research/brake_probe_study.py": "bbf3b109579e06c48bef000e01de7277fbb06544d16a7196960f4138f355d27e",
+      "scripts/research/development_ledger.py": "254fe889557148110e458ed2cb6e3286837589a484d7a63e1ae3d2c34b645502",
+      "scripts/research/freshness_lease_study.py": "dd7218147d8671aeb2e222e8527e8302655024ee469a3eb57f6ecdd63efd33ae",
+      "scripts/research/physical_reference_study.py": "0bfa4abe4d66a4c298d219ab1fb6d05ee1ed339c6fb0537e4c1c4b5530615ef6",
+      "src/aegis/development/__init__.py": "afe5c415a90205d00220200b69b991a54a4741e1fa655a0ac9ed4f3ccbfc3043",
+      "src/aegis/development/assurance_gateway.py": "e810f11d21cca2ef50b02d3454c1934d9382251eab004ffc352dc32cb84e8119",
+      "src/aegis/development/bounded_braking.py": "6f34c760bebd07d91a8f08110a5ad50659bcd073a59077716476df1033f999e2",
+      "src/aegis/development/dual_source_braking.py": "4f189658d8a830619e1e8fe7ba4af25348905ae22ca68d9aef0d5bd4b134eb33",
+      "src/aegis/development/physical_reference.py": "d713b47a8c7426ea2dc2bfa7f545e00c7bc4b6b6a190e121b93fbea1c3692c05",
+      "src/aegis/development/probe_window.py": "3c84aece3cc6ea72a47ebc589e66f6b45d65967c863c8776535dc63073f5d06a",
+      "src/aegis/development/sampled_motion_reference.py": "1180350e5dc47e1bbd5b461a7a5a7d22ffe4fd1263e4e1c86e44b64962d4f8aa",
+      "src/aegis/env/mujoco_3d_cbf.py": "438b8ec89d1d40101586b0d888de7e8b5d73c9763cbae2603ccab01f04801433",
+      "src/aegis/env/mujoco_lease_brake.py": "069727193b93c290a0c5e192f35931da3d6b44a69e9a5673ad63aa1b4e3414d4"
+    },
+    "versions": {
+      "mujoco": "3.14.0",
+      "numpy": "2.5.3",
+      "python": "3.12.14"
+    }
+  },
+  "assignments": [
+    {
+      "id": "v0:nominal",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "FINITE_DIAGNOSTIC_WINDOW_COMPLETED_NOT_REST",
+        "physics_steps": 6,
+        "design": {
+          "design_status": "WITHIN_ASSERTED_SAMPLED_WINDOW",
+          "operational_authorization": false,
+          "post_window_recoverability_established": false,
+          "clearance_lower_m": 0.7945680066756834,
+          "sampled_path_upper_m": 0.06329357433551427,
+          "window_ticks": 6,
+          "force_norm_budget_n": 1.7320508075688772,
+          "reference_assumptions": [
+            "Known upper initial speed and commanded/external force norms; positive lower actual mass.",
+            "Semi-implicit position update; explicit clipped per-axis damping; gain*dt/mass <= 1.",
+            "No contact or other unbounded forces. Gravity-compensation error must be included in external force.",
+            "Sampled path only; not a between-sample collision or safe-stop certificate.",
+            "Caller assertions and ordinary floating point, not authenticated/interval-certified bounds."
+          ]
+        },
+        "brake_inconsistent_pulse_samples": 0,
+        "cross_inconsistent_samples": 0,
+        "uninformative_pulse_samples": 0,
+        "force_sensor_bound_violations": 0,
+        "acceleration_sensor_bound_violations": 0,
+        "force_budget_violated": false,
+        "window_bound_evaluation": "CONDITIONAL_SAMPLED_CHECK",
+        "sampled_path_m": 0.046425599999999845,
+        "path_exceeds_design_bound": false,
+        "residual_speed_m_s": 0.36864,
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "v0:brake_absent",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "FINITE_DIAGNOSTIC_WINDOW_COMPLETED_NOT_REST",
+        "physics_steps": 6,
+        "design": {
+          "design_status": "WITHIN_ASSERTED_SAMPLED_WINDOW",
+          "operational_authorization": false,
+          "post_window_recoverability_established": false,
+          "clearance_lower_m": 0.7945680066756834,
+          "sampled_path_upper_m": 0.06329357433551427,
+          "window_ticks": 6,
+          "force_norm_budget_n": 1.7320508075688772,
+          "reference_assumptions": [
+            "Known upper initial speed and commanded/external force norms; positive lower actual mass.",
+            "Semi-implicit position update; explicit clipped per-axis damping; gain*dt/mass <= 1.",
+            "No contact or other unbounded forces. Gravity-compensation error must be included in external force.",
+            "Sampled path only; not a between-sample collision or safe-stop certificate.",
+            "Caller assertions and ordinary floating point, not authenticated/interval-certified bounds."
+          ]
+        },
+        "brake_inconsistent_pulse_samples": 2,
+        "cross_inconsistent_samples": 0,
+        "uninformative_pulse_samples": 0,
+        "force_sensor_bound_violations": 0,
+        "acceleration_sensor_bound_violations": 0,
+        "force_budget_violated": false,
+        "window_bound_evaluation": "CONDITIONAL_SAMPLED_CHECK",
+        "sampled_path_m": 0.04800000000000004,
+        "path_exceeds_design_bound": false,
+        "residual_speed_m_s": 0.4,
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "v0:force_feedback_spoof",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "FINITE_DIAGNOSTIC_WINDOW_COMPLETED_NOT_REST",
+        "physics_steps": 6,
+        "design": {
+          "design_status": "WITHIN_ASSERTED_SAMPLED_WINDOW",
+          "operational_authorization": false,
+          "post_window_recoverability_established": false,
+          "clearance_lower_m": 0.7945680066756834,
+          "sampled_path_upper_m": 0.06329357433551427,
+          "window_ticks": 6,
+          "force_norm_budget_n": 1.7320508075688772,
+          "reference_assumptions": [
+            "Known upper initial speed and commanded/external force norms; positive lower actual mass.",
+            "Semi-implicit position update; explicit clipped per-axis damping; gain*dt/mass <= 1.",
+            "No contact or other unbounded forces. Gravity-compensation error must be included in external force.",
+            "Sampled path only; not a between-sample collision or safe-stop certificate.",
+            "Caller assertions and ordinary floating point, not authenticated/interval-certified bounds."
+          ]
+        },
+        "brake_inconsistent_pulse_samples": 0,
+        "cross_inconsistent_samples": 2,
+        "uninformative_pulse_samples": 0,
+        "force_sensor_bound_violations": 2,
+        "acceleration_sensor_bound_violations": 0,
+        "force_budget_violated": false,
+        "window_bound_evaluation": "CONDITIONAL_SAMPLED_CHECK",
+        "sampled_path_m": 0.04800000000000004,
+        "path_exceeds_design_bound": false,
+        "residual_speed_m_s": 0.4,
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "v0:coherent_spoof",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "FINITE_DIAGNOSTIC_WINDOW_COMPLETED_NOT_REST",
+        "physics_steps": 6,
+        "design": {
+          "design_status": "WITHIN_ASSERTED_SAMPLED_WINDOW",
+          "operational_authorization": false,
+          "post_window_recoverability_established": false,
+          "clearance_lower_m": 0.7945680066756834,
+          "sampled_path_upper_m": 0.06329357433551427,
+          "window_ticks": 6,
+          "force_norm_budget_n": 1.7320508075688772,
+          "reference_assumptions": [
+            "Known upper initial speed and commanded/external force norms; positive lower actual mass.",
+            "Semi-implicit position update; explicit clipped per-axis damping; gain*dt/mass <= 1.",
+            "No contact or other unbounded forces. Gravity-compensation error must be included in external force.",
+            "Sampled path only; not a between-sample collision or safe-stop certificate.",
+            "Caller assertions and ordinary floating point, not authenticated/interval-certified bounds."
+          ]
+        },
+        "brake_inconsistent_pulse_samples": 0,
+        "cross_inconsistent_samples": 0,
+        "uninformative_pulse_samples": 0,
+        "force_sensor_bound_violations": 2,
+        "acceleration_sensor_bound_violations": 2,
+        "force_budget_violated": false,
+        "window_bound_evaluation": "CONDITIONAL_SAMPLED_CHECK",
+        "sampled_path_m": 0.04800000000000004,
+        "path_exceeds_design_bound": false,
+        "residual_speed_m_s": 0.4,
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "v0:wrong_sign",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "FINITE_DIAGNOSTIC_WINDOW_COMPLETED_NOT_REST",
+        "physics_steps": 6,
+        "design": {
+          "design_status": "WITHIN_ASSERTED_SAMPLED_WINDOW",
+          "operational_authorization": false,
+          "post_window_recoverability_established": false,
+          "clearance_lower_m": 0.7945680066756834,
+          "sampled_path_upper_m": 0.06329357433551427,
+          "window_ticks": 6,
+          "force_norm_budget_n": 1.7320508075688772,
+          "reference_assumptions": [
+            "Known upper initial speed and commanded/external force norms; positive lower actual mass.",
+            "Semi-implicit position update; explicit clipped per-axis damping; gain*dt/mass <= 1.",
+            "No contact or other unbounded forces. Gravity-compensation error must be included in external force.",
+            "Sampled path only; not a between-sample collision or safe-stop certificate.",
+            "Caller assertions and ordinary floating point, not authenticated/interval-certified bounds."
+          ]
+        },
+        "brake_inconsistent_pulse_samples": 2,
+        "cross_inconsistent_samples": 0,
+        "uninformative_pulse_samples": 0,
+        "force_sensor_bound_violations": 0,
+        "acceleration_sensor_bound_violations": 0,
+        "force_budget_violated": false,
+        "window_bound_evaluation": "CONDITIONAL_SAMPLED_CHECK",
+        "sampled_path_m": 0.04999999999999982,
+        "path_exceeds_design_bound": false,
+        "residual_speed_m_s": 0.44000000000000006,
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "v0:force_over_budget",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "FINITE_DIAGNOSTIC_WINDOW_COMPLETED_NOT_REST",
+        "physics_steps": 6,
+        "design": {
+          "design_status": "WITHIN_ASSERTED_SAMPLED_WINDOW",
+          "operational_authorization": false,
+          "post_window_recoverability_established": false,
+          "clearance_lower_m": 0.7945680066756834,
+          "sampled_path_upper_m": 0.06329357433551427,
+          "window_ticks": 6,
+          "force_norm_budget_n": 1.7320508075688772,
+          "reference_assumptions": [
+            "Known upper initial speed and commanded/external force norms; positive lower actual mass.",
+            "Semi-implicit position update; explicit clipped per-axis damping; gain*dt/mass <= 1.",
+            "No contact or other unbounded forces. Gravity-compensation error must be included in external force.",
+            "Sampled path only; not a between-sample collision or safe-stop certificate.",
+            "Caller assertions and ordinary floating point, not authenticated/interval-certified bounds."
+          ]
+        },
+        "brake_inconsistent_pulse_samples": 2,
+        "cross_inconsistent_samples": 0,
+        "uninformative_pulse_samples": 0,
+        "force_sensor_bound_violations": 0,
+        "acceleration_sensor_bound_violations": 0,
+        "force_budget_violated": true,
+        "window_bound_evaluation": "UNEVALUABLE_FORCE_BUDGET",
+        "sampled_path_m": 0.05400000000000005,
+        "path_exceeds_design_bound": null,
+        "residual_speed_m_s": 0.52,
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "v0:near_wall_design",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "NO_PROBE_WINDOW_DECLINED",
+        "physics_steps": 0,
+        "residual_speed_m_s": null,
+        "design": {
+          "design_status": "DECLINED_CLEARANCE_BOUND",
+          "operational_authorization": false,
+          "post_window_recoverability_established": false,
+          "clearance_lower_m": 0.00456800667568336,
+          "sampled_path_upper_m": 0.06329357433551427,
+          "window_ticks": 6,
+          "force_norm_budget_n": 1.7320508075688772,
+          "reference_assumptions": [
+            "Known upper initial speed and commanded/external force norms; positive lower actual mass.",
+            "Semi-implicit position update; explicit clipped per-axis damping; gain*dt/mass <= 1.",
+            "No contact or other unbounded forces. Gravity-compensation error must be included in external force.",
+            "Sampled path only; not a between-sample collision or safe-stop certificate.",
+            "Caller assertions and ordinary floating point, not authenticated/interval-certified bounds."
+          ]
+        }
+      }
+    },
+    {
+      "id": "v1:nominal",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "FINITE_DIAGNOSTIC_WINDOW_COMPLETED_NOT_REST",
+        "physics_steps": 6,
+        "design": {
+          "design_status": "WITHIN_ASSERTED_SAMPLED_WINDOW",
+          "operational_authorization": false,
+          "post_window_recoverability_established": false,
+          "clearance_lower_m": 0.7959906716838862,
+          "sampled_path_upper_m": 0.07618505319555166,
+          "window_ticks": 6,
+          "force_norm_budget_n": 1.7320508075688772,
+          "reference_assumptions": [
+            "Known upper initial speed and commanded/external force norms; positive lower actual mass.",
+            "Semi-implicit position update; explicit clipped per-axis damping; gain*dt/mass <= 1.",
+            "No contact or other unbounded forces. Gravity-compensation error must be included in external force.",
+            "Sampled path only; not a between-sample collision or safe-stop certificate.",
+            "Caller assertions and ordinary floating point, not authenticated/interval-certified bounds."
+          ]
+        },
+        "brake_inconsistent_pulse_samples": 0,
+        "cross_inconsistent_samples": 0,
+        "uninformative_pulse_samples": 0,
+        "force_sensor_bound_violations": 0,
+        "acceleration_sensor_bound_violations": 0,
+        "force_budget_violated": false,
+        "window_bound_evaluation": "CONDITIONAL_SAMPLED_CHECK",
+        "sampled_path_m": 0.05803199999999986,
+        "path_exceeds_design_bound": false,
+        "residual_speed_m_s": 0.4608,
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "v1:brake_absent",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "FINITE_DIAGNOSTIC_WINDOW_COMPLETED_NOT_REST",
+        "physics_steps": 6,
+        "design": {
+          "design_status": "WITHIN_ASSERTED_SAMPLED_WINDOW",
+          "operational_authorization": false,
+          "post_window_recoverability_established": false,
+          "clearance_lower_m": 0.7959906716838862,
+          "sampled_path_upper_m": 0.07618505319555166,
+          "window_ticks": 6,
+          "force_norm_budget_n": 1.7320508075688772,
+          "reference_assumptions": [
+            "Known upper initial speed and commanded/external force norms; positive lower actual mass.",
+            "Semi-implicit position update; explicit clipped per-axis damping; gain*dt/mass <= 1.",
+            "No contact or other unbounded forces. Gravity-compensation error must be included in external force.",
+            "Sampled path only; not a between-sample collision or safe-stop certificate.",
+            "Caller assertions and ordinary floating point, not authenticated/interval-certified bounds."
+          ]
+        },
+        "brake_inconsistent_pulse_samples": 2,
+        "cross_inconsistent_samples": 0,
+        "uninformative_pulse_samples": 0,
+        "force_sensor_bound_violations": 0,
+        "acceleration_sensor_bound_violations": 0,
+        "force_budget_violated": false,
+        "window_bound_evaluation": "CONDITIONAL_SAMPLED_CHECK",
+        "sampled_path_m": 0.06000000000000005,
+        "path_exceeds_design_bound": false,
+        "residual_speed_m_s": 0.5,
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "v1:force_feedback_spoof",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "FINITE_DIAGNOSTIC_WINDOW_COMPLETED_NOT_REST",
+        "physics_steps": 6,
+        "design": {
+          "design_status": "WITHIN_ASSERTED_SAMPLED_WINDOW",
+          "operational_authorization": false,
+          "post_window_recoverability_established": false,
+          "clearance_lower_m": 0.7959906716838862,
+          "sampled_path_upper_m": 0.07618505319555166,
+          "window_ticks": 6,
+          "force_norm_budget_n": 1.7320508075688772,
+          "reference_assumptions": [
+            "Known upper initial speed and commanded/external force norms; positive lower actual mass.",
+            "Semi-implicit position update; explicit clipped per-axis damping; gain*dt/mass <= 1.",
+            "No contact or other unbounded forces. Gravity-compensation error must be included in external force.",
+            "Sampled path only; not a between-sample collision or safe-stop certificate.",
+            "Caller assertions and ordinary floating point, not authenticated/interval-certified bounds."
+          ]
+        },
+        "brake_inconsistent_pulse_samples": 0,
+        "cross_inconsistent_samples": 2,
+        "uninformative_pulse_samples": 0,
+        "force_sensor_bound_violations": 2,
+        "acceleration_sensor_bound_violations": 0,
+        "force_budget_violated": false,
+        "window_bound_evaluation": "CONDITIONAL_SAMPLED_CHECK",
+        "sampled_path_m": 0.06000000000000005,
+        "path_exceeds_design_bound": false,
+        "residual_speed_m_s": 0.5,
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "v1:coherent_spoof",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "FINITE_DIAGNOSTIC_WINDOW_COMPLETED_NOT_REST",
+        "physics_steps": 6,
+        "design": {
+          "design_status": "WITHIN_ASSERTED_SAMPLED_WINDOW",
+          "operational_authorization": false,
+          "post_window_recoverability_established": false,
+          "clearance_lower_m": 0.7959906716838862,
+          "sampled_path_upper_m": 0.07618505319555166,
+          "window_ticks": 6,
+          "force_norm_budget_n": 1.7320508075688772,
+          "reference_assumptions": [
+            "Known upper initial speed and commanded/external force norms; positive lower actual mass.",
+            "Semi-implicit position update; explicit clipped per-axis damping; gain*dt/mass <= 1.",
+            "No contact or other unbounded forces. Gravity-compensation error must be included in external force.",
+            "Sampled path only; not a between-sample collision or safe-stop certificate.",
+            "Caller assertions and ordinary floating point, not authenticated/interval-certified bounds."
+          ]
+        },
+        "brake_inconsistent_pulse_samples": 0,
+        "cross_inconsistent_samples": 0,
+        "uninformative_pulse_samples": 0,
+        "force_sensor_bound_violations": 2,
+        "acceleration_sensor_bound_violations": 2,
+        "force_budget_violated": false,
+        "window_bound_evaluation": "CONDITIONAL_SAMPLED_CHECK",
+        "sampled_path_m": 0.06000000000000005,
+        "path_exceeds_design_bound": false,
+        "residual_speed_m_s": 0.5,
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "v1:wrong_sign",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "FINITE_DIAGNOSTIC_WINDOW_COMPLETED_NOT_REST",
+        "physics_steps": 6,
+        "design": {
+          "design_status": "WITHIN_ASSERTED_SAMPLED_WINDOW",
+          "operational_authorization": false,
+          "post_window_recoverability_established": false,
+          "clearance_lower_m": 0.7959906716838862,
+          "sampled_path_upper_m": 0.07618505319555166,
+          "window_ticks": 6,
+          "force_norm_budget_n": 1.7320508075688772,
+          "reference_assumptions": [
+            "Known upper initial speed and commanded/external force norms; positive lower actual mass.",
+            "Semi-implicit position update; explicit clipped per-axis damping; gain*dt/mass <= 1.",
+            "No contact or other unbounded forces. Gravity-compensation error must be included in external force.",
+            "Sampled path only; not a between-sample collision or safe-stop certificate.",
+            "Caller assertions and ordinary floating point, not authenticated/interval-certified bounds."
+          ]
+        },
+        "brake_inconsistent_pulse_samples": 2,
+        "cross_inconsistent_samples": 0,
+        "uninformative_pulse_samples": 0,
+        "force_sensor_bound_violations": 0,
+        "acceleration_sensor_bound_violations": 0,
+        "force_budget_violated": false,
+        "window_bound_evaluation": "CONDITIONAL_SAMPLED_CHECK",
+        "sampled_path_m": 0.06199999999999983,
+        "path_exceeds_design_bound": false,
+        "residual_speed_m_s": 0.54,
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "v1:force_over_budget",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "FINITE_DIAGNOSTIC_WINDOW_COMPLETED_NOT_REST",
+        "physics_steps": 6,
+        "design": {
+          "design_status": "WITHIN_ASSERTED_SAMPLED_WINDOW",
+          "operational_authorization": false,
+          "post_window_recoverability_established": false,
+          "clearance_lower_m": 0.7959906716838862,
+          "sampled_path_upper_m": 0.07618505319555166,
+          "window_ticks": 6,
+          "force_norm_budget_n": 1.7320508075688772,
+          "reference_assumptions": [
+            "Known upper initial speed and commanded/external force norms; positive lower actual mass.",
+            "Semi-implicit position update; explicit clipped per-axis damping; gain*dt/mass <= 1.",
+            "No contact or other unbounded forces. Gravity-compensation error must be included in external force.",
+            "Sampled path only; not a between-sample collision or safe-stop certificate.",
+            "Caller assertions and ordinary floating point, not authenticated/interval-certified bounds."
+          ]
+        },
+        "brake_inconsistent_pulse_samples": 2,
+        "cross_inconsistent_samples": 0,
+        "uninformative_pulse_samples": 0,
+        "force_sensor_bound_violations": 0,
+        "acceleration_sensor_bound_violations": 0,
+        "force_budget_violated": true,
+        "window_bound_evaluation": "UNEVALUABLE_FORCE_BUDGET",
+        "sampled_path_m": 0.06600000000000006,
+        "path_exceeds_design_bound": null,
+        "residual_speed_m_s": 0.6200000000000001,
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "v1:near_wall_design",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "NO_PROBE_WINDOW_DECLINED",
+        "physics_steps": 0,
+        "residual_speed_m_s": null,
+        "design": {
+          "design_status": "DECLINED_CLEARANCE_BOUND",
+          "operational_authorization": false,
+          "post_window_recoverability_established": false,
+          "clearance_lower_m": 0.006705382043097678,
+          "sampled_path_upper_m": 0.07618505319555166,
+          "window_ticks": 6,
+          "force_norm_budget_n": 1.7320508075688772,
+          "reference_assumptions": [
+            "Known upper initial speed and commanded/external force norms; positive lower actual mass.",
+            "Semi-implicit position update; explicit clipped per-axis damping; gain*dt/mass <= 1.",
+            "No contact or other unbounded forces. Gravity-compensation error must be included in external force.",
+            "Sampled path only; not a between-sample collision or safe-stop certificate.",
+            "Caller assertions and ordinary floating point, not authenticated/interval-certified bounds."
+          ]
+        }
+      }
+    },
+    {
+      "id": "v2:nominal",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "FINITE_DIAGNOSTIC_WINDOW_COMPLETED_NOT_REST",
+        "physics_steps": 6,
+        "design": {
+          "design_status": "WITHIN_ASSERTED_SAMPLED_WINDOW",
+          "operational_authorization": false,
+          "post_window_recoverability_established": false,
+          "clearance_lower_m": 0.7923754215601181,
+          "sampled_path_upper_m": 0.08714544934747628,
+          "window_ticks": 6,
+          "force_norm_budget_n": 1.7320508075688772,
+          "reference_assumptions": [
+            "Known upper initial speed and commanded/external force norms; positive lower actual mass.",
+            "Semi-implicit position update; explicit clipped per-axis damping; gain*dt/mass <= 1.",
+            "No contact or other unbounded forces. Gravity-compensation error must be included in external force.",
+            "Sampled path only; not a between-sample collision or safe-stop certificate.",
+            "Caller assertions and ordinary floating point, not authenticated/interval-certified bounds."
+          ]
+        },
+        "brake_inconsistent_pulse_samples": 0,
+        "cross_inconsistent_samples": 0,
+        "uninformative_pulse_samples": 0,
+        "force_sensor_bound_violations": 0,
+        "acceleration_sensor_bound_violations": 0,
+        "force_budget_violated": false,
+        "window_bound_evaluation": "CONDITIONAL_SAMPLED_CHECK",
+        "sampled_path_m": 0.07000000000000028,
+        "path_exceeds_design_bound": false,
+        "residual_speed_m_s": 0.5599999999999999,
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "v2:brake_absent",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "FINITE_DIAGNOSTIC_WINDOW_COMPLETED_NOT_REST",
+        "physics_steps": 6,
+        "design": {
+          "design_status": "WITHIN_ASSERTED_SAMPLED_WINDOW",
+          "operational_authorization": false,
+          "post_window_recoverability_established": false,
+          "clearance_lower_m": 0.7923754215601181,
+          "sampled_path_upper_m": 0.08714544934747628,
+          "window_ticks": 6,
+          "force_norm_budget_n": 1.7320508075688772,
+          "reference_assumptions": [
+            "Known upper initial speed and commanded/external force norms; positive lower actual mass.",
+            "Semi-implicit position update; explicit clipped per-axis damping; gain*dt/mass <= 1.",
+            "No contact or other unbounded forces. Gravity-compensation error must be included in external force.",
+            "Sampled path only; not a between-sample collision or safe-stop certificate.",
+            "Caller assertions and ordinary floating point, not authenticated/interval-certified bounds."
+          ]
+        },
+        "brake_inconsistent_pulse_samples": 2,
+        "cross_inconsistent_samples": 0,
+        "uninformative_pulse_samples": 0,
+        "force_sensor_bound_violations": 0,
+        "acceleration_sensor_bound_violations": 0,
+        "force_budget_violated": false,
+        "window_bound_evaluation": "CONDITIONAL_SAMPLED_CHECK",
+        "sampled_path_m": 0.07200000000000006,
+        "path_exceeds_design_bound": false,
+        "residual_speed_m_s": 0.6,
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "v2:force_feedback_spoof",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "FINITE_DIAGNOSTIC_WINDOW_COMPLETED_NOT_REST",
+        "physics_steps": 6,
+        "design": {
+          "design_status": "WITHIN_ASSERTED_SAMPLED_WINDOW",
+          "operational_authorization": false,
+          "post_window_recoverability_established": false,
+          "clearance_lower_m": 0.7923754215601181,
+          "sampled_path_upper_m": 0.08714544934747628,
+          "window_ticks": 6,
+          "force_norm_budget_n": 1.7320508075688772,
+          "reference_assumptions": [
+            "Known upper initial speed and commanded/external force norms; positive lower actual mass.",
+            "Semi-implicit position update; explicit clipped per-axis damping; gain*dt/mass <= 1.",
+            "No contact or other unbounded forces. Gravity-compensation error must be included in external force.",
+            "Sampled path only; not a between-sample collision or safe-stop certificate.",
+            "Caller assertions and ordinary floating point, not authenticated/interval-certified bounds."
+          ]
+        },
+        "brake_inconsistent_pulse_samples": 0,
+        "cross_inconsistent_samples": 2,
+        "uninformative_pulse_samples": 0,
+        "force_sensor_bound_violations": 2,
+        "acceleration_sensor_bound_violations": 0,
+        "force_budget_violated": false,
+        "window_bound_evaluation": "CONDITIONAL_SAMPLED_CHECK",
+        "sampled_path_m": 0.07200000000000006,
+        "path_exceeds_design_bound": false,
+        "residual_speed_m_s": 0.6,
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "v2:coherent_spoof",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "FINITE_DIAGNOSTIC_WINDOW_COMPLETED_NOT_REST",
+        "physics_steps": 6,
+        "design": {
+          "design_status": "WITHIN_ASSERTED_SAMPLED_WINDOW",
+          "operational_authorization": false,
+          "post_window_recoverability_established": false,
+          "clearance_lower_m": 0.7923754215601181,
+          "sampled_path_upper_m": 0.08714544934747628,
+          "window_ticks": 6,
+          "force_norm_budget_n": 1.7320508075688772,
+          "reference_assumptions": [
+            "Known upper initial speed and commanded/external force norms; positive lower actual mass.",
+            "Semi-implicit position update; explicit clipped per-axis damping; gain*dt/mass <= 1.",
+            "No contact or other unbounded forces. Gravity-compensation error must be included in external force.",
+            "Sampled path only; not a between-sample collision or safe-stop certificate.",
+            "Caller assertions and ordinary floating point, not authenticated/interval-certified bounds."
+          ]
+        },
+        "brake_inconsistent_pulse_samples": 0,
+        "cross_inconsistent_samples": 0,
+        "uninformative_pulse_samples": 0,
+        "force_sensor_bound_violations": 2,
+        "acceleration_sensor_bound_violations": 2,
+        "force_budget_violated": false,
+        "window_bound_evaluation": "CONDITIONAL_SAMPLED_CHECK",
+        "sampled_path_m": 0.07200000000000006,
+        "path_exceeds_design_bound": false,
+        "residual_speed_m_s": 0.6,
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "v2:wrong_sign",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "FINITE_DIAGNOSTIC_WINDOW_COMPLETED_NOT_REST",
+        "physics_steps": 6,
+        "design": {
+          "design_status": "WITHIN_ASSERTED_SAMPLED_WINDOW",
+          "operational_authorization": false,
+          "post_window_recoverability_established": false,
+          "clearance_lower_m": 0.7923754215601181,
+          "sampled_path_upper_m": 0.08714544934747628,
+          "window_ticks": 6,
+          "force_norm_budget_n": 1.7320508075688772,
+          "reference_assumptions": [
+            "Known upper initial speed and commanded/external force norms; positive lower actual mass.",
+            "Semi-implicit position update; explicit clipped per-axis damping; gain*dt/mass <= 1.",
+            "No contact or other unbounded forces. Gravity-compensation error must be included in external force.",
+            "Sampled path only; not a between-sample collision or safe-stop certificate.",
+            "Caller assertions and ordinary floating point, not authenticated/interval-certified bounds."
+          ]
+        },
+        "brake_inconsistent_pulse_samples": 2,
+        "cross_inconsistent_samples": 0,
+        "uninformative_pulse_samples": 0,
+        "force_sensor_bound_violations": 0,
+        "acceleration_sensor_bound_violations": 0,
+        "force_budget_violated": false,
+        "window_bound_evaluation": "CONDITIONAL_SAMPLED_CHECK",
+        "sampled_path_m": 0.07399999999999984,
+        "path_exceeds_design_bound": false,
+        "residual_speed_m_s": 0.64,
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "v2:force_over_budget",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "FINITE_DIAGNOSTIC_WINDOW_COMPLETED_NOT_REST",
+        "physics_steps": 6,
+        "design": {
+          "design_status": "WITHIN_ASSERTED_SAMPLED_WINDOW",
+          "operational_authorization": false,
+          "post_window_recoverability_established": false,
+          "clearance_lower_m": 0.7923754215601181,
+          "sampled_path_upper_m": 0.08714544934747628,
+          "window_ticks": 6,
+          "force_norm_budget_n": 1.7320508075688772,
+          "reference_assumptions": [
+            "Known upper initial speed and commanded/external force norms; positive lower actual mass.",
+            "Semi-implicit position update; explicit clipped per-axis damping; gain*dt/mass <= 1.",
+            "No contact or other unbounded forces. Gravity-compensation error must be included in external force.",
+            "Sampled path only; not a between-sample collision or safe-stop certificate.",
+            "Caller assertions and ordinary floating point, not authenticated/interval-certified bounds."
+          ]
+        },
+        "brake_inconsistent_pulse_samples": 2,
+        "cross_inconsistent_samples": 0,
+        "uninformative_pulse_samples": 0,
+        "force_sensor_bound_violations": 0,
+        "acceleration_sensor_bound_violations": 0,
+        "force_budget_violated": true,
+        "window_bound_evaluation": "UNEVALUABLE_FORCE_BUDGET",
+        "sampled_path_m": 0.07800000000000007,
+        "path_exceeds_design_bound": null,
+        "residual_speed_m_s": 0.7200000000000001,
+        "operational_authorization": false
+      }
+    },
+    {
+      "id": "v2:near_wall_design",
+      "state": "COMPLETED",
+      "summary": {
+        "classification": "NO_PROBE_WINDOW_DECLINED",
+        "physics_steps": 0,
+        "residual_speed_m_s": null,
+        "design": {
+          "design_status": "DECLINED_CLEARANCE_BOUND",
+          "operational_authorization": false,
+          "post_window_recoverability_established": false,
+          "clearance_lower_m": 0.002375421560118056,
+          "sampled_path_upper_m": 0.08714544934747628,
+          "window_ticks": 6,
+          "force_norm_budget_n": 1.7320508075688772,
+          "reference_assumptions": [
+            "Known upper initial speed and commanded/external force norms; positive lower actual mass.",
+            "Semi-implicit position update; explicit clipped per-axis damping; gain*dt/mass <= 1.",
+            "No contact or other unbounded forces. Gravity-compensation error must be included in external force.",
+            "Sampled path only; not a between-sample collision or safe-stop certificate.",
+            "Caller assertions and ordinary floating point, not authenticated/interval-certified bounds."
+          ]
+        }
+      }
+    }
+  ],
+  "audit_method": "READ_ONLY_ARITHMETIC_AND_RECORD_RECONSTRUCTION",
+  "classification": "DEVELOPMENT_PROBE_NOT_OPERATIONAL_OR_CONFIRMATORY_AUTHORIZATION",
+  "gate_b": "GATE_B_NOT_AUTHORIZED",
+  "limitations": [
+    "Only a short sampled design window; no post-window recoverability or rest guarantee.",
+    "Sensor, geometry, initial-state and force bounds are unverified model assertions.",
+    "Reader compiles the initial model but never advances physics."
+  ]
+}

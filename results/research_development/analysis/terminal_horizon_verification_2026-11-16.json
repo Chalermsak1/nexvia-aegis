@@ -1,0 +1,698 @@
+{
+  "classification": "EXPLORATORY_TERMINAL_HORIZON_VERIFICATION",
+  "parent_commit": "74b0bfab8e57cd450293e49de881207074df3141",
+  "tests": {
+    "tests": "25",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "2.792",
+    "timestamp": "2026-11-16T09:02:36.325171+07:00"
+  },
+  "source_sha256": {
+    "tests/test_bridge_terminal_horizons.py": "e8d6b337fdb85517da936aa250b15939ea36982d24f1c87ca0a35568f41e76e3",
+    "scripts/research/audit_bridge_observations.py": "172a26de57c5347aa395dc4f3bbfebccdcefa7c86ffaf16ceabf2337cb2694c0",
+    "scripts/research/audit_bridge_v2.py": "99aeafc4d4873718a1884c6f4d97d1f860f40bfa732d68d084171b6dfebef4b1",
+    "scripts/research/recovery_execution_bridge_v2.py": "43791110dbd64040e566a3186de2542df5e84abe1be8456a51c2943c47102def",
+    "experiments/benchmark_physical_3d_cbf.py": "04bc31bf74423806200e39a44334e1dd0cf4063dde08797ef79dacb491b4323f"
+  },
+  "fixtures": [
+    {
+      "path": "test_actual_observation_arithm0/good.jsonl",
+      "sha256": "2e127fee299f921e85b47ec70352a86f151ab3a5929fc40fcc297019e831f9c6",
+      "audit_result": {
+        "classification": "DEVELOPMENT_BRIDGE_OBSERVATION_CONSISTENCY_AUDIT",
+        "input_sha256": "2e127fee299f921e85b47ec70352a86f151ab3a5929fc40fcc297019e831f9c6",
+        "ledger_state": "FINALIZED",
+        "execution_status": "COMPLETED",
+        "reset_observed": true,
+        "runtime_observed": true,
+        "runtime_unchanged": true,
+        "decision_events": 3,
+        "physics_events": 3,
+        "runtime_timestep_seconds": 0.02,
+        "limitations": [
+          "Observed arithmetic and label consistency only; no independent geometry/contact truth, stopping acceptance, authentication or efficacy validation.",
+          "Historical final_distance scope is preserved; physical collision flags are type-checked, not independently verified.",
+          "Incomplete/error evidence remains partial; unpersisted physical steps cannot be reconstructed."
+        ],
+        "governance": "GATE_B_NOT_AUTHORIZED"
+      }
+    },
+    {
+      "path": "test_actual_observation_arithm1/good.jsonl",
+      "sha256": "6dfbca03cbe3391c73d9bd6308a2de44366acd53ef6b143d8df9b787d9154143",
+      "audit_result": {
+        "classification": "DEVELOPMENT_BRIDGE_OBSERVATION_CONSISTENCY_AUDIT",
+        "input_sha256": "6dfbca03cbe3391c73d9bd6308a2de44366acd53ef6b143d8df9b787d9154143",
+        "ledger_state": "FINALIZED",
+        "execution_status": "COMPLETED",
+        "reset_observed": true,
+        "runtime_observed": true,
+        "runtime_unchanged": true,
+        "decision_events": 3,
+        "physics_events": 3,
+        "runtime_timestep_seconds": 0.02,
+        "limitations": [
+          "Observed arithmetic and label consistency only; no independent geometry/contact truth, stopping acceptance, authentication or efficacy validation.",
+          "Historical final_distance scope is preserved; physical collision flags are type-checked, not independently verified.",
+          "Incomplete/error evidence remains partial; unpersisted physical steps cannot be reconstructed."
+        ],
+        "governance": "GATE_B_NOT_AUTHORIZED"
+      }
+    },
+    {
+      "path": "test_actual_terminal_horizon_p0/terminal.jsonl",
+      "sha256": "b032a94c3f10af6231c7d72711691e77d0c0f2c502486d9badc16e50ffb7d463",
+      "audit_result": {
+        "classification": "DEVELOPMENT_BRIDGE_OBSERVATION_CONSISTENCY_AUDIT",
+        "input_sha256": "b032a94c3f10af6231c7d72711691e77d0c0f2c502486d9badc16e50ffb7d463",
+        "ledger_state": "FINALIZED",
+        "execution_status": "COMPLETED",
+        "reset_observed": true,
+        "runtime_observed": true,
+        "runtime_unchanged": true,
+        "decision_events": 252,
+        "physics_events": 254,
+        "runtime_timestep_seconds": 0.02,
+        "limitations": [
+          "Observed arithmetic and label consistency only; no independent geometry/contact truth, stopping acceptance, authentication or efficacy validation.",
+          "Historical final_distance scope is preserved; physical collision flags are type-checked, not independently verified.",
+          "Incomplete/error evidence remains partial; unpersisted physical steps cannot be reconstructed."
+        ],
+        "governance": "GATE_B_NOT_AUTHORIZED"
+      }
+    },
+    {
+      "path": "test_actual_terminal_horizon_p1/terminal.jsonl",
+      "sha256": "1d27df1c5e258e72918d2903f6775783f4ec43dd750f8ca0c791187b6c6370e7",
+      "audit_result": {
+        "classification": "DEVELOPMENT_BRIDGE_OBSERVATION_CONSISTENCY_AUDIT",
+        "input_sha256": "1d27df1c5e258e72918d2903f6775783f4ec43dd750f8ca0c791187b6c6370e7",
+        "ledger_state": "FINALIZED",
+        "execution_status": "COMPLETED",
+        "reset_observed": true,
+        "runtime_observed": true,
+        "runtime_unchanged": true,
+        "decision_events": 86,
+        "physics_events": 91,
+        "runtime_timestep_seconds": 0.02,
+        "limitations": [
+          "Observed arithmetic and label consistency only; no independent geometry/contact truth, stopping acceptance, authentication or efficacy validation.",
+          "Historical final_distance scope is preserved; physical collision flags are type-checked, not independently verified.",
+          "Incomplete/error evidence remains partial; unpersisted physical steps cannot be reconstructed."
+        ],
+        "governance": "GATE_B_NOT_AUTHORIZED"
+      }
+    },
+    {
+      "path": "test_actual_terminal_horizon_p2/terminal.jsonl",
+      "sha256": "dad649492103ba0fcf5ce9294ccf7149e81836299fb18f2e651b6de5544a2ed6",
+      "audit_result": {
+        "classification": "DEVELOPMENT_BRIDGE_OBSERVATION_CONSISTENCY_AUDIT",
+        "input_sha256": "dad649492103ba0fcf5ce9294ccf7149e81836299fb18f2e651b6de5544a2ed6",
+        "ledger_state": "FINALIZED",
+        "execution_status": "COMPLETED",
+        "reset_observed": true,
+        "runtime_observed": true,
+        "runtime_unchanged": true,
+        "decision_events": 86,
+        "physics_events": 91,
+        "runtime_timestep_seconds": 0.02,
+        "limitations": [
+          "Observed arithmetic and label consistency only; no independent geometry/contact truth, stopping acceptance, authentication or efficacy validation.",
+          "Historical final_distance scope is preserved; physical collision flags are type-checked, not independently verified.",
+          "Incomplete/error evidence remains partial; unpersisted physical steps cannot be reconstructed."
+        ],
+        "governance": "GATE_B_NOT_AUTHORIZED"
+      }
+    },
+    {
+      "path": "test_error_runtime_drift_is_re0/drift.jsonl",
+      "sha256": "2aaa3b4d20715dca50372b0a50aba350f1fc5408228195ef6460385ca357aeb2",
+      "audit_result": {
+        "classification": "DEVELOPMENT_BRIDGE_OBSERVATION_CONSISTENCY_AUDIT",
+        "input_sha256": "2aaa3b4d20715dca50372b0a50aba350f1fc5408228195ef6460385ca357aeb2",
+        "ledger_state": "FINALIZED_WITH_ERRORS",
+        "execution_status": "ERROR",
+        "reset_observed": true,
+        "runtime_observed": true,
+        "runtime_unchanged": false,
+        "decision_events": 1,
+        "physics_events": 0,
+        "runtime_timestep_seconds": 0.02,
+        "limitations": [
+          "Observed arithmetic and label consistency only; no independent geometry/contact truth, stopping acceptance, authentication or efficacy validation.",
+          "Historical final_distance scope is preserved; physical collision flags are type-checked, not independently verified.",
+          "Incomplete/error evidence remains partial; unpersisted physical steps cannot be reconstructed."
+        ],
+        "governance": "GATE_B_NOT_AUTHORIZED"
+      }
+    },
+    {
+      "path": "test_horizon_sink_failure_pres0/interrupted.jsonl",
+      "sha256": "3052a75ffc3a4ee73cb937253d9b94f95813e63ffdbab40315cbacb68ba6554e",
+      "audit_result": {
+        "classification": "DEVELOPMENT_BRIDGE_OBSERVATION_CONSISTENCY_AUDIT",
+        "input_sha256": "3052a75ffc3a4ee73cb937253d9b94f95813e63ffdbab40315cbacb68ba6554e",
+        "ledger_state": "INCOMPLETE",
+        "execution_status": "STARTED",
+        "reset_observed": true,
+        "runtime_observed": true,
+        "runtime_unchanged": null,
+        "decision_events": 252,
+        "physics_events": 252,
+        "runtime_timestep_seconds": 0.02,
+        "limitations": [
+          "Observed arithmetic and label consistency only; no independent geometry/contact truth, stopping acceptance, authentication or efficacy validation.",
+          "Historical final_distance scope is preserved; physical collision flags are type-checked, not independently verified.",
+          "Incomplete/error evidence remains partial; unpersisted physical steps cannot be reconstructed."
+        ],
+        "governance": "GATE_B_NOT_AUTHORIZED"
+      }
+    },
+    {
+      "path": "test_horizon_sink_failure_pres1/interrupted.jsonl",
+      "sha256": "2d9d4413ffc981071424cc0bb89c3a2d3f0a67b4884f2f45d3d33e366084b4da",
+      "audit_result": {
+        "classification": "DEVELOPMENT_BRIDGE_OBSERVATION_CONSISTENCY_AUDIT",
+        "input_sha256": "2d9d4413ffc981071424cc0bb89c3a2d3f0a67b4884f2f45d3d33e366084b4da",
+        "ledger_state": "INCOMPLETE",
+        "execution_status": "STARTED",
+        "reset_observed": true,
+        "runtime_observed": true,
+        "runtime_unchanged": null,
+        "decision_events": 86,
+        "physics_events": 87,
+        "runtime_timestep_seconds": 0.02,
+        "limitations": [
+          "Observed arithmetic and label consistency only; no independent geometry/contact truth, stopping acceptance, authentication or efficacy validation.",
+          "Historical final_distance scope is preserved; physical collision flags are type-checked, not independently verified.",
+          "Incomplete/error evidence remains partial; unpersisted physical steps cannot be reconstructed."
+        ],
+        "governance": "GATE_B_NOT_AUTHORIZED"
+      }
+    },
+    {
+      "path": "test_missing_last_horizon_samp0/missing.jsonl",
+      "sha256": "fa813d34b8e6772f86c5b27a838c1397d3b62731cd96d710dba48292ce9c95bf",
+      "audit_result": {
+        "rejected": true,
+        "reason": "completed run missing final physics"
+      }
+    },
+    {
+      "path": "test_missing_last_horizon_samp0/source.jsonl",
+      "sha256": "b032a94c3f10af6231c7d72711691e77d0c0f2c502486d9badc16e50ffb7d463",
+      "audit_result": {
+        "classification": "DEVELOPMENT_BRIDGE_OBSERVATION_CONSISTENCY_AUDIT",
+        "input_sha256": "b032a94c3f10af6231c7d72711691e77d0c0f2c502486d9badc16e50ffb7d463",
+        "ledger_state": "FINALIZED",
+        "execution_status": "COMPLETED",
+        "reset_observed": true,
+        "runtime_observed": true,
+        "runtime_unchanged": true,
+        "decision_events": 252,
+        "physics_events": 254,
+        "runtime_timestep_seconds": 0.02,
+        "limitations": [
+          "Observed arithmetic and label consistency only; no independent geometry/contact truth, stopping acceptance, authentication or efficacy validation.",
+          "Historical final_distance scope is preserved; physical collision flags are type-checked, not independently verified.",
+          "Incomplete/error evidence remains partial; unpersisted physical steps cannot be reconstructed."
+        ],
+        "governance": "GATE_B_NOT_AUTHORIZED"
+      }
+    },
+    {
+      "path": "test_missing_last_horizon_samp1/missing.jsonl",
+      "sha256": "2bffea40932c179b1a2d444343fd60e27df859620f2c92d699b25fed4cf34e51",
+      "audit_result": {
+        "rejected": true,
+        "reason": "completed run missing final physics"
+      }
+    },
+    {
+      "path": "test_missing_last_horizon_samp1/source.jsonl",
+      "sha256": "1d27df1c5e258e72918d2903f6775783f4ec43dd750f8ca0c791187b6c6370e7",
+      "audit_result": {
+        "classification": "DEVELOPMENT_BRIDGE_OBSERVATION_CONSISTENCY_AUDIT",
+        "input_sha256": "1d27df1c5e258e72918d2903f6775783f4ec43dd750f8ca0c791187b6c6370e7",
+        "ledger_state": "FINALIZED",
+        "execution_status": "COMPLETED",
+        "reset_observed": true,
+        "runtime_observed": true,
+        "runtime_unchanged": true,
+        "decision_events": 86,
+        "physics_events": 91,
+        "runtime_timestep_seconds": 0.02,
+        "limitations": [
+          "Observed arithmetic and label consistency only; no independent geometry/contact truth, stopping acceptance, authentication or efficacy validation.",
+          "Historical final_distance scope is preserved; physical collision flags are type-checked, not independently verified.",
+          "Incomplete/error evidence remains partial; unpersisted physical steps cannot be reconstructed."
+        ],
+        "governance": "GATE_B_NOT_AUTHORIZED"
+      }
+    },
+    {
+      "path": "test_normal_actual_v2_trace_Fa0/good.jsonl",
+      "sha256": "2e127fee299f921e85b47ec70352a86f151ab3a5929fc40fcc297019e831f9c6",
+      "audit_result": {
+        "classification": "DEVELOPMENT_BRIDGE_OBSERVATION_CONSISTENCY_AUDIT",
+        "input_sha256": "2e127fee299f921e85b47ec70352a86f151ab3a5929fc40fcc297019e831f9c6",
+        "ledger_state": "FINALIZED",
+        "execution_status": "COMPLETED",
+        "reset_observed": true,
+        "runtime_observed": true,
+        "runtime_unchanged": true,
+        "decision_events": 3,
+        "physics_events": 3,
+        "runtime_timestep_seconds": 0.02,
+        "limitations": [
+          "Observed arithmetic and label consistency only; no independent geometry/contact truth, stopping acceptance, authentication or efficacy validation.",
+          "Historical final_distance scope is preserved; physical collision flags are type-checked, not independently verified.",
+          "Incomplete/error evidence remains partial; unpersisted physical steps cannot be reconstructed."
+        ],
+        "governance": "GATE_B_NOT_AUTHORIZED"
+      }
+    },
+    {
+      "path": "test_normal_actual_v2_trace_Tr0/good.jsonl",
+      "sha256": "6dfbca03cbe3391c73d9bd6308a2de44366acd53ef6b143d8df9b787d9154143",
+      "audit_result": {
+        "classification": "DEVELOPMENT_BRIDGE_OBSERVATION_CONSISTENCY_AUDIT",
+        "input_sha256": "6dfbca03cbe3391c73d9bd6308a2de44366acd53ef6b143d8df9b787d9154143",
+        "ledger_state": "FINALIZED",
+        "execution_status": "COMPLETED",
+        "reset_observed": true,
+        "runtime_observed": true,
+        "runtime_unchanged": true,
+        "decision_events": 3,
+        "physics_events": 3,
+        "runtime_timestep_seconds": 0.02,
+        "limitations": [
+          "Observed arithmetic and label consistency only; no independent geometry/contact truth, stopping acceptance, authentication or efficacy validation.",
+          "Historical final_distance scope is preserved; physical collision flags are type-checked, not independently verified.",
+          "Incomplete/error evidence remains partial; unpersisted physical steps cannot be reconstructed."
+        ],
+        "governance": "GATE_B_NOT_AUTHORIZED"
+      }
+    },
+    {
+      "path": "test_rehashed_observation_cont0/bad.jsonl",
+      "sha256": "76fa534d27d14a60ef69d271af1f06100b145bd2151b8c16d02953aca32b057d",
+      "audit_result": {
+        "rejected": true,
+        "reason": "observed distance contradicts position/target"
+      }
+    },
+    {
+      "path": "test_rehashed_observation_cont0/good.jsonl",
+      "sha256": "6dfbca03cbe3391c73d9bd6308a2de44366acd53ef6b143d8df9b787d9154143",
+      "audit_result": {
+        "classification": "DEVELOPMENT_BRIDGE_OBSERVATION_CONSISTENCY_AUDIT",
+        "input_sha256": "6dfbca03cbe3391c73d9bd6308a2de44366acd53ef6b143d8df9b787d9154143",
+        "ledger_state": "FINALIZED",
+        "execution_status": "COMPLETED",
+        "reset_observed": true,
+        "runtime_observed": true,
+        "runtime_unchanged": true,
+        "decision_events": 3,
+        "physics_events": 3,
+        "runtime_timestep_seconds": 0.02,
+        "limitations": [
+          "Observed arithmetic and label consistency only; no independent geometry/contact truth, stopping acceptance, authentication or efficacy validation.",
+          "Historical final_distance scope is preserved; physical collision flags are type-checked, not independently verified.",
+          "Incomplete/error evidence remains partial; unpersisted physical steps cannot be reconstructed."
+        ],
+        "governance": "GATE_B_NOT_AUTHORIZED"
+      }
+    },
+    {
+      "path": "test_rehashed_observation_cont1/bad.jsonl",
+      "sha256": "adff39e95b97ed6c1411516e6e0df71d09c7e9cbed399cfab48492961612feaa",
+      "audit_result": {
+        "rejected": true,
+        "reason": "invalid observed vector: velocity"
+      }
+    },
+    {
+      "path": "test_rehashed_observation_cont1/good.jsonl",
+      "sha256": "6dfbca03cbe3391c73d9bd6308a2de44366acd53ef6b143d8df9b787d9154143",
+      "audit_result": {
+        "classification": "DEVELOPMENT_BRIDGE_OBSERVATION_CONSISTENCY_AUDIT",
+        "input_sha256": "6dfbca03cbe3391c73d9bd6308a2de44366acd53ef6b143d8df9b787d9154143",
+        "ledger_state": "FINALIZED",
+        "execution_status": "COMPLETED",
+        "reset_observed": true,
+        "runtime_observed": true,
+        "runtime_unchanged": true,
+        "decision_events": 3,
+        "physics_events": 3,
+        "runtime_timestep_seconds": 0.02,
+        "limitations": [
+          "Observed arithmetic and label consistency only; no independent geometry/contact truth, stopping acceptance, authentication or efficacy validation.",
+          "Historical final_distance scope is preserved; physical collision flags are type-checked, not independently verified.",
+          "Incomplete/error evidence remains partial; unpersisted physical steps cannot be reconstructed."
+        ],
+        "governance": "GATE_B_NOT_AUTHORIZED"
+      }
+    },
+    {
+      "path": "test_rehashed_observation_cont2/bad.jsonl",
+      "sha256": "97bab5e21bb6cf508e2a9fa5f514b69dd37b506175118949ad194ef408561219",
+      "audit_result": {
+        "rejected": true,
+        "reason": "invalid collision flag"
+      }
+    },
+    {
+      "path": "test_rehashed_observation_cont2/good.jsonl",
+      "sha256": "6dfbca03cbe3391c73d9bd6308a2de44366acd53ef6b143d8df9b787d9154143",
+      "audit_result": {
+        "classification": "DEVELOPMENT_BRIDGE_OBSERVATION_CONSISTENCY_AUDIT",
+        "input_sha256": "6dfbca03cbe3391c73d9bd6308a2de44366acd53ef6b143d8df9b787d9154143",
+        "ledger_state": "FINALIZED",
+        "execution_status": "COMPLETED",
+        "reset_observed": true,
+        "runtime_observed": true,
+        "runtime_unchanged": true,
+        "decision_events": 3,
+        "physics_events": 3,
+        "runtime_timestep_seconds": 0.02,
+        "limitations": [
+          "Observed arithmetic and label consistency only; no independent geometry/contact truth, stopping acceptance, authentication or efficacy validation.",
+          "Historical final_distance scope is preserved; physical collision flags are type-checked, not independently verified.",
+          "Incomplete/error evidence remains partial; unpersisted physical steps cannot be reconstructed."
+        ],
+        "governance": "GATE_B_NOT_AUTHORIZED"
+      }
+    },
+    {
+      "path": "test_rehashed_observation_cont3/bad.jsonl",
+      "sha256": "c9ce09a3a97cc28c77aeec136d73e82627ec38322f1b913541fd5c4cdc2928f1",
+      "audit_result": {
+        "rejected": true,
+        "reason": "invalid residual"
+      }
+    },
+    {
+      "path": "test_rehashed_observation_cont3/good.jsonl",
+      "sha256": "6dfbca03cbe3391c73d9bd6308a2de44366acd53ef6b143d8df9b787d9154143",
+      "audit_result": {
+        "classification": "DEVELOPMENT_BRIDGE_OBSERVATION_CONSISTENCY_AUDIT",
+        "input_sha256": "6dfbca03cbe3391c73d9bd6308a2de44366acd53ef6b143d8df9b787d9154143",
+        "ledger_state": "FINALIZED",
+        "execution_status": "COMPLETED",
+        "reset_observed": true,
+        "runtime_observed": true,
+        "runtime_unchanged": true,
+        "decision_events": 3,
+        "physics_events": 3,
+        "runtime_timestep_seconds": 0.02,
+        "limitations": [
+          "Observed arithmetic and label consistency only; no independent geometry/contact truth, stopping acceptance, authentication or efficacy validation.",
+          "Historical final_distance scope is preserved; physical collision flags are type-checked, not independently verified.",
+          "Incomplete/error evidence remains partial; unpersisted physical steps cannot be reconstructed."
+        ],
+        "governance": "GATE_B_NOT_AUTHORIZED"
+      }
+    },
+    {
+      "path": "test_rehashed_observation_cont4/bad.jsonl",
+      "sha256": "24f972822b5f3c2da0f386061cee737337b0c45f92cd83c36b311df9aab73f1c",
+      "audit_result": {
+        "rejected": true,
+        "reason": "invalid exclusive episode outcomes"
+      }
+    },
+    {
+      "path": "test_rehashed_observation_cont4/good.jsonl",
+      "sha256": "6dfbca03cbe3391c73d9bd6308a2de44366acd53ef6b143d8df9b787d9154143",
+      "audit_result": {
+        "classification": "DEVELOPMENT_BRIDGE_OBSERVATION_CONSISTENCY_AUDIT",
+        "input_sha256": "6dfbca03cbe3391c73d9bd6308a2de44366acd53ef6b143d8df9b787d9154143",
+        "ledger_state": "FINALIZED",
+        "execution_status": "COMPLETED",
+        "reset_observed": true,
+        "runtime_observed": true,
+        "runtime_unchanged": true,
+        "decision_events": 3,
+        "physics_events": 3,
+        "runtime_timestep_seconds": 0.02,
+        "limitations": [
+          "Observed arithmetic and label consistency only; no independent geometry/contact truth, stopping acceptance, authentication or efficacy validation.",
+          "Historical final_distance scope is preserved; physical collision flags are type-checked, not independently verified.",
+          "Incomplete/error evidence remains partial; unpersisted physical steps cannot be reconstructed."
+        ],
+        "governance": "GATE_B_NOT_AUTHORIZED"
+      }
+    },
+    {
+      "path": "test_rehashed_observation_cont5/bad.jsonl",
+      "sha256": "35f4d0d65549a2968abcf4b79146e54c2477981faecc43ec271d223a2ee408a5",
+      "audit_result": {
+        "rejected": true,
+        "reason": "terminal outcome contradicts decision"
+      }
+    },
+    {
+      "path": "test_rehashed_observation_cont5/good.jsonl",
+      "sha256": "6dfbca03cbe3391c73d9bd6308a2de44366acd53ef6b143d8df9b787d9154143",
+      "audit_result": {
+        "classification": "DEVELOPMENT_BRIDGE_OBSERVATION_CONSISTENCY_AUDIT",
+        "input_sha256": "6dfbca03cbe3391c73d9bd6308a2de44366acd53ef6b143d8df9b787d9154143",
+        "ledger_state": "FINALIZED",
+        "execution_status": "COMPLETED",
+        "reset_observed": true,
+        "runtime_observed": true,
+        "runtime_unchanged": true,
+        "decision_events": 3,
+        "physics_events": 3,
+        "runtime_timestep_seconds": 0.02,
+        "limitations": [
+          "Observed arithmetic and label consistency only; no independent geometry/contact truth, stopping acceptance, authentication or efficacy validation.",
+          "Historical final_distance scope is preserved; physical collision flags are type-checked, not independently verified.",
+          "Incomplete/error evidence remains partial; unpersisted physical steps cannot be reconstructed."
+        ],
+        "governance": "GATE_B_NOT_AUTHORIZED"
+      }
+    },
+    {
+      "path": "test_rehashed_observation_cont6/bad.jsonl",
+      "sha256": "55c11521b0261cd396299e5c3567d608fb064553e646b1a0547228f26280442f",
+      "audit_result": {
+        "rejected": true,
+        "reason": "terminal distance scope mismatch"
+      }
+    },
+    {
+      "path": "test_rehashed_observation_cont6/good.jsonl",
+      "sha256": "6dfbca03cbe3391c73d9bd6308a2de44366acd53ef6b143d8df9b787d9154143",
+      "audit_result": {
+        "classification": "DEVELOPMENT_BRIDGE_OBSERVATION_CONSISTENCY_AUDIT",
+        "input_sha256": "6dfbca03cbe3391c73d9bd6308a2de44366acd53ef6b143d8df9b787d9154143",
+        "ledger_state": "FINALIZED",
+        "execution_status": "COMPLETED",
+        "reset_observed": true,
+        "runtime_observed": true,
+        "runtime_unchanged": true,
+        "decision_events": 3,
+        "physics_events": 3,
+        "runtime_timestep_seconds": 0.02,
+        "limitations": [
+          "Observed arithmetic and label consistency only; no independent geometry/contact truth, stopping acceptance, authentication or efficacy validation.",
+          "Historical final_distance scope is preserved; physical collision flags are type-checked, not independently verified.",
+          "Incomplete/error evidence remains partial; unpersisted physical steps cannot be reconstructed."
+        ],
+        "governance": "GATE_B_NOT_AUTHORIZED"
+      }
+    },
+    {
+      "path": "test_rehashed_runtime_contradi0/bad.jsonl",
+      "sha256": "b2b88594b01cb5a89bed4930e75a7d87e6f1c4094a4a8e68f74942a416c204bf",
+      "audit_result": {
+        "rejected": true,
+        "reason": "observation before runtime"
+      }
+    },
+    {
+      "path": "test_rehashed_runtime_contradi0/good.jsonl",
+      "sha256": "6dfbca03cbe3391c73d9bd6308a2de44366acd53ef6b143d8df9b787d9154143",
+      "audit_result": {
+        "classification": "DEVELOPMENT_BRIDGE_OBSERVATION_CONSISTENCY_AUDIT",
+        "input_sha256": "6dfbca03cbe3391c73d9bd6308a2de44366acd53ef6b143d8df9b787d9154143",
+        "ledger_state": "FINALIZED",
+        "execution_status": "COMPLETED",
+        "reset_observed": true,
+        "runtime_observed": true,
+        "runtime_unchanged": true,
+        "decision_events": 3,
+        "physics_events": 3,
+        "runtime_timestep_seconds": 0.02,
+        "limitations": [
+          "Observed arithmetic and label consistency only; no independent geometry/contact truth, stopping acceptance, authentication or efficacy validation.",
+          "Historical final_distance scope is preserved; physical collision flags are type-checked, not independently verified.",
+          "Incomplete/error evidence remains partial; unpersisted physical steps cannot be reconstructed."
+        ],
+        "governance": "GATE_B_NOT_AUTHORIZED"
+      }
+    },
+    {
+      "path": "test_rehashed_runtime_contradi1/bad.jsonl",
+      "sha256": "6826918d19eb08690992178b7d507d4d9d1e816a79f37d6ab7c414a810f4ccb9",
+      "audit_result": {
+        "rejected": true,
+        "reason": "duplicate/late runtime event"
+      }
+    },
+    {
+      "path": "test_rehashed_runtime_contradi1/good.jsonl",
+      "sha256": "6dfbca03cbe3391c73d9bd6308a2de44366acd53ef6b143d8df9b787d9154143",
+      "audit_result": {
+        "classification": "DEVELOPMENT_BRIDGE_OBSERVATION_CONSISTENCY_AUDIT",
+        "input_sha256": "6dfbca03cbe3391c73d9bd6308a2de44366acd53ef6b143d8df9b787d9154143",
+        "ledger_state": "FINALIZED",
+        "execution_status": "COMPLETED",
+        "reset_observed": true,
+        "runtime_observed": true,
+        "runtime_unchanged": true,
+        "decision_events": 3,
+        "physics_events": 3,
+        "runtime_timestep_seconds": 0.02,
+        "limitations": [
+          "Observed arithmetic and label consistency only; no independent geometry/contact truth, stopping acceptance, authentication or efficacy validation.",
+          "Historical final_distance scope is preserved; physical collision flags are type-checked, not independently verified.",
+          "Incomplete/error evidence remains partial; unpersisted physical steps cannot be reconstructed."
+        ],
+        "governance": "GATE_B_NOT_AUTHORIZED"
+      }
+    },
+    {
+      "path": "test_rehashed_runtime_contradi2/bad.jsonl",
+      "sha256": "1bda107412fa5a1c9bbb573ee50867b4202dc2db1357f76de93299695b9bbb68",
+      "audit_result": {
+        "rejected": true,
+        "reason": "terminal/runtime baseline mismatch"
+      }
+    },
+    {
+      "path": "test_rehashed_runtime_contradi2/good.jsonl",
+      "sha256": "6dfbca03cbe3391c73d9bd6308a2de44366acd53ef6b143d8df9b787d9154143",
+      "audit_result": {
+        "classification": "DEVELOPMENT_BRIDGE_OBSERVATION_CONSISTENCY_AUDIT",
+        "input_sha256": "6dfbca03cbe3391c73d9bd6308a2de44366acd53ef6b143d8df9b787d9154143",
+        "ledger_state": "FINALIZED",
+        "execution_status": "COMPLETED",
+        "reset_observed": true,
+        "runtime_observed": true,
+        "runtime_unchanged": true,
+        "decision_events": 3,
+        "physics_events": 3,
+        "runtime_timestep_seconds": 0.02,
+        "limitations": [
+          "Observed arithmetic and label consistency only; no independent geometry/contact truth, stopping acceptance, authentication or efficacy validation.",
+          "Historical final_distance scope is preserved; physical collision flags are type-checked, not independently verified.",
+          "Incomplete/error evidence remains partial; unpersisted physical steps cannot be reconstructed."
+        ],
+        "governance": "GATE_B_NOT_AUTHORIZED"
+      }
+    },
+    {
+      "path": "test_rehashed_runtime_contradi3/bad.jsonl",
+      "sha256": "53b05720d2b987845ab1c751be72fea79e55ace88f35161a702267df80aeb6fa",
+      "audit_result": {
+        "rejected": true,
+        "reason": "completed with runtime drift/missing runtime"
+      }
+    },
+    {
+      "path": "test_rehashed_runtime_contradi3/good.jsonl",
+      "sha256": "6dfbca03cbe3391c73d9bd6308a2de44366acd53ef6b143d8df9b787d9154143",
+      "audit_result": {
+        "classification": "DEVELOPMENT_BRIDGE_OBSERVATION_CONSISTENCY_AUDIT",
+        "input_sha256": "6dfbca03cbe3391c73d9bd6308a2de44366acd53ef6b143d8df9b787d9154143",
+        "ledger_state": "FINALIZED",
+        "execution_status": "COMPLETED",
+        "reset_observed": true,
+        "runtime_observed": true,
+        "runtime_unchanged": true,
+        "decision_events": 3,
+        "physics_events": 3,
+        "runtime_timestep_seconds": 0.02,
+        "limitations": [
+          "Observed arithmetic and label consistency only; no independent geometry/contact truth, stopping acceptance, authentication or efficacy validation.",
+          "Historical final_distance scope is preserved; physical collision flags are type-checked, not independently verified.",
+          "Incomplete/error evidence remains partial; unpersisted physical steps cannot be reconstructed."
+        ],
+        "governance": "GATE_B_NOT_AUTHORIZED"
+      }
+    },
+    {
+      "path": "test_rehashed_runtime_contradi4/bad.jsonl",
+      "sha256": "8d022861429af46726250be5fc76fa8771477a6a7812d3345e055f4d59be943c",
+      "audit_result": {
+        "rejected": true,
+        "reason": "reset/runtime mismatch"
+      }
+    },
+    {
+      "path": "test_rehashed_runtime_contradi4/good.jsonl",
+      "sha256": "6dfbca03cbe3391c73d9bd6308a2de44366acd53ef6b143d8df9b787d9154143",
+      "audit_result": {
+        "classification": "DEVELOPMENT_BRIDGE_OBSERVATION_CONSISTENCY_AUDIT",
+        "input_sha256": "6dfbca03cbe3391c73d9bd6308a2de44366acd53ef6b143d8df9b787d9154143",
+        "ledger_state": "FINALIZED",
+        "execution_status": "COMPLETED",
+        "reset_observed": true,
+        "runtime_observed": true,
+        "runtime_unchanged": true,
+        "decision_events": 3,
+        "physics_events": 3,
+        "runtime_timestep_seconds": 0.02,
+        "limitations": [
+          "Observed arithmetic and label consistency only; no independent geometry/contact truth, stopping acceptance, authentication or efficacy validation.",
+          "Historical final_distance scope is preserved; physical collision flags are type-checked, not independently verified.",
+          "Incomplete/error evidence remains partial; unpersisted physical steps cannot be reconstructed."
+        ],
+        "governance": "GATE_B_NOT_AUTHORIZED"
+      }
+    },
+    {
+      "path": "test_rehashed_runtime_contradi5/bad.jsonl",
+      "sha256": "2d55d9bdc486d0d37ec41ca71e1c57e0ccd1e88f0ab39200a853919d1f99dbba",
+      "audit_result": {
+        "rejected": true,
+        "reason": "incomplete runtime snapshot"
+      }
+    },
+    {
+      "path": "test_rehashed_runtime_contradi5/good.jsonl",
+      "sha256": "6dfbca03cbe3391c73d9bd6308a2de44366acd53ef6b143d8df9b787d9154143",
+      "audit_result": {
+        "classification": "DEVELOPMENT_BRIDGE_OBSERVATION_CONSISTENCY_AUDIT",
+        "input_sha256": "6dfbca03cbe3391c73d9bd6308a2de44366acd53ef6b143d8df9b787d9154143",
+        "ledger_state": "FINALIZED",
+        "execution_status": "COMPLETED",
+        "reset_observed": true,
+        "runtime_observed": true,
+        "runtime_unchanged": true,
+        "decision_events": 3,
+        "physics_events": 3,
+        "runtime_timestep_seconds": 0.02,
+        "limitations": [
+          "Observed arithmetic and label consistency only; no independent geometry/contact truth, stopping acceptance, authentication or efficacy validation.",
+          "Historical final_distance scope is preserved; physical collision flags are type-checked, not independently verified.",
+          "Incomplete/error evidence remains partial; unpersisted physical steps cannot be reconstructed."
+        ],
+        "governance": "GATE_B_NOT_AUTHORIZED"
+      }
+    }
+  ],
+  "artifact_sha256": {
+    "report.md": "4d2f81f968583ecc48aff98c1ac4a19a274e99f1e489898157de541c9b2b276e",
+    "tests.xml": "fc85a34b427435576bcccddad67c413030ff7b5bc792b724c3ffc7482cdd0fd7",
+    "fixtures.zip": "fc9bdaad77d86544644d2c89146320ea823b6abf93431c57dba60dbd16442668"
+  },
+  "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:. .venv/bin/python -m pytest -p no:cacheprovider -q tests/test_bridge_terminal_horizons.py tests/test_audit_bridge_observations.py tests/test_audit_bridge_v2.py --basetemp=/private/tmp/nexvia-terminal-20261116/pytest --junitxml=/private/tmp/nexvia-terminal-20261116/tests.xml",
+  "governance": "GATE_B_NOT_AUTHORIZED"
+}
