@@ -1,0 +1,2 @@
+# Preserve the byte identity of recorded review CSVs and recognize CRLF endings.
+results/research_development/review/nexvia_recovery_2026-11-17/*.csv -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

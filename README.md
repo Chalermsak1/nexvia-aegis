@@ -1,10 +1,14 @@
 # NEXVIA AEGIS
 
-**A Self-Auditing Decision Architecture with Statistical Guarantees for Subterranean Robotic Flight under Aerodynamic Boundary Disturbances.**
+**Evidence-aware autonomy, recovery and self-verification research.**
 
-NEXVIA AEGIS combines High-Order Control Barrier Functions (HOCBF), active aeromechanical boundary compensation, online disturbance observation (ADOB), and anytime-valid Ville supermartingale sequential auditing ($e$-processes) to guarantee safety invariance when autonomous micro-aerial vehicles (MAVs) fly near tunnel walls and ceilings.
+> **Current status:** simulation research prototype; release BLOCKED; `GATE_B_NOT_AUTHORIZED`. No real-robot validation or new confirmatory result is claimed. The current recovery experiments retain counterexamples involving unavailable backup and physically stale sensor values with fresh metadata.
 
-> **สรุปภาษาไทย:** โครงการนี้โฟกัสที่แกนหลักทางวิศวกรรมที่แน่นและตรวจสอบได้จริง: **ชั้นตัดสินใจตรวจสอบตนเอง (Self-Auditing Decision Layer) พร้อมการรับประกันทางสถิติ** สำหรับโดรนบินในอุโมงค์แคบใต้ดินที่มีแรงดูดของกำแพงและเพดาน (Aerodynamic Boundary Suction) พร้อมการฉีดความผิดพลาดของเซนเซอร์ (IMU drift) เพื่อพิสูจน์ว่าระบบสามารถตรวจจับและปฏิเสธข้อมูลที่ผิดพลาดได้จริง ผ่านการทดสอบสุ่ม Monte-Carlo 100 รอบ (N = 100) ทุกตัวเลขและกราฟมาจากข้อมูลจริงที่ทำซ้ำได้
+NEXVIA AEGIS investigates how an autonomous system can bind decisions to evidence, detect uncertainty and recover after faults. The repository contains several experimental models, including aerial-control simulations and a newer one-dimensional recovery system with separate plant, controller and watchdog processes. Their assumptions and evidence are specific to each experiment.
+
+**Latest development:** see the [NEXVIA recovery handoff](docs/research/NEXVIA_AEGIS_RECOVERY_HANDOFF_2026-11-17.md) for the implementation, repeatable test commands, six separate outcome measures and remaining blockers. Large immutable raw archives remain in the research workspace; this branch carries the code, tests and lightweight review summaries.
+
+> **ภาษาไทย:** NEXVIA AEGIS เป็นงานวิจัยระบบอัตโนมัติที่ตรวจสอบหลักฐานและความไม่แน่นอนก่อนตัดสินใจ ผลในสาขานี้เป็น simulation เท่านั้น ยังไม่ใช่การรับรองความปลอดภัยของหุ่นยนต์จริง และ Gate B ยังไม่ได้รับอนุญาต
 
 ## Technical Papers & Publications
 
@@ -19,9 +23,9 @@ NEXVIA AEGIS combines High-Order Control Barrier Functions (HOCBF), active aerom
 
 ## 100-Run Randomized Monte-Carlo Empirical Benchmark
 
-The core claim of AEGIS is validated via a rigorous 100-run randomized Monte-Carlo simulation harness ([`experiments/benchmark_rigorous_monte_carlo.py`](experiments/benchmark_rigorous_monte_carlo.py)) evaluated across randomized tunnel widths ($0.48$--$0.54\,$m), unmodeled suction variations ($\pm 25\%$), turbulent Ornstein--Uhlenbeck gusts, and lateral accelerometer drift ($1.2$--$2.5\,\text{m/s}^2$):
+An earlier exploratory 100-run randomized Monte-Carlo simulation harness reports the following observations; these figures were not independently revalidated in this upload. The harness ([`experiments/benchmark_rigorous_monte_carlo.py`](experiments/benchmark_rigorous_monte_carlo.py)) was evaluated across randomized tunnel widths ($0.48$--$0.54\,$m), unmodeled suction variations ($\pm 25\%$), turbulent Ornstein--Uhlenbeck gusts, and lateral accelerometer drift ($1.2$--$2.5\,\text{m/s}^2$):
 
-| Safety Policy | Physical Collisions ($k/100$) | Barrier Violations ($h < 0$) | Stalls / Deadlocks | Min Clearance (m) | Min Barrier Margin $\min h(\mathbf{x})$ | False Alarms under $\mathcal{H}_0$ |
+| Safety Policy | Simulated Collisions ($k/100$) | Barrier Violations ($h < 0$) | Stalls / Deadlocks | Min Clearance (m) | Min Barrier Margin $\min h(\mathbf{x})$ | False Alarms under $\mathcal{H}_0$ |
 |---|:---:|:---:|:---:|:---:|:---:|:---:|
 | **Uncompensated HOCBF** | $0/100$ ($0.0\%$ $[0.0\%, 3.6\%]$) | $45/100$ ($45.0\%$ $[35.0\%, 55.3\%]$) | $0/100$ ($0.0\%$) | $0.221 \pm 0.01\,$m (Min: $0.191$) | $0.0012\,$m (Min: $\mathbf{-0.0287\,m}$) | N/A |
 | **Robust Tube-CBF** | $5/100$ ($5.0\%$ $[1.6\%, 11.3\%]$) | $9/100$ ($9.0\%$ $[4.2\%, 16.4\%]$) | $42/100$ ($\mathbf{42.0\%}$) | $0.318 \pm 0.07\,$m (Min: $0.097$) | $0.0977\,$m (Min: $\mathbf{-0.1230\,m}$) | N/A |
@@ -29,8 +33,8 @@ The core claim of AEGIS is validated via a rigorous 100-run randomized Monte-Car
 
 ![Monte Carlo Benchmark](docs/figures/rigorous_monte_carlo_benchmark.png)
 
-### Key Verified Results
-1. **Certified Positive Safety Margin:** AEGIS achieves $\min h(\mathbf{x}) = \mathbf{+0.0381\,m}$ strictly positive across all 100 runs, completely eliminating the negative barrier dip ($\min h = -0.0119\,$m) observed in uncompensated controllers.
+### Reported observations from the earlier simulation
+1. **Reported Positive Safety Margin:** AEGIS achieves $\min h(\mathbf{x}) = \mathbf{+0.0381\,m}$ strictly positive across all 100 runs, completely eliminating the negative barrier dip ($\min h = -0.0119\,$m) observed in uncompensated controllers.
 2. **Elimination of Freezing Deadlocks:** Whereas robust tube-CBF stalls in $42.0\%$ of runs due to corridor infeasibility in narrow tunnels, AEGIS achieves $0.0\%$ deadlocks.
 3. **Anytime-Valid Sensor Fault Detection:** The Ville supermartingale audit achieves $0.0\%$ false alarms under nominal conditions ($\mathcal{H}_0$), while detecting lateral IMU drift within $338.5 \pm 71.4\,$ms and safely isolating the corrupted observer.
 

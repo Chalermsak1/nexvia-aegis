@@ -1,0 +1,63 @@
+{
+  "classification": "DEVELOPMENT_REVIEW_SUMMARIES_NOT_RAW_EVIDENCE_OR_ATTESTATION",
+  "gate_b": "GATE_B_NOT_AUTHORIZED",
+  "hardware_validation": false,
+  "independent_attestation": false,
+  "legacy_generator_change": {
+    "after_sha256": "e25514cbd6ff5c73e5bfcebdc03f2e933e57cd0aa81296c34b27217124ae2616",
+    "before_sha256": "a87ec1012c425911ebb8a7d98fb5af0bd341ebf5584910aceb20d668c25b5f9a",
+    "path": "results/research_development/analysis/recovery_packaging_2026-11-16/finalize_recovery_evidence.py",
+    "reason": "Use recorded historical branch metadata, validate its parent identity and avoid a hard-coded tool label. Original source remains in the parent commit and original checkout. No result or registered rule changed."
+  },
+  "operational_authorization": false,
+  "original_source_parent_commit": "9c6b4ff53b3018aa5e30f2084bd493c3f632b920",
+  "publication_base_commit": "12c74f5d345190ad740ba13468a3f06cb0d68b5c",
+  "publication_branch": "nexvia/research-recovery-core",
+  "raw_archives_retained_locally": {
+    "results/research_development/dev/live01_raw_2026-11-17.zip": {
+      "sha256": "ba6929ba188b11733991594773b0e1ea4023d57e14abae15273e80928987705c",
+      "size_bytes": 285714527
+    },
+    "results/research_development/dev/live01_source_snapshot_2026-11-17.zip": {
+      "sha256": "f12abeff08962347475b405fe9d09625f00f289e1ae4b1fa55b91648aea85af1",
+      "size_bytes": 260868
+    },
+    "results/research_development/dev/live01_test_fixtures_2026-11-17.zip": {
+      "sha256": "24419e3a7942694ea03dd49968684596893729abefcf2b20cfc82dafddc1f63e",
+      "size_bytes": 177865522
+    }
+  },
+  "release_status": "BLOCKED",
+  "summary_files": {
+    "extended_outage_audit.json": {
+      "original_path": "results/research_development/analysis/live01_evidence_2026-11-17/extended_audit.json",
+      "sha256": "2a26a57868bbf023007c6c0e62ee17dc4ceef1238d87480abd8c5faee382d869",
+      "size_bytes": 82936
+    },
+    "higher_speed_audit.json": {
+      "original_path": "results/research_development/analysis/live01_evidence_2026-11-17/boundary_audit.json",
+      "sha256": "850f0883032222b4327b4451653e7d2a317904716e2f28ba13d41480f35e7f29",
+      "size_bytes": 2548
+    },
+    "main_campaign_audit.json": {
+      "original_path": "results/research_development/analysis/live01_evidence_2026-11-17/main_audit.json",
+      "sha256": "c16b4fe83e28e015bf55e9ba58014798a0ceab66242248d7490eaede1b70aa9a",
+      "size_bytes": 511814
+    },
+    "recovery_phases.csv": {
+      "original_path": "results/research_development/analysis/live01_evidence_2026-11-17/recovery_phases.csv",
+      "sha256": "783b050da5a44d0a6691fb7a6f167dc646e284201e81569a5ab3c2343c564a5e",
+      "size_bytes": 29362
+    },
+    "six_outcomes.csv": {
+      "original_path": "results/research_development/analysis/live01_evidence_2026-11-17/six_outcomes.csv",
+      "sha256": "2bb36ff6bbb8f86997aca781a329b34fa477cd3a898db4ab762c377f54a9a1b0",
+      "size_bytes": 4986
+    },
+    "source_mismatch_supplement.json": {
+      "original_path": "results/research_development/analysis/live01_evidence_2026-11-17/supplement_audit.json",
+      "sha256": "e5a4bf374a14cd1abdbc4974ca372d195a3f6f7dda1944d665d73548c6b568ba",
+      "size_bytes": 21241
+    }
+  }
+}
