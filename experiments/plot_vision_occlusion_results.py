@@ -83,21 +83,21 @@ def generate_benchmark_plot():
     # -------------------------------------------------------------
     # Panel B: Spatial Uncertainty Ellipsoid Evolution (UKF)
     # -------------------------------------------------------------
-    ax2.set_title("(B) UKF Spatial Uncertainty Evolution $\sigma_{\max}(\mathbf{P})$", fontsize=12, fontweight="bold", pad=10, color="#38bdf8")
+    ax2.set_title(r"(B) UKF Spatial Uncertainty Evolution $\sigma_{\max}(\mathbf{P})$", fontsize=12, fontweight="bold", pad=10, color="#38bdf8")
 
     ep_act = episodes["aegis_active"][0]
     ep_pas = episodes["passive"][0]
     ep_bli = episodes["blind"][0]
 
     steps = np.arange(len(ep_act["uncertainty_history"]))
-    ax2.plot(steps, ep_bli["uncertainty_history"], color=colors["blind"], lw=2.2, linestyle="--", label="Blind (Stale Map $\sigma = 0.20\,$m)")
+    ax2.plot(steps, ep_bli["uncertainty_history"], color=colors["blind"], lw=2.2, linestyle="--", label=r"Blind (Stale Map $\sigma = 0.20\,$m)")
     ax2.plot(steps, ep_pas["uncertainty_history"], color=colors["passive"], lw=2.2, label="Passive Vision (Forward Camera)")
     ax2.plot(steps, ep_act["uncertainty_history"], color=colors["aegis_active"], lw=2.6, label="AEGIS Active POMDP Gaze")
 
     # Safety threshold line
     ax2.axhline(y=0.08, color="#f43f5e", linestyle=":", lw=1.8, label="Safety Threshold (0.08 m)")
     ax2.set_xlabel("Control Step (50 Hz)", fontsize=10)
-    ax2.set_ylabel("Maximum Position Std $\sigma_{\max}$ (m)", fontsize=10)
+    ax2.set_ylabel(r"Maximum Position Std $\sigma_{\max}$ (m)", fontsize=10)
     ax2.set_ylim(0.0, 0.45)
     ax2.grid(True, linestyle="--", alpha=0.3)
     ax2.legend(loc="upper right", fontsize=8.5, framealpha=0.6)
@@ -110,7 +110,7 @@ def generate_benchmark_plot():
     color_yaw = "#00e5ff"
     color_spd = "#ec4899"
 
-    ax3.plot(steps, ep_act["gaze_yaw_history"], color=color_yaw, lw=2.2, label="Body Yaw / Gaze Angle $\psi$ (deg)")
+    ax3.plot(steps, ep_act["gaze_yaw_history"], color=color_yaw, lw=2.2, label=r"Body Yaw / Gaze Angle $\psi$ (deg)")
     ax3.set_xlabel("Control Step (50 Hz)", fontsize=10)
     ax3.set_ylabel("Gaze Yaw Angle (deg)", fontsize=10, color=color_yaw)
     ax3.tick_params(axis="y", labelcolor=color_yaw)

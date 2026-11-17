@@ -1,7 +1,7 @@
 [project]
 name = "nexvia-aegis"
 version = "0.1.0"
-description = "Add your description here"
+description = "NEXVIA AEGIS: evidence-aware autonomy, recovery, and simulation research"
 readme = "README.md"
 authors = [
     { name = "Chalermsak Sinsrok", email = "clalermsakssmik@gmail.com" }

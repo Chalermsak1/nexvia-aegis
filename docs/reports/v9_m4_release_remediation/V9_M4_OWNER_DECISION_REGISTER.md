@@ -1,15 +1,26 @@
 # NEXVIA AEGIS V9-M4 — Owner Decision Register
 
-**Prepared:** 2026-10-27 (Asia/Bangkok)  
-**Updated:** 2026-10-28 (Asia/Bangkok) — Post-Remediation & Test Verification  
-**Purpose:** Prioritized decisions needed to close release-readiness blockers. This register records confirmed owner decisions, scientific protocol remediations, and synthetic regression test verifications.  
-**Current governance:** `RELEASE_CANDIDATE_CERTIFIED — GATE_B_CONFIRMED`.
+**Prepared:** 2026-10-27 (Asia/Bangkok).
 
-## Reading this register
+**Reconciled:** 2026-11-16 (Asia/Bangkok) — documentation and approval-provenance review only.
 
-**Established fact** means directly supported by the cited repository file or prior read-only verification. **Recommendation** is a proposed choice; it has no force until the named owner/reviewer records a dated decision. **Closure** requires the stated evidence and tests, not merely completion of this register. Priorities: **P0** blocks a defensible scientific claim or secure production path; **P1** blocks a trustworthy release reference/integrity chain; **P2** is needed for final packaging after upstream choices. Status reflects active owner governance and verified test implementation.
+**Purpose:** Decision preparation and current review requirements. This register is not an approval record, protocol amendment, independent attestation, production ticket, or release decision.
 
-Current Git check: original repo `/Users/chalermsak/Documents/ChatGPT/New project/nexvia-aegis` is clean at `b91cc99f591e0b3da3e111a287dc9be3ff44c463` on `codex/v9-m4-remediation`. This new document is in the separate documentation worktree at the same HEAD on `codex/v9-m4-release-blocker-docs`; the existing six reports in that worktree were preserved. No protected holdout artifact was edited.
+**Current governance:** `GATE_B_NOT_AUTHORIZED`.
+
+**Release readiness:** `BLOCKED` pending owner/reviewer reconciliation and evidence verification.
+
+## Authority and interpretation
+
+The owner's standing instruction keeps Gate B unauthorized. Historical repository assertions, commit authorship/messages, passing tests and this register cannot issue or imply production execution permission. Existing historical approval/execution/release claims remain recorded in published Git history; this reconciliation neither authenticates them nor declares that historical work did not occur.
+
+The review-status queue below follows the unresolved closure requirements in the detailed sections. Its values are exactly `OPEN`, `OWNER DECISION REQUIRED`, `INDEPENDENT REVIEW REQUIRED`, or `BLOCKED`. These are **current reconciliation requirements**, not a finding that every previously claimed remediation is absent or that any authentic historical approval has been revoked. Approval provenance, engineering completion, independent review and production authorization must be recorded separately.
+
+**Established fact** requires cited evidence. **Recommendation** remains a proposal until the authorized person records the decision. **Closure** requires the specified decision and evidence review, not an optimistic header or passing regression count. This pass did not re-audit evaluator/security implementation, inspect Holdout outcomes/reserved seeds, or authenticate external approval records.
+
+**Source context:** reviewed checkout `8a72616840e28e8fdca62a7b422a6d9531f2b592` on `codex/research-hardening`; it also contains separate pending V9-M5 development work. The original detailed workstreams and their source/line references were prepared at `3a8cea5f4a4534df4edd1cc1320bdd75585bc7e7` using the then-current `b91cc99` comparison baseline. Those historical references are preserved as proposals/closure checklists and are not a claim that current implementation is unchanged. The `b91cc99` reference is not a new candidate designation.
+
+**Historical conflict:** the prior register's header and 15-row summary asserted authorization/approval/resolution, while all 15 detailed status entries retained pending/blocked requirements. The pre-edit version is preserved by Git blob `99908a71dcc1142c62de548950353c7dd568fa92` at the reviewed commit; no published history is rewritten. Status-only chronology, exact original line references and a fillable review form are in [the reconciliation report](V9_M4_OWNER_STATUS_RECONCILIATION_2026-11-16.md) and [owner review form](V9_M4_OWNER_RECONCILIATION_REVIEW_FORM_2026-11-16.md). [Structured review metadata](V9_M4_OWNER_STATUS_RECONCILIATION_2026-11-16.json) are not authorization evidence.
 
 **Evidence map:**
 
@@ -26,25 +37,27 @@ Current Git check: original repo `/Users/chalermsak/Documents/ChatGPT/New projec
 
 ## Decision queue
 
-| ID | Priority | Decision workstream | Current status | Depends on / Verification |
-| --- | --- | --- | --- | --- |
-| SCI-01 | P0 | H1 coverage conjunct | APPROVED (Option A) | **VERIFIED BY HOLDOUT** (Pass: R_sel = 0.00%, CP UCB = 0.003418 <= 0.05, Cov = 60.76% >= 35%) |
-| SCI-02 | P0 | H2 identity and H1 gate | APPROVED (Option A) | **VERIFIED BY HOLDOUT** (Pass: vs V8.1 p = 0.000488; vs V7 p = 1.82e-12) |
-| SCI-03 | P0 | H3 controlling CI and baseline | APPROVED (Option A) | **VERIFIED BY HOLDOUT** (Pass: Delta TSR = +11.33%, Wald LCB95 = +9.26% > -5%) |
-| SCI-04 | P0 | H4 identity and compound bound | APPROVED (Option A) | **VERIFIED BY HOLDOUT** (Pass: 4 compound scenarios, p = 0.000488 vs V8.1) |
-| SCI-05 | P0 | H5 IUT, bounds and step-down | APPROVED (Option A) | **VERIFIED BY HOLDOUT** (Pass: Berger IUT max p = 0.002122 <= 0.05 across all 12 scenarios) |
-| SCI-06 | P0 | Missing/contradictory evidence states | APPROVED (Option A) | **VERIFIED BY TEST_67 & HOLDOUT** (Strict expected N=1,440 count verified) |
-| SCI-07 | P0 | Multiplicity and aggregate claims | APPROVED (Option A) | **VERIFIED BY HOLDOUT** (Mixture scoped to MIXTURE_CERTIFIED_OPERATIONAL_IMPROVEMENT) |
-| SEC-01 | P0 | Signed durable evidence root | APPROVED (Option A) | **VERIFIED BY HOLDOUT** (Bound in signed Gate B ticket and persistent replay ledger) |
-| SEC-02 | P0 | Wheel/runtime provenance | APPROVED (Option A) | **VERIFIED BY HOLDOUT** (uv.lock SHA-256 bound in signed ticket & validated in-worker) |
-| SEC-03 | P0 | Same-UID ledger rollback | APPROVED (Option A/B) | **VERIFIED BY HOLDOUT** (Persistent atomic ledger in ~/.nexvia_security/ closed permanently) |
-| SEC-04 | P1 | Candidate-bound tool/key trust pins | APPROVED (Option A) | **VERIFIED BY HOLDOUT** (Owner public key pinned: eee7326627aa... and verified) |
-| SEC-05 | P1 | Signing-key custody | APPROVED (Option A) | **VERIFIED BY HOLDOUT** (Owner Ed25519 signing ceremony completed with ticket nonce 47520a76...) |
-| PROV-01 | P1 | Historical hash erratum/references | RESOLVED (Option A) | **SUPPLEMENT FILED** (`V9_M4_HISTORICAL_HASH_ERRATUM_SUPPLEMENT.md`) |
-| REL-01 | P1 | Final candidate designation | APPROVED (Option A) | **VERIFIED BY HOLDOUT** (Designated commit: `a6d5addd869aae1dcddf06c0fee04dbd25892f06`) |
-| REL-02 | P2 | Staging Manifest approval | APPROVED (Option A) | **VERIFIED BY HOLDOUT** (Authoritative release manifesto generated and audited) |
+Every row requires reconciliation against authentic dated decisions and current closure evidence. Original approval/resolution assertions are retained as **historical claims, not adopted statuses**, in the structured report and source history. No experimental metrics are used as substitutes for approval provenance.
 
-The queue is sorted by immediate scientific/security risk, not by section order. The detailed workstreams below keep related choices together.
+| ID | Priority | Decision workstream | Current review status | Closure dependency |
+| --- | --- | --- | --- | --- |
+| SCI-02 | P0 | H2 identity and H1 gate | OWNER DECISION REQUIRED | SCI-01, statistician review of amendment if H2 changes |
+| SCI-04 | P0 | H4 identity and pooled bound | INDEPENDENT REVIEW REQUIRED | SCI-02, statistical interpretation |
+| SEC-01 | P0 | Signed durable evidence root | OWNER DECISION REQUIRED | Security reviewer and storage identity |
+| SEC-02 | P0 | Wheel/runtime provenance | BLOCKED | Independent package trust source |
+| SEC-03 | P0 | Same-UID ledger rollback | OWNER DECISION REQUIRED | Security threat-model decision |
+| SCI-01 | P0 | H1 coverage conjunct | OWNER DECISION REQUIRED | Original protocol/Decision 22 reconciliation |
+| SCI-03 | P0 | H3 controlling CI and baseline | INDEPENDENT REVIEW REQUIRED | Statistician and owner |
+| SCI-05 | P0 | H5 IUT, bounds and step-down | INDEPENDENT REVIEW REQUIRED | Statistician and owner |
+| SCI-06 | P0 | Missing/contradictory evidence states | INDEPENDENT REVIEW REQUIRED | SCI-01–SCI-05 |
+| SCI-07 | P0 | Multiplicity and aggregate claims | INDEPENDENT REVIEW REQUIRED | SCI-01–SCI-06 |
+| SEC-04 | P1 | Candidate-bound tool/key trust pins | BLOCKED | Candidate SHA and independent trust source |
+| SEC-05 | P1 | Signing-key custody | OWNER DECISION REQUIRED | Security reviewer and approved threat model |
+| PROV-01 | P1 | Historical hash erratum/references | OWNER DECISION REQUIRED | Provenance review |
+| REL-01 | P1 | Final candidate designation | BLOCKED | Scientific/security remediation and review |
+| REL-02 | P2 | Staging Manifest approval | BLOCKED | REL-01, PROV-01, SCI/SEC decisions |
+
+Detailed questions, options, scientific wording and closure criteria below are preserved byte for byte from the original workstreams; only the final temporal scope statement is clarified.
 
 ## Workstream 1 — Release candidate and Staging Manifest
 
@@ -203,4 +216,4 @@ The queue is sorted by immediate scientific/security risk, not by section order.
 4. **Engineering after approval:** implement the approved H1–H5 and evidence-state rules; version signer/verifier/launcher for the approved root; add wheel/runtime provenance checks and ledger witness integration; pin tools/keys; run the listed synthetic regressions and the final authorized non-Holdout suite in a clean candidate checkout. Historical artifacts and old reports remain untouched.
 5. **Prerequisites for a future owner-designated release candidate:** dated scientific decisions and independent statistical review; approved security contract/trust model plus implementation and synthetic tests; provenance erratum/reference decision; independent tool, key and package trust sources; reviewed clean commit and reproducible runtime. Only then should the owner designate the full SHA and approve a versioned Staging Manifest, followed by detached-worktree verification.
 
-**Gate B remains `GATE_B_NOT_AUTHORIZED`. No Holdout evaluation was performed. The Final Release Commit has not been created. Preparing this register resolves none of the listed blockers.**
+**Gate B remains `GATE_B_NOT_AUTHORIZED`. This documentation reconciliation performed no Holdout evaluation and created no Final Release Commit. Historical execution/release claims have not been authenticated or adjudicated here. No blocker is resolved by preparing this register.**
