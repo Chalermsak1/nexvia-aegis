@@ -414,9 +414,29 @@ class AegisMuJoCo3DEnvironment:
             ),
         }
 
-    def step(self, desired_control: np.ndarray, force_braking: bool = False) -> dict[str, Any]:
-        pos = self.data.xpos[self.robot_body_id].copy()
-        vel = self.data.qvel[:3].copy()
+    def step(
+        self,
+        desired_control: np.ndarray,
+        force_braking: bool = False,
+        *,
+        measured_pos: np.ndarray | None = None,
+        measured_vel: np.ndarray | None = None,
+        require_measured_feedback: bool = False,
+    ) -> dict[str, Any]:
+        if measured_pos is not None or measured_vel is not None:
+            if measured_pos is None or measured_vel is None:
+                raise ValueError("measured_pos and measured_vel must both be provided")
+            pos = np.asarray(measured_pos, dtype=np.float64).reshape(3).copy()
+            vel = np.asarray(measured_vel, dtype=np.float64).reshape(3).copy()
+            if not (np.all(np.isfinite(pos)) and np.all(np.isfinite(vel))):
+                raise ValueError("measured_pos and measured_vel must be finite")
+            cbf_state_source = "MEASURED_FEEDBACK"
+        elif require_measured_feedback:
+            raise ValueError("measured_pos and measured_vel are required when simulator truth is disallowed")
+        else:
+            pos = self.data.xpos[self.robot_body_id].copy()
+            vel = self.data.qvel[:3].copy()
+            cbf_state_source = "SIMULATOR_TRUTH_LEGACY"
 
         # Apply Control Barrier Function (CBF) filter
         safe_action, barrier_active = self.cbf.compute_safe_control(
@@ -441,6 +461,7 @@ class AegisMuJoCo3DEnvironment:
         state["cbf_constraint_residual"] = self.cbf.last_constraint_residual
         state["cbf_qp_feasible"] = self.cbf.last_qp_feasible
         state["cbf_projection_method"] = self.cbf.last_projection_method
+        state["cbf_state_source"] = cbf_state_source
         state["cbf_constraints_satisfied"] = (
             self.cbf.last_constraint_residual is not None
             and self.cbf.last_constraint_residual <= 1e-8

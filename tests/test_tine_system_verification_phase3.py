@@ -9,7 +9,9 @@ expected verification invariants and are never weakened to force passes.
 from __future__ import annotations
 
 import csv
+import hashlib
 import json
+import tarfile
 import math
 import os
 import subprocess
@@ -58,10 +60,12 @@ def test_rl_safe_env_shield_must_not_feed_simulator_truth_under_sensor_fault():
         )
 
     env.sim.cbf.filter_safe_force = spy  # type: ignore[method-assign]
+    env.step(np.array([0.8, -0.4, 0.2]))
     st_true = env.sim.get_state()
-    env.step(np.zeros(3))
-    assert captured, "RL HOCBF shield was not invoked"
-    shield_pos, shield_vel = captured[0]
+    env.step(np.array([0.8, -0.4, 0.2]))
+    assert len(captured) >= 2, "RL HOCBF shield was not invoked"
+    shield_pos, shield_vel = captured[-1]
+    assert env.abstained is True
     used_exact_truth = np.array_equal(shield_pos, st_true["pos"]) and np.array_equal(shield_vel, st_true["vel"])
     assert not used_exact_truth, (
         "Safe6DOFQuadrotorEnv passed exact simulator ground-truth pos/vel into HOCBF shield during active sensor spoof"
@@ -211,31 +215,85 @@ def test_live01_cross_frame_beacon_rollback_must_be_detected(tmp_path: Path):
 # ---------------------------------------------------------------------------
 
 def test_review_recovery_phases_csv_matches_all_audit_jsons_row_for_row():
-    sources = {
-        "main": json.loads((REVIEW_DIR / "main_campaign_audit.json").read_bytes()),
-        "boundary-long-outage": json.loads((REVIEW_DIR / "extended_outage_audit.json").read_bytes()),
-        "supplement": json.loads((REVIEW_DIR / "source_mismatch_supplement.json").read_bytes()),
+    main_audit = json.loads((REVIEW_DIR / "main_campaign_audit.json").read_bytes())
+    ext_audit = json.loads((REVIEW_DIR / "extended_outage_audit.json").read_bytes())
+    sup_audit = json.loads((REVIEW_DIR / "source_mismatch_supplement.json").read_bytes())
+    hs_audit = json.loads((REVIEW_DIR / "higher_speed_audit.json").read_bytes())
+
+    qualified_sources = {
+        "main": main_audit,
+        "boundary-long-outage": ext_audit,
+        "supplement": sup_audit,
     }
     lookup = {
         (batch, r["assignment"]["id"]): r["recovery_latency"]
-        for batch, data in sources.items()
+        for batch, data in qualified_sources.items()
         for r in data["results"]
     }
+    unqualified_keys = (
+        {("main-unqualified", x["assignment"]["id"]) for x in main_audit["incomplete"]}
+        | {("boundary-higher-speed-unqualified", x["assignment"]["id"]) for x in hs_audit["incomplete"]}
+    )
+    expected_phases = {
+        "backup_acceptance",
+        "backup_engagement",
+        "plant_local_detection",
+        "post_fault_assessment",
+        "reconstruction",
+        "restart_ready",
+        "watchdog_detection",
+    }
+    expected_all_keys = {
+        (batch, aid, phase)
+        for (batch, aid) in (set(lookup) | unqualified_keys)
+        for phase in expected_phases
+    }
+
     with (REVIEW_DIR / "recovery_phases.csv").open(newline="", encoding="utf-8") as f:
         rows = list(csv.DictReader(f))
 
-    checked = 0
+    actual_keys = [(row["batch"], row["id"], row["phase"]) for row in rows]
+    # Exact 100% key coverage: zero skipped, missing, extra, or duplicate rows (42 runs * 7 phases = 294)
+    assert len(actual_keys) == len(set(actual_keys)) == len(expected_all_keys) == 294
+    assert set(actual_keys) == expected_all_keys
+
+    qualified_checked = 0
+    unqualified_checked = 0
     for row in rows:
         key = (row["batch"], row["id"])
-        if key not in lookup:
-            continue
-        phase_obj = lookup[key][row["phase"]]
-        assert row["status"] == phase_obj["status"]
-        exp_ns = "" if phase_obj["host_ns"] is None else str(phase_obj["host_ns"])
-        exp_ticks = "" if phase_obj["virtual_ticks"] is None else str(phase_obj["virtual_ticks"])
-        assert row["host_nanoseconds_since_fault"] == exp_ns
-        assert row["virtual_ticks_since_fault"] == exp_ticks
-        checked += 1
+        if key in lookup:
+            phase_obj = lookup[key][row["phase"]]
+            assert row["status"] == phase_obj["status"]
+            exp_ns = "" if phase_obj["host_ns"] is None else str(phase_obj["host_ns"])
+            exp_ticks = "" if phase_obj["virtual_ticks"] is None else str(phase_obj["virtual_ticks"])
+            assert row["host_nanoseconds_since_fault"] == exp_ns
+            assert row["virtual_ticks_since_fault"] == exp_ticks
+            qualified_checked += 1
+        else:
+            assert key in unqualified_keys
+            assert row["status"] in ("OBSERVED", "NOT_OBSERVED_OR_NOT_APPLICABLE")
+            unqualified_checked += 1
 
-    # 27 main + 6 extended_outage + 1 supplement = 34 qualified runs * 7 phases = 238 verified phase rows
-    assert checked == 238
+    assert qualified_checked == 238
+    assert unqualified_checked == 56
+
+
+def test_archived_live01_raw_journals_and_ledger_reconstruct_via_audit(tmp_path: Path):
+    ev_dir = REPO_ROOT / "results" / "research_development" / "tine_verification" / "live01_campaign_evidence"
+    tar_path = ev_dir / "raw_journals.tar.gz"
+    sha_line = (ev_dir / "raw_journals.tar.gz.sha256").read_text(encoding="utf-8").strip()
+    expected_sha = sha_line.split()[0]
+    assert hashlib.sha256(tar_path.read_bytes()).hexdigest() == expected_sha
+
+    extracted = tmp_path / "extracted_campaign"
+    extracted.mkdir()
+    with tarfile.open(tar_path, "r:gz") as tf:
+        tf.extractall(extracted, filter="data")
+
+    assert (extracted / "declared_plan.json").read_bytes() == (ev_dir / "declared_plan.json").read_bytes()
+    assert (extracted / "assignments.jsonl").read_bytes() == (ev_dir / "assignments.jsonl").read_bytes()
+
+    rebuilt = study.audit(extracted)
+    saved = json.loads((ev_dir / "live01_audit.json").read_bytes())
+    assert rebuilt == saved
+    assert rebuilt["ledger_counts"]["COMPLETED"] == 5 and not rebuilt["incomplete"]

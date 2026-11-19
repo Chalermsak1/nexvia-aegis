@@ -536,6 +536,43 @@ class RobustTubeCLBFController:
         cov_p = state.cov_p
         cov_v = state.cov_v
 
+        # -1. Fail-closed input finiteness & covariance validity check
+        nonfinite_input = (
+            not np.all(np.isfinite(p_hat))
+            or not np.all(np.isfinite(v_hat))
+            or not np.all(np.isfinite(cov_p))
+            or not np.all(np.isfinite(cov_v))
+            or not np.all(np.isfinite(goal))
+        )
+        neg_cov = False
+        if not nonfinite_input:
+            eig_p_chk = np.linalg.eigvalsh(cov_p)
+            eig_v_chk = np.linalg.eigvalsh(cov_v)
+            neg_cov = bool(np.any(eig_p_chk < -1e-9) or np.any(eig_v_chk < -1e-9))
+        if nonfinite_input or neg_cov:
+            self.stillness_monitor.phase = DwellPhase.EMERGENCY_STOP
+            if np.all(np.isfinite(v_hat)):
+                v_norm = float(np.linalg.norm(v_hat))
+                a_safe = -self.config.a_max * (v_hat / v_norm) if v_norm > 0.02 else np.zeros(3)
+            else:
+                v_norm = 0.0
+                a_safe = np.zeros(3)
+            return {
+                "action": a_safe,
+                "phase": DwellPhase.EMERGENCY_STOP.value,
+                "reason": "OBSERVATION_NONFINITE_OR_INVALID_COVARIANCE",
+                "v_upper_bound": 0.0,
+                "v_measured": v_norm,
+                "dist_to_goal": float(np.linalg.norm(p_hat - goal)) if not nonfinite_input else float("inf"),
+                "tube_margin_min": 0.0,
+                "slack_drawn": 0.0,
+                "martingale_value": self.martingale_value,
+                "martingale_alarm": True,
+                "is_terminal": True,
+                "dwell_steps": 0,
+                "solver_time_us": 0.0,
+            }
+
         # 0. Observation Reliability Verification Gate (Tasks E-05 & E-06)
         # Verify the reliability of observations BEFORE taking goal-seeking actions.
         # If sensor blackout / degraded observability causes covariance to swell beyond safety limits,

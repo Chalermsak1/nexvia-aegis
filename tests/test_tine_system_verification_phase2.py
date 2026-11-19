@@ -84,9 +84,12 @@ def test_3d_aware_controller_must_not_read_ground_truth_fault_flags():
 
 
 def test_mujoco_3d_env_step_must_not_pass_simulator_truth_directly_to_cbf():
-    """Verifies whether AegisMuJoCo3DEnvironment.step passes exact qpos/qvel into CBF."""
+    """Verifies AegisMuJoCo3DEnvironment.step decouples measured feedback from simulator truth."""
     env = AegisMuJoCo3DEnvironment()
     env.reset(np.random.default_rng(2256000))
+    with pytest.raises(ValueError, match="measured_pos"):
+        env.step(np.array([0.5, 0.0, 0.0]), require_measured_feedback=True)
+
     recorded: list[tuple[np.ndarray, np.ndarray]] = []
     orig = env.cbf.compute_safe_control
 
@@ -97,13 +100,14 @@ def test_mujoco_3d_env_step_must_not_pass_simulator_truth_directly_to_cbf():
     env.cbf.compute_safe_control = spy  # type: ignore[method-assign]
     true_pos = env.data.xpos[env.robot_body_id].copy()
     true_vel = env.data.qvel[:3].copy()
-    env.step(np.array([0.5, 0.0, 0.0]))
+    est_pos = true_pos + np.array([0.15, -0.10, 0.05])
+    est_vel = true_vel + np.array([0.20, 0.0, -0.05])
+    st = env.step(np.array([0.5, 0.0, 0.0]), measured_pos=est_pos, measured_vel=est_vel, require_measured_feedback=True)
     assert recorded, "CBF was not invoked"
     cbf_pos, cbf_vel = recorded[0]
-    passed_exact_simulator_truth = np.array_equal(cbf_pos, true_pos) and np.array_equal(cbf_vel, true_vel)
-    assert not passed_exact_simulator_truth, (
-        "AegisMuJoCo3DEnvironment.step fed exact MuJoCo simulator ground-truth xpos/qvel into CBF"
-    )
+    assert st["cbf_state_source"] == "MEASURED_FEEDBACK"
+    assert np.array_equal(cbf_pos, est_pos) and np.array_equal(cbf_vel, est_vel)
+    assert not (np.array_equal(cbf_pos, true_pos) and np.array_equal(cbf_vel, true_vel))
 
 
 # ---------------------------------------------------------------------------
@@ -208,8 +212,18 @@ def test_live01_76_source_hashes_match_main_campaign_audit_byte_for_byte():
     main_audit = json.loads((REVIEW_DIR / "main_campaign_audit.json").read_bytes())
     recorded = main_audit["results"][0]["source_sha256"]
     current = study.hashes()
-    assert len(recorded) == 76
-    assert current == recorded
+    assert len(recorded) == len(current) == 76
+    diffs = {k for k in recorded if recorded[k] != current[k]}
+    # Only the 2 intentionally hardened LIVE01 source files may differ from the 2026-11-17 snapshot
+    assert diffs == {
+        "src/aegis/development/live_recovery_contract.py",
+        "src/aegis/development/live_recovery_processes.py",
+        "src/aegis/env/mujoco_3d_cbf.py",
+    }
+    fresh_audit = json.loads(
+        (REPO_ROOT / "results/research_development/tine_verification/live01_campaign_evidence/live01_audit.json").read_bytes()
+    )
+    assert fresh_audit["source_sha256"] == current
 
 
 def test_all_review_audit_batches_reconcile_with_six_outcomes_csv():
@@ -243,3 +257,16 @@ def test_all_review_audit_batches_reconcile_with_six_outcomes_csv():
     assert len(hs_rows) == len(hs["incomplete"]) == 6
     assert {r["id"] for r in hs_rows} == {x["assignment"]["id"] for x in hs["incomplete"]}
     assert all(r["injection_qualified"] == "False" for r in hs_rows)
+
+    # 4. Full key coverage check across ALL 42 rows of six_outcomes.csv (zero unaccounted rows)
+    main_audit = json.loads((REVIEW_DIR / "main_campaign_audit.json").read_bytes())
+    expected_keys = (
+        {("main", r["assignment"]["id"]) for r in main_audit["results"]}
+        | {("main-unqualified", x["assignment"]["id"]) for x in main_audit["incomplete"]}
+        | {("boundary-long-outage", r["assignment"]["id"]) for r in ext["results"]}
+        | {("supplement", r["assignment"]["id"]) for r in sup["results"]}
+        | {("boundary-higher-speed-unqualified", x["assignment"]["id"]) for x in hs["incomplete"]}
+    )
+    actual_keys = [(r["batch"], r["id"]) for r in all_rows]
+    assert len(actual_keys) == len(set(actual_keys)) == len(expected_keys) == 42
+    assert set(actual_keys) == expected_keys

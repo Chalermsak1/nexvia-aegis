@@ -172,7 +172,8 @@ def controller(public,ipc,root,generation):
         last_attempt=key
         try:
             beacon=contract.read_beacon(root)
-            if m['remote_epoch']!=beacon['sensor_epoch'] or beacon['tick']-m['tick']>3 or time.monotonic_ns()-m['emitted_host_ns']>public['max_observation_host_ns']:return
+            now_host=time.monotonic_ns()
+            if m['remote_epoch']!=beacon['sensor_epoch'] or beacon['tick']-m['tick']>3 or m['emitted_host_ns']>now_host or now_host-m['emitted_host_ns']>public['max_observation_host_ns']:return
             contract.load_basis(root,lease);beacon=contract.read_beacon(root)
             args=dict(now_tick=beacon['tick'],now_host_ns=time.monotonic_ns(),controller_generation=generation,watchdog_generation=status['watchdog_generation'],source_epoch=beacon['sensor_epoch'],public_sha256=sha(public),revoked_seq=-1,primary_power=status['primary_power'],recovery_latched=latched)
             check=contract.lease_check(lease,**args)
@@ -191,13 +192,26 @@ def controller(public,ipc,root,generation):
         except Exception as exc:log.append('ISSUE_WITHHELD_ERROR',error_type=type(exc).__name__,error=str(exc))
     while True:
         for m in ep.drain():
+            if type(m) is not dict or type(m.get('kind')) is not str:log.append('MALFORMED_IPC_IGNORED',message=m);continue
             kind=m['kind']
             if kind=='STOP':log.append('FINISHED',beliefs=beliefs.states,conflicts=beliefs.conflicts);ep.close();return
-            if kind=='INJECT_DUPLICATES':duplicates=True;changed=m['changed'];log.append('DUPLICATE_INJECTION_ENABLED',changed=changed)
-            if kind=='GRANT':lease=m['lease'];log.append('GRANT_RECEIVED',lease=lease)
-            if kind=='STATUS':status=m;latched|=m['backup_requested'];log.append('STATUS_RECEIVED',status=m)
+            if kind=='INJECT_DUPLICATES':
+                if type(m.get('changed')) is not bool:log.append('MALFORMED_IPC_IGNORED',message=m);continue
+                duplicates=True;changed=m['changed'];log.append('DUPLICATE_INJECTION_ENABLED',changed=changed)
+            if kind=='GRANT':
+                if type(m.get('lease')) is not dict:log.append('MALFORMED_IPC_IGNORED',message=m);continue
+                lease=m['lease'];log.append('GRANT_RECEIVED',lease=lease)
+            if kind=='STATUS':
+                if type(m.get('backup_requested')) is not bool or type(m.get('primary_power')) is not bool or type(m.get('controller_generation')) is not int or type(m.get('watchdog_generation')) is not int:
+                    log.append('MALFORMED_IPC_IGNORED',message=m);continue
+                status=m;latched|=m['backup_requested'];log.append('STATUS_RECEIVED',status=m)
             if kind in ('ACK','QUERY_RESULT'):
-                values=m['states'] if kind=='QUERY_RESULT' else {m['command_id']:m['status']}
+                if kind=='QUERY_RESULT':
+                    if type(m.get('states')) is not dict:log.append('MALFORMED_IPC_IGNORED',message=m);continue
+                    values=m['states']
+                else:
+                    if type(m.get('command_id')) is not str or 'status' not in m:log.append('MALFORMED_IPC_IGNORED',message=m);continue
+                    values={m['command_id']:m['status']}
                 for name,value in values.items():beliefs.merge(name,value);log.append('BELIEF',command_id=name,reported=value,belief=beliefs.states[name],origin=kind)
             if kind=='OBS':
                 selection=contract.select_samples([m],seen=seen,known=known,public=public)
@@ -209,7 +223,7 @@ def controller(public,ipc,root,generation):
         if latest_sample is not None:try_issue(latest_sample)
         now=time.monotonic_ns()
         if now-last_hb>=20000000:
-            ready=not latched and latest_sample is not None and now-latest_sample['emitted_host_ns']<=public['max_observation_host_ns']
+            ready=not latched and latest_sample is not None and 0<=now-latest_sample['emitted_host_ns']<=public['max_observation_host_ns']
             ep.send(ipc/'w.sock',dict(kind='HEARTBEAT',generation=generation,pid=os.getpid(),ready=ready,last_sample=None if latest_sample is None else latest_sample['id']));last_hb=now
         if now-last_query>=80000000:
             ids=[k for k,v in beliefs.states.items() if v in ('UNKNOWN','QUEUED','EFFECT_UNCERTAIN')][:8]
@@ -246,12 +260,20 @@ def watchdog(public,ipc,root,generation):
     while True:
         samples=[]
         for m in ep.drain():
+            if type(m) is not dict or type(m.get('kind')) is not str:log.append('MALFORMED_IPC_IGNORED',message=m);continue
             kind=m['kind']
             if kind=='STOP':log.append('FINISHED',recovery_latched=latched);ep.close();return
-            if kind=='INJECT_COMPUTE_DELAY':delay=m['seconds'];log.append('COMPUTE_DELAY_ENABLED',seconds=delay)
+            if kind=='INJECT_COMPUTE_DELAY':
+                if type(m.get('seconds')) not in (int,float):log.append('MALFORMED_IPC_IGNORED',message=m);continue
+                delay=m['seconds'];log.append('COMPUTE_DELAY_ENABLED',seconds=delay)
             if kind=='INJECT_CLOCK_FAILURE':clock_failed=True;log.append('CLOCK_READER_FAILURE_ENABLED')
-            if kind=='HEARTBEAT':heart=time.monotonic_ns();heart_gen=m['generation'];ready=m['ready'];log.append('HEARTBEAT_RECEIVED',heartbeat=m)
-            if kind=='STATUS':status=m;log.append('STATUS_RECEIVED',status=m)
+            if kind=='HEARTBEAT':
+                if type(m.get('generation')) is not int or type(m.get('ready')) is not bool:log.append('MALFORMED_IPC_IGNORED',message=m);continue
+                heart=time.monotonic_ns();heart_gen=m['generation'];ready=m['ready'];log.append('HEARTBEAT_RECEIVED',heartbeat=m)
+            if kind=='STATUS':
+                if type(m.get('backup_requested')) is not bool or type(m.get('backup_engaged')) is not bool or type(m.get('controller_generation')) is not int or type(m.get('tick')) is not int:
+                    log.append('MALFORMED_IPC_IGNORED',message=m);continue
+                status=m;log.append('STATUS_RECEIVED',status=m)
             if kind=='OBS':samples.append(m)
         if status is not None and status['backup_requested']:latch('PLANT_REPORTED_RECOVERY')
         selection=contract.select_samples(samples,seen=seen,known=known,public=public)

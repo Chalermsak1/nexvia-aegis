@@ -17,12 +17,26 @@ from .mujoco_3d_cbf import AegisMuJoCo3DEnvironment
 class SynchronizedAegisMuJoCo3DEnvironment(AegisMuJoCo3DEnvironment):
     ENVIRONMENT_ID = 'AEGIS_MUJOCO_3D_SYNCHRONIZED_V1_DEVELOPMENT'
 
-    def step(self, desired_control: np.ndarray, force_braking: bool = False) -> dict[str, Any]:
+    def step(
+        self,
+        desired_control: np.ndarray,
+        force_braking: bool = False,
+        *,
+        measured_pos: np.ndarray | None = None,
+        measured_vel: np.ndarray | None = None,
+        require_measured_feedback: bool = False,
+    ) -> dict[str, Any]:
         # Refresh before CBF construction, including after an explicit external
         # state edit. mj_forward computes derived state without integrating.
         mujoco.mj_forward(self.model, self.data)
         interval_start = float(self.data.time)
-        transition = super().step(desired_control, force_braking=force_braking)
+        transition = super().step(
+            desired_control,
+            force_braking=force_braking,
+            measured_pos=measured_pos,
+            measured_vel=measured_vel,
+            require_measured_feedback=require_measured_feedback,
+        )
         # super().step's cached-position observation is deliberately replaced;
         # preserve its pre-integration control/CBF diagnostics separately.
         mujoco.mj_forward(self.model, self.data)
