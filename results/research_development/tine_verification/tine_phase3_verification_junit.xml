@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="6" skipped="0" tests="8" time="6.036" timestamp="2026-11-19T11:12:36.712371+07:00" hostname="LAPTOP-1KCOUMFE"><testcase classname="tests.test_tine_system_verification_phase3" name="test_rl_safe_env_shield_must_not_feed_simulator_truth_under_sensor_fault" time="0.008"><failure message="AssertionError: Safe6DOFQuadrotorEnv passed exact simulator ground-truth pos/vel into HOCBF shield during active sensor spoof&#10;assert not True">def test_rl_safe_env_shield_must_not_feed_simulator_truth_under_sensor_fault():
+        env = Safe6DOFQuadrotorEnv(
+            shield_enabled=True,
+            enable_innovation_gate=True,
+            sensor_fault_config={"start_step": 0, "fault_type": "spoof_arrival"},
+        )
+        env.reset(rng=np.random.default_rng(71002))
+        captured: list[tuple[np.ndarray, np.ndarray]] = []
+        orig = env.sim.cbf.filter_safe_force
+    
+        def spy(*, pos, vel, desired_force, obstacles, current_tilt, adaptive_gammas=None):
+            captured.append((np.asarray(pos).copy(), np.asarray(vel).copy()))
+            return orig(
+                pos=pos, vel=vel, desired_force=desired_force, obstacles=obstacles,
+                current_tilt=current_tilt, adaptive_gammas=adaptive_gammas,
+            )
+    
+        env.sim.cbf.filter_safe_force = spy  # type: ignore[method-assign]
+        st_true = env.sim.get_state()
+        env.step(np.zeros(3))
+        assert captured, "RL HOCBF shield was not invoked"
+        shield_pos, shield_vel = captured[0]
+        used_exact_truth = np.array_equal(shield_pos, st_true["pos"]) and np.array_equal(shield_vel, st_true["vel"])
+&gt;       assert not used_exact_truth, (
+            "Safe6DOFQuadrotorEnv passed exact simulator ground-truth pos/vel into HOCBF shield during active sensor spoof"
+        )
+E       AssertionError: Safe6DOFQuadrotorEnv passed exact simulator ground-truth pos/vel into HOCBF shield during active sensor spoof
+E       assert not True
+
+tests/test_tine_system_verification_phase3.py:66: AssertionError</failure></testcase><testcase classname="tests.test_tine_system_verification_phase3" name="test_sim2real_watchdog_must_detect_overdue_heartbeat" time="0.001"><failure message="AssertionError: Watchdog ignored 9.9s overdue heartbeat (timeout=0.05s): WatchdogDiagnostic(timestamp_s=10.0, health_state=&lt;WatchdogHealthState.HEALTHY_NOMINAL: 2&gt;, recommended_action=&lt;FailsafeAction.NONE: 1&gt;, odometry_age_ms=0.0, perception_age_ms=0.0, latency_comp_applied_ms=0.0, battery_voltage_v=16.0, failsafe_reason='Nominal')&#10;assert (&lt;WatchdogHealthState.HEALTHY_NOMINAL: 2&gt; != &lt;WatchdogHealthState.HEALTHY_NOMINAL: 2&gt;)&#10; +  where &lt;WatchdogHealthState.HEALTHY_NOMINAL: 2&gt; = WatchdogDiagnostic(timestamp_s=10.0, health_state=&lt;WatchdogHealthState.HEALTHY_NOMINAL: 2&gt;, recommended_action=&lt;FailsafeAction.NONE: 1&gt;, odometry_age_ms=0.0, perception_age_ms=0.0, latency_comp_applied_ms=0.0, battery_voltage_v=16.0, failsafe_reason='Nominal').health_state&#10; +  and   &lt;WatchdogHealthState.HEALTHY_NOMINAL: 2&gt; = WatchdogHealthState.HEALTHY_NOMINAL">def test_sim2real_watchdog_must_detect_overdue_heartbeat():
+        wd = RealtimeSafetyWatchdog()
+        wd.record_heartbeat(0.1)
+        assert wd.record_odometry(10.0)
+        assert wd.record_perception(10.0)
+        diag = wd.evaluate_health(now_s=10.0, battery_voltage_v=16.0)
+&gt;       assert diag.health_state != WatchdogHealthState.HEALTHY_NOMINAL and diag.recommended_action != FailsafeAction.NONE, (
+            f"Watchdog ignored 9.9s overdue heartbeat (timeout={wd.config.heartbeat_timeout_s}s): {diag}"
+        )
+E       AssertionError: Watchdog ignored 9.9s overdue heartbeat (timeout=0.05s): WatchdogDiagnostic(timestamp_s=10.0, health_state=&lt;WatchdogHealthState.HEALTHY_NOMINAL: 2&gt;, recommended_action=&lt;FailsafeAction.NONE: 1&gt;, odometry_age_ms=0.0, perception_age_ms=0.0, latency_comp_applied_ms=0.0, battery_voltage_v=16.0, failsafe_reason='Nominal')
+E       assert (&lt;WatchdogHealthState.HEALTHY_NOMINAL: 2&gt; != &lt;WatchdogHealthState.HEALTHY_NOMINAL: 2&gt;)
+E        +  where &lt;WatchdogHealthState.HEALTHY_NOMINAL: 2&gt; = WatchdogDiagnostic(timestamp_s=10.0, health_state=&lt;WatchdogHealthState.HEALTHY_NOMINAL: 2&gt;, recommended_action=&lt;FailsafeAction.NONE: 1&gt;, odometry_age_ms=0.0, perception_age_ms=0.0, latency_comp_applied_ms=0.0, battery_voltage_v=16.0, failsafe_reason='Nominal').health_state
+E        +  and   &lt;WatchdogHealthState.HEALTHY_NOMINAL: 2&gt; = WatchdogHealthState.HEALTHY_NOMINAL
+
+tests/test_tine_system_verification_phase3.py:81: AssertionError</failure></testcase><testcase classname="tests.test_tine_system_verification_phase3" name="test_brmc_must_not_propagate_nan_or_suppress_swarm_alarm" time="0.002"><failure message="AssertionError: NaN propagated into consensus_position: [nan nan]&#10;assert np.False_&#10; +  where np.False_ = &lt;function all at 0x722bbcdab6b0&gt;(array([False, False]))&#10; +    where &lt;function all at 0x722bbcdab6b0&gt; = np.all&#10; +    and   array([False, False]) = &lt;ufunc 'isfinite'&gt;(array([nan, nan]))&#10; +      where &lt;ufunc 'isfinite'&gt; = np.isfinite&#10; +      and   array([nan, nan]) = SwarmConsensusState(step=1, consensus_position=array([nan, nan]), consensus_martingale_wealth=33.33333333333333, swarm_alarm=True, quarantined_agents=[], weights={0: 0.2, 1: 0.2, 2: 0.2, 3: 0.2, 4: 0.2}).consensus_position">def test_brmc_must_not_propagate_nan_or_suppress_swarm_alarm():
+        brmc = ByzantineResilientMartingaleConsensus(num_agents=5, max_byzantine_faults=1, alpha_swarm=0.05)
+        msgs = [
+            AgentMessage(agent_id=i, step=1, pos_estimate=np.array([1.0, 2.0]), sigma=0.05, martingale_wealth=25.0)
+            for i in range(4)
+        ] + [
+            AgentMessage(agent_id=4, step=1, pos_estimate=np.array([math.nan, math.nan]), sigma=0.05, martingale_wealth=math.nan)
+        ]
+        res = brmc.aggregate_step(msgs, step=1)
+&gt;       assert np.all(np.isfinite(res.consensus_position)), f"NaN propagated into consensus_position: {res.consensus_position}"
+E       AssertionError: NaN propagated into consensus_position: [nan nan]
+E       assert np.False_
+E        +  where np.False_ = &lt;function all at 0x722bbcdab6b0&gt;(array([False, False]))
+E        +    where &lt;function all at 0x722bbcdab6b0&gt; = np.all
+E        +    and   array([False, False]) = &lt;ufunc 'isfinite'&gt;(array([nan, nan]))
+E        +      where &lt;ufunc 'isfinite'&gt; = np.isfinite
+E        +      and   array([nan, nan]) = SwarmConsensusState(step=1, consensus_position=array([nan, nan]), consensus_martingale_wealth=33.33333333333333, swarm_alarm=True, quarantined_agents=[], weights={0: 0.2, 1: 0.2, 2: 0.2, 3: 0.2, 4: 0.2}).consensus_position
+
+tests/test_tine_system_verification_phase3.py:95: AssertionError</failure></testcase><testcase classname="tests.test_tine_system_verification_phase3" name="test_brmc_must_reject_duplicate_agent_id_sybil_flooding" time="0.002"><failure message="AssertionError: Duplicate agent_id Sybil flood hijacked consensus_position to [4. 0.]&#10;assert 3.9999999999999996 &lt; 1.0&#10; +  where 3.9999999999999996 = float(np.float64(3.9999999999999996))&#10; +    where np.float64(3.9999999999999996) = &lt;function norm at 0x722bba9420f0&gt;(array([4., 0.]))&#10; +      where &lt;function norm at 0x722bba9420f0&gt; = &lt;module 'numpy.linalg' from '/home/patay_pc/nexvia-aegis/.venv/lib/python3.12/site-packages/numpy/linalg/__init__.py'&gt;.norm&#10; +        where &lt;module 'numpy.linalg' from '/home/patay_pc/nexvia-aegis/.venv/lib/python3.12/site-packages/numpy/linalg/__init__.py'&gt; = np.linalg&#10; +      and   array([4., 0.]) = SwarmConsensusState(step=1, consensus_position=array([4., 0.]), consensus_martingale_wealth=1.25, swarm_alarm=False, quarantined_agents=[], weights={0: 0.19999999999999998, 1: 0.19999999999999998, 2: 0.19999999999999998, 3: 0.19999999999999998, 4: 0.19999999999999998}).consensus_position">def test_brmc_must_reject_duplicate_agent_id_sybil_flooding():
+        brmc = ByzantineResilientMartingaleConsensus(num_agents=5, max_byzantine_faults=1, alpha_swarm=0.05)
+        honest = [
+            AgentMessage(agent_id=i, step=1, pos_estimate=np.array([0.0, 0.0]), sigma=0.05, martingale_wealth=1.0)
+            for i in range(4)
+        ]
+        sybil = [
+            AgentMessage(agent_id=4, step=1, pos_estimate=np.array([10.0, 0.0]), sigma=0.05, martingale_wealth=1.0)
+            for _ in range(2)
+        ]
+        res = brmc.aggregate_step(honest + sybil, step=1)
+&gt;       assert float(np.linalg.norm(res.consensus_position)) &lt; 1.0, (
+            f"Duplicate agent_id Sybil flood hijacked consensus_position to {res.consensus_position}"
+        )
+E       AssertionError: Duplicate agent_id Sybil flood hijacked consensus_position to [4. 0.]
+E       assert 3.9999999999999996 &lt; 1.0
+E        +  where 3.9999999999999996 = float(np.float64(3.9999999999999996))
+E        +    where np.float64(3.9999999999999996) = &lt;function norm at 0x722bba9420f0&gt;(array([4., 0.]))
+E        +      where &lt;function norm at 0x722bba9420f0&gt; = &lt;module 'numpy.linalg' from '/home/patay_pc/nexvia-aegis/.venv/lib/python3.12/site-packages/numpy/linalg/__init__.py'&gt;.norm
+E        +        where &lt;module 'numpy.linalg' from '/home/patay_pc/nexvia-aegis/.venv/lib/python3.12/site-packages/numpy/linalg/__init__.py'&gt; = np.linalg
+E        +      and   array([4., 0.]) = SwarmConsensusState(step=1, consensus_position=array([4., 0.]), consensus_martingale_wealth=1.25, swarm_alarm=False, quarantined_agents=[], weights={0: 0.19999999999999998, 1: 0.19999999999999998, 2: 0.19999999999999998, 3: 0.19999999999999998, 4: 0.19999999999999998}).consensus_position
+
+tests/test_tine_system_verification_phase3.py:111: AssertionError</failure></testcase><testcase classname="tests.test_tine_system_verification_phase3" name="test_av_frenet_shield_must_reject_nan_nominal_controls" time="0.001"><failure message="AssertionError: AV Frenet shield emitted non-finite commands: accel=nan, steer=nan&#10;assert (False)&#10; +  where False = &lt;built-in function isfinite&gt;(nan)&#10; +    where &lt;built-in function isfinite&gt; = math.isfinite&#10; +    and   nan = ShieldedControlCommand(accel_cmd=nan, steering_cmd=nan, nominal_accel=nan, nominal_steering=nan, barrier_active=False, active_barriers=[], frenet_state=FrenetState(s=0.0, d=0.0, s_dot=15.0, d_dot=0.0, yaw_rel=0.0, road_curvature=0.0)).accel_cmd">def test_av_frenet_shield_must_reject_nan_nominal_controls():
+        shield = FrenetSafetyShield()
+        state = VehicleState(x=0.0, y=0.0, yaw=0.0, v_x=15.0, v_y=0.0, yaw_rate=0.0)
+        frenet = FrenetState(s=0.0, d=0.0, s_dot=15.0, d_dot=0.0, yaw_rel=0.0, road_curvature=0.0)
+        cmd = shield.filter_control(state, frenet, nominal_accel=math.nan, nominal_steering=math.nan)
+&gt;       assert math.isfinite(cmd.accel_cmd) and math.isfinite(cmd.steering_cmd), (
+            f"AV Frenet shield emitted non-finite commands: accel={cmd.accel_cmd}, steer={cmd.steering_cmd}"
+        )
+E       AssertionError: AV Frenet shield emitted non-finite commands: accel=nan, steer=nan
+E       assert (False)
+E        +  where False = &lt;built-in function isfinite&gt;(nan)
+E        +    where &lt;built-in function isfinite&gt; = math.isfinite
+E        +    and   nan = ShieldedControlCommand(accel_cmd=nan, steering_cmd=nan, nominal_accel=nan, nominal_steering=nan, barrier_active=False, active_barriers=[], frenet_state=FrenetState(s=0.0, d=0.0, s_dot=15.0, d_dot=0.0, yaw_rel=0.0, road_curvature=0.0)).accel_cmd
+
+tests/test_tine_system_verification_phase3.py:121: AssertionError</failure></testcase><testcase classname="tests.test_tine_system_verification_phase3" name="test_live01_hard_killed_plant_has_no_finished_marker_and_preserves_prefix" time="0.174" /><testcase classname="tests.test_tine_system_verification_phase3" name="test_live01_cross_frame_beacon_rollback_must_be_detected" time="0.017"><failure message="AssertionError: assess_frame accepted a cross-frame beacon rollback from tick=5 to tick=2&#10;assert None is not None">tmp_path = PosixPath('/tmp/pytest-of-patay_pc/pytest-12/test_live01_cross_frame_beacon0')
+
+    def test_live01_cross_frame_beacon_rollback_must_be_detected(tmp_path: Path):
+        root = tmp_path / "rollback"
+        root.mkdir()
+        public = study.public_for(
+            dict(id="rollback", arm="SIMULATION_CONTRACT_CHECKS", steps=80, wall_period=0.03,
+                 assessment_mode="STATE_TUBE_WINDOW_V1", evidence_backend="ATOMIC_BUNDLE_V1"),
+            sources={},
+        )
+    
+        def make_sample(tick_val: int):
+            return dict(
+                id=f"sensor-0:{tick_val}", tick=tick_val, remote_time=20 * tick_val + 1000,
+                remote_epoch="sensor-0", clock_offset_ms=1000, source_id="SYNTHETIC_MEASURED_CHANNEL",
+                frame="WORLD_X_SI", position_center="0", velocity_center=".3",
+                emitted_host_ns=1_000_000_000, reported_dynamics_id=public["model"]["dynamics_id"],
+                support_valid=True, topology=dict(controller=11, watchdog=12, plant=13), **obs(0, 0.3),
+            )
+    
+        write_beacon(root, public, 5, "sensor-0")
+        t0 = iter([1_000_000_000, 1_010_000_000])
+        b0 = contract.assess_frame(root, "watchdog-0/assessments/00000005", make_sample(5), public, "watchdog-0",
+                                   primary_healthy=True, controller_generation=0, host_clock=lambda: next(t0))
+        assert b0["reason"] is None
+    
+        # Roll beacon backwards to tick=2 within the same run/epoch
+        write_beacon(root, public, 2, "sensor-0")
+        t1 = iter([1_020_000_000, 1_030_000_000])
+        b1 = contract.assess_frame(root, "watchdog-0/assessments/00000002", make_sample(2), public, "watchdog-0",
+                                   primary_healthy=True, controller_generation=0, host_clock=lambda: next(t1))
+&gt;       assert b1["reason"] is not None, "assess_frame accepted a cross-frame beacon rollback from tick=5 to tick=2"
+E       AssertionError: assess_frame accepted a cross-frame beacon rollback from tick=5 to tick=2
+E       assert None is not None
+
+tests/test_tine_system_verification_phase3.py:206: AssertionError</failure></testcase><testcase classname="tests.test_tine_system_verification_phase3" name="test_review_recovery_phases_csv_matches_all_audit_jsons_row_for_row" time="0.005" /></testsuite></testsuites>
