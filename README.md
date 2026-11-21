@@ -1,148 +1,180 @@
 # NEXVIA AEGIS
 
-**Evidence-aware autonomy, recovery and self-verification research.**
+**Evidence-aware autonomy, recovery and self-verification for Physical AI.**
 
-> **Current status:** simulation research prototype; release BLOCKED; `GATE_B_NOT_AUTHORIZED`. No real-robot validation or new confirmatory result is claimed. The current recovery experiments retain counterexamples involving unavailable backup and physically stale sensor values with fresh metadata.
+> **Status — 17 November 2026:** exploratory simulation research and engineering prototype. Release **BLOCKED** · **`GATE_B_NOT_AUTHORIZED`** · No real-robot validation or new V9-M4 confirmatory claim.
 
-NEXVIA AEGIS investigates how an autonomous system can bind decisions to evidence, detect uncertainty and recover after faults. The repository contains several experimental models, including aerial-control simulations and a newer one-dimensional recovery system with separate plant, controller and watchdog processes. Their assumptions and evidence are specific to each experiment.
+NEXVIA AEGIS studies how an autonomous system can decide whether its evidence is sufficient to act, retain uncertainty when effects are unresolved, and recover after faults. The current development focus is an end-to-end recovery experiment with **independent plant, controller and watchdog processes**. Earlier aerial-control, 3D, swarm and vehicle experiments remain separate research tracks.
 
-**Latest development:** see the [NEXVIA recovery handoff](docs/research/NEXVIA_AEGIS_RECOVERY_HANDOFF_2026-11-17.md) for the implementation, repeatable test commands, six separate outcome measures and remaining blockers. Large immutable raw archives remain in the research workspace; this branch carries the code, tests and lightweight review summaries.
+**Start here:** [Current research handoff](docs/research/NEXVIA_AEGIS_RECOVERY_HANDOFF_2026-11-17.md) · [Review results](results/research_development/review/nexvia_recovery_2026-11-17/) · [Development acceptance criteria](docs/research/RESTART_EXPERIMENT_ACCEPTANCE_RP01_2026-11-17.md)
 
-> **ภาษาไทย:** NEXVIA AEGIS เป็นงานวิจัยระบบอัตโนมัติที่ตรวจสอบหลักฐานและความไม่แน่นอนก่อนตัดสินใจ ผลในสาขานี้เป็น simulation เท่านั้น ยังไม่ใช่การรับรองความปลอดภัยของหุ่นยนต์จริง และ Gate B ยังไม่ได้รับอนุญาต
+> **ภาษาไทย:** ปัจจุบันโครงการพัฒนาระบบตรวจสอบหลักฐานและกู้คืนการควบคุมเมื่อเกิดความผิดพลาด โดยทดสอบใน simulation ที่แยก plant, controller และ watchdog เป็นคนละ process ผลสำเร็จ ข้อผิดพลาด และกรณีที่ทดสอบเงื่อนไขไม่ครบถูกเก็บแยกกัน ยังไม่ใช่การรับรองความปลอดภัยของหุ่นยนต์จริง และ Gate B ยังไม่ได้รับอนุญาต
 
-## Technical Papers & Publications
+## Current development status
 
-- **Research Paper Prototype (11 pages, Unconstrained Working Preprint):**  
-  [`docs/NEXVIA_AEGIS_RESEARCH_PAPER_PROTOTYPE.pdf`](docs/NEXVIA_AEGIS_RESEARCH_PAPER_PROTOTYPE.pdf)  
-  *Full mathematical derivations, closed-form vortex aerodynamic laws, Ville's supermartingale proofs, and comprehensive 100-run Monte-Carlo analysis.*
-- **IEEE RA-L Conference / Letter Prototype (6 pages, Strict IEEE Format):**  
-  [`docs/NEXVIA_AEGIS_PAPER_2026.pdf`](docs/NEXVIA_AEGIS_PAPER_2026.pdf)  
-  *Strictly 6-page concise submission prototype with high-resolution figures and multi-scenario quantitative benchmarks.*
+| Area | Implemented and exercised | Still unresolved |
+| --- | --- | --- |
+| Braking and power loss | Delayed/ramped braking models, queued commands, primary-power loss and delayed/unavailable backup | Measured actuator bounds, independent backup availability and the full physical stopping/rest envelope |
+| Measured and temporal feedback | Observation bounds, latency/staleness checks, session/epoch changes, replay handling and consumed-command tracking | Independent physical sensing and general clock calibration |
+| Durable execution and restart | Persisted controller/watchdog evidence and state reconstruction; crash-aware simulation execution | Plant/actuator restart, rollback-resistant effect reconciliation and physical exactly-once execution |
+| Live evidence integration | Nine bound premises; strict-observation and conditional simulation arms; durable frame bundles | Finite same-source checks cannot establish physical measurement truth or future brake reliability |
+| Runtime command guards | Checks at issue, acceptance and consumption, including after persistence and before the force step | Physical hard-real-time guarantees through host/actuator stalls |
+| Research evidence | Source/artifact hashes, retained failed runs, read-only replay, bounded export and verified archive reassembly | Independent expert review, trusted release provenance and hardware validation |
 
----
+The current stage is **component integration, fault injection and counterexample analysis**. Passing software tests does not close the remaining safety or release blockers.
 
-## 100-Run Randomized Monte-Carlo Empirical Benchmark
+## Results achieved so far
 
-An earlier exploratory 100-run randomized Monte-Carlo simulation harness reports the following observations; these figures were not independently revalidated in this upload. The harness ([`experiments/benchmark_rigorous_monte_carlo.py`](experiments/benchmark_rigorous_monte_carlo.py)) was evaluated across randomized tunnel widths ($0.48$--$0.54\,$m), unmodeled suction variations ($\pm 25\%$), turbulent Ornstein--Uhlenbeck gusts, and lateral accelerometer drift ($1.2$--$2.5\,\text{m/s}^2$):
+### Engineering verification
 
-| Safety Policy | Simulated Collisions ($k/100$) | Barrier Violations ($h < 0$) | Stalls / Deadlocks | Min Clearance (m) | Min Barrier Margin $\min h(\mathbf{x})$ | False Alarms under $\mathcal{H}_0$ |
-|---|:---:|:---:|:---:|:---:|:---:|:---:|
-| **Uncompensated HOCBF** | $0/100$ ($0.0\%$ $[0.0\%, 3.6\%]$) | $45/100$ ($45.0\%$ $[35.0\%, 55.3\%]$) | $0/100$ ($0.0\%$) | $0.221 \pm 0.01\,$m (Min: $0.191$) | $0.0012\,$m (Min: $\mathbf{-0.0287\,m}$) | N/A |
-| **Robust Tube-CBF** | $5/100$ ($5.0\%$ $[1.6\%, 11.3\%]$) | $9/100$ ($9.0\%$ $[4.2\%, 16.4\%]$) | $42/100$ ($\mathbf{42.0\%}$) | $0.318 \pm 0.07\,$m (Min: $0.097$) | $0.0977\,$m (Min: $\mathbf{-0.1230\,m}$) | N/A |
-| **AEGIS Self-Auditing (Ours)** | $\mathbf{0/100}$ ($\mathbf{0.0\%}$ $[\mathbf{0.0\%, 3.6\%}]$) | $\mathbf{0/100}$ ($\mathbf{0.0\%}$ $[\mathbf{0.0\%, 3.6\%}]$) | $\mathbf{0/100}$ ($\mathbf{0.0\%}$) | $\mathbf{0.284 \pm 0.01\,m}$ (Min: $\mathbf{0.258}$) | $\mathbf{0.0641\,m}$ (Min: $\mathbf{+0.0381\,m}$) | $\mathbf{0/100}$ ($\mathbf{0.0\%}$) |
+The latest pre-upload selection passed **1,002 related regression tests**. This is a selected suite covering recovery, feedback, evidence, packaging and adjacent components; it is not a claim that every repository test or every safety requirement has passed.
 
-![Monte Carlo Benchmark](docs/figures/rigorous_monte_carlo_benchmark.png)
+- [JUnit results](results/research_development/review/nexvia_recovery_2026-11-17/preupload_tests.xml)
+- [Test output](results/research_development/review/nexvia_recovery_2026-11-17/preupload_tests.txt)
+- [Exact selection and environment](results/research_development/review/nexvia_recovery_2026-11-17/preupload_test_command.json)
+- [Source review and identities](results/research_development/review/nexvia_recovery_2026-11-17/preupload_review.json)
 
-### Reported observations from the earlier simulation
-1. **Reported Positive Safety Margin:** AEGIS achieves $\min h(\mathbf{x}) = \mathbf{+0.0381\,m}$ strictly positive across all 100 runs, completely eliminating the negative barrier dip ($\min h = -0.0119\,$m) observed in uncompensated controllers.
-2. **Elimination of Freezing Deadlocks:** Whereas robust tube-CBF stalls in $42.0\%$ of runs due to corridor infeasibility in narrow tunnels, AEGIS achieves $0.0\%$ deadlocks.
-3. **Anytime-Valid Sensor Fault Detection:** The Ville supermartingale audit achieves $0.0\%$ false alarms under nominal conditions ($\mathcal{H}_0$), while detecting lateral IMU drift within $338.5 \pm 71.4\,$ms and safely isolating the corrupted observer.
+Earlier test selections overlap this suite and must not be added together as independent evidence.
 
----
+### Independent-process failure experiments
 
-## Research status
+The plant continues its ideal evolution while the controller or watchdog is terminated and restarted. Tested scenarios include termination before/after consumption, lost acknowledgements, duplicate/conflicting requests, replayed or stale feedback, clock/session resets, queued power loss and delayed/unavailable backup.
 
-**Simulation-focused research prototype · Not a safety-certified real-robot flight deployment.**
+| Condition | Recorded exposure | Interpretation |
+| --- | --- | --- |
+| Main campaign: 29 assignments | **27 qualified; 2 preempted and retained as ERROR** | Delayed-backup and source-mismatch cases handed off before their intended fault exposure |
+| Longer-outage campaign: 6 assignments | **All 6 qualified** | Three restart cases retained **32–33 plant updates during confirmed process absence** |
+| Higher-speed campaign: 6 assignments | **All 6 unqualified** | Early model-requested recovery prevented the planned exposures; higher-speed nominal operation is not established |
+| One source-mismatch supplement | **Qualified under unchanged limits** | Adds evidence without replacing the original ERROR |
 
-- The repository includes V9 calibration and validation work, a published V9-M4 Holdout report, and subsequent 3D, swarm, vehicle, and software-in-the-loop experiments.
-- The [V9-M4 source audit](docs/reports/v9_m4_release_remediation/V9_M4_POSTEXECUTION_SOURCE_AUDIT_2026-10-29.md) records discrepancies between the published certification claim and some authorization, protocol, and execution evidence at the audited snapshot. Later code changes require independent reconciliation before relying on a confirmatory claim. See also the [published Holdout report](V9_M4_GATE_B_CONFIRMATORY_REPORT.md).
-- The [V9-M5 development status](docs/reports/v9_m5/V9_M5_DEVELOPMENT_CURRENT_STATUS_2026-10-29.md) describes an earlier 3D development snapshot and its safety-versus-coverage tradeoff. Later work adds a [3D-aware controller](src/aegis/v9/controller_3d.py); see the [Phase 2 report](docs/reports/v9_m5/V9_PHASE2_CONTINUOUS_3D_PHYSICAL_AI_REPORT.md) for its reported simulation results.
-- The repository includes a ROS 2/PX4 control model and a [software-in-the-loop benchmark](experiments/benchmark_sim2real_hardware.py). Its publication methods currently record in memory; live ROS 2 initialization is disabled until actual transport is implemented and validated. No real-robot evaluation is claimed here.
+**Qualified** means the intended exposure occurred and the process run completed. It does **not** mean the trajectory was safe. These selected development conditions are not independent confirmatory trials or estimates of general failure probability.
 
-Results are specific to their scenarios, code, and data. Zero observed failures in a simulation does not establish zero risk or prove a safety guarantee.
+### Positive observations and retained counterexamples
 
-## How the system is organized
+| Observation | Recorded result | What it establishes or leaves open |
+| --- | --- | --- |
+| Nominal conditional-model trace | **0 violating segments across 140 checked segments; 132 command consumptions** | Containment in this declared ideal trace, not a general safety guarantee |
+| Restart continuity | **32–33 plant updates during process absence** in the longer-outage restart cases | Continued simulated evolution through controller/watchdog loss; not physical-time continuity through a plant-host failure |
+| Command deduplication | **No repeated command-ID consumption observed** in the 27 qualified main assignments | Running simulated-registry behavior; durable physical deduplication remains open |
+| Missing backup | **64 violating segments out of 140** in the main trace; **124 out of 200** in the longer trace | Correct permission withdrawal cannot compensate for unavailable braking |
+| Fresh metadata with frozen sensor values | **50 violating segments out of 140**, with **121 leases and 111 consumptions relying on false measurement premises** | Timestamp/source consistency alone does not establish physical sensing correctness |
+| Permanent operational partition | **7 unresolved controller command dispositions** at the end of the main trace | Uncertainty is preserved; auditor-only actuator knowledge is not silently supplied to the controller |
+| Strict-observation arm | **No nominal leases or command consumptions** in its tested cases | Unmeasured future premises remain assertions; withholding control has an availability cost |
+
+A segment is one ideal integration interval, not an independent episode. Containment checks include analytical between-sample extrema for the declared held-input model.
+
+The experiment preserves **six separate outcomes**: trajectory containment, unsupported claims, uncertain effects, duplicate effects, recovery latency and nominal-control availability. They are never reduced to one overall PASS/FAIL score. Host latency and ideal simulation ticks are also reported separately.
+
+[Six-outcome CSV](results/research_development/review/nexvia_recovery_2026-11-17/six_outcomes.csv) · [Recovery phases](results/research_development/review/nexvia_recovery_2026-11-17/recovery_phases.csv) · [Main analysis](results/research_development/review/nexvia_recovery_2026-11-17/main_campaign_audit.json) · [Longer outages](results/research_development/review/nexvia_recovery_2026-11-17/extended_outage_audit.json) · [Higher-speed analysis](results/research_development/review/nexvia_recovery_2026-11-17/higher_speed_audit.json) · [Supplement](results/research_development/review/nexvia_recovery_2026-11-17/source_mismatch_supplement.json)
+
+## How the recovery system works
 
 ```text
-Sensor observations
-       ↓
-Cross-sensor checks and uncertainty monitoring
-       ↓
-Optional sensing, probing, and verification
-       ↓
-Controller decision: act / stop / abstain
-       ↓
-Control constraints and simulated environment
-       ↓
-Outcome and evidence recording
+Measured observations and declared model bounds
+                    ↓
+Evidence, freshness, clock/session and replay checks
+                    ↓
+Conditional candidate or withheld nominal permission
+                    ↓
+Controller issue → plant acceptance → actual consumption guards
+                    ↓
+Independent simulated plant, actuator queue and backup
+                    ↓
+Feedback, unresolved-effect tracking and retained evidence
 ```
 
-The codebase explores several related directions:
+A separate watchdog evaluates evidence and can request recovery. Backup request, acceptance and actual engagement have different records. Recovery is latched one way: **return-to-nominal reauthorization is not implemented**.
 
-| Area | Starting point |
-|---|---|
-| V9 decision and monitoring | [`src/aegis/v9/`](src/aegis/v9/) |
-| 3D simulation and control barriers | [`src/aegis/env/mujoco_3d_cbf.py`](src/aegis/env/mujoco_3d_cbf.py) and [`src/aegis/v9/controller_3d.py`](src/aegis/v9/controller_3d.py) |
-| Swarm coordination | [`src/aegis/multiagent/`](src/aegis/multiagent/) |
-| Vision, learning, planning, and vehicles | [`src/aegis/vision/`](src/aegis/vision/), [`rl/`](src/aegis/rl/), [`nmpc/`](src/aegis/nmpc/), and [`av/`](src/aegis/av/) |
-| ROS 2/PX4 research integration | [`src/aegis/sim2real/`](src/aegis/sim2real/) |
-| Benchmarks and tests | [`experiments/`](experiments/) and [`tests/`](tests/) |
-| Reports and recorded outputs | [`docs/reports/`](docs/reports/) and [`results/`](results/) |
+The current LIVE01 plant is a **one-dimensional ideal model** with a 0.02-second integration sample and nominal 0.03-second host pacing. These are different clocks. Plant-process I/O stalls delay ideal integration, so the experiment cannot establish physical deadlines through a stalled or failed host. Sensor channels, power independence and actuator behavior remain declared simulation assumptions.
+
+## Code entry points
+
+| Component | Source |
+| --- | --- |
+| Live evidence and command contracts | [live_recovery_contract.py](src/aegis/development/live_recovery_contract.py) |
+| Plant, controller and watchdog actors | [live_recovery_processes.py](src/aegis/development/live_recovery_processes.py) |
+| Campaign runner and read-only auditor | [live_recovery_study.py](scripts/research/live_recovery_study.py) |
+| Durable evidence and atomic frame bundles | [recovery_evidence.py](src/aegis/development/recovery_evidence.py), [live_evidence_bundle.py](src/aegis/development/live_evidence_bundle.py) |
+| Temporal feedback and persistent session state | [temporal_feedback_1d.py](src/aegis/development/temporal_feedback_1d.py), [durable_feedback_session.py](src/aegis/development/durable_feedback_session.py) |
+| Conditional physical-time and stopping analysis | [physical_time_recovery.py](src/aegis/development/physical_time_recovery.py), [stopping_capability_1d.py](src/aegis/development/stopping_capability_1d.py) |
+| Development evidence export and transport | [package_temporal_feedback.py](scripts/research/package_temporal_feedback.py), [chunk_development_evidence.py](scripts/research/chunk_development_evidence.py) |
+
+See the [LIVE01 design record](docs/research/ADR_LIVE01_PROCESS_EVIDENCE_INTEGRATION_2026-11-17.md) and its [computation-window](docs/research/LIVE01_COMPUTATION_WINDOW_ADDENDUM_2026-11-17.md), [atomic-persistence](docs/research/LIVE01_ATOMIC_FRAME_PERSISTENCE_ADDENDUM_2026-11-17.md) and [freshness-falsification](docs/research/LIVE01_FRESHNESS_FALSIFICATION_ADDENDUM_2026-11-17.md) addenda for the development contract and its limits.
 
 ## Quick start
 
-Requirements: Python **3.12 or newer**, [uv](https://docs.astral.sh/uv/), and a platform supported by the locked dependencies, including MuJoCo. Commands below are run from the repository root.
+Requirements: **Python 3.12+**, [uv](https://docs.astral.sh/uv/), the locked dependencies including MuJoCo, and local UNIX-domain socket support for process experiments.
+
+Clone the branch containing the current recovery work:
 
 ```bash
-git clone https://github.com/Chalermsak1/nexvia-aegis.git
+git clone --branch nexvia/research-recovery-core --single-branch \
+  https://github.com/Chalermsak1/nexvia-aegis.git
 cd nexvia-aegis
 uv sync --locked
 ```
 
-Run a short 3D simulation smoke test:
+Run focused synthetic evidence and packaging checks:
 
 ```bash
-PYTHONPATH=src uv run python experiments/benchmark_physical_3d_cbf.py \
-  --n-seeds 1 --max-steps 5 --include-3d-aware
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:. uv run pytest -q -p no:cacheprovider \
+  tests/test_live_recovery_contract.py \
+  tests/test_chunk_development_evidence.py \
+  tests/test_package_temporal_feedback.py
 ```
 
-This checks that the benchmark starts and runs each configured policy. Five steps are too few to assess research performance; the output is **not** a confirmatory result.
-
-Run the test suite:
+Then run the independent-process integration checks:
 
 ```bash
-uv run pytest -q
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:. uv run pytest -q -p no:cacheprovider \
+  tests/test_live_recovery_processes.py tests/test_live_recovery_study.py
 ```
 
-For a longer exploratory run, use `--n-seeds` and `--max-steps` to set the workload. The benchmark also supports range bias, dropout, latency, and vector-bias options:
+These commands are focused subsets, not the full 1,002-test selection linked above. Scheduling and storage latency can preempt an intended process-test exposure. Retain and investigate such cases rather than weakening deadlines until a test passes.
+
+For a new development campaign, choose previously unused paths:
 
 ```bash
-PYTHONPATH=src uv run python experiments/benchmark_physical_3d_cbf.py --help
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:. uv run python -m scripts.research.live_recovery_study \
+  run /tmp/nexvia-live01-example-01 --output /tmp/nexvia-live01-example-01.json
 ```
 
-To retain episode-level output, add `--output` with a **new** file path. The tool refuses to overwrite an existing output file. Keep development results separate from any controlled evaluation artifacts.
-
-For a development comparison that includes the 3D-aware controller and a no-active-probing ablation, add `--include-3d-no-probe`. The ablation retains routine range verification and abstains when probing or an anchor is requested. It is an exploratory comparison, not a confirmatory finding.
-
-Summarize an existing development result without re-running episodes:
+Audit the recorded campaign without executing new episodes:
 
 ```bash
-python scripts/research/summarize_3d_development.py \
-  results/research_development/dev/3d_probe_ablation_v2.json \
-  --baseline AEGIS_3D_NO_ACTIVE_PROBE \
-  --output-dir /tmp/aegis-analysis-example
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:. uv run python -m scripts.research.live_recovery_study \
+  audit /tmp/nexvia-live01-example-01 --output /tmp/nexvia-live01-example-01-audit.json
 ```
 
-The destination must not already exist. The tool checks records against the design declared in the JSON and writes per-arm, per-scenario, and matched descriptive counts in Markdown, CSV, and JSON. It does not verify an independent assignment manifest or certify results.
+The runner refuses existing output paths. These commands run development simulations, not V9-M4 Holdout evaluation.
 
-## Research records
+## Evidence and reproducibility
 
-- [Preregistered V9 experiment protocol](docs/v9_experiment_protocol.md)
-- [V9-M4 source audit and outstanding questions](docs/reports/v9_m4_release_remediation/V9_M4_POSTEXECUTION_SOURCE_AUDIT_2026-10-29.md)
-- [Draft V9-M5 sim-to-real research protocol](docs/reports/v9_m4_release_remediation/V9_M5_SIM_TO_REAL_RESEARCH_PROTOCOL_DRAFT.md)
-- [V9-M5 3D development results and limitations](docs/reports/v9_m5/V9_M5_DEVELOPMENT_CURRENT_STATUS_2026-10-29.md)
-- [Phase 3 swarm coordination report](docs/reports/v9_m5/V9_PHASE3_SWARM_COORDINATION_REPORT.md)
-- [Draft single-robot study plan](docs/research/V9_M5_SINGLE_ROBOT_STUDY_PLAN_DRAFT.md) and [research-tool product brief](docs/research/AEGIS_RESEARCH_TOOL_PRODUCT_BRIEF_DRAFT.md)
-- [Research manuscript (PDF)](paper/aegis_ieee_preprint.pdf) and [LaTeX source](paper/main.tex)
+This branch publishes source, tests, development criteria and lightweight review summaries. **The latest complete raw/fixture archives and full exports remain preserved in the owner's research workspace; they are not represented as uploaded raw evidence.** Previously published repository evidence remains available in its original context.
 
-These documents reflect their respective snapshots and may use different status terminology. Check the underlying protocol, code, and evidence before treating a reported result as a formal claim.
+The full local evidence package was copied, verified and used to reassemble the original raw ZIP from bounded parts. Read-only reconstruction checked **107,456 raw files** and reproduced the saved analyses, including measurements from unqualified cases. These are internal integrity/reproduction checks, not independent expert review or source authentication.
 
-## Reproducibility and scope
+The [review provenance](results/research_development/review/nexvia_recovery_2026-11-17/provenance.json) records the original source parent, summary hashes and locally retained archive identities. Lightweight summaries cannot replace raw records for a complete research audit. Unkeyed SHA-256 hashes cannot authenticate an entirely rewritten package without an external trust anchor.
 
-Record the commit, dependency environment, scenario settings, seed schedule, and raw outputs for each experiment. The repository's 3D benchmark supports explicit output paths and records runtime and source hashes. Do not reuse development results as a fresh confirmatory set. Physical testing requires a separately reviewed platform, ground-truth measurements, and a safety procedure.
+## What needs development next
 
-Earlier experiments, including the original 2D benchmark, remain available in [`experiments/final_benchmark.py`](experiments/final_benchmark.py). Their metrics and assumptions should be read in the context of those experiments rather than applied to the newer 3D system.
+1. **Independent measurement assurance:** detect stale, biased or conflicting physical values even when their metadata appears fresh.
+2. **Joint recovery capability:** combine braking delay/ramp, unavailable backup, residual force, queue retirement, admissible initial state and post-stop behavior.
+3. **Durable actuator recovery:** handle plant/actuator restart and rollback while preserving ambiguous effects during partitions.
+4. **Independent clocks and physical deadlines:** characterize clock uncertainty and measure the time of actual actuator effects under host/monitor faults.
+5. **Evidence-bound nominal return:** reconstruct state, establish feasibility and explicitly transfer authority before resuming primary control.
+6. **Fair baselines, independent review and hardware validation:** establish matched experimental conditions, obtain qualified review and calibrate actual sensors, brakes, clocks and power behavior.
 
-## Author
+## Other research tracks and records
 
-Chalermsak Sinsrok · NEXVIA Core — Physical AI Research
+Earlier work includes [3D simulation](src/aegis/env/mujoco_3d_cbf.py), [3D-aware control](src/aegis/v9/controller_3d.py), [swarm coordination](src/aegis/multiagent/), [vision](src/aegis/vision/), [vehicle research](src/aegis/av/) and [ROS 2/PX4 integration models](src/aegis/sim2real/). Their scenarios and results are separate from the recovery experiments above.
+
+The earlier [100-run aerial simulation harness](experiments/benchmark_rigorous_monte_carlo.py) and its [benchmark figure](docs/figures/rigorous_monte_carlo_benchmark.png) remain available. Its historical metrics were not revalidated in this README update and do not establish physical safety or validate the newer recovery system.
+
+Working manuscript drafts: [research paper prototype](docs/NEXVIA_AEGIS_RESEARCH_PAPER_PROTOTYPE.pdf), [conference/letter prototype](docs/NEXVIA_AEGIS_PAPER_2026.pdf), [preprint](paper/aegis_ieee_preprint.pdf) and [LaTeX source](paper/main.tex). A manuscript in this repository is not evidence of peer-review acceptance.
+
+Governance references: [V9 experiment protocol](docs/v9_experiment_protocol.md), [V9-M4 source audit](docs/reports/v9_m4_release_remediation/V9_M4_POSTEXECUTION_SOURCE_AUDIT_2026-10-29.md) and [Owner Decision Register](docs/reports/v9_m4_release_remediation/V9_M4_OWNER_DECISION_REGISTER.md). This development work does not resolve the historical authorization/evidence discrepancies, approve scientific decision rules, authorize Gate B or claim that V9-M4 has passed.
+
+## Project lead
+
+Chalermsak Sinsrok · **NEXVIA CORE** · Physical AI Research
