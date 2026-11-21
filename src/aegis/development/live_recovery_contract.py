@@ -93,7 +93,7 @@ def assess_frame(root,relative,sample,public,boot,*,primary_healthy,controller_g
     try:
         before=clock(root);out['beacon_before']=before
         if before['public_sha256']!=sha(public):raise ValueError('beacon/public mismatch')
-        if start_host-sample['emitted_host_ns']>public['max_observation_host_ns']:raise ValueError('host-stale observation')
+        if sample['emitted_host_ns']>start_host or start_host-sample['emitted_host_ns']>public['max_observation_host_ns']:raise ValueError('future or host-stale observation')
         inputs,rows,provenance=collect(sample,before,public,boot,primary_healthy=primary_healthy);out['provenance']=provenance
         tube=public.get('assessment_mode')=='STATE_TUBE_WINDOW_V1'
         out['time_basis']=dict(kind='STATE_TUBE_WINDOW_V1' if tube else 'SNAPSHOT_SAME_TICK',source_tick=sample['tick'],source_host_ns=sample['emitted_host_ns'],reference_tick=0 if tube else 20*before['tick'],max_cursor_advance=1 if tube else 0,state_transport_horizon_seconds=str(DT*(before['tick']-sample['tick']+2) if tube else DT))
@@ -125,7 +125,7 @@ def completion_reason(basis,public):
     limit=1 if public.get('assessment_mode')=='STATE_TUBE_WINDOW_V1' else 0
     if after['sensor_epoch']!=before['sensor_epoch'] or not 0<=after['tick']-before['tick']<=limit:return 'PLANT_CLOCK_ADVANCED_OR_RESET'
     if basis['finish_host_ns']-basis['start_host_ns']>=public['computation_budget_ns']:return 'NATIVE_COMPUTATION_BUDGET_EXCEEDED'
-    if basis['finish_host_ns']-basis['sample']['emitted_host_ns']>public['max_observation_host_ns']:return 'OBSERVATION_EXPIRED_DURING_COMPUTATION'
+    if basis['sample']['emitted_host_ns']>basis['finish_host_ns'] or basis['finish_host_ns']-basis['sample']['emitted_host_ns']>public['max_observation_host_ns']:return 'OBSERVATION_EXPIRED_DURING_COMPUTATION'
     if result['development_action'] is None:return result['reason'] or 'NO_SUPPORTED_MODEL_PLAN'
     return None
 

@@ -1,0 +1,134 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.16, pytest-9.1.1, pluggy-1.7.0 -- /home/patay_pc/nexvia-aegis/.venv/bin/python
+rootdir: /home/patay_pc/nexvia-aegis
+configfile: pyproject.toml
+collecting ... collected 10 items
+
+tests/test_tine_system_verification_phase2.py::test_3d_aware_controller_must_not_read_ground_truth_fault_flags FAILED [ 10%]
+tests/test_tine_system_verification_phase2.py::test_mujoco_3d_env_step_must_not_pass_simulator_truth_directly_to_cbf FAILED [ 20%]
+tests/test_tine_system_verification_phase2.py::test_3d_aware_controller_must_latch_terminal_abstain FAILED [ 30%]
+tests/test_tine_system_verification_phase2.py::test_3d_aware_controller_must_abstain_on_persistent_range_dropout_in_nominal FAILED [ 40%]
+tests/test_tine_system_verification_phase2.py::test_3d_aware_controller_detects_silent_all_channel_freeze FAILED [ 50%]
+tests/test_tine_system_verification_phase2.py::test_live01_analyze_case_rejects_unfinished_step_intent_without_step_result PASSED [ 60%]
+tests/test_tine_system_verification_phase2.py::test_live01_read_records_preserves_truncated_pending_file_without_promoting PASSED [ 70%]
+tests/test_tine_system_verification_phase2.py::test_review_provenance_sha256_and_sizes_match_all_summary_files PASSED [ 80%]
+tests/test_tine_system_verification_phase2.py::test_live01_76_source_hashes_match_main_campaign_audit_byte_for_byte PASSED [ 90%]
+tests/test_tine_system_verification_phase2.py::test_all_review_audit_batches_reconcile_with_six_outcomes_csv PASSED [100%]
+
+=================================== FAILURES ===================================
+_______ test_3d_aware_controller_must_not_read_ground_truth_fault_flags ________
+
+    def test_3d_aware_controller_must_not_read_ground_truth_fault_flags():
+        ctrl = Aegis3DAwareController()
+        ctrl.reset()
+        vec = np.array([1.2, 0.3, 0.4])
+        ra = _Trap3DSensorReading(vec, sigma=0.05, valid=True)
+        rb = _Trap3DSensorReading(vec, sigma=0.05, valid=True)
+        rr = RangeReading(distance=float(np.linalg.norm(vec)), sigma=0.05, valid=True)
+>       act, dec, _, _ = ctrl.update(ra, rb, rr, None, step=0)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_tine_system_verification_phase2.py:81: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/aegis/v9/controller_3d.py:165: in update
+    if not boolean_flag(reading_a.valid) or not boolean_flag(reading_a.dropped):
+                                                             ^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <[AssertionError('Oracle ground-truth .anomaly accessed in 3D controller') raised in repr()] _Trap3DSensorReading object at 0x78b8f088bb30>
+
+    @property
+    def dropped(self) -> bool:
+>       raise AssertionError("Oracle ground-truth .dropped accessed in 3D controller")
+E       AssertionError: Oracle ground-truth .dropped accessed in 3D controller
+
+tests/test_tine_system_verification_phase2.py:67: AssertionError
+____ test_mujoco_3d_env_step_must_not_pass_simulator_truth_directly_to_cbf _____
+
+    def test_mujoco_3d_env_step_must_not_pass_simulator_truth_directly_to_cbf():
+        """Verifies whether AegisMuJoCo3DEnvironment.step passes exact qpos/qvel into CBF."""
+        env = AegisMuJoCo3DEnvironment()
+        env.reset(np.random.default_rng(2256000))
+        recorded: list[tuple[np.ndarray, np.ndarray]] = []
+        orig = env.cbf.compute_safe_control
+    
+        def spy(*, pos, vel, desired_u, obstacles, force_braking=False):
+            recorded.append((np.asarray(pos).copy(), np.asarray(vel).copy()))
+            return orig(pos=pos, vel=vel, desired_u=desired_u, obstacles=obstacles, force_braking=force_braking)
+    
+        env.cbf.compute_safe_control = spy  # type: ignore[method-assign]
+        true_pos = env.data.xpos[env.robot_body_id].copy()
+        true_vel = env.data.qvel[:3].copy()
+        env.step(np.array([0.5, 0.0, 0.0]))
+        assert recorded, "CBF was not invoked"
+        cbf_pos, cbf_vel = recorded[0]
+        passed_exact_simulator_truth = np.array_equal(cbf_pos, true_pos) and np.array_equal(cbf_vel, true_vel)
+>       assert not passed_exact_simulator_truth, (
+            "AegisMuJoCo3DEnvironment.step fed exact MuJoCo simulator ground-truth xpos/qvel into CBF"
+        )
+E       AssertionError: AegisMuJoCo3DEnvironment.step fed exact MuJoCo simulator ground-truth xpos/qvel into CBF
+E       assert not True
+
+tests/test_tine_system_verification_phase2.py:104: AssertionError
+_____________ test_3d_aware_controller_must_latch_terminal_abstain _____________
+
+    def test_3d_aware_controller_must_latch_terminal_abstain():
+        ctrl = Aegis3DAwareController()
+        ctrl.reset()
+        bad = SensorReading(estimate=np.array([math.nan, 0.0, 0.0]), sigma=0.05, valid=True, anomaly=False, dropped=False, bias=np.zeros(3), drift=np.zeros(3))
+        good = SensorReading(estimate=np.array([1.0, 0.0, 0.5]), sigma=0.05, valid=True, anomaly=False, dropped=False, bias=np.zeros(3), drift=np.zeros(3))
+        rr = RangeReading(distance=math.hypot(1.0, 0.5), sigma=0.05, valid=True)
+    
+        _, dec0, _, _ = ctrl.update(bad, good, rr, None, step=0)
+        assert dec0 == "ABSTAIN"
+        _, dec1, _, _ = ctrl.update(good, good, rr, None, step=1)
+>       assert dec1 == "ABSTAIN", f"3D controller resumed {dec1} after ABSTAIN instead of latching fail-closed"
+E       AssertionError: 3D controller resumed NAVIGATE after ABSTAIN instead of latching fail-closed
+E       assert 'NAVIGATE' == 'ABSTAIN'
+E         
+E         - ABSTAIN
+E         + NAVIGATE
+
+tests/test_tine_system_verification_phase2.py:123: AssertionError
+_ test_3d_aware_controller_must_abstain_on_persistent_range_dropout_in_nominal _
+
+    def test_3d_aware_controller_must_abstain_on_persistent_range_dropout_in_nominal():
+        ctrl = Aegis3DAwareController()
+        ctrl.reset()
+        vec = np.array([1.5, 0.0, 0.5])
+        good = SensorReading(estimate=vec, sigma=0.05, valid=True, anomaly=False, dropped=False, bias=np.zeros(3), drift=np.zeros(3))
+        dropped_rr = RangeReading(distance=0.0, sigma=0.05, valid=False, dropped=True)
+        decisions = [ctrl.update(good, good, dropped_rr, None, step=s)[1] for s in range(15)]
+>       assert any(d in ("ABSTAIN", "PROBE") for d in decisions), (
+            f"Persistent range dropout in NOMINAL never triggered ABSTAIN/PROBE: {set(decisions)}"
+        )
+E       AssertionError: Persistent range dropout in NOMINAL never triggered ABSTAIN/PROBE: {'NAVIGATE'}
+E       assert False
+E        +  where False = any(<generator object test_3d_aware_controller_must_abstain_on_persistent_range_dropout_in_nominal.<locals>.<genexpr> at 0x78b8f037d3c0>)
+
+tests/test_tine_system_verification_phase2.py:133: AssertionError
+__________ test_3d_aware_controller_detects_silent_all_channel_freeze __________
+
+    def test_3d_aware_controller_detects_silent_all_channel_freeze():
+        ctrl = Aegis3DAwareController()
+        ctrl.reset()
+        vec = np.array([1.5, 0.0, 0.5])
+        rr = RangeReading(distance=float(np.linalg.norm(vec)), sigma=0.05, valid=True)
+        decisions = []
+        for s in range(60):
+            ra = SensorReading(estimate=vec.copy(), sigma=0.05, valid=True, anomaly=False, dropped=False, bias=np.zeros(3), drift=np.zeros(3))
+            rb = SensorReading(estimate=vec.copy(), sigma=0.05, valid=True, anomaly=False, dropped=False, bias=np.zeros(3), drift=np.zeros(3))
+            decisions.append(ctrl.update(ra, rb, rr, None, step=s)[1])
+>       assert any(d in ("ABSTAIN", "PROBE", "VERIFY") for d in decisions)
+E       assert False
+E        +  where False = any(<generator object test_3d_aware_controller_detects_silent_all_channel_freeze.<locals>.<genexpr> at 0x78b8f0280ee0>)
+
+tests/test_tine_system_verification_phase2.py:148: AssertionError
+- generated xml file: /home/patay_pc/nexvia-aegis/results/research_development/tine_verification/tine_phase2_verification_junit.xml -
+=========================== short test summary info ============================
+FAILED tests/test_tine_system_verification_phase2.py::test_3d_aware_controller_must_not_read_ground_truth_fault_flags
+FAILED tests/test_tine_system_verification_phase2.py::test_mujoco_3d_env_step_must_not_pass_simulator_truth_directly_to_cbf
+FAILED tests/test_tine_system_verification_phase2.py::test_3d_aware_controller_must_latch_terminal_abstain
+FAILED tests/test_tine_system_verification_phase2.py::test_3d_aware_controller_must_abstain_on_persistent_range_dropout_in_nominal
+FAILED tests/test_tine_system_verification_phase2.py::test_3d_aware_controller_detects_silent_all_channel_freeze
+========================= 5 failed, 5 passed in 2.91s ==========================

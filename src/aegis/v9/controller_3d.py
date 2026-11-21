@@ -162,9 +162,9 @@ class Aegis3DAwareController:
         sig_b = 0.05
         try:
             if isinstance(reading_a, SensorReading):
-                if not boolean_flag(reading_a.valid) or not boolean_flag(reading_a.dropped):
+                if not boolean_flag(reading_a.valid):
                     raise ValueError("invalid sensor flags")
-                if reading_a.valid and not reading_a.dropped:
+                if reading_a.valid:
                     if not finite_real(reading_a.sigma, positive=True):
                         raise ValueError("invalid sensor sigma")
                     vec_a = np.asarray(reading_a.estimate, dtype=np.float64)
@@ -172,9 +172,9 @@ class Aegis3DAwareController:
             elif reading_a is not None:
                 vec_a = np.asarray(reading_a, dtype=np.float64)
             if isinstance(reading_b, SensorReading):
-                if not boolean_flag(reading_b.valid) or not boolean_flag(reading_b.dropped):
+                if not boolean_flag(reading_b.valid):
                     raise ValueError("invalid sensor flags")
-                if reading_b.valid and not reading_b.dropped:
+                if reading_b.valid:
                     if not finite_real(reading_b.sigma, positive=True):
                         raise ValueError("invalid sensor sigma")
                     vec_b = np.asarray(reading_b.estimate, dtype=np.float64)

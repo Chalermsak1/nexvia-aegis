@@ -62,8 +62,11 @@ class RealtimeSafetyWatchdog:
         self.consecutive_timeouts: int = 0
         self.current_state = WatchdogHealthState.HEALTHY_NOMINAL
 
-    def record_heartbeat(self, now_s: float) -> None:
+    def record_heartbeat(self, now_s: float) -> bool:
+        if not math.isfinite(now_s) or now_s <= 0.0 or now_s < self.last_heartbeat_time_s:
+            return False
         self.last_heartbeat_time_s = now_s
+        return True
 
     def record_odometry(self, now_s: float) -> bool:
         if not math.isfinite(now_s) or now_s <= 0.0 or now_s <= self.last_odometry_time_s:
@@ -144,6 +147,25 @@ class RealtimeSafetyWatchdog:
             diagnostic.recommended_action = FailsafeAction.SAFE_ABSTENTION_LOITER
             diagnostic.failsafe_reason = "Ville Supermartingale Wealth threshold crossed (Sensor Corrupted/Spoofed)"
             return diagnostic
+
+        # 2b. Companion Loop Heartbeat Freshness (enforced once heartbeat tracking starts)
+        has_hb = math.isfinite(self.last_heartbeat_time_s) and self.last_heartbeat_time_s > 0.0
+        if has_hb:
+            hb_age = now_s - self.last_heartbeat_time_s
+            if hb_age < 0.0:
+                self.last_heartbeat_time_s = 0.0
+                self.current_state = WatchdogHealthState.UNINITIALIZED
+                diagnostic.health_state = self.current_state
+                diagnostic.recommended_action = FailsafeAction.POSITION_HOLD_HOVER
+                diagnostic.failsafe_reason = "Heartbeat timestamp is ahead of watchdog clock"
+                return diagnostic
+            if hb_age > self.config.heartbeat_timeout_s:
+                self.consecutive_timeouts += 1
+                self.current_state = WatchdogHealthState.COMMUNICATION_TIMEOUT
+                diagnostic.health_state = self.current_state
+                diagnostic.recommended_action = FailsafeAction.POSITION_HOLD_HOVER
+                diagnostic.failsafe_reason = f"Heartbeat timeout ({hb_age*1000:.1f}ms > {self.config.heartbeat_timeout_s*1000:.1f}ms)"
+                return diagnostic
 
         # 3. Uninitialized Odometry (no odometry telemetry received yet)
         if not has_odom:

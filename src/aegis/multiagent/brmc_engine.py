@@ -70,13 +70,42 @@ class ByzantineResilientMartingaleConsensus:
         """
         Executes robust trimmed supermartingale aggregation and spatial consensus.
         """
-        active_msgs = [m for m in messages if m.valid and m.agent_id not in self.quarantine_registry]
+        # Reject duplicate agent_id equivocation/Sybil flooding and non-finite payloads
+        id_counts: dict[int, int] = {}
+        for m in messages:
+            id_counts[m.agent_id] = id_counts.get(m.agent_id, 0) + 1
+        duplicate_ids = {aid for aid, cnt in id_counts.items() if cnt > 1}
+        for aid in duplicate_ids:
+            self.quarantine_registry.add(aid)
+
+        def _is_finite_msg(m: AgentMessage) -> bool:
+            pos = np.asarray(m.pos_estimate, dtype=np.float64)
+            return (
+                bool(m.valid)
+                and pos.ndim == 1
+                and pos.size > 0
+                and bool(np.all(np.isfinite(pos)))
+                and math.isfinite(float(m.sigma))
+                and float(m.sigma) > 0.0
+                and math.isfinite(float(m.martingale_wealth))
+            )
+
+        active_msgs: list[AgentMessage] = []
+        for m in messages:
+            if m.agent_id in self.quarantine_registry:
+                continue
+            if m.valid and not _is_finite_msg(m):
+                self.quarantine_registry.add(m.agent_id)
+                continue
+            if _is_finite_msg(m):
+                active_msgs.append(m)
         n_active = len(active_msgs)
 
         if n_active <= 2 * self.max_byzantine_faults:
-            # Fallback when too many quarantined: fuse remaining active un-quarantined peers
-            pool = active_msgs if active_msgs else messages
-            mean_pos = np.mean([m.pos_estimate for m in pool], axis=0)
+            # Fallback when too many quarantined: fuse remaining finite un-quarantined peers
+            finite_all = [m for m in messages if _is_finite_msg(m)]
+            pool = active_msgs if active_msgs else finite_all
+            mean_pos = np.mean([m.pos_estimate for m in pool], axis=0) if pool else np.zeros(2, dtype=np.float64)
             return SwarmConsensusState(
                 step=step,
                 consensus_position=mean_pos,

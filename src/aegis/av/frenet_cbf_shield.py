@@ -87,6 +87,20 @@ class FrenetSafetyShield:
         active_barriers: list[str] = []
         barrier_triggered = False
 
+        if not all(
+            math.isfinite(float(x))
+            for x in (a_safe, delta_safe, state.v_x, state.v_y, state.yaw_rate, frenet.s, frenet.d, frenet.d_dot, frenet.road_curvature)
+        ):
+            return ShieldedControlCommand(
+                accel_cmd=float(-self.cbf_cfg.max_safe_decel),
+                steering_cmd=0.0,
+                nominal_accel=a_safe,
+                nominal_steering=delta_safe,
+                barrier_active=True,
+                active_barriers=["NONFINITE_INPUT_FAILSAFE"],
+                frenet_state=frenet,
+            )
+
         # Physical limits
         a_safe = float(np.clip(a_safe, -self.v_cfg.max_decel, self.v_cfg.max_accel))
         delta_safe = float(np.clip(delta_safe, -self.v_cfg.max_steering_rad, self.v_cfg.max_steering_rad))

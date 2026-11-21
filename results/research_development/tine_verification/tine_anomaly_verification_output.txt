@@ -1,0 +1,237 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.16, pytest-9.1.1, pluggy-1.7.0 -- /home/patay_pc/nexvia-aegis/.venv/bin/python
+rootdir: /home/patay_pc/nexvia-aegis
+configfile: pyproject.toml
+collecting ... collected 13 items
+
+tests/test_tine_anomaly_verification.py::test_v9_controller_common_mode_fault_never_reads_ground_truth PASSED [  7%]
+tests/test_tine_anomaly_verification.py::test_live01_rejects_future_emitted_host_timestamp FAILED [ 15%]
+tests/test_tine_anomaly_verification.py::test_live01_rejects_intra_epoch_clock_offset_forgery FAILED [ 23%]
+tests/test_tine_anomaly_verification.py::test_live01_withholds_vacuous_position_interval_under_fresh_metadata PASSED [ 30%]
+tests/test_tine_anomaly_verification.py::test_robust_tube_clbf_fails_closed_on_nan_state_and_negative_covariance FAILED [ 38%]
+tests/test_tine_anomaly_verification.py::test_v9_controller_detects_silent_all_channel_freeze FAILED [ 46%]
+tests/test_tine_anomaly_verification.py::test_online_covariance_estimator_without_oracle_detects_frozen_sensor FAILED [ 53%]
+tests/test_tine_anomaly_verification.py::test_live01_malformed_ipc_datagram_does_not_crash_actor[controller-c0.sock-bad_msg0] FAILED [ 61%]
+tests/test_tine_anomaly_verification.py::test_live01_malformed_ipc_datagram_does_not_crash_actor[watchdog-w.sock-bad_msg1] FAILED [ 69%]
+tests/test_tine_anomaly_verification.py::test_live01_cross_artifact_mismatch_rejected_by_audit_frame PASSED [ 76%]
+tests/test_tine_anomaly_verification.py::test_v9_controller_seed_reproducibility_bit_identical PASSED [ 84%]
+tests/test_tine_anomaly_verification.py::test_3d_mujoco_seed_reproducibility_non_holdout PASSED [ 92%]
+tests/test_tine_anomaly_verification.py::test_review_six_outcomes_csv_matches_main_campaign_audit_json PASSED [100%]
+
+=================================== FAILURES ===================================
+______________ test_live01_rejects_future_emitted_host_timestamp _______________
+
+tmp_path = PosixPath('/tmp/pytest-of-patay_pc/pytest-7/test_live01_rejects_future_emi0')
+
+    def test_live01_rejects_future_emitted_host_timestamp(tmp_path: Path):
+        _, _, _, basis = _live01_fixture(
+            tmp_path,
+            sample_override=dict(emitted_host_ns=5_000_000_000),
+            host_times=(1_000_000_000, 1_010_000_000),
+        )
+>       assert basis["reason"] is not None
+E       assert None is not None
+
+tests/test_tine_anomaly_verification.py:141: AssertionError
+_____________ test_live01_rejects_intra_epoch_clock_offset_forgery _____________
+
+tmp_path = PosixPath('/tmp/pytest-of-patay_pc/pytest-7/test_live01_rejects_intra_epoc0')
+
+    def test_live01_rejects_intra_epoch_clock_offset_forgery(tmp_path: Path):
+        _, public, sample0, _ = _live01_fixture(tmp_path)
+        forged = dict(sample0, id="sensor-0:1", tick=1, clock_offset_ms=5000, remote_time=5020)
+        res = contract.select_samples([sample0, forged], seen=-1, known={}, public=public)
+>       assert res["critical"] is not None
+E       assert None is not None
+
+tests/test_tine_anomaly_verification.py:149: AssertionError
+___ test_robust_tube_clbf_fails_closed_on_nan_state_and_negative_covariance ____
+
+    def test_robust_tube_clbf_fails_closed_on_nan_state_and_negative_covariance():
+        ctrl = RobustTubeCLBFController(RobustTubeCLBFConfig(enable_observability_gate=True))
+        bad_nan = TubeUncertaintyState(
+            p_hat=np.array([math.nan, 0.0, 0.0]),
+            v_hat=np.array([1.0, 0.0, 0.0]),
+            cov_p=np.eye(3) * 0.01,
+            cov_v=np.eye(3) * 0.01,
+        )
+        res_nan = ctrl.step(bad_nan, np.array([10.0, 0.0, 0.0]), obstacles=[])
+>       assert res_nan["phase"] == DwellPhase.EMERGENCY_STOP.value
+E       AssertionError: assert 'CRUISING' == 'EMERGENCY_STOP'
+E         
+E         - EMERGENCY_STOP
+E         + CRUISING
+
+tests/test_tine_anomaly_verification.py:170: AssertionError
+_____________ test_v9_controller_detects_silent_all_channel_freeze _____________
+
+    def test_v9_controller_detects_silent_all_channel_freeze():
+        ctrl = AegisV9Controller()
+        ctrl.reset()
+        frozen_vec = np.array([1.5, 0.0])
+        decisions = []
+        for step in range(60):
+            ra = SensorReading(estimate=frozen_vec.copy(), sigma=0.05, valid=True, anomaly=False, dropped=False, bias=np.zeros(2), drift=np.zeros(2))
+            rb = SensorReading(estimate=frozen_vec.copy(), sigma=0.05, valid=True, anomaly=False, dropped=False, bias=np.zeros(2), drift=np.zeros(2))
+            rr = RangeReading(distance=1.5, sigma=0.05, valid=True)
+            _, dec, _, _ = ctrl.update(ra, rb, rr, None, step=step)
+            decisions.append(dec)
+>       assert any(d in ("ABSTAIN", "PROBE", "VERIFY") for d in decisions)
+E       assert False
+E        +  where False = any(<generator object test_v9_controller_detects_silent_all_channel_freeze.<locals>.<genexpr> at 0x719816886190>)
+
+tests/test_tine_anomaly_verification.py:195: AssertionError
+____ test_online_covariance_estimator_without_oracle_detects_frozen_sensor _____
+
+    def test_online_covariance_estimator_without_oracle_detects_frozen_sensor():
+        """Without ground-truth p_true/v_true, an innovation-only estimator fed a frozen reading must flag anomaly."""
+        est = OnlineCovarianceEstimator(window_size=10, nominal_sigma_p=0.05, nominal_sigma_v=0.08, blackout_sigma_thresh=0.25)
+        p_frozen = np.array([1.5, 0.0, 0.0])
+        v_frozen = np.array([0.0, 0.0, 0.0])
+        dt = 0.04
+        p_pred = p_frozen.copy()
+        v_pred = v_frozen.copy()
+        triggered = False
+        for _ in range(30):
+            _, _, is_bo = est.update(p_pred, p_frozen, v_pred, v_frozen)
+            triggered |= is_bo
+            p_pred = p_frozen + v_frozen * dt
+            v_pred = v_frozen.copy()
+>       assert triggered is True
+E       assert False is True
+
+tests/test_tine_anomaly_verification.py:212: AssertionError
+_ test_live01_malformed_ipc_datagram_does_not_crash_actor[controller-c0.sock-bad_msg0] _
+
+tmp_path = PosixPath('/tmp/pytest-of-patay_pc/pytest-7/test_live01_malformed_ipc_data0')
+role = 'controller', sock_name = 'c0.sock', bad_msg = {'kind': 'STATUS'}
+
+    @pytest.mark.parametrize(
+        "role,sock_name,bad_msg",
+        [
+            ("controller", "c0.sock", {"kind": "STATUS"}),
+            ("watchdog", "w.sock", {"kind": "HEARTBEAT"}),
+        ],
+    )
+    def test_live01_malformed_ipc_datagram_does_not_crash_actor(tmp_path: Path, role: str, sock_name: str, bad_msg: dict):
+        run_dir = tmp_path / "case"
+        run_dir.mkdir()
+        public = study.public_for(
+            dict(id=f"ipc-{role}", arm="SIMULATION_CONTRACT_CHECKS", steps=40, wall_period=0.03,
+                 assessment_mode="STATE_TUBE_WINDOW_V1", evidence_backend="ATOMIC_BUNDLE_V1"),
+            sources={},
+        )
+        public_path = run_dir / "public.json"
+        contract.save(public_path, public)
+        with tempfile.TemporaryDirectory(prefix="nxtine-", dir="/private/tmp") as ipc_str:
+            ipc = Path(ipc_str)
+            plant_ep = Endpoint(ipc / "p.sock")
+            mon_ep = Endpoint(ipc / "m.sock")
+            env = dict(os.environ, PYTHONPATH="src:.", PYTHONDONTWRITEBYTECODE="1")
+            proc = subprocess.Popen(
+                [sys.executable, "-m", "aegis.development.live_recovery_processes",
+                 role, str(public_path), str(ipc), str(run_dir), "--generation", "0"],
+                cwd=REPO_ROOT, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True,
+            )
+            try:
+                deadline = time.monotonic() + 5.0
+                ready = False
+                while time.monotonic() < deadline and not ready:
+                    if any(m.get("kind") == "READY" and m.get("role") == role for m in mon_ep.drain()):
+                        ready = True
+                        break
+                    assert proc.poll() is None, f"{role} exited early: {proc.stdout.read()}"
+                    time.sleep(0.01)
+                assert ready
+                plant_ep.send(ipc / sock_name, bad_msg)
+                time.sleep(0.05)
+                plant_ep.send(ipc / sock_name, {"kind": "STOP", "administrative": True})
+                rc = proc.wait(timeout=3)
+                out = proc.stdout.read() if proc.stdout else ""
+>               assert rc == 0, f"{role} crashed on malformed {bad_msg['kind']} (rc={rc}): {out}"
+E               AssertionError: controller crashed on malformed STATUS (rc=1): Traceback (most recent call last):
+E                   File "<frozen runpy>", line 198, in _run_module_as_main
+E                   File "<frozen runpy>", line 88, in _run_code
+E                   File "/home/patay_pc/nexvia-aegis/src/aegis/development/live_recovery_processes.py", line 295, in <module>
+E                     elif a.role=='controller':controller(public,a.ipc,a.root,a.generation)
+E                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E                   File "/home/patay_pc/nexvia-aegis/src/aegis/development/live_recovery_processes.py", line 198, in controller
+E                     if kind=='STATUS':status=m;latched|=m['backup_requested'];log.append('STATUS_RECEIVED',status=m)
+E                                                         ~^^^^^^^^^^^^^^^^^^^^
+E                 KeyError: 'backup_requested'
+E                 
+E               assert 1 == 0
+
+tests/test_tine_anomaly_verification.py:261: AssertionError
+_ test_live01_malformed_ipc_datagram_does_not_crash_actor[watchdog-w.sock-bad_msg1] _
+
+tmp_path = PosixPath('/tmp/pytest-of-patay_pc/pytest-7/test_live01_malformed_ipc_data1')
+role = 'watchdog', sock_name = 'w.sock', bad_msg = {'kind': 'HEARTBEAT'}
+
+    @pytest.mark.parametrize(
+        "role,sock_name,bad_msg",
+        [
+            ("controller", "c0.sock", {"kind": "STATUS"}),
+            ("watchdog", "w.sock", {"kind": "HEARTBEAT"}),
+        ],
+    )
+    def test_live01_malformed_ipc_datagram_does_not_crash_actor(tmp_path: Path, role: str, sock_name: str, bad_msg: dict):
+        run_dir = tmp_path / "case"
+        run_dir.mkdir()
+        public = study.public_for(
+            dict(id=f"ipc-{role}", arm="SIMULATION_CONTRACT_CHECKS", steps=40, wall_period=0.03,
+                 assessment_mode="STATE_TUBE_WINDOW_V1", evidence_backend="ATOMIC_BUNDLE_V1"),
+            sources={},
+        )
+        public_path = run_dir / "public.json"
+        contract.save(public_path, public)
+        with tempfile.TemporaryDirectory(prefix="nxtine-", dir="/private/tmp") as ipc_str:
+            ipc = Path(ipc_str)
+            plant_ep = Endpoint(ipc / "p.sock")
+            mon_ep = Endpoint(ipc / "m.sock")
+            env = dict(os.environ, PYTHONPATH="src:.", PYTHONDONTWRITEBYTECODE="1")
+            proc = subprocess.Popen(
+                [sys.executable, "-m", "aegis.development.live_recovery_processes",
+                 role, str(public_path), str(ipc), str(run_dir), "--generation", "0"],
+                cwd=REPO_ROOT, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True,
+            )
+            try:
+                deadline = time.monotonic() + 5.0
+                ready = False
+                while time.monotonic() < deadline and not ready:
+                    if any(m.get("kind") == "READY" and m.get("role") == role for m in mon_ep.drain()):
+                        ready = True
+                        break
+                    assert proc.poll() is None, f"{role} exited early: {proc.stdout.read()}"
+                    time.sleep(0.01)
+                assert ready
+                plant_ep.send(ipc / sock_name, bad_msg)
+                time.sleep(0.05)
+                plant_ep.send(ipc / sock_name, {"kind": "STOP", "administrative": True})
+                rc = proc.wait(timeout=3)
+                out = proc.stdout.read() if proc.stdout else ""
+>               assert rc == 0, f"{role} crashed on malformed {bad_msg['kind']} (rc={rc}): {out}"
+E               AssertionError: watchdog crashed on malformed HEARTBEAT (rc=1): Traceback (most recent call last):
+E                   File "<frozen runpy>", line 198, in _run_module_as_main
+E                   File "<frozen runpy>", line 88, in _run_code
+E                   File "/home/patay_pc/nexvia-aegis/src/aegis/development/live_recovery_processes.py", line 296, in <module>
+E                     else:watchdog(public,a.ipc,a.root,a.generation)
+E                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E                   File "/home/patay_pc/nexvia-aegis/src/aegis/development/live_recovery_processes.py", line 253, in watchdog
+E                     if kind=='HEARTBEAT':heart=time.monotonic_ns();heart_gen=m['generation'];ready=m['ready'];log.append('HEARTBEAT_RECEIVED',heartbeat=m)
+E                                                                              ~^^^^^^^^^^^^^^
+E                 KeyError: 'generation'
+E                 
+E               assert 1 == 0
+
+tests/test_tine_anomaly_verification.py:261: AssertionError
+- generated xml file: /home/patay_pc/nexvia-aegis/results/research_development/tine_verification/tine_anomaly_verification_junit.xml -
+=========================== short test summary info ============================
+FAILED tests/test_tine_anomaly_verification.py::test_live01_rejects_future_emitted_host_timestamp
+FAILED tests/test_tine_anomaly_verification.py::test_live01_rejects_intra_epoch_clock_offset_forgery
+FAILED tests/test_tine_anomaly_verification.py::test_robust_tube_clbf_fails_closed_on_nan_state_and_negative_covariance
+FAILED tests/test_tine_anomaly_verification.py::test_v9_controller_detects_silent_all_channel_freeze
+FAILED tests/test_tine_anomaly_verification.py::test_online_covariance_estimator_without_oracle_detects_frozen_sensor
+FAILED tests/test_tine_anomaly_verification.py::test_live01_malformed_ipc_datagram_does_not_crash_actor[controller-c0.sock-bad_msg0]
+FAILED tests/test_tine_anomaly_verification.py::test_live01_malformed_ipc_datagram_does_not_crash_actor[watchdog-w.sock-bad_msg1]
+========================= 7 failed, 6 passed in 3.52s ==========================

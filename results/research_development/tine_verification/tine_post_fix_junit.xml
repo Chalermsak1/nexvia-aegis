@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="7" skipped="0" tests="32" time="13.245" timestamp="2026-11-19T12:32:33.167020+07:00" hostname="LAPTOP-1KCOUMFE"><testcase classname="tests.test_tine_anomaly_verification" name="test_v9_controller_common_mode_fault_never_reads_ground_truth" time="0.008" /><testcase classname="tests.test_tine_anomaly_verification" name="test_live01_rejects_future_emitted_host_timestamp" time="0.003" /><testcase classname="tests.test_tine_anomaly_verification" name="test_live01_rejects_intra_epoch_clock_offset_forgery" time="0.010"><failure message="assert None is not None">tmp_path = PosixPath('/tmp/pytest-of-patay_pc/pytest-16/test_live01_rejects_intra_epoc0')
+
+    def test_live01_rejects_intra_epoch_clock_offset_forgery(tmp_path: Path):
+        _, public, sample0, _ = _live01_fixture(tmp_path)
+        forged = dict(sample0, id="sensor-0:1", tick=1, clock_offset_ms=5000, remote_time=5020)
+        res = contract.select_samples([sample0, forged], seen=-1, known={}, public=public)
+&gt;       assert res["critical"] is not None
+E       assert None is not None
+
+tests/test_tine_anomaly_verification.py:149: AssertionError</failure></testcase><testcase classname="tests.test_tine_anomaly_verification" name="test_live01_withholds_vacuous_position_interval_under_fresh_metadata" time="0.008" /><testcase classname="tests.test_tine_anomaly_verification" name="test_robust_tube_clbf_fails_closed_on_nan_state_and_negative_covariance" time="0.001" /><testcase classname="tests.test_tine_anomaly_verification" name="test_v9_controller_detects_silent_all_channel_freeze" time="0.018"><failure message="assert False&#10; +  where False = any(&lt;generator object test_v9_controller_detects_silent_all_channel_freeze.&lt;locals&gt;.&lt;genexpr&gt; at 0x746a62f5b370&gt;)">def test_v9_controller_detects_silent_all_channel_freeze():
+        ctrl = AegisV9Controller()
+        ctrl.reset()
+        frozen_vec = np.array([1.5, 0.0])
+        decisions = []
+        for step in range(60):
+            ra = SensorReading(estimate=frozen_vec.copy(), sigma=0.05, valid=True, anomaly=False, dropped=False, bias=np.zeros(2), drift=np.zeros(2))
+            rb = SensorReading(estimate=frozen_vec.copy(), sigma=0.05, valid=True, anomaly=False, dropped=False, bias=np.zeros(2), drift=np.zeros(2))
+            rr = RangeReading(distance=1.5, sigma=0.05, valid=True)
+            _, dec, _, _ = ctrl.update(ra, rb, rr, None, step=step)
+            decisions.append(dec)
+&gt;       assert any(d in ("ABSTAIN", "PROBE", "VERIFY") for d in decisions)
+E       assert False
+E        +  where False = any(&lt;generator object test_v9_controller_detects_silent_all_channel_freeze.&lt;locals&gt;.&lt;genexpr&gt; at 0x746a62f5b370&gt;)
+
+tests/test_tine_anomaly_verification.py:195: AssertionError</failure></testcase><testcase classname="tests.test_tine_anomaly_verification" name="test_online_covariance_estimator_without_oracle_detects_frozen_sensor" time="0.002"><failure message="assert False is True">def test_online_covariance_estimator_without_oracle_detects_frozen_sensor():
+        """Without ground-truth p_true/v_true, an innovation-only estimator fed a frozen reading must flag anomaly."""
+        est = OnlineCovarianceEstimator(window_size=10, nominal_sigma_p=0.05, nominal_sigma_v=0.08, blackout_sigma_thresh=0.25)
+        p_frozen = np.array([1.5, 0.0, 0.0])
+        v_frozen = np.array([0.0, 0.0, 0.0])
+        dt = 0.04
+        p_pred = p_frozen.copy()
+        v_pred = v_frozen.copy()
+        triggered = False
+        for _ in range(30):
+            _, _, is_bo = est.update(p_pred, p_frozen, v_pred, v_frozen)
+            triggered |= is_bo
+            p_pred = p_frozen + v_frozen * dt
+            v_pred = v_frozen.copy()
+&gt;       assert triggered is True
+E       assert False is True
+
+tests/test_tine_anomaly_verification.py:212: AssertionError</failure></testcase><testcase classname="tests.test_tine_anomaly_verification" name="test_live01_malformed_ipc_datagram_does_not_crash_actor[controller-c0.sock-bad_msg0]" time="0.141" /><testcase classname="tests.test_tine_anomaly_verification" name="test_live01_malformed_ipc_datagram_does_not_crash_actor[watchdog-w.sock-bad_msg1]" time="0.131" /><testcase classname="tests.test_tine_anomaly_verification" name="test_live01_cross_artifact_mismatch_rejected_by_audit_frame" time="0.010" /><testcase classname="tests.test_tine_anomaly_verification" name="test_v9_controller_seed_reproducibility_bit_identical" time="0.098" /><testcase classname="tests.test_tine_anomaly_verification" name="test_3d_mujoco_seed_reproducibility_non_holdout" time="0.016" /><testcase classname="tests.test_tine_anomaly_verification" name="test_review_six_outcomes_csv_matches_main_campaign_audit_json" time="0.003" /><testcase classname="tests.test_tine_system_verification_phase2" name="test_3d_aware_controller_must_not_read_ground_truth_fault_flags" time="0.001" /><testcase classname="tests.test_tine_system_verification_phase2" name="test_mujoco_3d_env_step_must_not_pass_simulator_truth_directly_to_cbf" time="0.003" /><testcase classname="tests.test_tine_system_verification_phase2" name="test_3d_aware_controller_must_latch_terminal_abstain" time="0.001"><failure message="AssertionError: 3D controller resumed NAVIGATE after ABSTAIN instead of latching fail-closed&#10;assert 'NAVIGATE' == 'ABSTAIN'&#10;  &#10;  - ABSTAIN&#10;  + NAVIGATE">def test_3d_aware_controller_must_latch_terminal_abstain():
+        ctrl = Aegis3DAwareController()
+        ctrl.reset()
+        bad = SensorReading(estimate=np.array([math.nan, 0.0, 0.0]), sigma=0.05, valid=True, anomaly=False, dropped=False, bias=np.zeros(3), drift=np.zeros(3))
+        good = SensorReading(estimate=np.array([1.0, 0.0, 0.5]), sigma=0.05, valid=True, anomaly=False, dropped=False, bias=np.zeros(3), drift=np.zeros(3))
+        rr = RangeReading(distance=math.hypot(1.0, 0.5), sigma=0.05, valid=True)
+    
+        _, dec0, _, _ = ctrl.update(bad, good, rr, None, step=0)
+        assert dec0 == "ABSTAIN"
+        _, dec1, _, _ = ctrl.update(good, good, rr, None, step=1)
+&gt;       assert dec1 == "ABSTAIN", f"3D controller resumed {dec1} after ABSTAIN instead of latching fail-closed"
+E       AssertionError: 3D controller resumed NAVIGATE after ABSTAIN instead of latching fail-closed
+E       assert 'NAVIGATE' == 'ABSTAIN'
+E         
+E         - ABSTAIN
+E         + NAVIGATE
+
+tests/test_tine_system_verification_phase2.py:127: AssertionError</failure></testcase><testcase classname="tests.test_tine_system_verification_phase2" name="test_3d_aware_controller_must_abstain_on_persistent_range_dropout_in_nominal" time="0.005"><failure message="AssertionError: Persistent range dropout in NOMINAL never triggered ABSTAIN/PROBE: {'NAVIGATE'}&#10;assert False&#10; +  where False = any(&lt;generator object test_3d_aware_controller_must_abstain_on_persistent_range_dropout_in_nominal.&lt;locals&gt;.&lt;genexpr&gt; at 0x746a62f5adc0&gt;)">def test_3d_aware_controller_must_abstain_on_persistent_range_dropout_in_nominal():
+        ctrl = Aegis3DAwareController()
+        ctrl.reset()
+        vec = np.array([1.5, 0.0, 0.5])
+        good = SensorReading(estimate=vec, sigma=0.05, valid=True, anomaly=False, dropped=False, bias=np.zeros(3), drift=np.zeros(3))
+        dropped_rr = RangeReading(distance=0.0, sigma=0.05, valid=False, dropped=True)
+        decisions = [ctrl.update(good, good, dropped_rr, None, step=s)[1] for s in range(15)]
+&gt;       assert any(d in ("ABSTAIN", "PROBE") for d in decisions), (
+            f"Persistent range dropout in NOMINAL never triggered ABSTAIN/PROBE: {set(decisions)}"
+        )
+E       AssertionError: Persistent range dropout in NOMINAL never triggered ABSTAIN/PROBE: {'NAVIGATE'}
+E       assert False
+E        +  where False = any(&lt;generator object test_3d_aware_controller_must_abstain_on_persistent_range_dropout_in_nominal.&lt;locals&gt;.&lt;genexpr&gt; at 0x746a62f5adc0&gt;)
+
+tests/test_tine_system_verification_phase2.py:137: AssertionError</failure></testcase><testcase classname="tests.test_tine_system_verification_phase2" name="test_3d_aware_controller_detects_silent_all_channel_freeze" time="0.017"><failure message="assert False&#10; +  where False = any(&lt;generator object test_3d_aware_controller_detects_silent_all_channel_freeze.&lt;locals&gt;.&lt;genexpr&gt; at 0x746a62e61b10&gt;)">def test_3d_aware_controller_detects_silent_all_channel_freeze():
+        ctrl = Aegis3DAwareController()
+        ctrl.reset()
+        vec = np.array([1.5, 0.0, 0.5])
+        rr = RangeReading(distance=float(np.linalg.norm(vec)), sigma=0.05, valid=True)
+        decisions = []
+        for s in range(60):
+            ra = SensorReading(estimate=vec.copy(), sigma=0.05, valid=True, anomaly=False, dropped=False, bias=np.zeros(3), drift=np.zeros(3))
+            rb = SensorReading(estimate=vec.copy(), sigma=0.05, valid=True, anomaly=False, dropped=False, bias=np.zeros(3), drift=np.zeros(3))
+            decisions.append(ctrl.update(ra, rb, rr, None, step=s)[1])
+&gt;       assert any(d in ("ABSTAIN", "PROBE", "VERIFY") for d in decisions)
+E       assert False
+E        +  where False = any(&lt;generator object test_3d_aware_controller_detects_silent_all_channel_freeze.&lt;locals&gt;.&lt;genexpr&gt; at 0x746a62e61b10&gt;)
+
+tests/test_tine_system_verification_phase2.py:152: AssertionError</failure></testcase><testcase classname="tests.test_tine_system_verification_phase2" name="test_live01_analyze_case_rejects_unfinished_step_intent_without_step_result" time="1.240" /><testcase classname="tests.test_tine_system_verification_phase2" name="test_live01_read_records_preserves_truncated_pending_file_without_promoting" time="0.002" /><testcase classname="tests.test_tine_system_verification_phase2" name="test_review_provenance_sha256_and_sizes_match_all_summary_files" time="0.002" /><testcase classname="tests.test_tine_system_verification_phase2" name="test_live01_76_source_hashes_match_main_campaign_audit_byte_for_byte" time="0.008" /><testcase classname="tests.test_tine_system_verification_phase2" name="test_all_review_audit_batches_reconcile_with_six_outcomes_csv" time="0.005" /><testcase classname="tests.test_tine_system_verification_phase3" name="test_rl_safe_env_shield_must_not_feed_simulator_truth_under_sensor_fault" time="0.006" /><testcase classname="tests.test_tine_system_verification_phase3" name="test_sim2real_watchdog_must_detect_overdue_heartbeat" time="0.001" /><testcase classname="tests.test_tine_system_verification_phase3" name="test_brmc_must_not_propagate_nan_or_suppress_swarm_alarm" time="0.001" /><testcase classname="tests.test_tine_system_verification_phase3" name="test_brmc_must_reject_duplicate_agent_id_sybil_flooding" time="0.001" /><testcase classname="tests.test_tine_system_verification_phase3" name="test_av_frenet_shield_must_reject_nan_nominal_controls" time="0.001" /><testcase classname="tests.test_tine_system_verification_phase3" name="test_live01_hard_killed_plant_has_no_finished_marker_and_preserves_prefix" time="0.180" /><testcase classname="tests.test_tine_system_verification_phase3" name="test_live01_cross_frame_beacon_rollback_must_be_detected" time="0.015"><failure message="AssertionError: assess_frame accepted a cross-frame beacon rollback from tick=5 to tick=2&#10;assert None is not None">tmp_path = PosixPath('/tmp/pytest-of-patay_pc/pytest-16/test_live01_cross_frame_beacon0')
+
+    def test_live01_cross_frame_beacon_rollback_must_be_detected(tmp_path: Path):
+        root = tmp_path / "rollback"
+        root.mkdir()
+        public = study.public_for(
+            dict(id="rollback", arm="SIMULATION_CONTRACT_CHECKS", steps=80, wall_period=0.03,
+                 assessment_mode="STATE_TUBE_WINDOW_V1", evidence_backend="ATOMIC_BUNDLE_V1"),
+            sources={},
+        )
+    
+        def make_sample(tick_val: int):
+            return dict(
+                id=f"sensor-0:{tick_val}", tick=tick_val, remote_time=20 * tick_val + 1000,
+                remote_epoch="sensor-0", clock_offset_ms=1000, source_id="SYNTHETIC_MEASURED_CHANNEL",
+                frame="WORLD_X_SI", position_center="0", velocity_center=".3",
+                emitted_host_ns=1_000_000_000, reported_dynamics_id=public["model"]["dynamics_id"],
+                support_valid=True, topology=dict(controller=11, watchdog=12, plant=13), **obs(0, 0.3),
+            )
+    
+        write_beacon(root, public, 5, "sensor-0")
+        t0 = iter([1_000_000_000, 1_010_000_000])
+        b0 = contract.assess_frame(root, "watchdog-0/assessments/00000005", make_sample(5), public, "watchdog-0",
+                                   primary_healthy=True, controller_generation=0, host_clock=lambda: next(t0))
+        assert b0["reason"] is None
+    
+        # Roll beacon backwards to tick=2 within the same run/epoch
+        write_beacon(root, public, 2, "sensor-0")
+        t1 = iter([1_020_000_000, 1_030_000_000])
+        b1 = contract.assess_frame(root, "watchdog-0/assessments/00000002", make_sample(2), public, "watchdog-0",
+                                   primary_healthy=True, controller_generation=0, host_clock=lambda: next(t1))
+&gt;       assert b1["reason"] is not None, "assess_frame accepted a cross-frame beacon rollback from tick=5 to tick=2"
+E       AssertionError: assess_frame accepted a cross-frame beacon rollback from tick=5 to tick=2
+E       assert None is not None
+
+tests/test_tine_system_verification_phase3.py:210: AssertionError</failure></testcase><testcase classname="tests.test_tine_system_verification_phase3" name="test_review_recovery_phases_csv_matches_all_audit_jsons_row_for_row" time="0.005" /><testcase classname="tests.test_tine_system_verification_phase3" name="test_archived_live01_raw_journals_and_ledger_reconstruct_via_audit" time="6.767" /></testsuite></testsuites>

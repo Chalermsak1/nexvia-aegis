@@ -241,30 +241,38 @@ class Safe6DOFQuadrotorEnv:
                 elif f_type == "velocity_noise":
                     vel_obs += np.random.normal(0, 0.35, 3)
 
-        # 2. Dual-Sensor Fusion & Innovation Gate (E-05, E-06)
-        # Update internal momentum model: F_net = F_applied - mg e3
+        # 2. Dual-Sensor Fusion & Innovation Gate (measured/estimated only, zero simulator truth)
         a_net = (self.last_applied_force / self.quad_cfg.mass) - np.array([0.0, 0.0, self.quad_cfg.gravity])
-        self.estimated_vel = 0.85 * self.estimated_vel + 0.15 * (vel_curr + a_net * dt)
-        self.estimated_pos += self.estimated_vel * dt
+        pred_vel = self.estimated_vel + a_net * dt
+        pred_pos = self.estimated_pos + pred_vel * dt
 
-        innovation_residual = float(np.linalg.norm(pos_obs - self.estimated_pos))
-        vel_innovation = float(np.linalg.norm(vel_obs - self.estimated_vel))
+        innovation_residual = float(np.linalg.norm(pos_obs - pred_pos))
+        vel_innovation = float(np.linalg.norm(vel_obs - pred_vel))
 
-        if self.enable_innovation_gate and sensor_fault_active:
-            if innovation_residual > 0.22 or vel_innovation > 0.30:
-                self.innovation_gate_open = True
-                self.abstained = True
+        if self.enable_innovation_gate and (innovation_residual > 0.22 or vel_innovation > 0.30):
+            self.innovation_gate_open = True
+            self.abstained = True
 
-        # 3. Residual Guidance Force
+        if self.abstained:
+            self.estimated_pos = pred_pos
+            self.estimated_vel = pred_vel
+            ctrl_pos = self.estimated_pos.copy()
+            ctrl_vel = self.estimated_vel.copy()
+        else:
+            self.estimated_pos = 0.25 * pred_pos + 0.75 * pos_obs
+            self.estimated_vel = 0.25 * pred_vel + 0.75 * vel_obs
+            ctrl_pos = pos_obs.copy()
+            ctrl_vel = vel_obs.copy()
+
+        # 3. Residual Guidance Force (computed strictly from measured/estimated feedback)
         if self.enable_innovation_gate and self.abstained:
-            # Active safe fallback: velocity air-brake and level hover
-            desired_force_rl = np.array([0.0, 0.0, mg], dtype=np.float64) - 2.5 * vel_curr
-            desired_force_rl[2] = mg - 1.5 * vel_curr[2]
+            desired_force_rl = np.array([0.0, 0.0, mg], dtype=np.float64) - 2.5 * ctrl_vel
+            desired_force_rl[2] = mg - 1.5 * ctrl_vel[2]
         else:
             k_p = 3.2
-            dist_raw = float(np.linalg.norm(self.target_pos - pos_curr))
-            k_d = 3.2 if dist_raw < 0.85 else 1.6
-            f_nominal = k_p * (self.target_pos - pos_curr) - k_d * vel_curr
+            dist_est = float(np.linalg.norm(self.target_pos - ctrl_pos))
+            k_d = 3.2 if dist_est < 0.85 else 1.6
+            f_nominal = k_p * (self.target_pos - ctrl_pos) - k_d * ctrl_vel
             f_nominal[2] += mg
 
             f_scale_horiz = 10.0
@@ -285,7 +293,7 @@ class Safe6DOFQuadrotorEnv:
         self.sim.obstacles = active_cbf_obstacles
         self._step_dynamic_obstacles(self.quad_cfg.outer_dt)
 
-        # 5. Adaptive HOCBF Safety Shield
+        # 5. Adaptive HOCBF Safety Shield (operates on measured/estimated state, never simulator truth)
         intervention_norm = 0.0
         barrier_active = False
 
@@ -293,14 +301,13 @@ class Safe6DOFQuadrotorEnv:
             st_pre = self.sim.get_state()
             adaptive_gammas = None
             if self.adaptive_cbf:
-                v_mag = float(np.linalg.norm(st_pre["vel"]))
-                # Velocity-scaled contraction factor: proactive at high speeds, agile at low speeds
+                v_mag = float(np.linalg.norm(ctrl_vel))
                 g_adapt = self.quad_cfg.cbf_gamma * (1.0 + 0.35 * min(2.5, v_mag / 1.2))
                 adaptive_gammas = (g_adapt, g_adapt)
 
             f_safe, barrier_active = self.sim.cbf.filter_safe_force(
-                pos=st_pre["pos"],
-                vel=st_pre["vel"],
+                pos=ctrl_pos,
+                vel=ctrl_vel,
                 desired_force=desired_force_rl,
                 obstacles=active_cbf_obstacles,
                 current_tilt=math.radians(st_pre["tilt_deg"]),
