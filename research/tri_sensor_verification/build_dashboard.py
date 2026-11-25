@@ -208,10 +208,11 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
                 <th class="py-2 px-2 text-right">Naive RMSE</th>
                 <th class="py-2 px-2 text-right">2-Sens RMSE</th>
                 <th class="py-2 px-2 text-right text-emerald-500">Tri RMSE</th>
+                <th class="py-2 px-2 text-right">Est / Abst</th>
                 <th class="py-2 px-2 text-right">Isolation %</th>
                 <th class="py-2 px-2 text-right">Latency</th>
                 <th class="py-2 px-2 text-right">False Alarm</th>
-                <th class="py-2 px-2 text-right">Excluded</th>
+                <th class="py-2 px-2 text-right">Sim Coll Ticks</th>
                 <th class="py-2 px-2 text-right">Maze Cov %</th>
               </tr>
             </thead>
@@ -294,45 +295,59 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
     const triRows = DATA.summaries.filter(r => r.arm === 'TRI_SENSOR_VERIFIER');
     const naiveRows = DATA.summaries.filter(r => r.arm === 'NAIVE_AVG');
     const twoRows = DATA.summaries.filter(r => r.arm === 'TWO_SENSOR_MIN_SIGMA');
-    const avg = arr => arr.reduce((a, b) => a + b, 0) / Math.max(1, arr.length);
+    const isNum = v => typeof v === 'number' && Number.isFinite(v);
+    const fmtRmse = (v, digits = 3) => isNum(v) ? v.toFixed(digits) + ' m' : 'Unavailable';
+    const avg = arr => arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : null;
+    const sum = arr => arr.reduce((a, b) => a + b, 0);
+    const armRmseStats = rows => {
+      const vals = rows.map(r => r.position_rmse_m).filter(isNum);
+      const estTotal = sum(rows.map(r => r.estimate_count ?? (r.steps - (r.abstain_steps || 0))));
+      const abstTotal = sum(rows.map(r => r.abstain_steps || 0));
+      const collTicks = sum(rows.map(r => r.simulation_collision_ticks ?? r.collisions ?? 0));
+      return {
+        mean: vals.length ? avg(vals) : null,
+        worst: vals.length ? Math.max(...vals) : null,
+        estTotal,
+        abstTotal,
+        collTicks,
+      };
+    };
+
+    const sNaive = armRmseStats(naiveRows);
+    const sTwo = armRmseStats(twoRows);
+    const sTri = armRmseStats(triRows);
 
     document.getElementById('run-badge').textContent = `Run: ${DATA.run_name} (${DATA.elapsed_seconds}s)`;
-    document.getElementById('hdr-rmse').textContent = avg(triRows.map(r => r.position_rmse_m)).toFixed(3) + ' m';
+    document.getElementById('hdr-rmse').textContent = fmtRmse(sTri.mean, 3);
     document.getElementById('hdr-audit').textContent = DATA.total_audit_events + ' events';
 
     // KPI Cards
     const kpis = [
       {
         title: 'Naive Average Baseline',
-        rmse: avg(naiveRows.map(r => r.position_rmse_m)),
-        worst: Math.max(...naiveRows.map(r => r.position_rmse_m)),
-        cov: avg(naiveRows.map(r => r.true_maze_coverage_pct)),
+        stats: sNaive,
         color: 'text-rose-500',
-        note: 'ไม่มีการตรวจสอบความสอดคล้อง ค่าผิดพลาดส่งผลต่อ Display และ Control โดยตรง'
+        note: `Est: ${sNaive.estTotal} · Abstain: ${sNaive.abstTotal} · Sim Collision Ticks: ${sNaive.collTicks}`
       },
       {
         title: 'Two-Sensor Min-Sigma Baseline',
-        rmse: avg(twoRows.map(r => r.position_rmse_m)),
-        worst: Math.max(...twoRows.map(r => r.position_rmse_m)),
-        cov: avg(twoRows.map(r => r.true_maze_coverage_pct)),
+        stats: sTwo,
         color: 'text-amber-500',
-        note: 'ขาดเสียงข้างมากอิสระ เมื่อช่องหลัก (S1_VIO) ผิดพลาดจะเกิดความคลาดเคลื่อนสูง'
+        note: `Est: ${sTwo.estTotal} · Abstain: ${sTwo.abstTotal} · Sim Collision Ticks: ${sTwo.collTicks}`
       },
       {
         title: 'Tri-Sensor Verifier (Proposed)',
-        rmse: avg(triRows.map(r => r.position_rmse_m)),
-        worst: Math.max(...triRows.map(r => r.position_rmse_m)),
-        cov: avg(triRows.map(r => r.true_maze_coverage_pct)),
+        stats: sTri,
         color: 'text-emerald-500',
-        note: `Mean Isolation ${avg(triRows.map(r => r.isolation_accuracy_pct)).toFixed(1)}% · Mean False Alarm ${avg(triRows.map(r => r.false_alarm_rate_pct)).toFixed(1)}%`
+        note: `Est: ${sTri.estTotal} · Abstain: ${sTri.abstTotal} · Sim Collision Ticks: ${sTri.collTicks} · Mean Iso ${avg(triRows.map(r => r.isolation_accuracy_pct)).toFixed(1)}%`
       }
     ];
     document.getElementById('kpi-cards').innerHTML = kpis.map(k => `
       <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
         <div class="text-xs font-medium text-[var(--muted-foreground)]">${k.title}</div>
         <div class="mt-2 flex items-baseline gap-3">
-          <span class="text-2xl font-bold ${k.color}">${k.rmse.toFixed(3)} m</span>
-          <span class="text-xs text-[var(--muted-foreground)]">Mean RMSE (Worst: ${k.worst.toFixed(2)} m)</span>
+          <span class="text-2xl font-bold ${k.color}">${fmtRmse(k.stats.mean, 3)}</span>
+          <span class="text-xs text-[var(--muted-foreground)]">Mean RMSE (Worst: ${fmtRmse(k.stats.worst, 2)})</span>
         </div>
         <div class="mt-2 text-xs text-[var(--muted-foreground)]">${k.note}</div>
       </div>
@@ -392,7 +407,8 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
         const gx = pad.l + i * groupW + 4;
         arms.forEach((arm, j) => {
           const row = DATA.summaries.find(r => r.scenario_id === sid && r.arm === arm);
-          const val = Math.min(maxVal, row ? row.position_rmse_m : 0);
+          const rawVal = row ? row.position_rmse_m : null;
+          const val = isNum(rawVal) ? Math.min(maxVal, rawVal) : 0;
           const bh = (val / maxVal) * plotH;
           const x = gx + j * barW;
           const y = pad.t + plotH - bh;
@@ -716,9 +732,10 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
         faults.forEach(f => {
           const r = triRows.find(x => x.target_sensor === s && x.fault_category === f);
           const lat = r.detection_latency_steps !== null ? r.detection_latency_steps + 's' : '-';
+          const est = r.estimate_count ?? (r.steps - (r.abstain_steps || 0));
           hm += `<td class="py-2 px-2"><div class="rounded-md py-1.5 px-2 bg-emerald-500/15 border border-emerald-500/30 font-mono">
-            <div class="font-bold text-emerald-500">${r.position_rmse_m.toFixed(3)} m</div>
-            <div class="text-[var(--muted-foreground)]">Iso ${r.isolation_accuracy_pct}% · Lat ${lat}</div>
+            <div class="font-bold text-emerald-500">${fmtRmse(r.position_rmse_m, 3)}</div>
+            <div class="text-[var(--muted-foreground)]">Est ${est}/${r.steps} · Iso ${r.isolation_accuracy_pct}% · Lat ${lat}</div>
           </div></td>`;
         });
         hm += `</tr>`;
@@ -734,16 +751,20 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
         const r2 = DATA.summaries.find(r => r.scenario_id === sid && r.arm === 'TWO_SENSOR_MIN_SIGMA');
         const r3 = DATA.summaries.find(r => r.scenario_id === sid && r.arm === 'TRI_SENSOR_VERIFIER');
         if (filterVal !== 'ALL' && r3.target_sensor !== filterVal) return '';
+        const est3 = r3.estimate_count ?? (r3.steps - (r3.abstain_steps || 0));
+        const abst3 = r3.abstain_steps || 0;
+        const coll3 = r3.simulation_collision_ticks ?? r3.collisions ?? 0;
         return `<tr class="hover:bg-[var(--background)]">
           <td class="py-2 px-2">${sid}</td>
           <td class="py-2 px-2">${r3.target_sensor}</td>
-          <td class="py-2 px-2 text-right ${rn.position_rmse_m > 0.2 ? 'text-rose-500 font-bold' : ''}">${rn.position_rmse_m.toFixed(3)}m</td>
-          <td class="py-2 px-2 text-right ${r2.position_rmse_m > 0.2 ? 'text-amber-500 font-bold' : ''}">${r2.position_rmse_m.toFixed(3)}m</td>
-          <td class="py-2 px-2 text-right text-emerald-500 font-bold">${r3.position_rmse_m.toFixed(3)}m</td>
+          <td class="py-2 px-2 text-right ${isNum(rn.position_rmse_m) && rn.position_rmse_m > 0.2 ? 'text-rose-500 font-bold' : ''}">${fmtRmse(rn.position_rmse_m, 3)}</td>
+          <td class="py-2 px-2 text-right ${isNum(r2.position_rmse_m) && r2.position_rmse_m > 0.2 ? 'text-amber-500 font-bold' : ''}">${fmtRmse(r2.position_rmse_m, 3)}</td>
+          <td class="py-2 px-2 text-right text-emerald-500 font-bold">${fmtRmse(r3.position_rmse_m, 3)}</td>
+          <td class="py-2 px-2 text-right">${est3} / ${abst3}</td>
           <td class="py-2 px-2 text-right">${r3.isolation_accuracy_pct.toFixed(1)}%</td>
           <td class="py-2 px-2 text-right">${r3.detection_latency_steps !== null ? r3.detection_latency_steps + ' step' : '-'}</td>
           <td class="py-2 px-2 text-right">${r3.false_alarm_rate_pct.toFixed(1)}%</td>
-          <td class="py-2 px-2 text-right">${r3.excluded_faulty_samples}</td>
+          <td class="py-2 px-2 text-right">${coll3}</td>
           <td class="py-2 px-2 text-right">${r3.true_maze_coverage_pct.toFixed(1)}%</td>
         </tr>`;
       }).join('');

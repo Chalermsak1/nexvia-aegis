@@ -217,9 +217,10 @@ class TriSensorVerifier:
                 pair_bad[(a, b)] = True
                 pair_reason[(a, b)] = "SENSOR_UNAVAILABLE"
 
-        # --- Layer 4: Tri-Sensor Majority Isolation & Quarantine ---
-        used_sensors: List[str] = []
+        # --- Layer 4A: Tri-Sensor Consensus Candidate Selection ---
+        candidate_sensors: List[str] = []
         active_quarantine: Dict[str, str] = dict(instant_rejected)
+        already_abstained = False
 
         if len(valid_ids) == 3:
             s0, s1, s2 = self.sensor_ids
@@ -228,36 +229,7 @@ class TriSensorVerifier:
             bad_02 = pair_bad[(s0, s2)]
 
             if not bad_01 and not bad_12 and not bad_02:
-                # All 3 pairs mutually agree! Check if any previously quarantined sensor has recovered.
-                candidate_used = []
-                for sid in self.sensor_ids:
-                    if sid in self.quarantined_reason:
-                        # Check hysteresis recovery
-                        other_zs = [
-                            pairwise_z[f"{a}_vs_{b}"]
-                            for a, b in self.pairs
-                            if sid in (a, b) and math.isfinite(pairwise_z[f"{a}_vs_{b}"])
-                        ]
-                        if self.cfg.enable_recovery and all(z <= self.cfg.recovery_z_threshold for z in other_zs):
-                            self.clean_streak[sid] += 1
-                            if self.clean_streak[sid] >= self.cfg.recovery_confirm_steps:
-                                old_r = self.quarantined_reason.pop(sid)
-                                self.clean_streak[sid] = 0
-                                candidate_used.append(sid)
-                                audit_events.append({
-                                    "step": step,
-                                    "event": "SENSOR_RECOVERED",
-                                    "sensor_id": sid,
-                                    "previous_reason": old_r,
-                                })
-                            else:
-                                active_quarantine[sid] = f"RECOVERY_PROBATION({self.clean_streak[sid]}/{self.cfg.recovery_confirm_steps})"
-                        else:
-                            self.clean_streak[sid] = 0
-                            active_quarantine[sid] = self.quarantined_reason[sid]
-                    else:
-                        candidate_used.append(sid)
-                used_sensors = candidate_used
+                candidate_sensors = list(self.sensor_ids)
 
             elif bad_01 and bad_02 and not bad_12:
                 # s0 disagrees with BOTH s1 and s2, while s1 & s2 agree -> Isolate s0!
@@ -265,7 +237,7 @@ class TriSensorVerifier:
                 self.quarantined_reason[s0] = reason
                 self.clean_streak[s0] = 0
                 active_quarantine[s0] = reason
-                used_sensors = [s1, s2]
+                candidate_sensors = [s1, s2]
                 audit_events.append({"step": step, "event": "QUARANTINE_ISOLATED", "sensor_id": s0, "reason": reason})
 
             elif bad_01 and bad_12 and not bad_02:
@@ -274,7 +246,7 @@ class TriSensorVerifier:
                 self.quarantined_reason[s1] = reason
                 self.clean_streak[s1] = 0
                 active_quarantine[s1] = reason
-                used_sensors = [s0, s2]
+                candidate_sensors = [s0, s2]
                 audit_events.append({"step": step, "event": "QUARANTINE_ISOLATED", "sensor_id": s1, "reason": reason})
 
             elif bad_02 and bad_12 and not bad_01:
@@ -283,14 +255,12 @@ class TriSensorVerifier:
                 self.quarantined_reason[s2] = reason
                 self.clean_streak[s2] = 0
                 active_quarantine[s2] = reason
-                used_sensors = [s0, s1]
+                candidate_sensors = [s0, s1]
                 audit_events.append({"step": step, "event": "QUARANTINE_ISOLATED", "sensor_id": s2, "reason": reason})
 
             elif (bad_01 + bad_12 + bad_02) == 1:
                 # Borderline single-pair disagreement (transient noise / early drift onset):
-                # Prefer the sensor that agrees with BOTH others + its closest agreeing peer,
-                # or abstain if ambiguous. Here the sensor NOT in the bad pair agrees with both,
-                # so keep the tightest agreeing pair to stay conservative.
+                # Keep the tightest agreeing pair conservatively; recovery gate below still applies.
                 good_pairs = [
                     (p, pairwise_z[f"{p[0]}_vs_{p[1]}"])
                     for p in self.pairs
@@ -299,12 +269,17 @@ class TriSensorVerifier:
                 best_pair = min(good_pairs, key=lambda item: item[1])[0]
                 odd_one = [s for s in self.sensor_ids if s not in best_pair][0]
                 active_quarantine[odd_one] = "BORDERLINE_EXCLUDED"
-                used_sensors = list(best_pair)
+                if odd_one in self.quarantined_reason:
+                    self.clean_streak[odd_one] = 0
+                candidate_sensors = list(best_pair)
             else:
                 # All 3 pairs disagree -> NO MAJORITY CONSENSUS -> FAIL CLOSED!
                 for sid in self.sensor_ids:
                     active_quarantine[sid] = "NO_MAJORITY_CONSENSUS"
-                used_sensors = []
+                    if sid in self.quarantined_reason:
+                        self.clean_streak[sid] = 0
+                candidate_sensors = []
+                already_abstained = True
                 audit_events.append({
                     "step": step,
                     "event": "FAIL_CLOSED_ABSTAIN",
@@ -315,12 +290,15 @@ class TriSensorVerifier:
             a, b = valid_ids[0], valid_ids[1]
             pair_key = (a, b) if (a, b) in pair_bad else (b, a)
             if not pair_bad[pair_key]:
-                used_sensors = [a, b]
+                candidate_sensors = [a, b]
             else:
                 # 1 sensor already dead/frozen AND the remaining 2 disagree -> FAIL CLOSED!
                 for sid in valid_ids:
                     active_quarantine[sid] = "DUAL_FAULT_NO_QUORUM"
-                used_sensors = []
+                    if sid in self.quarantined_reason:
+                        self.clean_streak[sid] = 0
+                candidate_sensors = []
+                already_abstained = True
                 audit_events.append({
                     "step": step,
                     "event": "FAIL_CLOSED_ABSTAIN",
@@ -330,12 +308,83 @@ class TriSensorVerifier:
             # <= 1 valid sensor left -> Cannot cross-verify -> FAIL CLOSED!
             for sid in valid_ids:
                 active_quarantine[sid] = "INSUFFICIENT_QUORUM"
-            used_sensors = []
+                if sid in self.quarantined_reason:
+                    self.clean_streak[sid] = 0
+            candidate_sensors = []
+            already_abstained = True
             audit_events.append({
                 "step": step,
                 "event": "FAIL_CLOSED_ABSTAIN",
                 "reason": "INSUFFICIENT_QUORUM",
             })
+
+        # --- Layer 4B: Universal Recovery Probation & Quarantine Enforcement Gate ---
+        # Enforced across ALL fusion branches so no quarantined sensor can ever leak
+        # into display_pos or control_pos before completing recovery_confirm_steps.
+        unquarantined_candidates = [s for s in candidate_sensors if s not in self.quarantined_reason]
+        quarantined_candidates = [s for s in candidate_sensors if s in self.quarantined_reason]
+        used_sensors: List[str] = list(unquarantined_candidates)
+
+        for sid in quarantined_candidates:
+            if self.cfg.latch_freeze_fault and self.quarantined_reason.get(sid) == "RETIMESTAMPED_FREEZE":
+                self.clean_streak[sid] = 0
+                active_quarantine[sid] = "RETIMESTAMPED_FREEZE"
+                continue
+
+            # Require at least one unquarantined agreeing peer to vouch for recovery
+            vouching_peers = unquarantined_candidates
+            if self.cfg.enable_recovery and len(vouching_peers) >= 1:
+                peer_pairs = [
+                    (a, b) for a, b in self.pairs
+                    if sid in (a, b) and (b if a == sid else a) in candidate_sensors
+                ]
+                clean_against_peers = bool(peer_pairs) and all(
+                    (not pair_bad[p])
+                    and math.isfinite(pairwise_z[f"{p[0]}_vs_{p[1]}"])
+                    and pairwise_z[f"{p[0]}_vs_{p[1]}"] <= self.cfg.recovery_z_threshold
+                    for p in peer_pairs
+                )
+            else:
+                clean_against_peers = False
+
+            if clean_against_peers:
+                self.clean_streak[sid] += 1
+                if self.clean_streak[sid] >= self.cfg.recovery_confirm_steps:
+                    old_r = self.quarantined_reason.pop(sid)
+                    self.clean_streak[sid] = 0
+                    used_sensors.append(sid)
+                    audit_events.append({
+                        "step": step,
+                        "event": "SENSOR_RECOVERED",
+                        "sensor_id": sid,
+                        "previous_reason": old_r,
+                    })
+                else:
+                    active_quarantine[sid] = (
+                        f"RECOVERY_PROBATION({self.clean_streak[sid]}/{self.cfg.recovery_confirm_steps})"
+                    )
+            else:
+                self.clean_streak[sid] = 0
+                active_quarantine[sid] = self.quarantined_reason[sid]
+
+        # Preserve deterministic sensor ordering
+        used_sensors = [s for s in self.sensor_ids if s in used_sensors]
+
+        if len(used_sensors) < 2 and not already_abstained:
+            # Remaining non-quarantined quorum is < 2 (e.g. a peer is still in probation) -> FAIL CLOSED!
+            for sid in used_sensors:
+                active_quarantine[sid] = "INSUFFICIENT_TRUSTED_QUORUM_AFTER_QUARANTINE"
+            used_sensors = []
+            audit_events.append({
+                "step": step,
+                "event": "FAIL_CLOSED_ABSTAIN",
+                "reason": "INSUFFICIENT_TRUSTED_QUORUM_AFTER_QUARANTINE",
+            })
+
+        # Hard safety invariant: no currently quarantined sensor may enter fusion
+        assert all(s not in self.quarantined_reason for s in used_sensors), (
+            f"Invariant violation: quarantined sensor leaked into used_sensors={used_sensors}"
+        )
 
         # --- Final Output Packaging (Strictly Exclude Quarantined Values) ---
         excluded_raw: Dict[str, List[float]] = {}

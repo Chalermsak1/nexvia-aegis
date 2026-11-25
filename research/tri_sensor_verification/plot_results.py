@@ -45,18 +45,38 @@ def generate_all_plots(run_dir: str | None = None) -> List[Path]:
     # ------------------------------------------------------------------
     scen_ids = list(dict.fromkeys(r["scenario_id"] for r in summaries))
     arms = ["NAIVE_AVG", "TWO_SENSOR_MIN_SIGMA", "TRI_SENSOR_VERIFIER"]
-    arm_labels = ["Naive Avg (No Check)", "2-Sensor Min-Sigma (sensing.py)", "Tri-Sensor Verifier (Yours)"]
+    arm_labels = ["Naive Avg (No Check)", "2-Sensor Min-Sigma (sensing.py)", "Tri-Sensor Verifier (Proposed)"]
     arm_colors = ["#e74c3c", "#f39c12", "#10b981"]
+
+    def _numeric_or_nan(val: Any) -> float:
+        if isinstance(val, (int, float)) and np.isfinite(val):
+            return float(val)
+        return float("nan")
 
     fig, ax = plt.subplots(figsize=(16, 6.5), dpi=300)
     x = np.arange(len(scen_ids))
     width = 0.27
     for i, (arm, label, col) in enumerate(zip(arms, arm_labels, arm_colors)):
-        vals = [
-            next(r["position_rmse_m"] for r in summaries if r["scenario_id"] == sid and r["arm"] == arm)
+        raw_vals = [
+            _numeric_or_nan(
+                next(r["position_rmse_m"] for r in summaries if r["scenario_id"] == sid and r["arm"] == arm)
+            )
             for sid in scen_ids
         ]
-        ax.bar(x + (i - 1) * width, vals, width, label=label, color=col, edgecolor="black", linewidth=0.5)
+        plot_vals = [0.0 if np.isnan(v) else v for v in raw_vals]
+        bars = ax.bar(x + (i - 1) * width, plot_vals, width, label=label, color=col, edgecolor="black", linewidth=0.5)
+        for bar, rv in zip(bars, raw_vals):
+            if np.isnan(rv):
+                ax.text(
+                    bar.get_x() + bar.get_width() / 2.0,
+                    0.05,
+                    "Unavail.",
+                    ha="center",
+                    va="bottom",
+                    fontsize=6.5,
+                    rotation=90,
+                    color="#64748b",
+                )
 
     ax.set_ylabel("Display Position RMSE (m) — Lower is Better", fontsize=11, fontweight="bold")
     ax.set_title("Tri-Sensor Self-Verification Benchmark: Display Position RMSE Across All 20 Maze Scenarios", fontsize=13, fontweight="bold")
@@ -185,11 +205,12 @@ def generate_all_plots(run_dir: str | None = None) -> List[Path]:
                 r for r in summaries
                 if r["target_sensor"] == s and r["fault_category"] == ft and r["arm"] == "TRI_SENSOR_VERIFIER"
             )
-            mat_rmse[i, j] = row["position_rmse_m"]
+            rmse_val = _numeric_or_nan(row["position_rmse_m"])
+            mat_rmse[i, j] = rmse_val
             mat_lat[i, j] = row["detection_latency_steps"] if row["detection_latency_steps"] is not None else -1
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 5), dpi=300)
-    im1 = ax1.imshow(mat_rmse, cmap="YlGn", vmin=0.0, vmax=0.15, aspect="auto")
+    im1 = ax1.imshow(np.nan_to_num(mat_rmse, nan=0.0), cmap="YlGn", vmin=0.0, vmax=0.15, aspect="auto")
     ax1.set_xticks(range(len(fault_types)))
     ax1.set_xticklabels(fault_types, rotation=25, ha="right", fontsize=9)
     ax1.set_yticks(range(len(sensors)))
@@ -197,7 +218,8 @@ def generate_all_plots(run_dir: str | None = None) -> List[Path]:
     ax1.set_title("Tri-Sensor Verifier: Display RMSE (m)\n(All Sensors x All Fault Modes)", fontsize=11, fontweight="bold")
     for i in range(len(sensors)):
         for j in range(len(fault_types)):
-            ax1.text(j, i, f"{mat_rmse[i, j]:.3f}m", ha="center", va="center", fontweight="bold", color="black")
+            label_txt = "Unavailable" if np.isnan(mat_rmse[i, j]) else f"{mat_rmse[i, j]:.3f}m"
+            ax1.text(j, i, label_txt, ha="center", va="center", fontweight="bold", color="black")
     fig.colorbar(im1, ax=ax1, shrink=0.8)
 
     im2 = ax2.imshow(mat_lat, cmap="Blues", vmin=0, vmax=6, aspect="auto")

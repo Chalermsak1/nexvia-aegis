@@ -26,17 +26,25 @@ Every run writes complete, granular, separated logs to:
 
 from __future__ import annotations
 
+import argparse
 import csv
 from dataclasses import asdict, dataclass
 import datetime
+import hashlib
+import importlib.metadata
+import inspect
 import json
 import math
 import os
 from pathlib import Path
+import platform
+import subprocess
+import sys
 import time
 from typing import Any, Dict, List, Optional, Tuple
 import numpy as np
 
+from aegis.navigation import frontier_exploration as frontier_mod
 from aegis.navigation.frontier_exploration import (
     ExplorationConfig,
     FrontierExplorationEngine,
@@ -339,12 +347,13 @@ def run_single_arm_episode(
 
     first_detection_step: Optional[int] = None
     fault_active_ticks = 0
+    fault_window_abstain_steps = 0
     correct_isolation_ticks = 0
     healthy_ticks = 0
     false_alarm_ticks = 0
     excluded_faulty_samples = 0
     abstain_steps = 0
-    collisions = 0
+    simulation_collision_ticks = 0
     min_clearance = 999.0
 
     for step in range(num_steps):
@@ -367,12 +376,14 @@ def run_single_arm_episode(
         # 4. Evaluate accuracy, isolation, false alarm & display exclusion
         disp_err = float("nan")
         if out.display_pos is not None and np.all(np.isfinite(out.display_pos)):
-            disp_err = float(np.linalg.norm(out.display_pos - true_pos))
+            disp_err = float(np.linalg.norm(out.display_pos - obs_true_pos))
             display_errors.append(disp_err)
             if gt_faulty_ids:
                 fault_window_errors.append(disp_err)
         else:
             abstain_steps += 1
+            if gt_faulty_ids:
+                fault_window_abstain_steps += 1
 
         if gt_faulty_ids:
             fault_active_ticks += 1
@@ -443,7 +454,7 @@ def run_single_arm_episode(
                 collided, clr = check_physical_collision(true_pos, MAZE_CFG)
                 min_clearance = min(min_clearance, clr)
                 if collided or hit_wall:
-                    collisions += 1
+                    simulation_collision_ticks += 1
         else:
             # Fail-closed safe stop: hold position!
             vel = np.zeros(3, dtype=np.float64)
@@ -492,9 +503,25 @@ def run_single_arm_episode(
             "true_maze_coverage_pct": round(true_cov_pct, 2),
         })
 
-    rmse_all = float(np.sqrt(np.mean(np.square(display_errors)))) if display_errors else 0.0
-    max_err = float(np.max(display_errors)) if display_errors else 0.0
-    rmse_fault = float(np.sqrt(np.mean(np.square(fault_window_errors)))) if fault_window_errors else 0.0
+    UNAVAILABLE = "Unavailable"
+    estimate_count = len(display_errors)
+    fault_window_estimate_count = len(fault_window_errors)
+
+    position_rmse_m: Any = (
+        round(float(np.sqrt(np.mean(np.square(display_errors)))), 4)
+        if estimate_count > 0
+        else UNAVAILABLE
+    )
+    max_display_error_m: Any = (
+        round(float(np.max(display_errors)), 4)
+        if estimate_count > 0
+        else UNAVAILABLE
+    )
+    fault_window_rmse_m: Any = (
+        round(float(np.sqrt(np.mean(np.square(fault_window_errors)))), 4)
+        if fault_window_estimate_count > 0
+        else UNAVAILABLE
+    )
     det_latency = (
         (first_detection_step - scenario.fault_start_step)
         if (first_detection_step is not None and scenario.fault_start_step >= 0)
@@ -509,42 +536,137 @@ def run_single_arm_episode(
         "target_sensor": scenario.target_sensor,
         "arm": arm_name,
         "steps": num_steps,
-        "position_rmse_m": round(rmse_all, 4),
-        "fault_window_rmse_m": round(rmse_fault, 4),
-        "max_display_error_m": round(max_err, 4),
+        "estimate_count": estimate_count,
+        "abstain_steps": abstain_steps,
+        "fault_window_estimate_count": fault_window_estimate_count,
+        "fault_window_abstain_steps": fault_window_abstain_steps,
+        "position_rmse_m": position_rmse_m,
+        "fault_window_rmse_m": fault_window_rmse_m,
+        "max_display_error_m": max_display_error_m,
         "detection_latency_steps": det_latency,
         "isolation_accuracy_pct": round(iso_acc, 1),
         "false_alarm_rate_pct": round(far_pct, 1),
         "excluded_faulty_samples": excluded_faulty_samples,
-        "abstain_steps": abstain_steps,
         "true_maze_coverage_pct": round(true_eval_grid.get_coverage_ratio() * 100.0, 2),
-        "collisions": collisions,
+        "simulation_collision_ticks": simulation_collision_ticks,
         "min_clearance_m": round(min_clearance, 3),
     }
     return summary, telemetry_rows, audit_records
 
 
 # ---------------------------------------------------------------------------
-# Full Suite Runner + Detailed Separated Logging
+# Provenance Helpers (Planner Commit, Dependency Versions, Scenario Seeds)
+# ---------------------------------------------------------------------------
+def _collect_planner_and_env_provenance() -> Dict[str, Any]:
+    repo_root = Path(__file__).resolve().parents[2]
+    git_commit = "unknown"
+    git_dirty: Optional[bool] = None
+    try:
+        commit_out = subprocess.check_output(
+            ["git", "rev-parse", "HEAD"],
+            cwd=str(repo_root),
+            stderr=subprocess.DEVNULL,
+            text=True,
+            timeout=5,
+        ).strip()
+        if commit_out:
+            git_commit = commit_out
+        status_out = subprocess.check_output(
+            ["git", "status", "--porcelain"],
+            cwd=str(repo_root),
+            stderr=subprocess.DEVNULL,
+            text=True,
+            timeout=5,
+        ).strip()
+        git_dirty = bool(status_out)
+    except Exception:
+        pass
+
+    planner_file = Path(inspect.getfile(frontier_mod)).resolve()
+    try:
+        planner_rel = str(planner_file.relative_to(repo_root)).replace("\\", "/")
+    except ValueError:
+        planner_rel = str(planner_file)
+    planner_sha256 = hashlib.sha256(planner_file.read_bytes()).hexdigest()
+
+    packages: Dict[str, str] = {}
+    for pkg in ("numpy", "scipy", "matplotlib", "pytest"):
+        try:
+            packages[pkg] = importlib.metadata.version(pkg)
+        except importlib.metadata.PackageNotFoundError:
+            packages[pkg] = "not-installed"
+
+    return {
+        "planner_provenance": {
+            "planner_module": frontier_mod.__name__,
+            "planner_source_path": planner_rel,
+            "planner_source_sha256": planner_sha256,
+            "git_commit": git_commit,
+            "git_dirty": git_dirty,
+        },
+        "dependencies": {
+            "python": sys.version,
+            "platform": platform.platform(),
+            "packages": packages,
+        },
+    }
+
+
+def _fmt_rmse(val: Any) -> str:
+    if isinstance(val, (int, float)) and math.isfinite(val):
+        return f"{val:.3f}m"
+    return str(val)
+
+
+# ---------------------------------------------------------------------------
+# Full Suite Runner + Detailed Separated Logging (Strict No-Overwrite)
 # ---------------------------------------------------------------------------
 def run_full_experiment(
     run_name: Optional[str] = None,
     num_steps: int = 45,
+    logs_base_dir: Optional[Path] = None,
+    base_seed_start: int = 202600,
 ) -> Path:
     t0 = time.time()
-    if run_name is None:
-        run_name = "run_" + datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    base_dir = Path(logs_base_dir) if logs_base_dir is not None else Path("research/tri_sensor_verification/logs")
 
-    root_logs = Path("research/tri_sensor_verification/logs") / run_name
+    if run_name is None:
+        stamp = "run_" + datetime.datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+        candidate = base_dir / stamp
+        suffix = 2
+        while candidate.exists():
+            candidate = base_dir / f"{stamp}_{suffix}"
+            suffix += 1
+        run_name = candidate.name
+        root_logs = candidate
+    else:
+        root_logs = base_dir / run_name
+        if root_logs.exists():
+            raise FileExistsError(
+                f"Refusing to overwrite existing run directory: {root_logs}. "
+                "Pass a new run_name or omit run_name to create a fresh timestamped folder."
+            )
+
     per_scen_dir = root_logs / "per_scenario"
     fig_dir = root_logs / "figures"
-    per_scen_dir.mkdir(parents=True, exist_ok=True)
-    fig_dir.mkdir(parents=True, exist_ok=True)
+    root_logs.mkdir(parents=True, exist_ok=False)
+    per_scen_dir.mkdir(parents=True, exist_ok=False)
+    fig_dir.mkdir(parents=True, exist_ok=False)
 
     scenarios = build_all_scenarios()
     arms = ["NAIVE_AVG", "TWO_SENSOR_MIN_SIGMA", "TRI_SENSOR_VERIFIER"]
+    scenario_seeds = [
+        {
+            "scenario_id": scen.scenario_id,
+            "base_seed": base_seed_start + s_idx * 100,
+            "planner_seed": base_seed_start + s_idx * 100,
+            "sensor_sim_seed": base_seed_start + s_idx * 100 + 17,
+        }
+        for s_idx, scen in enumerate(scenarios)
+    ]
+    provenance = _collect_planner_and_env_provenance()
 
-    # 1. Save experiment config
+    # 1. Save experiment config with full provenance & per-scenario seeds
     config_payload = {
         "run_name": run_name,
         "created_at": datetime.datetime.now().isoformat(),
@@ -554,6 +676,8 @@ def run_full_experiment(
         "verifier_config": asdict(VerifierConfig()),
         "arms": arms,
         "scenario_count": len(scenarios),
+        "scenario_seeds": scenario_seeds,
+        **provenance,
     }
     (root_logs / "experiment_config.json").write_text(
         json.dumps(config_payload, indent=2), encoding="utf-8"
@@ -576,18 +700,19 @@ def run_full_experiment(
     }
 
     print("=" * 78)
-    print(f"Running My Tri-Sensor Maze Experiment ({len(scenarios)} scenarios x {len(arms)} arms = {len(scenarios)*len(arms)} runs)")
+    print(f"Running Tri-Sensor Maze Benchmark ({len(scenarios)} scenarios x {len(arms)} arms = {len(scenarios)*len(arms)} runs)")
     print(f"Logs directory: {root_logs}")
     print("=" * 78)
 
     for s_idx, scen in enumerate(scenarios):
+        scen_seed = base_seed_start + s_idx * 100
         scen_rows: List[Dict[str, Any]] = []
         for arm in arms:
             summary, rows, audits = run_single_arm_episode(
                 scenario=scen,
                 arm_name=arm,
                 num_steps=num_steps,
-                base_seed=202600 + s_idx * 100,
+                base_seed=scen_seed,
             )
             all_summaries.append(summary)
             scen_rows.extend(rows)
@@ -609,9 +734,12 @@ def run_full_experiment(
         s_tri = all_summaries[-1]
         print(
             f"[{s_idx+1:02d}/{len(scenarios):02d}] {scen.scenario_id:34s} | "
-            f"RMSE: Naive={s_naive['position_rmse_m']:.3f}m, 2-Sens={s_two['position_rmse_m']:.3f}m, "
-            f"Tri={s_tri['position_rmse_m']:.3f}m | Iso={s_tri['isolation_accuracy_pct']:5.1f}% "
-            f"| Lat={str(s_tri['detection_latency_steps']):>4s} | Cov={s_tri['true_maze_coverage_pct']:4.1f}%"
+            f"RMSE: Naive={_fmt_rmse(s_naive['position_rmse_m'])}, "
+            f"2-Sens={_fmt_rmse(s_two['position_rmse_m'])}, "
+            f"Tri={_fmt_rmse(s_tri['position_rmse_m'])} "
+            f"(est={s_tri['estimate_count']}/{s_tri['steps']}, abst={s_tri['abstain_steps']}) | "
+            f"Iso={s_tri['isolation_accuracy_pct']:5.1f}% | "
+            f"SimCollTicks={s_tri['simulation_collision_ticks']}"
         )
 
     # 2. Save Master Summary CSV
@@ -627,6 +755,7 @@ def run_full_experiment(
             {
                 "run_name": run_name,
                 "elapsed_seconds": round(time.time() - t0, 2),
+                **provenance,
                 "summaries": all_summaries,
             },
             indent=2,
@@ -654,8 +783,8 @@ def run_full_experiment(
         json.dumps(dashboard_payload), encoding="utf-8"
     )
 
-    # Save pointer to latest run
-    (Path("research/tri_sensor_verification/logs") / "LATEST_RUN.txt").write_text(str(root_logs), encoding="utf-8")
+    # Save pointer to latest run inside base_dir
+    (base_dir / "LATEST_RUN.txt").write_text(str(root_logs).replace("\\", "/"), encoding="utf-8")
 
     print("=" * 78)
     print(f"Completed in {time.time() - t0:.2f}s. All detailed logs saved to: {root_logs}")
@@ -663,5 +792,33 @@ def run_full_experiment(
     return root_logs
 
 
+def _parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Run standalone Tri-Sensor 3D Maze Verification Benchmark into a new non-overwriting run directory."
+    )
+    parser.add_argument(
+        "--run-name",
+        default=None,
+        help="Optional new folder name under logs/. Defaults to a fresh timestamped folder; refuses to overwrite existing folders.",
+    )
+    parser.add_argument(
+        "--num-steps",
+        type=int,
+        default=45,
+        help="Number of simulation steps per episode (default: 45).",
+    )
+    parser.add_argument(
+        "--logs-dir",
+        default=None,
+        help="Optional base logs directory (default: research/tri_sensor_verification/logs).",
+    )
+    return parser.parse_args()
+
+
 if __name__ == "__main__":
-    run_full_experiment(run_name="tri_sensor_maze_v1")
+    args = _parse_args()
+    run_full_experiment(
+        run_name=args.run_name,
+        num_steps=args.num_steps,
+        logs_base_dir=Path(args.logs_dir) if args.logs_dir else None,
+    )

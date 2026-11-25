@@ -33,8 +33,9 @@ def main() -> None:
     if exit_code != 0:
         raise SystemExit(exit_code)
 
-    print("\n[2/4] Running 20-scenario x 3-arm 3D Maze Experiment...")
-    run_dir = run_full_experiment(run_name="tri_sensor_maze_v1")
+    print("\n[2/4] Running 20-scenario x 3-arm 3D Maze Experiment (fresh timestamped run folder)...")
+    run_name = sys.argv[1] if len(sys.argv) > 1 else None
+    run_dir = run_full_experiment(run_name=run_name)
 
     print("\n[3/4] Generating 300-DPI PNG plots...")
     generate_all_plots(str(run_dir))
