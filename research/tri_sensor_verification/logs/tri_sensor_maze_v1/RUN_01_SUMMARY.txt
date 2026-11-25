@@ -1,0 +1,109 @@
+================================================================================
+EXPERIMENT LOG SUMMARY — RUN #1 (tri_sensor_maze_v1)
+Project: Tri-Sensor Self-Verification & Fault Isolation in 3D Maze Exploration
+Date: 2026-11-25T01:27:37+07:00
+Status: Exploratory Simulation Benchmark (Simulation-Only; No Hardware Validation)
+================================================================================
+
+1. OBJECTIVE
+------------
+Evaluate a self-verifying three-sensor localization layer (Tri-Sensor Verifier)
+designed to cross-check independent sensors operating in the same physical
+environment, isolate faulty channels under drift or sensor failures, strictly
+exclude corrupted readings from both operator display and robot control outputs,
+and fail closed when no verified sensor majority exists.
+
+2. EXPERIMENTAL SETUP
+---------------------
+- Environment: 3D subterranean maze (10.0 x 10.0 x 2.5 m, 5 static pillars,
+  0.25 m voxel resolution, Frontier Exploration planner, 45 steps/episode,
+  deterministic random seeds).
+- Independent Sensor Channels:
+    * S1_VIO   : Visual-Inertial Odometry   (nominal sigma = 0.030 m)
+    * S2_LIDAR : LiDAR Scan-Matching        (nominal sigma = 0.035 m)
+    * S3_UWB   : UWB + IMU Fusion           (nominal sigma = 0.045 m)
+- Evaluated Arms (20 scenarios x 3 arms = 60 full maze episodes):
+    1) NAIVE_AVG            : Unverified mean across all finite channels.
+    2) TWO_SENSOR_MIN_SIGMA : Two-sensor fallback selecting the lowest nominal
+                              sigma channel on mismatch (baseline reference).
+    3) TRI_SENSOR_VERIFIER  : Proposed four-layer self-verification architecture:
+                              (a) Physical validity and arena bounds guard,
+                              (b) Retimestamped-freeze detector (fresh metadata
+                                  with static physical output),
+                              (c) Pairwise normalized disagreement and
+                                  deterministic Page CUSUM (k = 1.65, h = 4.0;
+                                  note: Page CUSUM reflects at zero and is NOT
+                                  a Ville-anytime-valid supermartingale),
+                              (d) Majority consensus isolation, inverse-variance
+                                  fusion of healthy channels, quarantine audit
+                                  separation, and fail-closed abstention.
+- Fault Matrix:
+    * NOMINAL (1 scenario)
+    * GRADUAL_DRIFT, HEAVY_DRIFT, SUDDEN_BIAS, OUTLIER_BURSTS,
+      RETIMESTAMPED_FREEZE, SENSOR_BLACKOUT (tested individually on S1, S2, S3;
+      18 scenarios)
+    * DUAL_S1_DRIFT_S2_FREEZE (simultaneous dual-sensor stress counterexample;
+      1 scenario)
+
+3. AGGREGATE RESULTS (ACROSS ALL 20 SCENARIOS)
+----------------------------------------------
+Arm                   Mean RMSE   Max RMSE   Worst Tick   Fault RMSE   Collisions   Mean Cov
+--------------------------------------------------------------------------------------------
+NAIVE_AVG             0.6037 m    1.7375 m   3.0365 m     0.8045 m     111          57.7%
+TWO_SENSOR_MIN_SIGMA  0.7039 m    4.4080 m   7.3839 m     0.9232 m      65          59.4%
+TRI_SENSOR_VERIFIER   0.0413 m    0.0540 m   0.1131 m     0.0462 m       0          61.7%
+
+Key Verification & Audit Metrics (TRI_SENSOR_VERIFIER):
+- Mean Fault Isolation Accuracy : 96.1% across all 20 scenarios
+- Mean False Alarm Rate (FAR)   : 9.34% overall (0.0% across 17 of 20 scenarios)
+- Faulty Samples Excluded       : 557 readings blocked from display and control
+- Fail-Closed Safe-Stop Steps   : 32 steps (under simultaneous dual failure)
+- Separated Audit Log Events    : 626 total events recorded independently
+    * QUARANTINE_ISOLATED : 345
+    * PHYSICAL_REJECT     : 133
+    * FREEZE_DETECTED     : 116
+    * FAIL_CLOSED_ABSTAIN :  32
+
+4. KEY SCENARIO HIGHLIGHTS
+--------------------------
+- Heavy Drift on Primary Sensor (S1_VIO):
+    TWO_SENSOR_MIN_SIGMA RMSE = 3.278 m vs. TRI_SENSOR_VERIFIER RMSE = 0.043 m
+    (isolated in 1 step, 97.0% isolation accuracy, 0 collisions).
+- Retimestamped Freeze on S1_VIO (fresh timestamps with frozen values):
+    TWO_SENSOR_MIN_SIGMA RMSE = 4.408 m vs. TRI_SENSOR_VERIFIER RMSE = 0.049 m
+    (isolated in 1 step across S1, S2, and S3; 97.0% isolation accuracy).
+- Sudden Static Bias & Sensor Blackout (S1, S2, S3):
+    100.0% isolation accuracy with 0-step instant rejection; RMSE = 0.036-0.045 m.
+- Dual Simultaneous Failure Counterexample (S1 Heavy Drift + S2 Freeze):
+    NAIVE_AVG RMSE = 1.738 m, TWO_SENSOR_MIN_SIGMA RMSE = 2.974 m.
+    TRI_SENSOR_VERIFIER entered FAIL_CLOSED_ABSTAIN (32 safe-stop steps),
+    withholding unverified coordinates from display and control (0 collisions;
+    displayed-tick RMSE = 0.045 m).
+
+5. IDENTIFIED LIMITATIONS & NEXT STEPS (FOR RUN #2)
+---------------------------------------------------
+1) CUSUM Spike-Poisoning on Intermittent Outliers:
+   In OUTLIER_BURSTS scenarios (S1, S2, S3), false alarm rates reached
+   50.0%-69.2% (compared to 0.0% in all other 17 scenarios). Large single-tick
+   outliers (2.4 m) saturate the Page CUSUM accumulator near its cap (40.0),
+   keeping the sensor quarantined across subsequent clean ticks while CUSUM
+   decays slowly. Planned mitigation for Run #2: decouple instantaneous spike
+   gating from the Page CUSUM drift input via Winsorized/clipped residuals.
+2) Gradual Drift Detection Latency:
+   Slow linear drift (0.030 m/step) required 5-6 steps to exceed the CUSUM
+   alarm threshold (isolation accuracy = 81.8%, max display error <= 0.113 m),
+   reflecting the fundamental noise-floor sensitivity trade-off.
+3) Evidence Scope:
+   All results derive from deterministic synthetic simulation with idealized
+   sensor noise models. Real-world sensor correlation, clock skew, unmodeled
+   dynamics, and hardware-in-the-loop validation remain outside this run's scope.
+
+6. RECORDED ARTIFACTS
+---------------------
+- Configuration : research/tri_sensor_verification/logs/tri_sensor_maze_v1/experiment_config.json
+- Summary CSV   : research/tri_sensor_verification/logs/tri_sensor_maze_v1/summary_table.csv
+- Audit Trail   : research/tri_sensor_verification/logs/tri_sensor_maze_v1/audit_quarantine_events.jsonl
+- Telemetry     : research/tri_sensor_verification/logs/tri_sensor_maze_v1/per_scenario/ (20 CSV files)
+- Figures       : research/tri_sensor_verification/logs/tri_sensor_maze_v1/figures/ (4 PNG plots, 300 DPI)
+- Dashboard     : research/tri_sensor_verification/logs/tri_sensor_maze_v1/dashboard.html
+================================================================================
