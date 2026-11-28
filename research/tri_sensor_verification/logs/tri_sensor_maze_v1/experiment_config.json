@@ -1,0 +1,72 @@
+{
+  "run_name": "tri_sensor_maze_v1",
+  "created_at": "2026-11-25T01:27:37.037976",
+  "num_steps_per_episode": 45,
+  "maze_config": {
+    "voxel_resolution": 0.25,
+    "bounds_min": [
+      -5.0,
+      -5.0,
+      0.0
+    ],
+    "bounds_max": [
+      5.0,
+      5.0,
+      2.5
+    ],
+    "sensor_max_range": 3.5,
+    "sensor_fov_deg": 86.0,
+    "min_cluster_size": 4,
+    "cluster_radius": 0.6,
+    "dist_weight": 1.2,
+    "heading_weight": 0.8,
+    "volume_weight": 1.0,
+    "arrival_threshold": 0.4
+  },
+  "sensors": [
+    {
+      "sensor_id": "S1_VIO",
+      "modality": "Visual-Inertial Odometry",
+      "nominal_sigma": 0.03
+    },
+    {
+      "sensor_id": "S2_LIDAR",
+      "modality": "LiDAR Scan-Matching",
+      "nominal_sigma": 0.035
+    },
+    {
+      "sensor_id": "S3_UWB",
+      "modality": "UWB + IMU Fusion",
+      "nominal_sigma": 0.045
+    }
+  ],
+  "verifier_config": {
+    "bounds_min": [
+      -5.5,
+      -5.5,
+      -0.5
+    ],
+    "bounds_max": [
+      5.5,
+      5.5,
+      3.5
+    ],
+    "spike_z_threshold": 3.2,
+    "cusum_allowance_k": 1.65,
+    "cusum_alarm_h": 4.0,
+    "cusum_max_cap": 40.0,
+    "freeze_eps_m": 0.0001,
+    "peer_motion_eps_m": 0.08,
+    "freeze_consecutive_steps": 2,
+    "enable_recovery": true,
+    "recovery_z_threshold": 2.0,
+    "recovery_confirm_steps": 4,
+    "latch_freeze_fault": true
+  },
+  "arms": [
+    "NAIVE_AVG",
+    "TWO_SENSOR_MIN_SIGMA",
+    "TRI_SENSOR_VERIFIER"
+  ],
+  "scenario_count": 20
+}
