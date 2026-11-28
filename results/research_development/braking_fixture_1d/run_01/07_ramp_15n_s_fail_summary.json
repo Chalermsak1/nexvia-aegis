@@ -1,0 +1,15 @@
+{
+  "scenario": "07_ramp_15n_s_fail",
+  "outcome": "COLLISION",
+  "physically_stopped": false,
+  "collided": true,
+  "brake_cmd_time_s": 0.7000000000000001,
+  "brake_engage_time_s": 0.7000000000000001,
+  "stop_time_s": null,
+  "stopping_distance_m": null,
+  "min_clearance_m": -0.005905999999999523,
+  "final_position_m": 10.005906,
+  "final_velocity_m_s": 3.3793999999999986,
+  "max_actual_brake_force_n": 21.90000000000003,
+  "step_count": 108
+}

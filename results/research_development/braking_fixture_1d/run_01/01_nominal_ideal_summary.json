@@ -1,0 +1,15 @@
+{
+  "scenario": "01_nominal_ideal",
+  "outcome": "SAFE_PHYSICAL_STOP",
+  "physically_stopped": true,
+  "collided": false,
+  "brake_cmd_time_s": 0.7000000000000001,
+  "brake_engage_time_s": 0.7000000000000001,
+  "stop_time_s": 1.7,
+  "stopping_distance_m": 2.4999999999999902,
+  "min_clearance_m": 4.000000000000008,
+  "final_position_m": 5.999999999999992,
+  "final_velocity_m_s": 1.0269562977782698e-15,
+  "max_actual_brake_force_n": 50.0,
+  "step_count": 85
+}

@@ -1,0 +1,15 @@
+{
+  "scenario": "10_power_loss_no_backup_fail",
+  "outcome": "COLLISION",
+  "physically_stopped": false,
+  "collided": true,
+  "brake_cmd_time_s": 0.7000000000000001,
+  "brake_engage_time_s": null,
+  "stop_time_s": null,
+  "stopping_distance_m": null,
+  "min_clearance_m": -0.0999999999999801,
+  "final_position_m": 10.09999999999998,
+  "final_velocity_m_s": 5.0,
+  "max_actual_brake_force_n": 0.0,
+  "step_count": 101
+}

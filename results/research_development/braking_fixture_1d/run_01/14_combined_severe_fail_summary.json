@@ -1,0 +1,15 @@
+{
+  "scenario": "14_combined_severe_fail",
+  "outcome": "COLLISION",
+  "physically_stopped": false,
+  "collided": true,
+  "brake_cmd_time_s": 0.42,
+  "brake_engage_time_s": 0.58,
+  "stop_time_s": null,
+  "stopping_distance_m": null,
+  "min_clearance_m": -0.051264000000019294,
+  "final_position_m": 10.05126400000002,
+  "final_velocity_m_s": 6.161600000000013,
+  "max_actual_brake_force_n": 25.0,
+  "step_count": 84
+}

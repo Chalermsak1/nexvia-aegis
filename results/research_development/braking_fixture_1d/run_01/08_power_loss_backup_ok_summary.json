@@ -1,0 +1,15 @@
+{
+  "scenario": "08_power_loss_backup_ok",
+  "outcome": "SAFE_PHYSICAL_STOP",
+  "physically_stopped": true,
+  "collided": false,
+  "brake_cmd_time_s": 0.7000000000000001,
+  "brake_engage_time_s": 0.76,
+  "stop_time_s": 2.214285714285715,
+  "stopping_distance_m": 3.9992571428571333,
+  "min_clearance_m": 2.500742857142865,
+  "final_position_m": 7.499257142857135,
+  "final_velocity_m_s": 0.0,
+  "max_actual_brake_force_n": 35.0,
+  "step_count": 111
+}
