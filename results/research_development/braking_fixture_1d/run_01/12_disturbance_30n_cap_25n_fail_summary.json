@@ -1,0 +1,15 @@
+{
+  "scenario": "12_disturbance_30n_cap_25n_fail",
+  "outcome": "COLLISION",
+  "physically_stopped": false,
+  "collided": true,
+  "brake_cmd_time_s": 0.3,
+  "brake_engage_time_s": 0.3,
+  "stop_time_s": null,
+  "stopping_distance_m": null,
+  "min_clearance_m": -0.12139999999997286,
+  "final_position_m": 10.121399999999973,
+  "final_velocity_m_s": 6.57999999999998,
+  "max_actual_brake_force_n": 25.0,
+  "step_count": 83
+}

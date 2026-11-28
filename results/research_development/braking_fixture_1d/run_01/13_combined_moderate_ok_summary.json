@@ -1,0 +1,15 @@
+{
+  "scenario": "13_combined_moderate_ok",
+  "outcome": "COLLISION",
+  "physically_stopped": false,
+  "collided": true,
+  "brake_cmd_time_s": 0.52,
+  "brake_engage_time_s": 0.58,
+  "stop_time_s": null,
+  "stopping_distance_m": null,
+  "min_clearance_m": -0.00347999999997306,
+  "final_position_m": 10.003479999999973,
+  "final_velocity_m_s": 1.880000000000002,
+  "max_actual_brake_force_n": 35.0,
+  "step_count": 115
+}
